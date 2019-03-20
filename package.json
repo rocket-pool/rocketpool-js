@@ -1,0 +1,23 @@
+{
+  "name": "rocketpool",
+  "version": "1.0.0",
+  "description": "A javascript library for interacting with the Rocket Pool network",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "mocha --require ts-node/register src/test/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocket-pool/rocketpool-js.git"
+  },
+  "author": "Rocket Pool",
+  "bugs": {
+    "url": "https://github.com/rocket-pool/rocketpool-js/issues"
+  },
+  "homepage": "https://github.com/rocket-pool/rocketpool-js#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.4000"
+  }
+}
