@@ -19,7 +19,7 @@ class Contracts {
 
 
     // Constructor
-    constructor(private web3: Web3) {
+    public constructor(private web3: Web3) {
 
         // Initialise rocketStorage contract promise
         this.rocketStorage = this.web3.eth.net.getId().then((networkId: number): Contract => new this.web3.eth.Contract(
@@ -31,9 +31,9 @@ class Contracts {
 
 
     // Load ABI/s by name
-    abi(name: string): Promise<AbiItem[]>;
-    abi(names: string[]): Promise<AbiItem[][]>;
-    abi(name: any): any {
+    public abi(name: string): Promise<AbiItem[]>;
+    public abi(names: string[]): Promise<AbiItem[][]>;
+    public abi(name: any): any {
 
         // Array mode
         if (typeof name === "object") return Promise.all(name.map((n: string): Promise<AbiItem[]> => this.abi(n)));
@@ -53,9 +53,9 @@ class Contracts {
 
 
     // Load contract/s by name
-    get(name: string): Promise<Contract>;
-    get(names: string[]): Promise<Contract[]>;
-    get(name: any): any {
+    public get(name: string): Promise<Contract>;
+    public get(names: string[]): Promise<Contract[]>;
+    public get(name: any): any {
 
         // Array mode
         if (typeof name === "object") return Promise.all(name.map((n: string): Promise<Contract> => this.get(n)));
@@ -76,7 +76,7 @@ class Contracts {
 
 
     // Create a new contract instance with the specified ABI name and address
-    make(name: string, address: string): Promise<Contract> {
+    public make(name: string, address: string): Promise<Contract> {
         return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
     }
 

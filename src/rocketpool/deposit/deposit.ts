@@ -10,7 +10,7 @@ class Deposit {
 
 
     // Constructor
-    constructor(private web3: Web3, private contracts: Contracts) {}
+    public constructor(private web3: Web3, private contracts: Contracts) {}
 
 
 }

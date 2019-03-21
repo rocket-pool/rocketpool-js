@@ -16,7 +16,7 @@ class RocketPool {
 
 
     // Constructor
-    constructor(public readonly web3: Web3) {
+    public constructor(public readonly web3: Web3) {
 
         // Initialise services
         this.contracts = new Contracts(web3);
