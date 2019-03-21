@@ -30,8 +30,13 @@ class ContractManager {
     }
 
 
-    // Load an ABI by name
-    abi(name: string): Promise<AbiItem[]> {
+    // Load ABI/s by name
+    abi(name: string): Promise<AbiItem[]>;
+    abi(names: string[]): Promise<AbiItem[][]>;
+    abi(name: any): any {
+
+        // Array mode
+        if (typeof name === "object") return Promise.all(name.map((n: string): Promise<AbiItem[]> => this.abi(n)));
 
         // Use cached ABI promise
         if (this.abis[name]) return this.abis[name];
@@ -47,19 +52,21 @@ class ContractManager {
     }
 
 
-    // Load a contract by name
-    get(name: string): Promise<Contract> {
+    // Load contract/s by name
+    get(name: string): Promise<Contract>;
+    get(names: string[]): Promise<Contract[]>;
+    get(name: any): any {
+
+        // Array mode
+        if (typeof name === "object") return Promise.all(name.map((n: string): Promise<Contract> => this.get(n)));
 
         // Use cached contract promise
         if (this.contracts[name]) return this.contracts[name];
 
-        // Load contract
+        // Load contract data and initialise
         this.contracts[name] = this.rocketStorage.then((rocketStorage: Contract): Promise<[string, AbiItem[]]> => Promise.all([
-
-            // Get contract address and ABI
             rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call(),
             this.abi(name),
-
         ])).then(([address, abi]: [string, AbiItem[]]): Contract => new this.web3.eth.Contract(abi, address));
 
         // Return contract promise
