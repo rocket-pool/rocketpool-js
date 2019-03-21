@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import Contracts from './contracts/contracts';
-import Deposits from './deposits/deposits';
+import Deposit from './deposit/deposit';
 
 
 /**
@@ -12,7 +12,7 @@ class RocketPool {
 
     // Services
     public readonly contracts: Contracts;
-    public readonly deposits: Deposits;
+    public readonly deposit: Deposit;
 
 
     // Constructor
@@ -20,7 +20,7 @@ class RocketPool {
 
         // Initialise services
         this.contracts = new Contracts(web3);
-        this.deposits = new Deposits(web3, this.contracts);
+        this.deposit = new Deposit(web3, this.contracts);
 
     }
 
