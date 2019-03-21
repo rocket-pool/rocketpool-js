@@ -6,7 +6,7 @@ import Contracts from '../contracts/contracts';
 /**
  * Rocket Pool deposit manager
  */
-class Deposit {
+class Deposits {
 
 
     // Constructor
@@ -17,4 +17,4 @@ class Deposit {
 
 
 // Exports
-export default Deposit;
+export default Deposits;
