@@ -43,7 +43,7 @@ class Contracts {
 
         // Load and decode ABI
         this.abis[name] = this.rocketStorage
-        .then((rocketStorage: Contract): string => rocketStorage.methods.getString(this.web3.utils.soliditySha3('contract.abi', name)).call())
+        .then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getString(this.web3.utils.soliditySha3('contract.abi', name)).call())
         .then((abi: string): AbiItem[] => decodeAbi(abi));
 
         // Return ABI promise
