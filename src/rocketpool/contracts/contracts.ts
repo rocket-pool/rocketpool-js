@@ -9,7 +9,7 @@ import { decodeAbi } from '../../utils/contract'
 /**
  * Rocket Pool contract manager
  */
-class ContractManager {
+class Contracts {
 
 
     // Contracts
@@ -85,4 +85,4 @@ class ContractManager {
 
 
 // Exports
-export default ContractManager;
+export default Contracts;
