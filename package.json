@@ -16,9 +16,11 @@
   },
   "homepage": "https://github.com/rocket-pool/rocketpool-js#readme",
   "dependencies": {
+    "pako": "^1.0.10",
     "web3": "^1.0.0-beta.50"
   },
   "devDependencies": {
+    "@types/pako": "^1.0.0",
     "ts-node": "^8.0.3",
     "typescript": "^3.3.4000"
   }
