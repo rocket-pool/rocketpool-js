@@ -2,6 +2,7 @@
 import Web3 from 'web3';
 import Contracts from './contracts/contracts';
 import Deposit from './deposit/deposit';
+import Group from './group/group';
 
 
 /**
@@ -13,6 +14,7 @@ class RocketPool {
     // Services
     public readonly contracts: Contracts;
     public readonly deposit: Deposit;
+    public readonly group: Group;
 
 
     // Constructor
@@ -21,6 +23,7 @@ class RocketPool {
         // Initialise services
         this.contracts = new Contracts(web3);
         this.deposit = new Deposit(web3, this.contracts);
+        this.group = new Group(web3, this.contracts);
 
     }
 
