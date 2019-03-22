@@ -33,7 +33,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
                 assert.property(rocketPool, 'methods', 'Loaded contract is invalid');
             });
 
-            it('Can load single contracts', async () => {
+            it('Can load multiple contracts', async () => {
                 let [rocketNode, rocketUpgrade] = await rp.contracts.get(['rocketNode', 'rocketUpgrade']);
                 assert.property(rocketNode, 'methods', 'Loaded contract is invalid');
                 assert.property(rocketUpgrade, 'methods', 'Loaded contract is invalid');
