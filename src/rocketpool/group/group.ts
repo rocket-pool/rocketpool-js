@@ -28,6 +28,14 @@ class Group {
      */
 
 
+    // Get the name of a group by ID
+    public getName(groupId: string): Promise<string> {
+        return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<string> => {
+            return rocketGroupAPI.methods.getGroupName(groupId).call();
+        });
+    }
+
+
     /**
      * State mutators
      */
