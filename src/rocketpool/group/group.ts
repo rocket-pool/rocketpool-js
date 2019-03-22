@@ -5,6 +5,7 @@ import { Tx } from 'web3/eth/types';
 import { TransactionReceipt } from 'web3/types';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
+import GroupContract from './group-contract';
 
 
 /**
@@ -36,6 +37,14 @@ class Group {
     }
 
 
+    // Get a RocketGroupContract instance
+    public getContract(address: string): Promise<GroupContract> {
+        return this.contracts.make('rocketGroupContract', address).then((rocketGroupContract: Contract): GroupContract => {
+            return new GroupContract(this.web3, rocketGroupContract);
+        });
+    }
+
+
     /**
      * State mutators
      */
@@ -52,22 +61,22 @@ class Group {
     }
 
 
-    // Set the fee charged to a group's users by Rocket Pool (restricted to Rocket Pool super users)
-    public setRocketPoolFee(groupId: string, feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    // Create a default accessor contract for a group
+    public createDefaultAccessor(groupId: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketGroupAPI.methods.setGroupRocketPoolFeePercent(groupId, this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
+                rocketGroupAPI.methods.createDefaultAccessor(groupId).send(options),
                 onConfirmation
             );
         });
     }
 
 
-    // Create a default accessor contract for a group
-    public createDefaultAccessor(groupId: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    // Set the fee charged to a group's users by Rocket Pool (restricted to Rocket Pool super user addresses)
+    public setRocketPoolFee(groupId: string, feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketGroupAPI.methods.createDefaultAccessor(groupId).send(options),
+                rocketGroupAPI.methods.setGroupRocketPoolFeePercent(groupId, this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
                 onConfirmation
             );
         });
