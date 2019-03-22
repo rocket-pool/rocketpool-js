@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 
 // Tests
-export default function runContractTests(web3: Web3, rp: RocketPool): void {
+export default function runContractsTests(web3: Web3, rp: RocketPool): void {
     describe('Contracts', (): void => {
 
 

@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import RocketPool from '../rocketpool/rocketpool';
 
 // Tests
-import runContractTests from './contract/contract-tests';
+import runContractsTests from './contracts/contracts-tests';
 
 // Initialise web3
 const web3: Web3 = new Web3('http://localhost:8545');
@@ -12,4 +12,4 @@ const web3: Web3 = new Web3('http://localhost:8545');
 const rp: RocketPool = new RocketPool(web3);
 
 // Run tests
-runContractTests(web3, rp);
+runContractsTests(web3, rp);
