@@ -1,6 +1,9 @@
 // Imports
 import Web3 from 'web3';
 import Contract from 'web3/eth/contract';
+import { Tx } from 'web3/eth/types';
+import { TransactionReceipt } from 'web3/types';
+import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
 
 
 // Group details
@@ -65,6 +68,29 @@ class GroupContract {
     // Get the address group fees are sent to
     public getGroupFeeAddress(): Promise<string> {
         return this.contract.methods.getFeeAddress().call();
+    }
+
+
+    /**
+     * State mutators
+     */
+
+
+    // Set the fee charged to the group's users by the group (restricted to group owner address)
+    public setGroupFee(feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.setFeePerc(this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Set the address group fees are sent to (restricted to group owner address)
+    public setGroupFeeAddress(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.setFeeAddress(address).send(options),
+            onConfirmation
+        );
     }
 
 
