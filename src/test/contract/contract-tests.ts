@@ -17,9 +17,31 @@ export default function runContractTests(web3: Web3, rp: RocketPool): void {
             });
 
             it('Can load multiple ABIs', async () => {
-                let [minipoolAbi, rocketGroupContractAbi] = await rp.contracts.abi(['rocketMinipool', 'rocketGroupContract']);
-                assert.isArray(minipoolAbi, 'ABI is not an array');
-                assert.isArray(rocketGroupContractAbi, 'ABI is not an array');
+                let [rocketGroupContractAbi, rocketNodeContractAbi] = await rp.contracts.abi(['rocketGroupContract', 'rocketNodeContract']);
+                assert.isArray(rocketGroupContractAbi, 'Loaded ABI is invalid');
+                assert.isArray(rocketNodeContractAbi, 'Loaded ABI is invalid');
+            });
+
+        });
+
+
+        // Contract loading
+        describe('Contracts', (): void => {
+
+            it('Can load a single contract', async () => {
+                let rocketPool = await rp.contracts.get('rocketPool');
+                assert.property(rocketPool, 'methods', 'Loaded contract is invalid');
+            });
+
+            it('Can load single contracts', async () => {
+                let [rocketNode, rocketUpgrade] = await rp.contracts.get(['rocketNode', 'rocketUpgrade']);
+                assert.property(rocketNode, 'methods', 'Loaded contract is invalid');
+                assert.property(rocketUpgrade, 'methods', 'Loaded contract is invalid');
+            });
+
+            it('Can create a new contract instance', async () => {
+                let minipool = await rp.contracts.make('rocketMinipool', '0x1111111111111111111111111111111111111111');
+                assert.property(minipool, 'methods', 'Created contract is invalid');
             });
 
         });
