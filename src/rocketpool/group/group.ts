@@ -46,7 +46,7 @@ class Group {
 
 
     /**
-     * State mutators
+     * Mutators - Public
      */
 
 
@@ -72,7 +72,12 @@ class Group {
     }
 
 
-    // Set the fee charged to a group's users by Rocket Pool (restricted to Rocket Pool super user addresses)
+    /**
+     * Mutators - Rrestricted (to Rocket Pool super user addresses)
+     */
+
+
+    // Set the fee charged to a group's users by Rocket Pool
     public setRocketPoolFee(groupId: string, feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(

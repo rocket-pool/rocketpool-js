@@ -72,11 +72,11 @@ class GroupContract {
 
 
     /**
-     * State mutators
+     * Mutators - Restricted (to the group owner address)
      */
 
 
-    // Set the fee charged to the group's users by the group (restricted to group owner address)
+    // Set the fee charged to the group's users by the group
     public setGroupFee(feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.setFeePerc(this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
@@ -85,10 +85,46 @@ class GroupContract {
     }
 
 
-    // Set the address group fees are sent to (restricted to group owner address)
+    // Set the address group fees are sent to
     public setGroupFeeAddress(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.setFeeAddress(address).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Add a depositor contract to the group
+    public addDepositor(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.addDepositor(address).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Remove a depositor contract from the group
+    public removeDepositor(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.removeDepositor(address).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Add a withdrawer contract to the group
+    public addWithdrawer(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.addWithdrawer(address).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Remove a withdrawer contract from the group
+    public removeWithdrawer(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.removeWithdrawer(address).send(options),
             onConfirmation
         );
     }
