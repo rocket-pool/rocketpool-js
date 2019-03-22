@@ -73,7 +73,7 @@ class Group {
 
 
     /**
-     * Mutators - Rrestricted (to Rocket Pool super user addresses)
+     * Mutators - Restricted (to Rocket Pool super user addresses)
      */
 
 
