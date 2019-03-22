@@ -13,13 +13,13 @@ import { ConfirmationHandler, handleConfirmations } from '../../utils/transactio
 class Node {
 
 
-    // Contracts
-    private rocketNodeAPI: Promise<Contract>;
-
-
     // Constructor
-    public constructor(private web3: Web3, private contracts: Contracts) {
-        this.rocketNodeAPI = this.contracts.get('rocketNodeAPI');
+    public constructor(private web3: Web3, private contracts: Contracts) {}
+
+
+    // Contract accessors
+    private get rocketNodeAPI(): Promise<Contract> {
+        return this.contracts.get('rocketNodeAPI');
     }
 
 

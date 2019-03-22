@@ -14,13 +14,13 @@ import GroupContract from './group-contract';
 class Group {
 
 
-    // Contracts
-    private rocketGroupAPI: Promise<Contract>;
-
-
     // Constructor
-    public constructor(private web3: Web3, private contracts: Contracts) {
-        this.rocketGroupAPI = this.contracts.get('rocketGroupAPI');
+    public constructor(private web3: Web3, private contracts: Contracts) {}
+
+
+    // Contract accessors
+    private get rocketGroupAPI(): Promise<Contract> {
+        return this.contracts.get('rocketGroupAPI');
     }
 
 
