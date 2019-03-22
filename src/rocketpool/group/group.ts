@@ -23,11 +23,43 @@ class Group {
     }
 
 
+    /**
+     * Getters
+     */
+
+
+    /**
+     * State mutators
+     */
+
+
     // Register a group
     public add(name: string, stakingFeeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketGroupAPI.methods.add(name, this.web3.utils.toWei(stakingFeeFraction.toString(), 'ether')).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    // Set the fee charged to a group's users by Rocket Pool (restricted to Rocket Pool super users)
+    public setRocketPoolFee(groupId: string, feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketGroupAPI.methods.setGroupRocketPoolFeePercent(groupId, this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    // Create a default accessor contract for a group
+    public createDefaultAccessor(groupId: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketGroupAPI.methods.createDefaultAccessor(groupId).send(options),
                 onConfirmation
             );
         });
