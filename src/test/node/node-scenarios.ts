@@ -47,3 +47,12 @@ export async function setNodeRewardsAddress(nodeContract: NodeContract, {rewards
     assert.equal(rewardsAddressTest.toLowerCase(), rewardsAddress.toLowerCase(), 'Rewards address was not updated successfully');
 }
 
+
+// Make a deposit reservation
+export async function reserveNodeDeposit(nodeContract: NodeContract, {durationId, depositInput, from}: {durationId: string, depositInput: Buffer, from: string}) {
+    await nodeContract.reserveDeposit(durationId, depositInput, {from, gas: 8000000});
+    let details = await nodeContract.getDepositReservation();
+    assert.equal(details.durationId, durationId, 'Deposit reservation duration ID does not match');
+    assert.equal(details.depositInput, '0x' + depositInput.toString('hex'), 'Deposit reservation DepositInput data does not match');
+}
+

@@ -2,8 +2,10 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
+import { makeDepositInput } from '../../utils/casper';
 import { registerNode } from './node-scenarios';
 import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios';
+import { reserveNodeDeposit } from './node-scenarios';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
@@ -50,6 +52,16 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
 
             it('Can set the node\'s rewards address', async () => {
                 await setNodeRewardsAddress(nodeContract, {rewardsAddress: '0x1111111111111111111111111111111111111111', from: nodeOwnerAddress});
+            });
+
+        });
+
+
+        // Node deposits
+        describe('Deposits', (): void => {
+
+            it('Can make a deposit reservation', async () => {
+                await reserveNodeDeposit(nodeContract, {durationId: '3m', depositInput: makeDepositInput(web3), from: nodeOwnerAddress});
             });
 
         });

@@ -22,7 +22,7 @@ export interface NodeDepositReservation {
     etherRequired: string;
     rplRequired: string;
     durationId: string;
-    depositInput: Buffer;
+    depositInput: string;
 }
 
 
@@ -63,7 +63,7 @@ class NodeContract {
             this.getDepositReservationRplRequired(),
             this.getDepositReservationDurationId(),
             this.getDepositReservationDepositInput(),
-        ]).then(([created, etherRequired, rplRequired, durationId, depositInput]: [Date, string, string, string, Buffer]): NodeDepositReservation => {
+        ]).then(([created, etherRequired, rplRequired, durationId, depositInput]: [Date, string, string, string, string]): NodeDepositReservation => {
             return {created, etherRequired, rplRequired, durationId, depositInput};
         });
     }
@@ -126,7 +126,7 @@ class NodeContract {
 
 
     // Get the deposit reservation DepositInput data
-    public getDepositReservationDepositInput(): Promise<Buffer> {
+    public getDepositReservationDepositInput(): Promise<string> {
         return this.contract.methods.getDepositReserveDepositInput().call();
     }
 
@@ -140,6 +140,15 @@ class NodeContract {
     public setRewardsAddress(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.setRewardsAddress(address).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Make a deposit reservation
+    public reserveDeposit(durationId: string, depositInput: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.depositReserve(durationId, depositInput).send(options),
             onConfirmation
         );
     }
