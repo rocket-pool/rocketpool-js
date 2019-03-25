@@ -136,6 +136,15 @@ class NodeContract {
      */
 
 
+    // Set the node's rewards address
+    public setRewardsAddress(address: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.setRewardsAddress(address).send(options),
+            onConfirmation
+        );
+    }
+
+
 }
 
 
