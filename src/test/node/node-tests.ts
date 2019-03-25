@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { registerNode } from './node-scenarios';
+import { registerNode, setNodeTimezone } from './node-scenarios';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
@@ -31,7 +31,11 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         describe('Registration', (): void => {
 
             it('Can register a node', async () => {
-                [nodeOwner, nodeContract] = await registerNode(web3, rp, {owner});
+                [nodeOwner, nodeContract] = await registerNode(web3, rp, 'foo/bar', {owner});
+            });
+
+            it('Can set the timezone location', async () => {
+                await setNodeTimezone(rp, 'bar/baz', {from: nodeOwner});
             });
 
         });

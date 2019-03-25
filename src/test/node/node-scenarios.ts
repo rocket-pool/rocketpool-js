@@ -5,7 +5,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 
 // Register node
-export async function registerNode(web3: Web3, rp: RocketPool, {owner}: {owner: string}): Promise<[string, string]> {
+export async function registerNode(web3: Web3, rp: RocketPool, timezone: string, {owner}: {owner: string}): Promise<[string, string]> {
 
     // Node owner and contract addresses
     let nodeOwner: string = '';
@@ -17,12 +17,20 @@ export async function registerNode(web3: Web3, rp: RocketPool, {owner}: {owner: 
     await web3.eth.personal.unlockAccount(nodeOwner, '', 0);
 
     // Add node
-    let result = await rp.node.add('foo/bar', {from: nodeOwner, gas: 8000000});
+    let result = await rp.node.add(timezone, {from: nodeOwner, gas: 8000000});
     assert.nestedProperty(result, 'events.NodeAdd.returnValues.contractAddress', 'Node was not registered successfully');
     if (result.events !== undefined) nodeContract = result.events.NodeAdd.returnValues.contractAddress;
 
     // Return node owner and contract addresses
     return [nodeOwner, nodeContract];
 
+}
+
+
+// Set the node's timezone location
+export async function setNodeTimezone(rp: RocketPool, timezone: string, {from}: {from: string}) {
+    await rp.node.setTimezoneLocation(timezone, {from, gas: 8000000});
+    let timezoneLocationTest = await rp.node.getTimezoneLocation(from);
+    assert.equal(timezoneLocationTest, timezone, 'Node timezone was not updated successfully');
 }
 

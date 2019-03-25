@@ -23,11 +23,45 @@ class Node {
     }
 
 
+    /**
+     * Getters
+     */
+
+
+    // Get the timezone location of a node
+    public getTimezoneLocation(nodeOwner: string): Promise<string> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<string> => {
+            return rocketNodeAPI.methods.getTimezoneLocation(nodeOwner).call();
+        });
+    }
+
+
+    /**
+     * Mutators - Public
+     */
+
+
     // Register a node
     public add(timezone: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketNodeAPI.methods.add(timezone).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    /**
+     * Mutators - Restricted (to the node owner address)
+     */
+
+
+    // Set a node's timezone location
+    public setTimezoneLocation(timezone: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeAPI.methods.setTimezoneLocation(timezone).send(options),
                 onConfirmation
             );
         });
