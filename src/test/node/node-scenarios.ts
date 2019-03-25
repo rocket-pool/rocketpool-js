@@ -7,6 +7,7 @@ import NodeContract from '../../rocketpool/node/node-contract';
 
 // Register node
 export async function registerNode(web3: Web3, rp: RocketPool, {timezone, owner}: {timezone: string, owner: string}): Promise<[string, string]> {
+    const rocketPoolToken = await rp.contracts.get('rocketPoolToken');
 
     // Node owner and contract addresses
     let nodeOwner: string = '';
@@ -14,13 +15,16 @@ export async function registerNode(web3: Web3, rp: RocketPool, {timezone, owner}
 
     // Generate, seed and unlock node owner account
     nodeOwner = await web3.eth.personal.newAccount('');
-    await web3.eth.sendTransaction({from: owner, to: nodeOwner, value: web3.utils.toWei('10', 'ether')});
+    await web3.eth.sendTransaction({from: owner, to: nodeOwner, value: web3.utils.toWei('20', 'ether')});
     await web3.eth.personal.unlockAccount(nodeOwner, '', 0);
 
     // Add node
     let result = await rp.node.add(timezone, {from: nodeOwner, gas: 8000000});
     assert.nestedProperty(result, 'events.NodeAdd.returnValues.contractAddress', 'Node was not registered successfully');
     if (result.events !== undefined) nodeContract = result.events.NodeAdd.returnValues.contractAddress;
+
+    // Seed node contract
+    await rocketPoolToken.methods.mint(nodeContract, web3.utils.toWei('1000', 'ether')).send({from: owner, gas: 8000000});
 
     // Check node contract address
     let nodeContractTest = await rp.node.getContractAddress(nodeOwner);
@@ -54,5 +58,20 @@ export async function reserveNodeDeposit(nodeContract: NodeContract, {durationId
     let details = await nodeContract.getDepositReservation();
     assert.equal(details.durationId, durationId, 'Deposit reservation duration ID does not match');
     assert.equal(details.depositInput, '0x' + depositInput.toString('hex'), 'Deposit reservation DepositInput data does not match');
+}
+
+
+// Cancel a deposit reservation
+export async function cancelNodeDepositReservation(nodeContract: NodeContract, {from}: {from: string}) {
+    await nodeContract.cancelDepositReservation({from, gas: 8000000});
+    let hasDepositReservation = await nodeContract.getHasDepositReservation();
+    assert.isFalse(hasDepositReservation, 'Deposit reservation was not cancelled successfully');
+}
+
+
+// Complete a deposit
+export async function completeNodeDeposit(nodeContract: NodeContract, {from, value}: {from: string, value: string}) {
+    let result = await nodeContract.completeDeposit({from, value, gas: 8000000});
+    assert.nestedProperty(result, 'events.NodeDepositMinipool', 'Node deposit was not completed successfully');
 }
 

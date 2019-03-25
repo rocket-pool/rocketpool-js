@@ -154,6 +154,24 @@ class NodeContract {
     }
 
 
+    // Cancel a deposit reservation
+    public cancelDepositReservation(options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.depositReserveCancel().send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Can complete a deposit
+    public completeDeposit(options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.deposit().send(options),
+            onConfirmation
+        );
+    }
+
+
 }
 
 
