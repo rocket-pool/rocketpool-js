@@ -1,4 +1,5 @@
 // Imports
+import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
@@ -80,13 +81,14 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         describe('RPL', (): void => {
 
             it('Can get the current RPL ratio', async () => {
-                // :TODO: check values after node deposits made
                 let rplRatio = await rp.node.getRPLRatio('3m');
+                assert.isAtLeast(rplRatio, 0, 'Invalid RPL ratio');
+                assert.isBelow(rplRatio, 3, 'Invalid RPL ratio');
             });
 
             it('Can get the current RPL requirement for an amount', async () => {
-                // :TODO: check values after node deposits made
                 let [rplRequired, rplRatio] = await rp.node.getRPLRequired(web3.utils.toWei('1', 'ether'), '3m');
+                assert.equal(rplRequired, web3.utils.toWei(rplRatio.toString(), 'ether'), 'Invalid required RPL amount');
             });
 
         });

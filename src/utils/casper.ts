@@ -17,7 +17,7 @@ export function makeDepositInput(web3: any): Buffer {
     ], 32);
 
     // Get proof of possession
-    // TODO: implement correctly once BLS library found
+    // :TODO: implement correctly once BLS library found
     let proofOfPossession: Buffer = Buffer.from(
         '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' +
         '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' +
