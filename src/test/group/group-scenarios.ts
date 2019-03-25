@@ -5,7 +5,7 @@ import GroupContract from '../../rocketpool/group/group-contract';
 
 
 // Register group
-export async function registerGroup(rp: RocketPool, {from}: {from: string}): Promise<[string, string]> {
+export async function registerGroup(rp: RocketPool, {stakingFeeFraction, from}: {stakingFeeFraction: number, from: string}): Promise<[string, string]> {
     const rocketGroupSettings = await rp.contracts.get('rocketGroupSettings');
     const rocketGroupAPI = await rp.contracts.get('rocketGroupAPI');
 
@@ -22,7 +22,7 @@ export async function registerGroup(rp: RocketPool, {from}: {from: string}): Pro
     groupName = ('Group ' + groupAddEvents.length);
 
     // Register group
-    let result = await rp.group.add(groupName, 0.05, {from, gas: 8000000, value: newGroupFee});
+    let result = await rp.group.add(groupName, stakingFeeFraction, {from, gas: 8000000, value: newGroupFee});
     assert.nestedProperty(result, 'events.GroupAdd.returnValues.ID', 'Group was not registered successfully');
     if (result.events !== undefined) groupId = result.events.GroupAdd.returnValues.ID;
 
@@ -56,35 +56,35 @@ export async function createAccessor(rp: RocketPool, {groupId, from}: {groupId: 
 
 
 // Add depositor
-export async function addDepositor(groupContract: GroupContract, depositorAddress: string, {from}: {from: string}) {
+export async function addDepositor(groupContract: GroupContract, {depositorAddress, from}: {depositorAddress: string, from: string}) {
     let result = await groupContract.addDepositor(depositorAddress, {from, gas: 8000000});
     assert.nestedProperty(result, 'events.DepositorAdd', 'Depositor was not added successfully');
 }
 
 
 // Remove depositor
-export async function removeDepositor(groupContract: GroupContract, depositorAddress: string, {from}: {from: string}) {
+export async function removeDepositor(groupContract: GroupContract, {depositorAddress, from}: {depositorAddress: string, from: string}) {
     let result = await groupContract.removeDepositor(depositorAddress, {from, gas: 8000000});
     assert.nestedProperty(result, 'events.DepositorRemove', 'Depositor was not removed successfully');
 }
 
 
 // Add withdrawer
-export async function addWithdrawer(groupContract: GroupContract, withdrawerAddress: string, {from}: {from: string}) {
+export async function addWithdrawer(groupContract: GroupContract, {withdrawerAddress, from}: {withdrawerAddress: string, from: string}) {
     let result = await groupContract.addWithdrawer(withdrawerAddress, {from, gas: 8000000});
     assert.nestedProperty(result, 'events.WithdrawerAdd', 'Withdrawer was not added successfully');
 }
 
 
 // Remove withdrawer
-export async function removeWithdrawer(groupContract: GroupContract, withdrawerAddress: string, {from}: {from: string}) {
+export async function removeWithdrawer(groupContract: GroupContract, {withdrawerAddress, from}: {withdrawerAddress: string, from: string}) {
     let result = await groupContract.removeWithdrawer(withdrawerAddress, {from, gas: 8000000});
     assert.nestedProperty(result, 'events.WithdrawerRemove', 'Withdrawer was not removed successfully');
 }
 
 
 // Set the Rocket Pool fee
-export async function setRocketPoolFee(rp: RocketPool, groupId: string, feeFraction: number, {from}: {from: string}) {
+export async function setRocketPoolFee(rp: RocketPool, {groupId, feeFraction, from}: {groupId: string, feeFraction: number, from: string}) {
     await rp.group.setRocketPoolFee(groupId, feeFraction, {from, gas: 8000000});
     let groupContract = await rp.group.getContract(groupId);
     let rpFeeTest = await groupContract.getRocketPoolFee();
@@ -93,7 +93,7 @@ export async function setRocketPoolFee(rp: RocketPool, groupId: string, feeFract
 
 
 // Set the group fee
-export async function setGroupFee(groupContract: GroupContract, feeFraction: number, {from}: {from: string}) {
+export async function setGroupFee(groupContract: GroupContract, {feeFraction, from}: {feeFraction: number, from: string}) {
     await groupContract.setGroupFee(feeFraction, {from, gas: 8000000});
     let groupFeeTest = await groupContract.getGroupFee();
     assert.equal(groupFeeTest, feeFraction, 'Group fee was not updated successfully');
@@ -101,7 +101,7 @@ export async function setGroupFee(groupContract: GroupContract, feeFraction: num
 
 
 // Set the group fee address
-export async function setGroupFeeAddress(groupContract: GroupContract, feeAddress: string, {from}: {from: string}) {
+export async function setGroupFeeAddress(groupContract: GroupContract, {feeAddress, from}: {feeAddress: string, from: string}) {
     await groupContract.setGroupFeeAddress(feeAddress, {from, gas: 8000000});
     let groupFeeAddressTest = await groupContract.getGroupFeeAddress();
     assert.equal(groupFeeAddressTest, feeAddress, 'Group fee address was not updated successfully');

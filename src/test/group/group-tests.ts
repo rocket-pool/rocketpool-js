@@ -38,7 +38,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         describe('Registration', (): void => {
 
             it('Can register a group', async () => {
-                [groupName, groupId] = await registerGroup(rp, {from: groupOwner});
+                [groupName, groupId] = await registerGroup(rp, {stakingFeeFraction: 0.05, from: groupOwner});
                 groupContract = await rp.group.getContract(groupId);
             });
 
@@ -54,20 +54,20 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
             });
 
             it('Can add a depositor', async () => {
-                await addDepositor(groupContract, accessor1Address, {from: groupOwner});
+                await addDepositor(groupContract, {depositorAddress: accessor1Address, from: groupOwner});
             });
 
             it('Can remove a depositor', async () => {
-                await removeDepositor(groupContract, accessor1Address, {from: groupOwner});
+                await removeDepositor(groupContract, {depositorAddress: accessor1Address, from: groupOwner});
             });
 
             it('Can add a withdrawer', async () => {
-                await addWithdrawer(groupContract, accessor1Address, {from: groupOwner});
-                await addWithdrawer(groupContract, accessor2Address, {from: groupOwner});
+                await addWithdrawer(groupContract, {withdrawerAddress: accessor1Address, from: groupOwner});
+                await addWithdrawer(groupContract, {withdrawerAddress: accessor2Address, from: groupOwner});
             });
 
             it('Can remove a withdrawer', async () => {
-                await removeWithdrawer(groupContract, accessor2Address, {from: groupOwner});
+                await removeWithdrawer(groupContract, {withdrawerAddress: accessor2Address, from: groupOwner});
             });
 
         });
@@ -77,15 +77,15 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         describe('Fees', (): void => {
 
             it('Can set the Rocket Pool fee', async () => {
-                await setRocketPoolFee(rp, groupId, 0.5, {from: owner});
+                await setRocketPoolFee(rp, {groupId, feeFraction: 0.05, from: owner});
             });
 
             it('Can set the group fee', async () => {
-                await setGroupFee(groupContract, 0.5, {from: groupOwner});
+                await setGroupFee(groupContract, {feeFraction: 0.5, from: groupOwner});
             });
 
             it('Can set the group fee address', async () => {
-                await setGroupFeeAddress(groupContract, '0x1111111111111111111111111111111111111111', {from: groupOwner});
+                await setGroupFeeAddress(groupContract, {feeAddress: '0x1111111111111111111111111111111111111111', from: groupOwner});
             });
 
         });

@@ -6,7 +6,7 @@ import NodeContract from '../../rocketpool/node/node-contract';
 
 
 // Register node
-export async function registerNode(web3: Web3, rp: RocketPool, timezone: string, {owner}: {owner: string}): Promise<[string, string]> {
+export async function registerNode(web3: Web3, rp: RocketPool, {timezone, owner}: {timezone: string, owner: string}): Promise<[string, string]> {
 
     // Node owner and contract addresses
     let nodeOwner: string = '';
@@ -33,7 +33,7 @@ export async function registerNode(web3: Web3, rp: RocketPool, timezone: string,
 
 
 // Set the node's timezone location
-export async function setNodeTimezone(rp: RocketPool, timezone: string, {from}: {from: string}) {
+export async function setNodeTimezone(rp: RocketPool, {timezone, from}: {timezone: string, from: string}) {
     await rp.node.setTimezoneLocation(timezone, {from, gas: 8000000});
     let timezoneLocationTest = await rp.node.getTimezoneLocation(from);
     assert.equal(timezoneLocationTest, timezone, 'Node timezone was not updated successfully');
@@ -41,7 +41,7 @@ export async function setNodeTimezone(rp: RocketPool, timezone: string, {from}: 
 
 
 // Set the node's rewards address
-export async function setNodeRewardsAddress(nodeContract: NodeContract, rewardsAddress: string, {from}: {from: string}) {
+export async function setNodeRewardsAddress(nodeContract: NodeContract, {rewardsAddress, from}: {rewardsAddress: string, from: string}) {
     await nodeContract.setRewardsAddress(rewardsAddress, {from, gas: 8000000});
     let rewardsAddressTest = await nodeContract.getRewardsAddress();
     assert.equal(rewardsAddressTest.toLowerCase(), rewardsAddress.toLowerCase(), 'Rewards address was not updated successfully');

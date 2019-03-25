@@ -2,7 +2,8 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
-import { registerNode, setNodeTimezone, setNodeRewardsAddress } from './node-scenarios';
+import { registerNode } from './node-scenarios';
+import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
@@ -33,7 +34,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         describe('Registration', (): void => {
 
             it('Can register a node', async () => {
-                [nodeOwnerAddress, nodeContractAddress] = await registerNode(web3, rp, 'foo/bar', {owner});
+                [nodeOwnerAddress, nodeContractAddress] = await registerNode(web3, rp, {timezone: 'foo/bar', owner});
                 nodeContract = await rp.node.getContract(nodeContractAddress);
             });
 
@@ -44,11 +45,11 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         describe('Settings', (): void => {
 
             it('Can set the node\'s timezone location', async () => {
-                await setNodeTimezone(rp, 'bar/baz', {from: nodeOwnerAddress});
+                await setNodeTimezone(rp, {timezone: 'bar/baz', from: nodeOwnerAddress});
             });
 
             it('Can set the node\'s rewards address', async () => {
-                await setNodeRewardsAddress(nodeContract, '0x1111111111111111111111111111111111111111', {from: nodeOwnerAddress});
+                await setNodeRewardsAddress(nodeContract, {rewardsAddress: '0x1111111111111111111111111111111111111111', from: nodeOwnerAddress});
             });
 
         });
