@@ -21,6 +21,10 @@ export async function registerNode(web3: Web3, rp: RocketPool, timezone: string,
     assert.nestedProperty(result, 'events.NodeAdd.returnValues.contractAddress', 'Node was not registered successfully');
     if (result.events !== undefined) nodeContract = result.events.NodeAdd.returnValues.contractAddress;
 
+    // Check node contract address
+    let nodeContractTest = await rp.node.getContractAddress(nodeOwner);
+    assert.equal(nodeContractTest.toLowerCase(), nodeContract.toLowerCase(), 'Registered node contract address does not match');
+
     // Return node owner and contract addresses
     return [nodeOwner, nodeContract];
 

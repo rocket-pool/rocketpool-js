@@ -27,6 +27,22 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         });
 
 
+        // RPL ratio
+        describe('RPL', (): void => {
+
+            it('Can get the current RPL ratio', async () => {
+                // :TODO: check values after node deposits made
+                let rplRatio = await rp.node.getRPLRatio('3m');
+            });
+
+            it('Can get the current RPL requirement for an amount', async () => {
+                // :TODO: check values after node deposits made
+                let [rplRequired, rplRatio] = await rp.node.getRPLRequired(web3.utils.toWei('1', 'ether'), '3m');
+            });
+
+        });
+
+
         // Node registration
         describe('Registration', (): void => {
 

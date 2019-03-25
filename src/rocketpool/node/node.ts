@@ -5,6 +5,7 @@ import { Tx } from 'web3/eth/types';
 import { TransactionReceipt } from 'web3/types';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
+import NodeContract from './node-contract';
 
 
 /**
@@ -28,10 +29,46 @@ class Node {
      */
 
 
+    // Get the current RPL ratio by staking duration ID
+    public getRPLRatio(stakingDurationId: string): Promise<number> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<string> => {
+            return rocketNodeAPI.methods.getRPLRatio(stakingDurationId).call();
+        }).then((rplRatio: string): number => {
+            return parseFloat(this.web3.utils.fromWei(rplRatio, 'ether'));
+        });
+    }
+
+
+    // Get the current RPL requirement for an ether amount by staking duration ID
+    public getRPLRequired(weiAmount: string, stakingDurationId: string): Promise<[string, number]> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<{0: string, 1: string}> => {
+            return rocketNodeAPI.methods.getRPLRequired(weiAmount, stakingDurationId).call();
+        }).then((ret: {0: string, 1: string}): [string, number] => {
+            return [ret[0], parseFloat(this.web3.utils.fromWei(ret[1], 'ether'))];
+        });
+    }
+
+
     // Get the timezone location of a node
     public getTimezoneLocation(nodeOwner: string): Promise<string> {
         return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<string> => {
             return rocketNodeAPI.methods.getTimezoneLocation(nodeOwner).call();
+        });
+    }
+
+
+    // Get a node's contract address by owner address
+    public getContractAddress(nodeOwner: string): Promise<string> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<string> => {
+            return rocketNodeAPI.methods.getContract(nodeOwner).call();
+        });
+    }
+
+
+    // Get a RocketGroupContract instance
+    public getContract(address: string): Promise<NodeContract> {
+        return this.contracts.make('rocketNodeContract', address).then((rocketNodeContract: Contract): NodeContract => {
+            return new NodeContract(this.web3, rocketNodeContract);
         });
     }
 
