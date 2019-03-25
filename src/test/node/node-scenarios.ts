@@ -82,6 +82,12 @@ export async function completeNodeDeposit(nodeContract: NodeContract, {from, val
 }
 
 
+// Withdraw a deposit from a timed out or withdrawn minipool
+export async function withdrawNodeMinipoolDeposit(nodeContract: NodeContract, {minipoolAddress, from}: {minipoolAddress: string, from: string}) {
+    await nodeContract.withdrawMinipoolDeposit(minipoolAddress, {from, gas: 8000000});
+}
+
+
 // Withdraw ETH from the node contract
 export async function withdrawNodeEth(nodeContract: NodeContract, {weiAmount, from}: {weiAmount: string, from: string}) {
     await nodeContract.withdrawEth(weiAmount, {from, gas: 8000000});

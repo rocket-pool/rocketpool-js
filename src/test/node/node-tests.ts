@@ -81,6 +81,9 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         // Node withdrawals
         describe('Withdrawals', (): void => {
 
+            // :TODO: implement
+            it('Can withdraw a minipool deposit');
+
             it('Can withdraw ETH from the node contract', async () => {
                 await withdrawNodeEth(nodeContract, {weiAmount: web3.utils.toWei('1', 'ether'), from: nodeOwnerAddress});
             });

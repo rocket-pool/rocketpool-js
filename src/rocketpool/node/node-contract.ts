@@ -172,6 +172,15 @@ class NodeContract {
     }
 
 
+    // Withdraw a deposit from a timed out or withdrawn minipool
+    public withdrawMinipoolDeposit(minipoolAddress: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.withdrawMinipoolDeposit(minipoolAddress).send(options),
+            onConfirmation
+        );
+    }
+
+
     // Withdraw ETH from the node contract
     public withdrawEth(weiAmount: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
