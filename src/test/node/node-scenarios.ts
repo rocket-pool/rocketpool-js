@@ -24,6 +24,7 @@ export async function registerNode(web3: Web3, rp: RocketPool, {timezone, owner}
     if (result.events !== undefined) nodeContract = result.events.NodeAdd.returnValues.contractAddress;
 
     // Seed node contract
+    await web3.eth.sendTransaction({from: owner, to: nodeContract, value: web3.utils.toWei('5', 'ether')});
     await rocketPoolToken.methods.mint(nodeContract, web3.utils.toWei('1000', 'ether')).send({from: owner, gas: 8000000});
 
     // Check node contract address
@@ -73,5 +74,17 @@ export async function cancelNodeDepositReservation(nodeContract: NodeContract, {
 export async function completeNodeDeposit(nodeContract: NodeContract, {from, value}: {from: string, value: string}) {
     let result = await nodeContract.completeDeposit({from, value, gas: 8000000});
     assert.nestedProperty(result, 'events.NodeDepositMinipool', 'Node deposit was not completed successfully');
+}
+
+
+// Withdraw ETH from the node contract
+export async function withdrawNodeEth(nodeContract: NodeContract, {weiAmount, from}: {weiAmount: string, from: string}) {
+    await nodeContract.withdrawEth(weiAmount, {from, gas: 8000000});
+}
+
+
+// Withdraw RPL from the node contract
+export async function withdrawNodeRpl(nodeContract: NodeContract, {weiAmount, from}: {weiAmount: string, from: string}) {
+    await nodeContract.withdrawRpl(weiAmount, {from, gas: 8000000});
 }
 

@@ -172,6 +172,24 @@ class NodeContract {
     }
 
 
+    // Withdraw ETH from the node contract
+    public withdrawEth(weiAmount: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.withdrawEther(weiAmount).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Withdraw RPL from the node contract
+    public withdrawRpl(weiAmount: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.withdrawRPL(weiAmount).send(options),
+            onConfirmation
+        );
+    }
+
+
 }
 
 

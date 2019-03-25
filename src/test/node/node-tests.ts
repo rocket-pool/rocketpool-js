@@ -7,6 +7,7 @@ import { makeDepositInput } from '../../utils/casper';
 import { registerNode } from './node-scenarios';
 import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios';
 import { reserveNodeDeposit, cancelNodeDepositReservation, completeNodeDeposit } from './node-scenarios';
+import { withdrawNodeEth, withdrawNodeRpl } from './node-scenarios';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
@@ -72,6 +73,20 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
             it('Can complete a deposit', async () => {
                 await reserveNodeDeposit(nodeContract, {durationId: '3m', depositInput: makeDepositInput(web3), from: nodeOwnerAddress});
                 await completeNodeDeposit(nodeContract, {from: nodeOwnerAddress, value: web3.utils.toWei('16', 'ether')});
+            });
+
+        });
+
+
+        // Node withdrawals
+        describe('Withdrawals', (): void => {
+
+            it('Can withdraw ETH from the node contract', async () => {
+                await withdrawNodeEth(nodeContract, {weiAmount: web3.utils.toWei('1', 'ether'), from: nodeOwnerAddress});
+            });
+
+            it('Can withdraw RPL from the node contract', async () => {
+                await withdrawNodeRpl(nodeContract, {weiAmount: web3.utils.toWei('1', 'ether'), from: nodeOwnerAddress});
             });
 
         });
