@@ -106,7 +106,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
 
             it('Can get the current RPL requirement for an amount', async () => {
                 let [rplRequired, rplRatio] = await rp.node.getRPLRequired(web3.utils.toWei('1', 'ether'), '3m');
-                assert.equal(rplRequired, web3.utils.toWei(rplRatio.toString(), 'ether'), 'Invalid required RPL amount');
+                assert.closeTo(parseFloat(web3.utils.fromWei(rplRequired, 'ether')), rplRatio, parseFloat(web3.utils.fromWei('100', 'ether')), 'Invalid required RPL amount');
             });
 
         });
