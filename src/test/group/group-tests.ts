@@ -5,6 +5,7 @@ import GroupContract from '../../rocketpool/group/group-contract';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
 import { registerGroup } from './group-scenarios-registration';
 import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
+import { deposit } from './group-scenarios-accessor-deposits';
 import { setRocketPoolFee, setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
@@ -74,6 +75,16 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             it('Can remove a withdrawer', async () => {
                 await removeWithdrawer(groupContract, {withdrawerAddress: accessor2Address, from: groupOwner});
+            });
+
+        });
+
+
+        // Accessor deposits
+        describe('Accessor Deposits', (): void => {
+
+            it('Can deposit through the group depositor', async () => {
+                await deposit(groupAccessorContract, {durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
             });
 
         });
