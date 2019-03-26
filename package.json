@@ -4,7 +4,7 @@
   "description": "A javascript library for interacting with the Rocket Pool network",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register src/test/index.ts"
+    "test": "mocha --require ts-node/register --timeout 10000 src/test/index.ts"
   },
   "repository": {
     "type": "git",
