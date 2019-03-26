@@ -3,9 +3,9 @@ import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupContract from '../../rocketpool/group/group-contract';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
-import { registerGroup } from './group-scenarios';
-import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios';
-import { setRocketPoolFee, setGroupFee, setGroupFeeAddress } from './group-scenarios';
+import { registerGroup } from './group-scenarios-registration';
+import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
+import { setRocketPoolFee, setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
 export default function runGroupTests(web3: Web3, rp: RocketPool): void {

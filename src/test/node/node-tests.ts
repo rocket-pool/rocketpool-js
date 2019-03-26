@@ -4,10 +4,10 @@ import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
 import { makeDepositInput } from '../../utils/casper';
-import { registerNode } from './node-scenarios';
-import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios';
-import { reserveNodeDeposit, cancelNodeDepositReservation, completeNodeDeposit } from './node-scenarios';
-import { withdrawNodeEth, withdrawNodeRpl } from './node-scenarios';
+import { registerNode } from './node-scenarios-registration';
+import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios-settings';
+import { reserveNodeDeposit, cancelNodeDepositReservation, completeNodeDeposit } from './node-scenarios-deposits';
+import { withdrawNodeEth, withdrawNodeRpl } from './node-scenarios-withdrawals';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
