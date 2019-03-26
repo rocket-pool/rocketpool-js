@@ -17,11 +17,12 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         // Accounts
         let owner: string;
 
-
         // Node details
         let nodeOwnerAddress: string;
         let nodeContractAddress: string;
         let nodeContract: NodeContract;
+
+        // Minipool details
         let minipoolAddress: string;
 
 

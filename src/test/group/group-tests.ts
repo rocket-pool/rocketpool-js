@@ -5,7 +5,7 @@ import GroupContract from '../../rocketpool/group/group-contract';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
 import { registerGroup } from './group-scenarios-registration';
 import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
-import { deposit } from './group-scenarios-accessor-deposits';
+import { deposit, refundQueuedDeposit } from './group-scenarios-accessor-deposits';
 import { setRocketPoolFee, setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
@@ -22,9 +22,14 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         let groupName: string;
         let groupId: string;
         let groupContract: GroupContract;
+
+        // Accessor details
         let accessor1Address: string;
         let accessor2Address: string;
         let groupAccessorContract: GroupAccessorContract;
+
+        // Deposit details
+        let depositId: string;
 
 
         // Setup
@@ -84,11 +89,12 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         describe('Accessor Deposits', (): void => {
 
             it('Can deposit through the group depositor', async () => {
-                await deposit(groupAccessorContract, {durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
+                depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('32', 'ether')});
             });
 
-            // :TODO: implement
-            it('Can refund a queued deposit');
+            it('Can refund a queued deposit', async () => {
+                await refundQueuedDeposit(groupAccessorContract, {durationId: '3m', depositId, from: depositor});
+            });
 
             // :TODO: implement
             it('Can refund a deposit from a stalled minipool');
