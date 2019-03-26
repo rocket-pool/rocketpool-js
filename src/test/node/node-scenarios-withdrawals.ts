@@ -1,12 +1,15 @@
 // Imports
 import { assert } from 'chai';
+import Web3 from 'web3';
 import NodeContract from '../../rocketpool/node/node-contract';
 
 
-// Withdraw a deposit from a timed out or withdrawn minipool
-export async function withdrawNodeMinipoolDeposit(nodeContract: NodeContract, {minipoolAddress, from}: {minipoolAddress: string, from: string}) {
-    // :TODO: add assertions
+// Withdraw a deposit from an initialised, timed out or withdrawn minipool
+export async function withdrawNodeMinipoolDeposit(web3: Web3, nodeContract: NodeContract, {minipoolAddress, from}: {minipoolAddress: string, from: string}) {
+    let balance1 = await nodeContract.getEthBalance();
     await nodeContract.withdrawMinipoolDeposit(minipoolAddress, {from, gas: 8000000});
+    let balance2 = await nodeContract.getEthBalance();
+    assert.equal(parseInt(balance2), parseInt(balance1) + parseInt(web3.utils.toWei('16', 'ether')));
 }
 
 

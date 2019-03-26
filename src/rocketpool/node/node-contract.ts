@@ -172,7 +172,7 @@ class NodeContract {
     }
 
 
-    // Withdraw a deposit from a timed out or withdrawn minipool
+    // Withdraw a deposit from an initialised, timed out or withdrawn minipool
     public withdrawMinipoolDeposit(minipoolAddress: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.withdrawMinipoolDeposit(minipoolAddress).send(options),

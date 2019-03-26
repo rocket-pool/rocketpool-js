@@ -7,7 +7,7 @@ import { makeDepositInput } from '../../utils/casper';
 import { registerNode } from './node-scenarios-registration';
 import { setNodeTimezone, setNodeRewardsAddress } from './node-scenarios-settings';
 import { reserveNodeDeposit, cancelNodeDepositReservation, completeNodeDeposit } from './node-scenarios-deposits';
-import { withdrawNodeEth, withdrawNodeRpl } from './node-scenarios-withdrawals';
+import { withdrawNodeMinipoolDeposit, withdrawNodeEth, withdrawNodeRpl } from './node-scenarios-withdrawals';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool): void {
@@ -22,6 +22,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         let nodeOwnerAddress: string;
         let nodeContractAddress: string;
         let nodeContract: NodeContract;
+        let minipoolAddress: string;
 
 
         // Setup
@@ -72,7 +73,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
 
             it('Can complete a deposit', async () => {
                 await reserveNodeDeposit(nodeContract, {durationId: '3m', depositInput: makeDepositInput(web3), from: nodeOwnerAddress});
-                await completeNodeDeposit(nodeContract, {from: nodeOwnerAddress, value: web3.utils.toWei('16', 'ether')});
+                minipoolAddress = await completeNodeDeposit(nodeContract, {from: nodeOwnerAddress, value: web3.utils.toWei('16', 'ether')});
             });
 
         });
@@ -81,8 +82,9 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         // Node withdrawals
         describe('Withdrawals', (): void => {
 
-            // :TODO: implement
-            it('Can withdraw a minipool deposit');
+            it('Can withdraw a minipool deposit', async () => {
+                await withdrawNodeMinipoolDeposit(web3, nodeContract, {minipoolAddress, from: nodeOwnerAddress});
+            });
 
             it('Can withdraw ETH from the node contract', async () => {
                 await withdrawNodeEth(nodeContract, {weiAmount: web3.utils.toWei('1', 'ether'), from: nodeOwnerAddress});
