@@ -65,7 +65,7 @@ class Node {
     }
 
 
-    // Get a RocketGroupContract instance
+    // Get a NodeContract instance
     public getContract(address: string): Promise<NodeContract> {
         return this.contracts.make('rocketNodeContract', address).then((rocketNodeContract: Contract): NodeContract => {
             return new NodeContract(this.web3, rocketNodeContract);
