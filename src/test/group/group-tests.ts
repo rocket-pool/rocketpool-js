@@ -87,6 +87,18 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 await deposit(groupAccessorContract, {durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
             });
 
+            // :TODO: implement
+            it('Can refund a queued deposit');
+
+            // :TODO: implement
+            it('Can refund a deposit from a stalled minipool');
+
+            // :TODO: implement
+            it('Can withdraw a deposit from a staking minipool');
+
+            // :TODO: implement
+            it('Can withdraw a deposit from a withdrawn minipool');
+
         });
 
 

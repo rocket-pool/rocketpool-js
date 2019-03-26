@@ -30,6 +30,42 @@ class GroupAccessorContract {
     }
 
 
+    // Refund a queued deposit
+    public refundQueuedDeposit(durationId: string, depositId: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.refundDepositQueued(durationId, depositId).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Refund a deposit from a stalled minipool
+    public refundStalledMinipoolDeposit(depositId: string, minipoolAddress: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.refundDepositMinipoolStalled(depositId, minipoolAddress).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Withdraw a deposit from a staking minipool
+    public withdrawStakingMinipoolDeposit(depositId: string, minipoolAddress: string, weiAmount: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.withdrawDepositMinipoolStaking(depositId, minipoolAddress, weiAmount).send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Withdraw a deposit from a withdrawn minipool
+    public withdrawMinipoolDeposit(depositId: string, minipoolAddress: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.withdrawDepositMinipool(depositId, minipoolAddress).send(options),
+            onConfirmation
+        );
+    }
+
+
 }
 
 
