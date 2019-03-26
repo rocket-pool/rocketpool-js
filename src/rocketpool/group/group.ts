@@ -6,6 +6,7 @@ import { TransactionReceipt } from 'web3/types';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
 import GroupContract from './group-contract';
+import GroupAccessorContract from './group-accessor-contract';
 
 
 /**
@@ -37,10 +38,18 @@ class Group {
     }
 
 
-    // Get a RocketGroupContract instance
+    // Get a GroupContract instance
     public getContract(address: string): Promise<GroupContract> {
         return this.contracts.make('rocketGroupContract', address).then((rocketGroupContract: Contract): GroupContract => {
             return new GroupContract(this.web3, rocketGroupContract);
+        });
+    }
+
+
+    // Get a GroupAccessorContract instance
+    public getAccessorContract(address: string): Promise<GroupAccessorContract> {
+        return this.contracts.make('rocketGroupAccessorContract', address).then((rocketGroupAccessorContract: Contract): GroupAccessorContract => {
+            return new GroupAccessorContract(this.web3, rocketGroupAccessorContract);
         });
     }
 
