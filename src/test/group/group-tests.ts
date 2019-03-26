@@ -93,7 +93,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
             });
 
             it('Can refund a queued deposit', async () => {
-                await refundQueuedDeposit(groupAccessorContract, {durationId: '3m', depositId, from: depositor});
+                await refundQueuedDeposit(web3, groupAccessorContract, {durationId: '3m', depositId, from: depositor});
             });
 
             // :TODO: implement

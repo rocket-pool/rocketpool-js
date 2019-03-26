@@ -1,12 +1,12 @@
 // Imports
 import { assert } from 'chai';
+import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
 
 
 // Make a deposit
 export async function deposit(rp: RocketPool, groupAccessorContract: GroupAccessorContract, {groupId, durationId, from, value}: {groupId: string, durationId: string, from: string, value: string}): Promise<string> {
-    // :TODO: add assertions
     let result = await groupAccessorContract.deposit(durationId, {from, value, gas: 8000000});
     let queuedDepositId = await rp.deposit.getQueuedDepositAt(groupId, from, durationId, 0);
     return queuedDepositId;
@@ -14,9 +14,11 @@ export async function deposit(rp: RocketPool, groupAccessorContract: GroupAccess
 
 
 // Refund a queued deposit
-export async function refundQueuedDeposit(groupAccessorContract: GroupAccessorContract, {durationId, depositId, from}: {durationId: string, depositId: string, from: string}) {
-    // :TODO: add assertions
+export async function refundQueuedDeposit(web3: Web3, groupAccessorContract: GroupAccessorContract, {durationId, depositId, from}: {durationId: string, depositId: string, from: string}) {
+    let balance1 = await web3.eth.getBalance(from);
     await groupAccessorContract.refundQueuedDeposit(durationId, depositId, {from, gas: 8000000});
+    let balance2 = await web3.eth.getBalance(from);
+    assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not refunded successfully');
 }
 
 
