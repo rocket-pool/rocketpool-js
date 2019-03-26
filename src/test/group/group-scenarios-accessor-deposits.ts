@@ -5,6 +5,7 @@ import GroupAccessorContract from '../../rocketpool/group/group-accessor-contrac
 
 // Deposit
 export async function deposit(groupAccessorContract: GroupAccessorContract, {durationId, from, value}: {durationId: string, from: string, value: string}) {
-	await groupAccessorContract.deposit(durationId, {from, value, gas: 8000000});
+    // :TODO: add assertions
+    await groupAccessorContract.deposit(durationId, {from, value, gas: 8000000});
 }
 
