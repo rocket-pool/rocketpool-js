@@ -91,22 +91,6 @@ class DepositSettings {
     }
 
 
-    // Get the minimum withdrawal amount in wei
-    public getWithdrawalMin(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
-            return rocketDepositSettings.methods.getWithdrawalMin().call();
-        });
-    }
-
-
-    // Get the maximum withdrawal amount in wei
-    public getWithdrawalMax(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
-            return rocketDepositSettings.methods.getWithdrawalMax().call();
-        });
-    }
-
-
     // Get the fee for withdrawing from the minipool while staking, as a fraction
     public getStakingWithdrawalFeePerc(): Promise<number> {
         return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {

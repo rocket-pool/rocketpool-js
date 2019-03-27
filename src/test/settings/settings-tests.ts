@@ -12,33 +12,17 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
         describe('Deposit', (): void => {
 
             it('Can get deposit settings', async () => {
-                let [
-                    [depositAllowed, depositChunkSize, depositMin, depositMax],
-                    [chunkAssignMax, depositQueueSizeMax, refundDepositAllowed, withdrawalAllowed],
-                    [withdrawalMin, withdrawalMax, stakingWithdrawalFeePerc, currentDepositMax],
-                ]: [
-                    [boolean, string, string, string],
-                    [number, string, boolean, boolean],
-                    [string, string, number, string],
-                ] = await Promise.all([
-                    Promise.all([
-                        rp.settings.deposit.getDepositAllowed(),
-                        rp.settings.deposit.getDepositChunkSize(),
-                        rp.settings.deposit.getDepositMin(),
-                        rp.settings.deposit.getDepositMax(),
-                    ]),
-                    Promise.all([
-                        rp.settings.deposit.getChunkAssignMax(),
-                        rp.settings.deposit.getDepositQueueSizeMax(),
-                        rp.settings.deposit.getRefundDepositAllowed(),
-                        rp.settings.deposit.getWithdrawalAllowed(),
-                    ]),
-                    Promise.all([
-                        rp.settings.deposit.getWithdrawalMin(),
-                        rp.settings.deposit.getWithdrawalMax(),
-                        rp.settings.deposit.getStakingWithdrawalFeePerc(),
-                        rp.settings.deposit.getCurrentDepositMax('3m'),
-                    ]),
+                let settings = await Promise.all([
+                    rp.settings.deposit.getDepositAllowed(),
+                    rp.settings.deposit.getDepositChunkSize(),
+                    rp.settings.deposit.getDepositMin(),
+                    rp.settings.deposit.getDepositMax(),
+                    rp.settings.deposit.getChunkAssignMax(),
+                    rp.settings.deposit.getDepositQueueSizeMax(),
+                    rp.settings.deposit.getRefundDepositAllowed(),
+                    rp.settings.deposit.getWithdrawalAllowed(),
+                    rp.settings.deposit.getStakingWithdrawalFeePerc(),
+                    rp.settings.deposit.getCurrentDepositMax('3m'),
                 ]);
             });
         });
@@ -48,7 +32,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
         describe('Group', (): void => {
 
             it('Can get group settings', async () => {
-                let [defaultFee, maxFee, newAllowed, newFee, newFeeAddress]: [number, number, boolean, string, string] = await Promise.all([
+                let settings = await Promise.all([
                     rp.settings.group.getDefaultFee(),
                     rp.settings.group.getMaxFee(),
                     rp.settings.group.getNewAllowed(),
@@ -63,7 +47,19 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
         // Minipool settings
         describe('Minipool', (): void => {
 
-
+            it('Can get minipool settings', async () => {
+                let settings = await Promise.all([
+                    rp.settings.minipool.getMinipoolLaunchAmount(),
+                    rp.settings.minipool.getMinipoolCanBeCreated(),
+                    rp.settings.minipool.getMinipoolNewEnabled(),
+                    rp.settings.minipool.getMinipoolClosingEnabled(),
+                    rp.settings.minipool.getMinipoolMax(),
+                    rp.settings.minipool.getMinipoolWithdrawalFeeDepositAddress(),
+                    rp.settings.minipool.getMinipoolTimeout(),
+                    rp.settings.minipool.getMinipoolActiveSetSize(),
+                    rp.settings.minipool.getMinipoolStakingDuration('3m'),
+                ]);
+            });
 
         });
 
