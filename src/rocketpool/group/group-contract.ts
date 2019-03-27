@@ -51,17 +51,13 @@ class GroupContract {
 
     // Get the fee charged to the group's users by the group as a fraction
     public getGroupFee(): Promise<number> {
-        return this.contract.methods.getFeePerc().call().then((feePerc: string): number => {
-            return parseFloat(this.web3.utils.fromWei(feePerc, 'ether'));
-        });
+        return this.contract.methods.getFeePerc().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 
     // Get the fee charged to the group's users by Rocket Pool as a fraction
     public getRocketPoolFee(): Promise<number> {
-        return this.contract.methods.getFeePercRocketPool().call().then((feePerc: string): number => {
-            return parseFloat(this.web3.utils.fromWei(feePerc, 'ether'));
-        });
+        return this.contract.methods.getFeePercRocketPool().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 

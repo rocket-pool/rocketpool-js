@@ -29,9 +29,7 @@ class GroupSettings {
     public getDefaultFee(): Promise<number> {
         return this.rocketGroupSettings.then((rocketGroupSettings: Contract): Promise<string> => {
             return rocketGroupSettings.methods.getDefaultFee().call();
-        }).then((defaultFee: string): number => {
-            return parseFloat(this.web3.utils.fromWei(defaultFee, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 
@@ -39,9 +37,7 @@ class GroupSettings {
     public getMaxFee(): Promise<number> {
         return this.rocketGroupSettings.then((rocketGroupSettings: Contract): Promise<string> => {
             return rocketGroupSettings.methods.getMaxFee().call();
-        }).then((maxFee: string): number => {
-            return parseFloat(this.web3.utils.fromWei(maxFee, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 

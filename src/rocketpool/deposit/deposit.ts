@@ -55,9 +55,7 @@ class Deposit {
     public getQueuedDepositCount(groupId: string, userId: string, durationId: string): Promise<number> {
         return this.rocketDepositAPI.then((rocketDepositAPI: Contract): Promise<string> => {
             return rocketDepositAPI.methods.getUserQueuedDepositCount(groupId, userId, durationId).call();
-        }).then((depositCount: string): number => {
-            return parseInt(depositCount);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 

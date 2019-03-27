@@ -61,9 +61,7 @@ class MinipoolSettings {
     public getMinipoolMax(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
             return rocketMinipoolSettings.methods.getMinipoolMax().call();
-        }).then((minipoolMax: string): number => {
-            return parseInt(minipoolMax);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -79,9 +77,7 @@ class MinipoolSettings {
     public getMinipoolTimeout(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
             return rocketMinipoolSettings.methods.getMinipoolTimeout().call();
-        }).then((minipoolTimeout: string): number => {
-            return parseInt(minipoolTimeout);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -89,9 +85,7 @@ class MinipoolSettings {
     public getMinipoolActiveSetSize(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
             return rocketMinipoolSettings.methods.getMinipoolActiveSetSize().call();
-        }).then((activeSetSize: string): number => {
-            return parseInt(activeSetSize);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -99,9 +93,7 @@ class MinipoolSettings {
     public getMinipoolStakingDuration(durationId: string): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
             return rocketMinipoolSettings.methods.getMinipoolStakingDuration(durationId).call();
-        }).then((stakingDuration: string): number => {
-            return parseInt(stakingDuration);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 

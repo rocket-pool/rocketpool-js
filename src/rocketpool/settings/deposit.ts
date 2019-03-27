@@ -61,9 +61,7 @@ class DepositSettings {
     public getChunkAssignMax(): Promise<number> {
         return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getChunkAssignMax().call();
-        }).then((chunkAssignMax: string): number => {
-            return parseInt(chunkAssignMax);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -95,9 +93,7 @@ class DepositSettings {
     public getStakingWithdrawalFeePerc(): Promise<number> {
         return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getStakingWithdrawalFeePerc().call();
-        }).then((withdrawalFeePerc: string): number => {
-            return parseFloat(this.web3.utils.fromWei(withdrawalFeePerc, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 

@@ -101,9 +101,7 @@ class NodeContract {
 
     // Get the deposit reservation created time
     public getDepositReservationCreated(): Promise<Date> {
-        return this.contract.methods.getDepositReservedTime().call().then((created: string): Date => {
-            return new Date(parseInt(created) * 1000);
-        });
+        return this.contract.methods.getDepositReservedTime().call().then((value: string): Date => new Date(parseInt(value) * 1000));
     }
 
 

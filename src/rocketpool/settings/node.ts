@@ -53,9 +53,7 @@ class NodeSettings {
     public getInactiveDuration(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getInactiveDuration().call();
-        }).then((inactiveDuration: string): number => {
-            return parseInt(inactiveDuration);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -63,9 +61,7 @@ class NodeSettings {
     public getMaxInactiveNodeChecks(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getMaxInactiveNodeChecks().call();
-        }).then((inactiveNodeChecks: string): number => {
-            return parseInt(inactiveNodeChecks);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -73,9 +69,7 @@ class NodeSettings {
     public getFeePerc(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getFeePerc().call();
-        }).then((feePerc: string): number => {
-            return parseFloat(this.web3.utils.fromWei(feePerc, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 
@@ -83,9 +77,7 @@ class NodeSettings {
     public getMaxFeePerc(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getMaxFeePerc().call();
-        }).then((maxFeePerc: string): number => {
-            return parseFloat(this.web3.utils.fromWei(maxFeePerc, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 
@@ -93,9 +85,7 @@ class NodeSettings {
     public getFeeVoteCycleDuration(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getFeeVoteCycleDuration().call();
-        }).then((voteCycleDuration: string): number => {
-            return parseInt(voteCycleDuration);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
@@ -103,9 +93,7 @@ class NodeSettings {
     public getFeeVoteCyclePercChange(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getFeeVoteCyclePercChange().call();
-        }).then((voteCyclePercChange: string): number => {
-            return parseFloat(this.web3.utils.fromWei(voteCyclePercChange, 'ether'));
-        });
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
 
@@ -121,9 +109,7 @@ class NodeSettings {
     public getDepositReservationTime(): Promise<number> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
             return rocketNodeSettings.methods.getDepositReservationTime().call();
-        }).then((reservationTime: string): number => {
-            return parseInt(reservationTime);
-        });
+        }).then((value: string): number => parseInt(value));
     }
 
 
