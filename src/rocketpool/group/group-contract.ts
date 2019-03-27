@@ -72,7 +72,7 @@ class GroupContract {
 
 
     /**
-     * Mutators - Restricted (to the group owner address)
+     * Mutators - Restricted to the group owner address
      */
 
 

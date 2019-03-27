@@ -90,7 +90,7 @@ class Node {
 
 
     /**
-     * Mutators - Restricted (to the node owner address)
+     * Mutators - Restricted to the node owner address
      */
 
 
