@@ -5,7 +5,6 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Register group
 export async function registerGroup(rp: RocketPool, {stakingFeeFraction, from}: {stakingFeeFraction: number, from: string}): Promise<[string, string]> {
-    const rocketGroupSettings = await rp.contracts.get('rocketGroupSettings');
     const rocketGroupAPI = await rp.contracts.get('rocketGroupAPI');
 
     // Group name and ID
@@ -13,8 +12,7 @@ export async function registerGroup(rp: RocketPool, {stakingFeeFraction, from}: 
     let groupId: string = '';
 
     // Get group registration fee
-    // :TODO: use utility module once implemented
-    let newGroupFee = await rocketGroupSettings.methods.getNewFee().call();
+    let newGroupFee = await rp.settings.group.getNewFee();
 
     // Get new group name
     let groupAddEvents = await rocketGroupAPI.getPastEvents('GroupAdd', {fromBlock: 0});
