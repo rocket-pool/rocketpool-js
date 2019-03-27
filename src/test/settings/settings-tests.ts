@@ -67,7 +67,24 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
         // Node settings
         describe('Node', (): void => {
 
-
+            it('Can get node settings', async () => {
+                let settings1 = await Promise.all([
+                    rp.settings.node.getNewAllowed(),
+                    rp.settings.node.getEtherMin(),
+                    rp.settings.node.getInactiveAutomatic(),
+                    rp.settings.node.getInactiveDuration(),
+                    rp.settings.node.getMaxInactiveNodeChecks(),
+                    rp.settings.node.getFeePerc(),
+                    rp.settings.node.getMaxFeePerc(),
+                    rp.settings.node.getFeeVoteCycleDuration(),
+                    rp.settings.node.getFeeVoteCyclePercChange(),
+                    rp.settings.node.getDepositAllowed(),
+                ]);
+                let settings2 = await Promise.all([
+                    rp.settings.node.getDepositReservationTime(),
+                    rp.settings.node.getWithdrawalAllowed(),
+                ]);
+            });
 
         });
 
