@@ -51,5 +51,14 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
         });
 
 
+        // RPB token
+        describe('RPB', (): void => {
+
+            // :TODO: implement
+            it('Can burn RPB for ETH');
+
+        });
+
+
     });
 };
