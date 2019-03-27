@@ -6,7 +6,7 @@ import GroupAccessorContract from '../../rocketpool/group/group-accessor-contrac
 import { registerGroup } from './group-scenarios-registration';
 import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
 import { deposit, refundQueuedDeposit } from './group-scenarios-accessor-deposits';
-import { setRocketPoolFee, setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
+import { setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
 export default function runGroupTests(web3: Web3, rp: RocketPool): void {
@@ -14,7 +14,6 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
 
         // Accounts
-        let owner: string;
         let groupOwner: string;
         let depositor: string;
 
@@ -37,7 +36,6 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             // Get accounts
             let accounts: string[] = await web3.eth.getAccounts();
-            owner = accounts[0];
             groupOwner = accounts[1];
             depositor = accounts[2];
 
@@ -110,10 +108,6 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
         // Group fees
         describe('Fees', (): void => {
-
-            it('Can set the Rocket Pool fee', async () => {
-                await setRocketPoolFee(rp, {groupId, feeFraction: 0.05, from: owner});
-            });
 
             it('Can set the group fee', async () => {
                 await setGroupFee(groupContract, {feeFraction: 0.5, from: groupOwner});

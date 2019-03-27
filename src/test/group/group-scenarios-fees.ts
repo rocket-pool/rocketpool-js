@@ -1,16 +1,6 @@
 // Imports
 import { assert } from 'chai';
-import RocketPool from '../../rocketpool/rocketpool';
 import GroupContract from '../../rocketpool/group/group-contract';
-
-
-// Set the Rocket Pool fee
-export async function setRocketPoolFee(rp: RocketPool, {groupId, feeFraction, from}: {groupId: string, feeFraction: number, from: string}) {
-    await rp.group.setRocketPoolFee(groupId, feeFraction, {from, gas: 8000000});
-    let groupContract = await rp.group.getContract(groupId);
-    let rpFeeTest = await groupContract.getRocketPoolFee();
-    assert.equal(rpFeeTest, feeFraction, 'Rocket Pool fee was not updated successfully');
-}
 
 
 // Set the group fee

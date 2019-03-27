@@ -81,22 +81,6 @@ class Group {
     }
 
 
-    /**
-     * Mutators - Restricted (to Rocket Pool super user addresses)
-     */
-
-
-    // Set the fee charged to a group's users by Rocket Pool
-    public setRocketPoolFee(groupId: string, feeFraction: number, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketGroupAPI.then((rocketGroupAPI: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketGroupAPI.methods.setGroupRocketPoolFeePercent(groupId, this.web3.utils.toWei(feeFraction.toString(), 'ether')).send(options),
-                onConfirmation
-            );
-        });
-    }
-
-
 }
 
 
