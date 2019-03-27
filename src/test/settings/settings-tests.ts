@@ -47,7 +47,15 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
         // Group settings
         describe('Group', (): void => {
 
-
+            it('Can get group settings', async () => {
+                let [defaultFee, maxFee, newAllowed, newFee, newFeeAddress]: [number, number, boolean, string, string] = await Promise.all([
+                    rp.settings.group.getDefaultFee(),
+                    rp.settings.group.getMaxFee(),
+                    rp.settings.group.getNewAllowed(),
+                    rp.settings.group.getNewFee(),
+                    rp.settings.group.getNewFeeAddress(),
+                ]);
+            });
 
         });
 

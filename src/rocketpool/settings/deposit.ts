@@ -27,7 +27,7 @@ class DepositSettings {
 
     // Get whether deposits are currently allowed
     public getDepositAllowed(): Promise<boolean> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<boolean> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<boolean> => {
             return rocketDepositSettings.methods.getDepositAllowed().call();
         });
     }
@@ -35,7 +35,7 @@ class DepositSettings {
 
     // Get the deposit chunk size in wei
     public getDepositChunkSize(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getDepositChunkSize().call();
         });
     }
@@ -43,7 +43,7 @@ class DepositSettings {
 
     // Get the minimum deposit amount in wei
     public getDepositMin(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getDepositMin().call();
         });
     }
@@ -51,7 +51,7 @@ class DepositSettings {
 
     // Get the maximum deposit amount in wei
     public getDepositMax(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getDepositMax().call();
         });
     }
@@ -59,7 +59,7 @@ class DepositSettings {
 
     // Get the maximum number of chunks assigned at once
     public getChunkAssignMax(): Promise<number> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getChunkAssignMax().call();
         }).then((chunkAssignMax: string): number => {
             return parseInt(chunkAssignMax);
@@ -69,7 +69,7 @@ class DepositSettings {
 
     // Get the maximum deposit queue size in wei
     public getDepositQueueSizeMax(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getDepositQueueSizeMax().call();
         });
     }
@@ -77,7 +77,7 @@ class DepositSettings {
 
     // Get whether deposit refunds are currently allowed
     public getRefundDepositAllowed(): Promise<boolean> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<boolean> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<boolean> => {
             return rocketDepositSettings.methods.getRefundDepositAllowed().call();
         });
     }
@@ -85,7 +85,7 @@ class DepositSettings {
 
     // Get whether withdrawals are currently allowed
     public getWithdrawalAllowed(): Promise<boolean> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<boolean> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<boolean> => {
             return rocketDepositSettings.methods.getWithdrawalAllowed().call();
         });
     }
@@ -93,7 +93,7 @@ class DepositSettings {
 
     // Get the minimum withdrawal amount in wei
     public getWithdrawalMin(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getWithdrawalMin().call();
         });
     }
@@ -101,7 +101,7 @@ class DepositSettings {
 
     // Get the maximum withdrawal amount in wei
     public getWithdrawalMax(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getWithdrawalMax().call();
         });
     }
@@ -109,7 +109,7 @@ class DepositSettings {
 
     // Get the fee for withdrawing from the minipool while staking, as a fraction
     public getStakingWithdrawalFeePerc(): Promise<number> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getStakingWithdrawalFeePerc().call();
         }).then((withdrawalFeePerc: string): number => {
             return parseFloat(this.web3.utils.fromWei(withdrawalFeePerc, 'ether'));
@@ -119,7 +119,7 @@ class DepositSettings {
 
     // Get the current maximum deposit amount in wei
     public getCurrentDepositMax(durationId: string): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings): Promise<string> => {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
             return rocketDepositSettings.methods.getCurrentDepositMax(durationId).call();
         });
     }
