@@ -15,6 +15,20 @@ export interface NodeDetails {
 }
 
 
+// Minipool status details
+export interface StatusDetails {
+    status: number;
+    statusChangedTime: Date;
+    statusChangedBlock: number;
+    stakingDurationId: string;
+    stakingDuration: number;
+    depositInput: string;
+    userDepositCapacity: string;
+    userDepositTotal: string;
+    stakingUserDepositsWithdrawn: string;
+}
+
+
 /**
  * RocketMinipool contract instance wrapper
  */
@@ -26,7 +40,7 @@ class MinipoolContract {
 
 
     /**
-     * Getters
+     * Getters - Node
      */
 
 
@@ -85,6 +99,124 @@ class MinipoolContract {
     // Get the node owner's deposited ETH balance in wei
     public getNodeBalance(): Promise<string> {
         return this.contract.methods.getNodeBalance().call();
+    }
+
+
+    /**
+     * Getters - Users
+     */
+
+
+    // Get the number of users in the minipool
+    public getUserCount(): Promise<number> {
+        return this.contract.methods.getUserCount().call().then((value: string): number => parseInt(value));
+    }
+
+
+    // Get whether a user exists in the minipool
+    public getUserExists(userId: string, groupId: string): Promise<boolean> {
+        return this.contract.methods.getUserExists(userId, groupId).call();
+    }
+
+
+    // Get whether a user has a deposit in the minipool
+    public getUserHasDeposit(userId: string, groupId: string): Promise<boolean> {
+        return this.contract.methods.getUserHasDeposit(userId, groupId).call();
+    }
+
+
+    // Get a user's deposit amount in the minipool in wei
+    public getUserDeposit(userId: string, groupId: string): Promise<string> {
+        return this.contract.methods.getUserDeposit(userId, groupId).call();
+    }
+
+
+    // Get the amount of RPB tokens withdrawn by a user while staking in wei
+    public getUserStakingTokensWithdrawn(userId: string, groupId: string): Promise<string> {
+        return this.contract.methods.getUserStakingTokensWithdrawn(userId, groupId).call();
+    }
+
+
+    /**
+     * Getters - Status
+     */
+
+
+    // Get all status details
+    public getStatusDetails(): Promise<StatusDetails> {
+        return Promise.all([
+            this.getStatus(),
+            this.getStatusChangedTime(),
+            this.getStatusChangedBlock(),
+            this.getStakingDurationId(),
+            this.getStakingDuration(),
+            this.getDepositInput(),
+            this.getUserDepositCapacity(),
+            this.getUserDepositTotal(),
+            this.getStakingUserDepositsWithdrawn(),
+        ]).then(([
+            status, statusChangedTime, statusChangedBlock, stakingDurationId, stakingDuration,
+            depositInput, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
+        ]: [number, Date, number, string, number, string, string, string, string]): StatusDetails => {
+            return {
+                status, statusChangedTime, statusChangedBlock, stakingDurationId, stakingDuration,
+                depositInput, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
+            };
+        });
+    }
+
+
+    // Get the current minipool status
+    public getStatus(): Promise<number> {
+        return this.contract.methods.getStatus().call();
+    }
+
+
+    // Get the time the status was last updated
+    public getStatusChangedTime(): Promise<Date> {
+        return this.contract.methods.getStatusChangedTime().call().then((value: string): Date => new Date(parseInt(value) * 1000));
+    }
+
+
+    // Get the block the status was last updated at
+    public getStatusChangedBlock(): Promise<number> {
+        return this.contract.methods.getStatusChangedBlock().call().then((value: string): number => parseInt(value));
+    }
+
+
+    // Get the minipool's staking duration ID
+    public getStakingDurationId(): Promise<string> {
+        return this.contract.methods.getStakingDurationID().call();
+    }
+
+
+    // Get the minipool's staking duration in blocks
+    public getStakingDuration(): Promise<number> {
+        return this.contract.methods.getStakingDuration().call().then((value: string): number => parseInt(value));
+    }
+
+
+    // Get the minipool's DepositInput data for submission to Casper
+    public getDepositInput(): Promise<string> {
+        return this.contract.methods.getDepositInput().call();
+    }
+
+
+    // Get the minipool's total capacity for user deposits in wei
+    public getUserDepositCapacity(): Promise<string> {
+        return this.contract.methods.getUserDepositCapacity().call();
+    }
+
+
+    // Get the total value of user deposits to the minipool in wei
+    public getUserDepositTotal(): Promise<string> {
+        return this.contract.methods.getUserDepositTotal().call();
+    }
+
+
+    // Get the total value of user deposits withdrawn while staking in wei
+    public getStakingUserDepositsWithdrawn(): Promise<string> {
+        return this.contract.methods.getStakingUserDepositsWithdrawn().call();
     }
 
 
