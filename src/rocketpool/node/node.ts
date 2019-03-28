@@ -22,11 +22,22 @@ class Node {
     private get rocketNodeAPI(): Promise<Contract> {
         return this.contracts.get('rocketNodeAPI');
     }
+    private get rocketNode(): Promise<Contract> {
+        return this.contracts.get('rocketNode');
+    }
 
 
     /**
      * Getters
      */
+
+
+    // Get the current number of nodes with minipools available for assignment by staking duration ID
+    public getAvailableCount(stakingDurationId: string): Promise<number> {
+        return this.rocketNode.then((rocketNode: Contract): Promise<string> => {
+            return rocketNode.methods.getAvailableNodeCount(stakingDurationId).call();
+        }).then((value: string): number => parseInt(value));
+    }
 
 
     // Get the current RPL ratio by staking duration ID

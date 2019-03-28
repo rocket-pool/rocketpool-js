@@ -98,8 +98,12 @@ export default function runNodeTests(web3: Web3, rp: RocketPool): void {
         });
 
 
-        // RPL ratio
-        describe('RPL', (): void => {
+        // Node info
+        describe('Info', (): void => {
+
+            it('Can get the current available node count', async () => {
+                let availableNodeCount = await rp.node.getAvailableCount('3m');
+            });
 
             it('Can get the current RPL ratio', async () => {
                 let rplRatio = await rp.node.getRPLRatio('3m');
