@@ -2,6 +2,7 @@
 import Web3 from 'web3';
 import Contract from 'web3/eth/contract';
 import Contracts from '../contracts/contracts';
+import MinipoolContract from './minipool-contract';
 
 
 /**
@@ -70,6 +71,14 @@ class Pool {
         return this.rocketPool.then((rocketPool: Contract): Promise<string> => {
             return rocketPool.methods.getNetworkUtilisation(stakingDurationId).call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+
+    // Get a MinipoolContract instance
+    public getMinipoolContract(address: string): Promise<MinipoolContract> {
+        return this.contracts.make('rocketMinipool', address).then((rocketMinipool: Contract): MinipoolContract => {
+            return new MinipoolContract(this.web3, rocketMinipool);
+        });
     }
 
 
