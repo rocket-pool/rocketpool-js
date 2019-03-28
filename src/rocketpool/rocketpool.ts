@@ -4,6 +4,7 @@ import Contracts from './contracts/contracts';
 import Deposit from './deposit/deposit';
 import Group from './group/group';
 import Node from './node/node';
+import Pool from './pool/pool';
 import DepositSettings from './settings/deposit';
 import GroupSettings from './settings/group';
 import MinipoolSettings from './settings/minipool';
@@ -23,6 +24,7 @@ class RocketPool {
     public readonly deposit: Deposit;
     public readonly group: Group;
     public readonly node: Node;
+    public readonly pool: Pool;
     public readonly settings: {deposit: DepositSettings, group: GroupSettings, minipool: MinipoolSettings, node: NodeSettings};
     public readonly tokens: {rpb: RPB, rpl: RPL};
 
@@ -35,6 +37,7 @@ class RocketPool {
         this.deposit = new Deposit(web3, this.contracts);
         this.group = new Group(web3, this.contracts);
         this.node = new Node(web3, this.contracts);
+        this.pool = new Pool(web3, this.contracts);
         this.settings = {
             deposit: new DepositSettings(web3, this.contracts),
             group: new GroupSettings(web3, this.contracts),
