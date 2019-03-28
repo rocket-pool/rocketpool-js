@@ -72,6 +72,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
                     Promise.all([
                         rp.settings.node.getNewAllowed(),
                         rp.settings.node.getEtherMin(),
+                        rp.settings.node.getCheckinGasPrice(),
                         rp.settings.node.getInactiveAutomatic(),
                         rp.settings.node.getInactiveDuration(),
                         rp.settings.node.getMaxInactiveNodeChecks(),
@@ -79,9 +80,9 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
                         rp.settings.node.getMaxFeePerc(),
                         rp.settings.node.getFeeVoteCycleDuration(),
                         rp.settings.node.getFeeVoteCyclePercChange(),
-                        rp.settings.node.getDepositAllowed(),
                     ]),
                     Promise.all([
+                        rp.settings.node.getDepositAllowed(),
                         rp.settings.node.getDepositReservationTime(),
                         rp.settings.node.getWithdrawalAllowed(),
                     ]),
