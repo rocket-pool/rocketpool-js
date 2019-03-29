@@ -1,6 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
+import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
 
 
 // Stall a minipool
@@ -26,6 +27,29 @@ export async function stallMinipool(web3: Web3, rp: RocketPool, minipoolAddress:
     await rp.contracts.make('rocketMinipool', minipoolAddress).then(minipool => {
         return minipool.methods.updateStatus().send({from: fromAddress, gas: 8000000});
     });
+
+}
+
+
+// Make a single minipool begin staking
+export async function stakeSingleMinipool(rp: RocketPool, depositorContract: GroupAccessorContract, depositor: string) {
+
+    // Get deposit settings
+    let chunkSize = await rp.settings.deposit.getDepositChunkSize();
+    let chunksPerDepositTx = await rp.settings.deposit.getChunkAssignMax();
+
+    // Get minipool settings
+    let miniPoolLaunchAmount = await rp.settings.minipool.getMinipoolLaunchAmount();
+    let miniPoolAssignAmount = Math.floor(parseInt(miniPoolLaunchAmount) / 2);
+
+    // Parameters to fill initial minipool and leave change in deposit queue
+    let selfAssignableDepositSize = parseInt(chunkSize) * chunksPerDepositTx;
+    let selfAssignableDepositsPerMinipool = Math.floor(miniPoolAssignAmount / selfAssignableDepositSize);
+
+    // Fill minipool
+    for (let di = 0; di < selfAssignableDepositsPerMinipool; ++di) {
+        await depositorContract.deposit('3m', {from: depositor, value: selfAssignableDepositSize, gas: 8000000});
+    }
 
 }
 
