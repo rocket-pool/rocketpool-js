@@ -53,3 +53,19 @@ export async function stakeSingleMinipool(rp: RocketPool, depositorContract: Gro
 
 }
 
+
+// Make minipool withdraw with balance
+export async function withdrawMinipool(rp: RocketPool, minipoolAddress: string, balance: string, nodeOperator: string, owner: string) {
+    const rocketNodeWatchtower = await rp.contracts.get('rocketNodeWatchtower');
+    const rocketAdmin = await rp.contracts.get('rocketAdmin');
+
+    // Set node status
+    let nodeTrusted = await rocketAdmin.methods.getNodeTrusted(nodeOperator).call();
+    if (!nodeTrusted) await rocketAdmin.methods.setNodeTrusted(nodeOperator, true).send({from: owner, gas: 8000000});
+
+    // Logout & withdraw minipool
+    await rocketNodeWatchtower.methods.logoutMinipool(minipoolAddress).send({from: nodeOperator, gas: 8000000});
+    await rocketNodeWatchtower.methods.withdrawMinipool(minipoolAddress, balance).send({from: nodeOperator, gas: 8000000});
+
+}
+

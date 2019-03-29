@@ -23,7 +23,7 @@ export async function registerNode(web3: Web3, rp: RocketPool, owner: string): P
     if (result.events !== undefined) nodeContractAddress = result.events.NodeAdd.returnValues.contractAddress;
 
     // Seed node contract
-    await web3.eth.sendTransaction({from: owner, to: nodeContractAddress, value: web3.utils.toWei('40', 'ether')});
+    await web3.eth.sendTransaction({from: owner, to: nodeContractAddress, value: web3.utils.toWei('60', 'ether')});
     await rocketPoolToken.methods.mint(nodeContractAddress, web3.utils.toWei('1000', 'ether')).send({from: owner, gas: 8000000});
 
     // Return node owner and contract addresses

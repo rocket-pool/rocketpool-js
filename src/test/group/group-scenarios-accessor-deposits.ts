@@ -41,8 +41,10 @@ export async function withdrawStakingMinipoolDeposit(rp: RocketPool, groupAccess
 
 
 // Withdraw a deposit from a withdrawn minipool
-export async function withdrawMinipoolDeposit(groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, from}: {depositId: string, minipoolAddress: string, from: string}) {
-    // :TODO: add assertions
+export async function withdrawMinipoolDeposit(rp: RocketPool, groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, from}: {depositId: string, minipoolAddress: string, from: string}) {
+    let balance1 = await rp.tokens.rpb.balanceOf(from);
     await groupAccessorContract.withdrawMinipoolDeposit(depositId, minipoolAddress, {from, gas: 8000000});
+    let balance2 = await rp.tokens.rpb.balanceOf(from);
+    assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not withdrawn successfully');
 }
 
