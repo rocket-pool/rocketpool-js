@@ -4,6 +4,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 import GroupContract from '../../rocketpool/group/group-contract';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
 import NodeContract from '../../rocketpool/node/node-contract';
+import { clearDeposits } from '../_helpers/deposit';
 import { stallMinipool, stakeSingleMinipool, withdrawMinipool } from '../_helpers/minipool';
 import { registerNode, createNodeMinipool } from '../_helpers/node';
 import { registerGroup } from './group-scenarios-registration';
@@ -125,10 +126,13 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 // Create minipool, deposit to, and stake
                 let minipoolAddress = await createNodeMinipool(web3, nodeContract, nodeOwner, '3m');
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, groupAccessorContract, depositor);
+                await stakeSingleMinipool(rp, groupAccessorContract, depositor, '3m');
 
                 // Withdraw deposit
                 await withdrawStakingMinipoolDeposit(rp, groupAccessorContract, {depositId, minipoolAddress, weiAmount: web3.utils.toWei('4', 'ether'), from: depositor});
+
+                // Clear deposit queue
+                await clearDeposits(rp, groupAccessorContract, groupId, depositor, '3m');
 
             });
 
@@ -137,11 +141,14 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 // Create minipool, deposit to, and stake, logout & withdraw
                 let minipoolAddress = await createNodeMinipool(web3, nodeContract, nodeOwner, '3m');
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, groupAccessorContract, depositor);
+                await stakeSingleMinipool(rp, groupAccessorContract, depositor, '3m');
                 await withdrawMinipool(rp, minipoolAddress, web3.utils.toWei('36', 'ether'), nodeOwner, owner);
 
                 // Withdraw deposit
                 await withdrawMinipoolDeposit(rp, groupAccessorContract, {depositId, minipoolAddress, from: depositor});
+
+                // Clear deposit queue
+                await clearDeposits(rp, groupAccessorContract, groupId, depositor, '3m');
 
             });
 

@@ -32,7 +32,7 @@ export async function stallMinipool(web3: Web3, rp: RocketPool, minipoolAddress:
 
 
 // Make a single minipool begin staking
-export async function stakeSingleMinipool(rp: RocketPool, depositorContract: GroupAccessorContract, depositor: string) {
+export async function stakeSingleMinipool(rp: RocketPool, depositorContract: GroupAccessorContract, depositor: string, stakingDurationId: string) {
 
     // Get deposit settings
     let chunkSize = await rp.settings.deposit.getDepositChunkSize();
@@ -48,7 +48,7 @@ export async function stakeSingleMinipool(rp: RocketPool, depositorContract: Gro
 
     // Fill minipool
     for (let di = 0; di < selfAssignableDepositsPerMinipool; ++di) {
-        await depositorContract.deposit('3m', {from: depositor, value: selfAssignableDepositSize, gas: 8000000});
+        await depositorContract.deposit(stakingDurationId, {from: depositor, value: selfAssignableDepositSize, gas: 8000000});
     }
 
 }
