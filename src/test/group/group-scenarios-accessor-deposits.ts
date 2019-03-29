@@ -23,9 +23,11 @@ export async function refundQueuedDeposit(web3: Web3, groupAccessorContract: Gro
 
 
 // Refund a deposit from a stalled minipool
-export async function refundStalledMinipoolDeposit(groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, from}: {depositId: string, minipoolAddress: string, from: string}) {
-    // :TODO: add assertions
+export async function refundStalledMinipoolDeposit(web3: Web3, groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, from}: {depositId: string, minipoolAddress: string, from: string}) {
+    let balance1 = await web3.eth.getBalance(from);
     await groupAccessorContract.refundStalledMinipoolDeposit(depositId, minipoolAddress, {from, gas: 8000000});
+    let balance2 = await web3.eth.getBalance(from);
+    assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not refunded successfully');
 }
 
 

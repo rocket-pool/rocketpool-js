@@ -3,9 +3,12 @@ import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupContract from '../../rocketpool/group/group-contract';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
+import NodeContract from '../../rocketpool/node/node-contract';
+import { stallMinipool } from '../_helpers/minipool';
+import { registerNode, createNodeMinipool } from '../_helpers/node';
 import { registerGroup } from './group-scenarios-registration';
 import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
-import { deposit, refundQueuedDeposit } from './group-scenarios-accessor-deposits';
+import { deposit, refundQueuedDeposit, refundStalledMinipoolDeposit } from './group-scenarios-accessor-deposits';
 import { setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
@@ -14,6 +17,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
 
         // Accounts
+        let owner: string;
         let groupOwner: string;
         let depositor: string;
 
@@ -27,6 +31,10 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         let accessor2Address: string;
         let groupAccessorContract: GroupAccessorContract;
 
+        // Node details
+        let nodeOwner: string;
+        let nodeContract: NodeContract;
+
         // Deposit details
         let depositId: string;
 
@@ -36,8 +44,14 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             // Get accounts
             let accounts: string[] = await web3.eth.getAccounts();
+            owner = accounts[0];
             groupOwner = accounts[1];
             depositor = accounts[2];
+
+            // Create node contract
+            let [nodeOwnerAddress, nodeContractAddress] = await registerNode(web3, rp, owner);
+            nodeOwner = nodeOwnerAddress;
+            nodeContract = await rp.node.getContract(nodeContractAddress);
 
         });
 
@@ -94,8 +108,20 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 await refundQueuedDeposit(web3, groupAccessorContract, {durationId: '3m', depositId, from: depositor});
             });
 
-            // :TODO: implement
-            it('Can refund a deposit from a stalled minipool');
+            it('Can refund a deposit from a stalled minipool', async () => {
+
+                // Create minipool
+                let minipoolAddress = await createNodeMinipool(web3, nodeContract, nodeOwner, '3m');
+                let minipoolContract = await rp.pool.getMinipoolContract(minipoolAddress);
+
+                // Deposit to and stall minipool
+                depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
+                await stallMinipool(web3, rp, minipoolAddress, nodeOwner);
+
+                // Refund deposit
+                await refundStalledMinipoolDeposit(web3, groupAccessorContract, {depositId, minipoolAddress, from: depositor});
+
+            });
 
             // :TODO: implement
             it('Can withdraw a deposit from a staking minipool');
