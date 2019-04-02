@@ -6,7 +6,7 @@ import { makeDepositInput } from '../../utils/casper';
 
 
 // Register a node
-export async function registerNode(web3: Web3, rp: RocketPool, owner: string): Promise<[string, string]> {
+export async function registerNode(web3: Web3, rp: RocketPool, {owner}: {owner: string}): Promise<[string, string]> {
     const rocketPoolToken = await rp.contracts.get('rocketPoolToken');
 
     // Node owner and contract addresses
@@ -33,7 +33,7 @@ export async function registerNode(web3: Web3, rp: RocketPool, owner: string): P
 
 
 // Create minipools under a node
-export async function createNodeMinipool(web3: Web3, nodeContract: NodeContract, nodeOwner: string, stakingDurationId: string): Promise<string> {
+export async function createNodeMinipool(web3: Web3, {nodeContract, nodeOwner, stakingDurationId}: {nodeContract: NodeContract, nodeOwner: string, stakingDurationId: string}): Promise<string> {
 
     // Make deposit reservation
     await nodeContract.reserveDeposit(stakingDurationId, makeDepositInput(web3), {from: nodeOwner, gas: 8000000});

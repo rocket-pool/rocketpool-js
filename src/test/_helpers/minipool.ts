@@ -5,7 +5,7 @@ import GroupAccessorContract from '../../rocketpool/group/group-accessor-contrac
 
 
 // Stall a minipool
-export async function stallMinipool(web3: Web3, rp: RocketPool, minipoolAddress: string, fromAddress: string) {
+export async function stallMinipool(web3: Web3, rp: RocketPool, {minipoolAddress, fromAddress}: {minipoolAddress: string, fromAddress: string}) {
 
     // Get minipool timeout time
     let minipoolTimeout = await rp.settings.minipool.getMinipoolTimeout();
@@ -32,7 +32,7 @@ export async function stallMinipool(web3: Web3, rp: RocketPool, minipoolAddress:
 
 
 // Make a single minipool begin staking
-export async function stakeSingleMinipool(rp: RocketPool, depositorContract: GroupAccessorContract, depositor: string, stakingDurationId: string) {
+export async function stakeSingleMinipool(rp: RocketPool, {depositorContract, depositor, stakingDurationId}: {depositorContract: GroupAccessorContract, depositor: string, stakingDurationId: string}) {
 
     // Get deposit settings
     let chunkSize = await rp.settings.deposit.getDepositChunkSize();
@@ -55,7 +55,7 @@ export async function stakeSingleMinipool(rp: RocketPool, depositorContract: Gro
 
 
 // Make minipool withdraw with balance
-export async function withdrawMinipool(rp: RocketPool, minipoolAddress: string, balance: string, nodeOperator: string, owner: string) {
+export async function withdrawMinipool(rp: RocketPool, {minipoolAddress, balance, nodeOperator, owner}: {minipoolAddress: string, balance: string, nodeOperator: string, owner: string}) {
     const rocketNodeWatchtower = await rp.contracts.get('rocketNodeWatchtower');
     const rocketAdmin = await rp.contracts.get('rocketAdmin');
 
