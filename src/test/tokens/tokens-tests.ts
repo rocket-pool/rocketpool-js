@@ -2,7 +2,15 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
+import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
+import NodeContract from '../../rocketpool/node/node-contract';
+import { deposit, withdrawStakingMinipoolDeposit, clearDeposits } from '../_helpers/deposit';
+import { registerGroup, createGroupAccessor } from '../_helpers/group';
+import { stakeSingleMinipool } from '../_helpers/minipool';
+import { registerNode, createNodeMinipool } from '../_helpers/node';
+import { seedRpbContract } from '../_helpers/tokens';
 import { transferRpl, approveRplTransfer, transferRplFrom } from './tokens-scenarios-rpl';
+import { burnRpbForEth } from './tokens-scenarios-rpb';
 
 // Tests
 export default function runTokensTests(web3: Web3, rp: RocketPool): void {
@@ -11,9 +19,19 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
 
         // Accounts
         let owner: string;
+        let groupOwner: string;
         let user1: string;
         let user2: string;
         let user3: string;
+
+        // Group details
+        let groupName: string;
+        let groupId: string;
+        let groupAccessorContract: GroupAccessorContract;
+
+        // Node details
+        let nodeOwner: string;
+        let nodeContract: NodeContract;
 
 
         // Setup
@@ -22,13 +40,24 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
             // Get accounts
             let accounts: string[] = await web3.eth.getAccounts();
             owner = accounts[0];
-            user1 = accounts[1];
-            user2 = accounts[2];
-            user3 = accounts[3];
+            groupOwner = accounts[1];
+            user1 = accounts[2];
+            user2 = accounts[3];
+            user3 = accounts[4];
 
             // Mint tokens
             let rocketPoolToken = await rp.contracts.get('rocketPoolToken');
             await rocketPoolToken.methods.mint(user1, web3.utils.toWei('2', 'ether')).send({from: owner, gas: 8000000});
+
+            // Create group & accessor
+            [groupName, groupId] = await registerGroup(rp, {groupOwner});
+            let groupAccessorAddress = await createGroupAccessor(rp, {groupId, groupOwner});
+            groupAccessorContract = await rp.group.getAccessorContract(groupAccessorAddress);
+
+            // Create node contract
+            let [nodeOwnerAddress, nodeContractAddress] = await registerNode(web3, rp, {owner});
+            nodeOwner = nodeOwnerAddress;
+            nodeContract = await rp.node.getContract(nodeContractAddress);
 
         });
 
@@ -54,8 +83,23 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
         // RPB token
         describe('RPB', (): void => {
 
-            // :TODO: implement
-            it('Can burn RPB for ETH');
+            it('Can burn RPB for ETH', async () => {
+
+                // Create minipool, deposit to, and stake
+                let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
+                let depositId = await deposit(rp, {depositorContract: groupAccessorContract, groupId, stakingDurationId: '3m', from: user1, value: web3.utils.toWei('4', 'ether')});
+                await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor: user1, stakingDurationId: '3m'});
+
+                // Withdraw deposit and clear deposit queue
+                await withdrawStakingMinipoolDeposit({withdrawerContract: groupAccessorContract, depositId, minipoolAddress, weiAmount: web3.utils.toWei('4', 'ether'), from: user1});
+                await clearDeposits(rp, {depositorContract: groupAccessorContract, groupId, userId: user1, stakingDurationId: '3m'});
+
+                // Burn RPB for ETH
+                let rpbBalance = await rp.tokens.rpb.balanceOf(user1);
+                await seedRpbContract(web3, rp, {from: owner, value: rpbBalance});
+                await burnRpbForEth(web3, rp, {from: user1, amountWei: rpbBalance});
+
+            });
 
         });
 
