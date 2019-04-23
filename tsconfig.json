@@ -4,6 +4,9 @@
         "sourceMap": true,
         "strict": true,
         "esModuleInterop": true,
-        "resolveJsonModule": true,
-    }
+        "outFile": "dist/rocketpool.js",
+    },
+    "files": [
+    	"src/rocketpool/rocketpool.ts",
+    ],
 }
