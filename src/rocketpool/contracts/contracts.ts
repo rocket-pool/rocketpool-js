@@ -2,8 +2,7 @@
 import Web3 from 'web3';
 import { ABIDefinition } from 'web3/eth/abi';
 import Contract from 'web3/eth/contract';
-import RocketStorage from '../../contracts/RocketStorage.json';
-import { decodeAbi } from '../../utils/contract';
+import { ContractArtifact, decodeAbi } from '../../utils/contract';
 
 
 /**
@@ -19,13 +18,10 @@ class Contracts {
 
 
     // Constructor
-    public constructor(private web3: Web3) {
+    public constructor(private web3: Web3, private RocketStorage: ContractArtifact) {
 
         // Initialise rocketStorage contract promise
-        this.rocketStorage = this.web3.eth.net.getId().then((networkId: number): Contract => new this.web3.eth.Contract(
-            (RocketStorage.abi as ABIDefinition[]),
-            (RocketStorage.networks as {[id: string]: {address: string}})[networkId].address
-        ));
+        this.rocketStorage = this.web3.eth.net.getId().then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
 
     }
 

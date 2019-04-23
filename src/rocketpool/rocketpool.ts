@@ -1,5 +1,6 @@
 // Imports
 import Web3 from 'web3';
+import { ContractArtifact } from '../utils/contract';
 import Contracts from './contracts/contracts';
 import Deposit from './deposit/deposit';
 import Group from './group/group';
@@ -30,10 +31,10 @@ class RocketPool {
 
 
     // Constructor
-    public constructor(public readonly web3: Web3) {
+    public constructor(public readonly web3: Web3, public readonly RocketStorage: ContractArtifact) {
 
         // Initialise services
-        this.contracts = new Contracts(web3);
+        this.contracts = new Contracts(web3, RocketStorage);
         this.deposit = new Deposit(web3, this.contracts);
         this.group = new Group(web3, this.contracts);
         this.node = new Node(web3, this.contracts);
