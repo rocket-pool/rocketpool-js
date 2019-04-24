@@ -2,9 +2,9 @@
   "name": "rocketpool",
   "version": "1.0.0",
   "description": "A javascript library for interacting with the Rocket Pool network",
-  "main": "dist/index.js",
+  "main": "dist/rocketpool/rocketpool.js",
   "scripts": {
-    "build": "tsc --module amd",
+    "build": "tsc",
     "test": "mocha --require ts-node/register --timeout 20000 src/test/index.ts"
   },
   "repository": {
