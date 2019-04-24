@@ -1020,22 +1020,21 @@ define("rocketpool/settings/node", ["require", "exports"], function (require, ex
     // Exports
     exports.default = NodeSettings;
 });
-define("rocketpool/tokens/ERC20", ["require", "exports", "utils/transaction"], function (require, exports, transaction_6) {
+define("rocketpool/tokens/rpb", ["require", "exports", "utils/transaction"], function (require, exports, transaction_6) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     /**
-     * ERC20 token contract
+     * Rocket Pool RPB token manager
      */
-    class ERC20 {
+    class RPB {
         // Constructor
-        constructor(web3, contracts, tokenContractName) {
+        constructor(web3, contracts) {
             this.web3 = web3;
             this.contracts = contracts;
-            this.tokenContractName = tokenContractName;
         }
         // Contract accessor
         get tokenContract() {
-            return this.contracts.get(this.tokenContractName);
+            return this.contracts.get('rocketBETHToken');
         }
         /**
          * Getters
@@ -1073,46 +1072,67 @@ define("rocketpool/tokens/ERC20", ["require", "exports", "utils/transaction"], f
                 return transaction_6.handleConfirmations(tokenContract.methods.transferFrom(from, to, amountWei).send(options), onConfirmation);
             });
         }
-    }
-    // Exports
-    exports.default = ERC20;
-});
-define("rocketpool/tokens/rpb", ["require", "exports", "utils/transaction", "rocketpool/tokens/ERC20"], function (require, exports, transaction_7, ERC20_1) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    ERC20_1 = __importDefault(ERC20_1);
-    /**
-     * Rocket Pool RPB token manager
-     */
-    class RPB extends ERC20_1.default {
-        // Constructor
-        constructor(web3, contracts) {
-            super(web3, contracts, 'rocketBETHToken');
-        }
-        /**
-         * Mutators - Public
-         */
         // Burn RPB for ETH
         burnForEth(amountWei, options, onConfirmation) {
             return this.tokenContract.then((tokenContract) => {
-                return transaction_7.handleConfirmations(tokenContract.methods.burnTokensForEther(amountWei).send(options), onConfirmation);
+                return transaction_6.handleConfirmations(tokenContract.methods.burnTokensForEther(amountWei).send(options), onConfirmation);
             });
         }
     }
     // Exports
     exports.default = RPB;
 });
-define("rocketpool/tokens/rpl", ["require", "exports", "rocketpool/tokens/ERC20"], function (require, exports, ERC20_2) {
+define("rocketpool/tokens/rpl", ["require", "exports", "utils/transaction"], function (require, exports, transaction_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    ERC20_2 = __importDefault(ERC20_2);
     /**
      * Rocket Pool RPL token manager
      */
-    class RPL extends ERC20_2.default {
+    class RPL {
         // Constructor
         constructor(web3, contracts) {
-            super(web3, contracts, 'rocketPoolToken');
+            this.web3 = web3;
+            this.contracts = contracts;
+        }
+        // Contract accessor
+        get tokenContract() {
+            return this.contracts.get('rocketPoolToken');
+        }
+        /**
+         * Getters
+         */
+        // Get the token balance of an account
+        balanceOf(account) {
+            return this.tokenContract.then((tokenContract) => {
+                return tokenContract.methods.balanceOf(account).call();
+            });
+        }
+        // Get the allowance of a spender for an account
+        allowance(account, spender) {
+            return this.tokenContract.then((tokenContract) => {
+                return tokenContract.methods.allowance(account, spender).call();
+            });
+        }
+        /**
+         * Mutators - Public
+         */
+        // Transfer tokens to a recipient
+        transfer(to, amountWei, options, onConfirmation) {
+            return this.tokenContract.then((tokenContract) => {
+                return transaction_7.handleConfirmations(tokenContract.methods.transfer(to, amountWei).send(options), onConfirmation);
+            });
+        }
+        // Approve an allowance for a spender
+        approve(spender, amountWei, options, onConfirmation) {
+            return this.tokenContract.then((tokenContract) => {
+                return transaction_7.handleConfirmations(tokenContract.methods.approve(spender, amountWei).send(options), onConfirmation);
+            });
+        }
+        // Transfer tokens from an account to a recipient if approved
+        transferFrom(from, to, amountWei, options, onConfirmation) {
+            return this.tokenContract.then((tokenContract) => {
+                return transaction_7.handleConfirmations(tokenContract.methods.transferFrom(from, to, amountWei).send(options), onConfirmation);
+            });
         }
     }
     // Exports
