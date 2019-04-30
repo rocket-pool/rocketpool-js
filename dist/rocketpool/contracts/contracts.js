@@ -55,7 +55,7 @@ class Contracts {
                 let lastUpgrade = upgradeEvents.find((event) => event.returnValues._newContractAddress.toLowerCase() == currentAddress.toLowerCase());
                 currentAddress = lastUpgrade ? lastUpgrade.returnValues._oldContractAddress : null;
             }
-            return contractAddresses.reverse();
+            return contractAddresses.reverse(); // Oldest contract versions first
         })
             .then((addresses) => Promise.all(addresses.map((address) => this.make(name, address))))
             .then((contracts) => new ContractVersionSet(contracts));
