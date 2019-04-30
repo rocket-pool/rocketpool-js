@@ -2,6 +2,8 @@
 import Web3 from 'web3';
 import { ABIDefinition } from 'web3/eth/abi';
 import Contract from 'web3/eth/contract';
+import { EventLog } from 'web3/types';
+import ContractVersionSet from './contract-version-set';
 import { ContractArtifact, decodeAbi } from '../../utils/contract';
 
 
@@ -68,6 +70,28 @@ class Contracts {
         // Return contract promise
         return this.contracts[name];
 
+    }
+
+
+    // Load all versions of a contract by name
+    public versions(name: string): Promise<ContractVersionSet> {
+        return Promise.all([
+            this.rocketStorage.then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call()),
+            this.get('rocketUpgrade').then((rocketUpgrade: Contract): Promise<EventLog[]> => rocketUpgrade.getPastEvents('ContractUpgraded', {fromBlock: 0})),
+        ]).then(([currentAddress, upgradeEvents]: [string, EventLog[]]): string[] => {
+
+            // Get all addresses of the contract versions
+            let contractAddresses: string[] = [];
+            while (currentAddress) {
+                contractAddresses.push(currentAddress);
+                let lastUpgrade: EventLog | undefined = upgradeEvents.find((event: EventLog) => event.returnValues._newContractAddress.toLowerCase() == currentAddress.toLowerCase());
+                currentAddress = lastUpgrade ? lastUpgrade.returnValues._oldContractAddress : null;
+            }
+            return contractAddresses.reverse();
+
+        })
+        .then((addresses: string[]): Promise<Contract[]> => Promise.all(addresses.map((address: string): Promise<Contract> => this.make(name, address))))
+        .then((contracts: Contract[]): ContractVersionSet => new ContractVersionSet(contracts));
     }
 
 
