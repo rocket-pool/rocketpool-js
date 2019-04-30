@@ -1,3 +1,4 @@
+import ContractVersionSet from './contract-version-set';
 import { decodeAbi } from '../../utils/contract';
 /**
  * Rocket Pool contract manager
@@ -40,6 +41,24 @@ class Contracts {
         ])).then(([address, abi]) => new this.web3.eth.Contract(abi, address));
         // Return contract promise
         return this.contracts[name];
+    }
+    // Load all versions of a contract by name
+    versions(name) {
+        return Promise.all([
+            this.rocketStorage.then((rocketStorage) => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call()),
+            this.get('rocketUpgrade').then((rocketUpgrade) => rocketUpgrade.getPastEvents('ContractUpgraded', { fromBlock: 0 })),
+        ]).then(([currentAddress, upgradeEvents]) => {
+            // Get all addresses of the contract versions
+            let contractAddresses = [];
+            while (currentAddress) {
+                contractAddresses.push(currentAddress);
+                let lastUpgrade = upgradeEvents.find((event) => event.returnValues._newContractAddress.toLowerCase() == currentAddress.toLowerCase());
+                currentAddress = lastUpgrade ? lastUpgrade.returnValues._oldContractAddress : null;
+            }
+            return contractAddresses.reverse();
+        })
+            .then((addresses) => Promise.all(addresses.map((address) => this.make(name, address))))
+            .then((contracts) => new ContractVersionSet(contracts));
     }
     // Create a new contract instance with the specified ABI name and address
     make(name, address) {
