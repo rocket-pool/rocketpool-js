@@ -52,9 +52,9 @@ export default function runDepositTests(web3: Web3, rp: RocketPool): void {
                 // Check queued deposits
                 let deposits = await rp.deposit.getQueuedDeposits(groupId, depositor, '3m');
                 assert.equal(deposits.length, 3, 'Queued deposit count is incorrect');
-                assert.equal(parseInt(deposits[0].balance), parseInt(web3.utils.toWei('4', 'ether')), 'Incorrect queued deposit balance');
-                assert.equal(parseInt(deposits[1].balance), parseInt(web3.utils.toWei('5', 'ether')), 'Incorrect queued deposit balance');
-                assert.equal(parseInt(deposits[2].balance), parseInt(web3.utils.toWei('6', 'ether')), 'Incorrect queued deposit balance');
+                assert.equal(parseInt(deposits[0].queuedAmount), parseInt(web3.utils.toWei('4', 'ether')), 'Incorrect queued deposit balance');
+                assert.equal(parseInt(deposits[1].queuedAmount), parseInt(web3.utils.toWei('5', 'ether')), 'Incorrect queued deposit balance');
+                assert.equal(parseInt(deposits[2].queuedAmount), parseInt(web3.utils.toWei('6', 'ether')), 'Incorrect queued deposit balance');
 
                 // Clear deposits
                 await clearDeposits(rp, {depositorContract: groupAccessorContract, groupId, userId: depositor, stakingDurationId: '3m'});

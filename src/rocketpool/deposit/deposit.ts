@@ -7,7 +7,7 @@ import Contracts from '../contracts/contracts';
 // Queued deposis details
 export interface QueuedDeposit {
     id: string;
-    balance: string;
+    queuedAmount: string;
 }
 
 
@@ -22,8 +22,8 @@ class Deposit {
 
 
     // Contract accessors
-    private get rocketDepositAPI(): Promise<Contract> {
-        return this.contracts.get('rocketDepositAPI');
+    private get rocketDepositIndex(): Promise<Contract> {
+        return this.contracts.get('rocketDepositIndex');
     }
 
 
@@ -42,35 +42,35 @@ class Deposit {
             return Promise.all([...Array(depositIds.length).keys()].map((di: number): Promise<[string, string]> => {
                 return Promise.all([
                     depositIds[di],
-                    this.getQueuedDepositBalance(depositIds[di]),
+                    this.getDepositQueuedAmount(depositIds[di]),
                 ]);
             }));
         }).then((deposits: [string, string][]): QueuedDeposit[] => {
-            return deposits.map(([id, balance]: [string, string]): QueuedDeposit => ({id, balance}));
+            return deposits.map(([id, queuedAmount]: [string, string]): QueuedDeposit => ({id, queuedAmount}));
         });
     }
 
 
     // Get a user's queued deposit count
     public getQueuedDepositCount(groupId: string, userId: string, durationId: string): Promise<number> {
-        return this.rocketDepositAPI.then((rocketDepositAPI: Contract): Promise<string> => {
-            return rocketDepositAPI.methods.getUserQueuedDepositCount(groupId, userId, durationId).call();
+        return this.rocketDepositIndex.then((rocketDepositIndex: Contract): Promise<string> => {
+            return rocketDepositIndex.methods.getUserQueuedDepositCount(groupId, userId, durationId).call();
         }).then((value: string): number => parseInt(value));
     }
 
 
     // Get a user's queued deposit ID by index
     public getQueuedDepositAt(groupId: string, userId: string, durationId: string, index: number): Promise<string> {
-        return this.rocketDepositAPI.then((rocketDepositAPI: Contract): Promise<string> => {
-            return rocketDepositAPI.methods.getUserQueuedDepositAt(groupId, userId, durationId, index).call();
+        return this.rocketDepositIndex.then((rocketDepositIndex: Contract): Promise<string> => {
+            return rocketDepositIndex.methods.getUserQueuedDepositAt(groupId, userId, durationId, index).call();
         });
     }
 
 
-    // Get the balance of a user's queued deposit by ID
-    public getQueuedDepositBalance(depositId: string): Promise<string> {
-        return this.rocketDepositAPI.then((rocketDepositAPI: Contract): Promise<string> => {
-            return rocketDepositAPI.methods.getUserQueuedDepositBalance(depositId).call();
+    // Get the queued amount of a user deposit
+    public getDepositQueuedAmount(depositId: string): Promise<string> {
+        return this.rocketDepositIndex.then((rocketDepositIndex: Contract): Promise<string> => {
+            return rocketDepositIndex.methods.getUserDepositQueuedAmount(depositId).call();
         });
     }
 
