@@ -13,6 +13,7 @@ export interface DepositDetails {
     refundedAmount: string;
     withdrawnAmount: string;
     pools: DepositPoolDetails[];
+    backupAddress: string | null;
 }
 
 
@@ -77,8 +78,9 @@ class Deposit {
             this.getDepositRefundedAmount(depositId),
             this.getDepositWithdrawnAmount(depositId),
             this.getDepositStakingPools(depositId),
-        ]).then(([totalAmount, queuedAmount, stakingAmount, refundedAmount, withdrawnAmount, pools]: [string, string, string, string, string, DepositPoolDetails[]]): DepositDetails => {
-            return {id: depositId, totalAmount, queuedAmount, stakingAmount, refundedAmount, withdrawnAmount, pools};
+            this.getDepositBackupAddress(depositId),
+        ]).then(([totalAmount, queuedAmount, stakingAmount, refundedAmount, withdrawnAmount, pools, backupAddress]: [string, string, string, string, string, DepositPoolDetails[], string | null]): DepositDetails => {
+            return {id: depositId, totalAmount, queuedAmount, stakingAmount, refundedAmount, withdrawnAmount, pools, backupAddress};
         });
     }
 
