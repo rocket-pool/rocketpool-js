@@ -26,6 +26,9 @@ export default function runPoolTests(web3: Web3, rp: RocketPool): void {
         let minipool2Address: string;
         let minipool3Address: string;
 
+        // Deposit details
+        let depositId: string;
+
 
         // Setup
         before(async () => {
@@ -53,6 +56,10 @@ export default function runPoolTests(web3: Web3, rp: RocketPool): void {
             // Stake minipool
             await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
 
+            // Get ID of last deposit made to stake minipool
+            let depositCount = await rp.deposit.getDepositCount(groupId, depositor, '3m');
+            depositId = await rp.deposit.getDepositAt(groupId, depositor, '3m', depositCount - 1);
+
             // Clear deposit queue
             await clearDeposits(rp, {depositorContract: groupAccessorContract, groupId, userId: depositor, stakingDurationId: '3m'});
 
@@ -77,6 +84,8 @@ export default function runPoolTests(web3: Web3, rp: RocketPool): void {
                 let minipool = await rp.pool.getMinipoolContract(minipool1Address);
                 let nodeDetails = await minipool.getNodeDetails();
                 let statusDetails = await minipool.getStatusDetails();
+                let depositCount = await minipool.getDepositCount();
+                let depositDetails = await minipool.getDepositDetails(depositId);
             });
 
         });
