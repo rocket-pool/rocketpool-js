@@ -158,6 +158,10 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             });
 
+            it('Can get a user\'s deposits', async () => {
+                let deposits = await rp.deposit.getDeposits(groupId, depositor, '3m');
+            });
+
         });
 
 
