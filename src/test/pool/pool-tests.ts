@@ -77,13 +77,6 @@ export default function runPoolTests(web3: Web3, rp: RocketPool): void {
                 let minipool = await rp.pool.getMinipoolContract(minipool1Address);
                 let nodeDetails = await minipool.getNodeDetails();
                 let statusDetails = await minipool.getStatusDetails();
-                let userDetails = await Promise.all([
-                    minipool.getUserCount(),
-                    minipool.getUserExists(depositor, groupId),
-                    minipool.getUserHasDeposit(depositor, groupId),
-                    minipool.getUserDeposit(depositor, groupId),
-                    minipool.getUserStakingTokensWithdrawn(depositor, groupId),
-                ]);
             });
 
         });

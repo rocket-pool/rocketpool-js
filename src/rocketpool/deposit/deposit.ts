@@ -195,6 +195,14 @@ class Deposit {
     }
 
 
+    // Get the backup address for a user deposit
+    public getDepositBackupAddress(depositId: string): Promise<string | null> {
+        return this.rocketDepositIndex.then((rocketDepositIndex: Contract): Promise<string> => {
+            return rocketDepositIndex.methods.getUserDepositBackupAddress(depositId).call();
+        }).then((value: string): string | null => (value == '0x0000000000000000000000000000000000000000') ? null : value);
+    }
+
+
 }
 
 

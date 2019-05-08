@@ -66,6 +66,15 @@ class GroupAccessorContract {
     }
 
 
+    // Set a deposit backup withdrawal address
+    public setDepositBackupAddress(depositId: string, backupAddress: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.setDepositBackupWithdrawalAddress(depositId, backupAddress).send(options),
+            onConfirmation
+        );
+    }
+
+
 }
 
 

@@ -15,6 +15,16 @@ export interface NodeDetails {
 }
 
 
+// Minipool deposit details
+export interface DepositDetails {
+    exists: boolean;
+    userId: string;
+    groupId: string;
+    balance: string;
+    stakingTokensWithdrawn: string;
+}
+
+
 // Minipool status details
 export interface StatusDetails {
     status: number;
@@ -103,37 +113,57 @@ class MinipoolContract {
 
 
     /**
-     * Getters - Users
+     * Getters - Deposits
      */
 
 
-    // Get the number of users in the minipool
-    public getUserCount(): Promise<number> {
-        return this.contract.methods.getUserCount().call().then((value: string): number => parseInt(value));
+    // Get the number of deposits in the minipool
+    public getDepositCount(): Promise<number> {
+        return this.contract.methods.getDepositCount().call().then((value: string): number => parseInt(value));
     }
 
 
-    // Get whether a user exists in the minipool
-    public getUserExists(userId: string, groupId: string): Promise<boolean> {
-        return this.contract.methods.getUserExists(userId, groupId).call();
+    // Get all deposit details
+    public getDepositDetails(depositId: string): Promise<DepositDetails> {
+        return Promise.all([
+            this.getDepositExists(depositId),
+            this.getDepositUserID(depositId),
+            this.getDepositGroupID(depositId),
+            this.getDepositBalance(depositId),
+            this.getDepositStakingTokensWithdrawn(depositId),
+        ]).then(([exists, userId, groupId, balance, stakingTokensWithdrawn]: [boolean, string, string, string, string]): DepositDetails => {
+            return {exists, userId, groupId, balance, stakingTokensWithdrawn};
+        });
     }
 
 
-    // Get whether a user has a deposit in the minipool
-    public getUserHasDeposit(userId: string, groupId: string): Promise<boolean> {
-        return this.contract.methods.getUserHasDeposit(userId, groupId).call();
+    // Get whether a deposit exists in the minipool
+    public getDepositExists(depositId: string): Promise<boolean> {
+        return this.contract.methods.getDepositExists(depositId).call();
     }
 
 
-    // Get a user's deposit amount in the minipool in wei
-    public getUserDeposit(userId: string, groupId: string): Promise<string> {
-        return this.contract.methods.getUserDeposit(userId, groupId).call();
+    // Get the user ID of a deposit
+    public getDepositUserID(depositId: string): Promise<string> {
+        return this.contract.methods.getDepositUserID(depositId).call();
     }
 
 
-    // Get the amount of RPB tokens withdrawn by a user while staking in wei
-    public getUserStakingTokensWithdrawn(userId: string, groupId: string): Promise<string> {
-        return this.contract.methods.getUserStakingTokensWithdrawn(userId, groupId).call();
+    // Get the group ID of a deposit
+    public getDepositGroupID(depositId: string): Promise<string> {
+        return this.contract.methods.getDepositGroupID(depositId).call();
+    }
+
+
+    // Get the current balance of a deposit
+    public getDepositBalance(depositId: string): Promise<string> {
+        return this.contract.methods.getDepositBalance(depositId).call();
+    }
+
+
+    // Get the amount of RPB tokens withdrawn from a deposit while staking in wei
+    public getDepositStakingTokensWithdrawn(depositId: string): Promise<string> {
+        return this.contract.methods.getDepositStakingTokensWithdrawn(depositId).call();
     }
 
 
