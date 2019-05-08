@@ -48,3 +48,11 @@ export async function withdrawMinipoolDeposit(rp: RocketPool, groupAccessorContr
     assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not withdrawn successfully');
 }
 
+
+// Set a deposit backup withdrawal address
+export async function setDepositBackupAddress(rp: RocketPool, groupAccessorContract: GroupAccessorContract, {depositId, backupAddress, from}: {depositId: string, backupAddress: string, from: string}) {
+    await groupAccessorContract.setDepositBackupAddress(depositId, backupAddress, {from, gas: 8000000});
+    let depositBackupAddress = (await rp.deposit.getDepositBackupAddress(depositId) || '');
+    assert.equal(depositBackupAddress.toLowerCase(), backupAddress.toLowerCase(), 'Deposit backup address was not set successfully');
+}
+

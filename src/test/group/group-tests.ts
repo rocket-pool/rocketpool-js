@@ -9,7 +9,7 @@ import { stallMinipool, stakeSingleMinipool, withdrawMinipool } from '../_helper
 import { registerNode, createNodeMinipool } from '../_helpers/node';
 import { registerGroup } from './group-scenarios-registration';
 import { createAccessor, addDepositor, removeDepositor, addWithdrawer, removeWithdrawer } from './group-scenarios-accessors';
-import { deposit, refundQueuedDeposit, refundStalledMinipoolDeposit, withdrawStakingMinipoolDeposit, withdrawMinipoolDeposit } from './group-scenarios-accessor-deposits';
+import { deposit, refundQueuedDeposit, refundStalledMinipoolDeposit, withdrawStakingMinipoolDeposit, withdrawMinipoolDeposit, setDepositBackupAddress } from './group-scenarios-accessor-deposits';
 import { setGroupFee, setGroupFeeAddress } from './group-scenarios-fees';
 
 // Tests
@@ -21,6 +21,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
         let owner: string;
         let groupOwner: string;
         let depositor: string;
+        let depositorBackup: string;
 
         // Group details
         let groupName: string;
@@ -48,6 +49,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
             owner = accounts[0];
             groupOwner = accounts[1];
             depositor = accounts[2];
+            depositorBackup = accounts[3];
 
             // Create node contract
             let [nodeOwnerAddress, nodeContractAddress] = await registerNode(web3, rp, {owner});
@@ -103,6 +105,10 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             it('Can deposit through the group depositor', async () => {
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('32', 'ether')});
+            });
+
+            it('Can set a backup withdrawal address for a deposit', async () => {
+                await setDepositBackupAddress(rp, groupAccessorContract, {depositId, backupAddress: depositorBackup, from: depositor});
             });
 
             it('Can refund a queued deposit', async () => {
