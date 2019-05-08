@@ -53,27 +53,43 @@ class MinipoolContract {
         return this.contract.methods.getNodeBalance().call();
     }
     /**
-     * Getters - Users
+     * Getters - Deposits
      */
-    // Get the number of users in the minipool
-    getUserCount() {
-        return this.contract.methods.getUserCount().call().then((value) => parseInt(value));
+    // Get the number of deposits in the minipool
+    getDepositCount() {
+        return this.contract.methods.getDepositCount().call().then((value) => parseInt(value));
     }
-    // Get whether a user exists in the minipool
-    getUserExists(userId, groupId) {
-        return this.contract.methods.getUserExists(userId, groupId).call();
+    // Get all deposit details
+    getDepositDetails(depositId) {
+        return Promise.all([
+            this.getDepositExists(depositId),
+            this.getDepositUserID(depositId),
+            this.getDepositGroupID(depositId),
+            this.getDepositBalance(depositId),
+            this.getDepositStakingTokensWithdrawn(depositId),
+        ]).then(([exists, userId, groupId, balance, stakingTokensWithdrawn]) => {
+            return { exists, userId, groupId, balance, stakingTokensWithdrawn };
+        });
     }
-    // Get whether a user has a deposit in the minipool
-    getUserHasDeposit(userId, groupId) {
-        return this.contract.methods.getUserHasDeposit(userId, groupId).call();
+    // Get whether a deposit exists in the minipool
+    getDepositExists(depositId) {
+        return this.contract.methods.getDepositExists(depositId).call();
     }
-    // Get a user's deposit amount in the minipool in wei
-    getUserDeposit(userId, groupId) {
-        return this.contract.methods.getUserDeposit(userId, groupId).call();
+    // Get the user ID of a deposit
+    getDepositUserID(depositId) {
+        return this.contract.methods.getDepositUserID(depositId).call();
     }
-    // Get the amount of RPB tokens withdrawn by a user while staking in wei
-    getUserStakingTokensWithdrawn(userId, groupId) {
-        return this.contract.methods.getUserStakingTokensWithdrawn(userId, groupId).call();
+    // Get the group ID of a deposit
+    getDepositGroupID(depositId) {
+        return this.contract.methods.getDepositGroupID(depositId).call();
+    }
+    // Get the current balance of a deposit
+    getDepositBalance(depositId) {
+        return this.contract.methods.getDepositBalance(depositId).call();
+    }
+    // Get the amount of RPB tokens withdrawn from a deposit while staking in wei
+    getDepositStakingTokensWithdrawn(depositId) {
+        return this.contract.methods.getDepositStakingTokensWithdrawn(depositId).call();
     }
     /**
      * Getters - Status

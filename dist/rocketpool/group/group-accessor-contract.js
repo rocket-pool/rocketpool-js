@@ -31,6 +31,10 @@ class GroupAccessorContract {
     withdrawMinipoolDeposit(depositId, minipoolAddress, options, onConfirmation) {
         return handleConfirmations(this.contract.methods.withdrawDepositMinipool(depositId, minipoolAddress).send(options), onConfirmation);
     }
+    // Set a deposit backup withdrawal address
+    setDepositBackupAddress(depositId, backupAddress, options, onConfirmation) {
+        return handleConfirmations(this.contract.methods.setDepositBackupWithdrawalAddress(depositId, backupAddress).send(options), onConfirmation);
+    }
 }
 // Exports
 export default GroupAccessorContract;
