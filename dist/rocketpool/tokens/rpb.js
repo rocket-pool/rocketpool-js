@@ -1,23 +1,56 @@
-import { handleConfirmations } from '../../utils/transaction';
-import ERC20 from './ERC20';
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _transaction = require('../../utils/transaction');
+
+var _ERC2 = require('./ERC20');
+
+var _ERC3 = _interopRequireDefault(_ERC2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 /**
  * Rocket Pool RPB token manager
  */
-class RPB extends ERC20 {
+var RPB = function (_ERC) {
+    _inherits(RPB, _ERC);
+
     // Constructor
-    constructor(web3, contracts) {
-        super(web3, contracts, 'rocketBETHToken');
+    function RPB(web3, contracts) {
+        _classCallCheck(this, RPB);
+
+        return _possibleConstructorReturn(this, (RPB.__proto__ || Object.getPrototypeOf(RPB)).call(this, web3, contracts, 'rocketBETHToken'));
     }
     /**
      * Mutators - Public
      */
     // Burn RPB for ETH
-    burnForEth(amountWei, options, onConfirmation) {
-        return this.tokenContract.then((tokenContract) => {
-            return handleConfirmations(tokenContract.methods.burnTokensForEther(amountWei).send(options), onConfirmation);
-        });
-    }
-}
+
+
+    _createClass(RPB, [{
+        key: 'burnForEth',
+        value: function burnForEth(amountWei, options, onConfirmation) {
+            return this.tokenContract.then(function (tokenContract) {
+                return (0, _transaction.handleConfirmations)(tokenContract.methods.burnTokensForEther(amountWei).send(options), onConfirmation);
+            });
+        }
+    }]);
+
+    return RPB;
+}(_ERC3.default);
 // Exports
-export default RPB;
+
+
+exports.default = RPB;
 //# sourceMappingURL=rpb.js.map
