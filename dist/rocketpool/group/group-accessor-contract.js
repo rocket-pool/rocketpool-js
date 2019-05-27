@@ -37,28 +37,28 @@ var GroupAccessorContract = function () {
     }, {
         key: 'refundQueuedDeposit',
         value: function refundQueuedDeposit(durationId, depositId, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.refundDepositQueued(durationId, depositId).send(options), onConfirmation);
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositRefundQueued(durationId, depositId).send(options), onConfirmation);
         }
         // Refund a deposit from a stalled minipool
 
     }, {
         key: 'refundStalledMinipoolDeposit',
         value: function refundStalledMinipoolDeposit(depositId, minipoolAddress, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.refundDepositMinipoolStalled(depositId, minipoolAddress).send(options), onConfirmation);
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositRefundMinipoolStalled(depositId, minipoolAddress).send(options), onConfirmation);
         }
         // Withdraw a deposit from a staking minipool
 
     }, {
         key: 'withdrawStakingMinipoolDeposit',
         value: function withdrawStakingMinipoolDeposit(depositId, minipoolAddress, weiAmount, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.withdrawDepositMinipoolStaking(depositId, minipoolAddress, weiAmount).send(options), onConfirmation);
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositWithdrawMinipoolStaking(depositId, minipoolAddress, weiAmount).send(options), onConfirmation);
         }
         // Withdraw a deposit from a withdrawn minipool
 
     }, {
         key: 'withdrawMinipoolDeposit',
         value: function withdrawMinipoolDeposit(depositId, minipoolAddress, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.withdrawDepositMinipool(depositId, minipoolAddress).send(options), onConfirmation);
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositWithdrawMinipool(depositId, minipoolAddress).send(options), onConfirmation);
         }
         // Set a deposit backup withdrawal address
 

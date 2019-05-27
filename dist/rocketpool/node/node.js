@@ -70,6 +70,15 @@ var Node = function () {
                 return [ret[0], parseFloat(_this2.web3.utils.fromWei(ret[1], 'ether'))];
             });
         }
+        // Get the trusted status of a node
+
+    }, {
+        key: 'getTrusted',
+        value: function getTrusted(nodeOwner) {
+            return this.rocketNodeAPI.then(function (rocketNodeAPI) {
+                return rocketNodeAPI.methods.getTrusted(nodeOwner).call();
+            });
+        }
         // Get the timezone location of a node
 
     }, {
