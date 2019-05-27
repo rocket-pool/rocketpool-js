@@ -60,7 +60,7 @@ export async function withdrawMinipool(rp: RocketPool, {minipoolAddress, balance
     const rocketAdmin = await rp.contracts.get('rocketAdmin');
 
     // Set node status
-    let nodeTrusted = await rocketAdmin.methods.getNodeTrusted(nodeOperator).call();
+    let nodeTrusted = await rp.node.getTrusted(nodeOperator);
     if (!nodeTrusted) await rocketAdmin.methods.setNodeTrusted(nodeOperator, true).send({from: owner, gas: 8000000});
 
     // Logout & withdraw minipool

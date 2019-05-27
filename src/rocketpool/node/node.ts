@@ -56,6 +56,14 @@ class Node {
     }
 
 
+    // Get the trusted status of a node
+    public getTrusted(nodeOwner: string): Promise<boolean> {
+        return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<boolean> => {
+            return rocketNodeAPI.methods.getTrusted(nodeOwner).call();
+        });
+    }
+
+
     // Get the timezone location of a node
     public getTimezoneLocation(nodeOwner: string): Promise<string> {
         return this.rocketNodeAPI.then((rocketNodeAPI: Contract): Promise<string> => {
