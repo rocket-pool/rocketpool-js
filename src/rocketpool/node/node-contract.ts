@@ -22,7 +22,8 @@ export interface NodeDepositReservation {
     etherRequired: string;
     rplRequired: string;
     durationId: string;
-    depositInput: string;
+    validatorPubkey: string;
+    validatorSignature: string;
 }
 
 
@@ -62,9 +63,10 @@ class NodeContract {
             this.getDepositReservationEthRequired(),
             this.getDepositReservationRplRequired(),
             this.getDepositReservationDurationId(),
-            this.getDepositReservationDepositInput(),
-        ]).then(([created, etherRequired, rplRequired, durationId, depositInput]: [Date, string, string, string, string]): NodeDepositReservation => {
-            return {created, etherRequired, rplRequired, durationId, depositInput};
+            this.getDepositReservationValidatorPubkey(),
+            this.getDepositReservationValidatorSignature(),
+        ]).then(([created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature]: [Date, string, string, string, string, string]): NodeDepositReservation => {
+            return {created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature};
         });
     }
 
@@ -123,9 +125,15 @@ class NodeContract {
     }
 
 
-    // Get the deposit reservation DepositInput data
-    public getDepositReservationDepositInput(): Promise<string> {
-        return this.contract.methods.getDepositReserveDepositInput().call();
+    // Get the deposit reservation validator pubkey
+    public getDepositReservationValidatorPubkey(): Promise<string> {
+        return this.contract.methods.getDepositReserveValidatorPubkey().call();
+    }
+
+
+    // Get the deposit reservation validator signature
+    public getDepositReservationValidatorSignature(): Promise<string> {
+        return this.contract.methods.getDepositReserveValidatorSignature().call();
     }
 
 
@@ -144,9 +152,9 @@ class NodeContract {
 
 
     // Make a deposit reservation
-    public reserveDeposit(durationId: string, depositInput: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public reserveDeposit(durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.depositReserve(durationId, depositInput).send(options),
+            this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature).send(options),
             onConfirmation
         );
     }

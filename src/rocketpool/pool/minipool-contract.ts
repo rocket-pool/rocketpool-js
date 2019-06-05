@@ -32,7 +32,8 @@ export interface StatusDetails {
     statusChangedBlock: number;
     stakingDurationId: string;
     stakingDuration: number;
-    depositInput: string;
+    validatorPubkey: string;
+    validatorSignature: string;
     userDepositCapacity: string;
     userDepositTotal: string;
     stakingUserDepositsWithdrawn: string;
@@ -180,17 +181,18 @@ class MinipoolContract {
             this.getStatusChangedBlock(),
             this.getStakingDurationId(),
             this.getStakingDuration(),
-            this.getDepositInput(),
+            this.getValidatorPubkey(),
+            this.getValidatorSignature(),
             this.getUserDepositCapacity(),
             this.getUserDepositTotal(),
             this.getStakingUserDepositsWithdrawn(),
         ]).then(([
             status, statusChangedTime, statusChangedBlock, stakingDurationId, stakingDuration,
-            depositInput, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
-        ]: [number, Date, number, string, number, string, string, string, string]): StatusDetails => {
+            validatorPubkey, validatorSignature, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
+        ]: [number, Date, number, string, number, string, string, string, string, string]): StatusDetails => {
             return {
                 status, statusChangedTime, statusChangedBlock, stakingDurationId, stakingDuration,
-                depositInput, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
+                validatorPubkey, validatorSignature, userDepositCapacity, userDepositTotal, stakingUserDepositsWithdrawn
             };
         });
     }
@@ -226,9 +228,15 @@ class MinipoolContract {
     }
 
 
-    // Get the minipool's DepositInput data for submission to Casper
-    public getDepositInput(): Promise<string> {
-        return this.contract.methods.getDepositInput().call();
+    // Get the minipool's validator pubkey for submission to Casper
+    public getValidatorPubkey(): Promise<string> {
+        return this.contract.methods.getValidatorPubkey().call();
+    }
+
+
+    // Get the minipool's validator pubkey for submission to Casper
+    public getValidatorSignature(): Promise<string> {
+        return this.contract.methods.getValidatorSignature().call();
     }
 
 
