@@ -43,15 +43,6 @@ var NodeSettings = function () {
                 return rocketNodeSettings.methods.getEtherMin().call();
             });
         }
-        // Get the gas price to be used for node checkins in wei
-
-    }, {
-        key: 'getCheckinGasPrice',
-        value: function getCheckinGasPrice() {
-            return this.rocketNodeSettings.then(function (rocketNodeSettings) {
-                return rocketNodeSettings.methods.getCheckinGasPrice().call();
-            });
-        }
         // Get whether nodes are automatically set as inactive
 
     }, {

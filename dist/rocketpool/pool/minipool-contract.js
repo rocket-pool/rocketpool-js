@@ -163,21 +163,22 @@ var MinipoolContract = function () {
     }, {
         key: "getStatusDetails",
         value: function getStatusDetails() {
-            return Promise.all([this.getStatus(), this.getStatusChangedTime(), this.getStatusChangedBlock(), this.getStakingDurationId(), this.getStakingDuration(), this.getDepositInput(), this.getUserDepositCapacity(), this.getUserDepositTotal(), this.getStakingUserDepositsWithdrawn()]).then(function (_ref5) {
-                var _ref6 = _slicedToArray(_ref5, 9),
+            return Promise.all([this.getStatus(), this.getStatusChangedTime(), this.getStatusChangedBlock(), this.getStakingDurationId(), this.getStakingDuration(), this.getValidatorPubkey(), this.getValidatorSignature(), this.getUserDepositCapacity(), this.getUserDepositTotal(), this.getStakingUserDepositsWithdrawn()]).then(function (_ref5) {
+                var _ref6 = _slicedToArray(_ref5, 10),
                     status = _ref6[0],
                     statusChangedTime = _ref6[1],
                     statusChangedBlock = _ref6[2],
                     stakingDurationId = _ref6[3],
                     stakingDuration = _ref6[4],
-                    depositInput = _ref6[5],
-                    userDepositCapacity = _ref6[6],
-                    userDepositTotal = _ref6[7],
-                    stakingUserDepositsWithdrawn = _ref6[8];
+                    validatorPubkey = _ref6[5],
+                    validatorSignature = _ref6[6],
+                    userDepositCapacity = _ref6[7],
+                    userDepositTotal = _ref6[8],
+                    stakingUserDepositsWithdrawn = _ref6[9];
 
                 return {
                     status: status, statusChangedTime: statusChangedTime, statusChangedBlock: statusChangedBlock, stakingDurationId: stakingDurationId, stakingDuration: stakingDuration,
-                    depositInput: depositInput, userDepositCapacity: userDepositCapacity, userDepositTotal: userDepositTotal, stakingUserDepositsWithdrawn: stakingUserDepositsWithdrawn
+                    validatorPubkey: validatorPubkey, validatorSignature: validatorSignature, userDepositCapacity: userDepositCapacity, userDepositTotal: userDepositTotal, stakingUserDepositsWithdrawn: stakingUserDepositsWithdrawn
                 };
             });
         }
@@ -222,12 +223,19 @@ var MinipoolContract = function () {
                 return parseInt(value);
             });
         }
-        // Get the minipool's DepositInput data for submission to Casper
+        // Get the minipool's validator pubkey for submission to Casper
 
     }, {
-        key: "getDepositInput",
-        value: function getDepositInput() {
-            return this.contract.methods.getDepositInput().call();
+        key: "getValidatorPubkey",
+        value: function getValidatorPubkey() {
+            return this.contract.methods.getValidatorPubkey().call();
+        }
+        // Get the minipool's validator pubkey for submission to Casper
+
+    }, {
+        key: "getValidatorSignature",
+        value: function getValidatorSignature() {
+            return this.contract.methods.getValidatorSignature().call();
         }
         // Get the minipool's total capacity for user deposits in wei
 

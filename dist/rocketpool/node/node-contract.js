@@ -48,15 +48,16 @@ var NodeContract = function () {
     }, {
         key: 'getDepositReservation',
         value: function getDepositReservation() {
-            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId(), this.getDepositReservationDepositInput()]).then(function (_ref3) {
-                var _ref4 = _slicedToArray(_ref3, 5),
+            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId(), this.getDepositReservationValidatorPubkey(), this.getDepositReservationValidatorSignature()]).then(function (_ref3) {
+                var _ref4 = _slicedToArray(_ref3, 6),
                     created = _ref4[0],
                     etherRequired = _ref4[1],
                     rplRequired = _ref4[2],
                     durationId = _ref4[3],
-                    depositInput = _ref4[4];
+                    validatorPubkey = _ref4[4],
+                    validatorSignature = _ref4[5];
 
-                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId, depositInput: depositInput };
+                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId, validatorPubkey: validatorPubkey, validatorSignature: validatorSignature };
             });
         }
         // Get the node owner
@@ -124,12 +125,19 @@ var NodeContract = function () {
         value: function getDepositReservationDurationId() {
             return this.contract.methods.getDepositReserveDurationID().call();
         }
-        // Get the deposit reservation DepositInput data
+        // Get the deposit reservation validator pubkey
 
     }, {
-        key: 'getDepositReservationDepositInput',
-        value: function getDepositReservationDepositInput() {
-            return this.contract.methods.getDepositReserveDepositInput().call();
+        key: 'getDepositReservationValidatorPubkey',
+        value: function getDepositReservationValidatorPubkey() {
+            return this.contract.methods.getDepositReserveValidatorPubkey().call();
+        }
+        // Get the deposit reservation validator signature
+
+    }, {
+        key: 'getDepositReservationValidatorSignature',
+        value: function getDepositReservationValidatorSignature() {
+            return this.contract.methods.getDepositReserveValidatorSignature().call();
         }
         /**
          * Mutators - Restricted to the node owner address
@@ -145,8 +153,8 @@ var NodeContract = function () {
 
     }, {
         key: 'reserveDeposit',
-        value: function reserveDeposit(durationId, depositInput, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId, depositInput).send(options), onConfirmation);
+        value: function reserveDeposit(durationId, validatorPubkey, validatorSignature, options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature).send(options), onConfirmation);
         }
         // Cancel a deposit reservation
 
