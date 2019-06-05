@@ -41,14 +41,6 @@ class NodeSettings {
     }
 
 
-    // Get the gas price to be used for node checkins in wei
-    public getCheckinGasPrice(): Promise<string> {
-        return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<string> => {
-            return rocketNodeSettings.methods.getCheckinGasPrice().call();
-        });
-    }
-
-
     // Get whether nodes are automatically set as inactive
     public getInactiveAutomatic(): Promise<boolean> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<boolean> => {
