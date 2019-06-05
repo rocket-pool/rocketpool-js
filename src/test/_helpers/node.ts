@@ -2,7 +2,7 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
-import { makeDepositInput } from '../../utils/casper';
+import { getValidatorPubkey, getValidatorSignature } from '../../utils/casper';
 
 
 // Register a node
@@ -36,7 +36,7 @@ export async function registerNode(web3: Web3, rp: RocketPool, {owner}: {owner: 
 export async function createNodeMinipool(web3: Web3, {nodeContract, nodeOwner, stakingDurationId}: {nodeContract: NodeContract, nodeOwner: string, stakingDurationId: string}): Promise<string> {
 
     // Make deposit reservation
-    await nodeContract.reserveDeposit(stakingDurationId, makeDepositInput(web3), {from: nodeOwner, gas: 8000000});
+    await nodeContract.reserveDeposit(stakingDurationId, getValidatorPubkey(), getValidatorSignature(), {from: nodeOwner, gas: 8000000});
 
     // Complete deposit
     let result = await nodeContract.completeDeposit({from: nodeOwner, gas: 8000000});

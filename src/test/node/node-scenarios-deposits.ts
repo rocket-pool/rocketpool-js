@@ -4,11 +4,12 @@ import NodeContract from '../../rocketpool/node/node-contract';
 
 
 // Make a deposit reservation
-export async function reserveNodeDeposit(nodeContract: NodeContract, {durationId, depositInput, from}: {durationId: string, depositInput: Buffer, from: string}) {
-    await nodeContract.reserveDeposit(durationId, depositInput, {from, gas: 8000000});
+export async function reserveNodeDeposit(nodeContract: NodeContract, {durationId, validatorPubkey, validatorSignature, from}: {durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, from: string}) {
+    await nodeContract.reserveDeposit(durationId, validatorPubkey, validatorSignature, {from, gas: 8000000});
     let details = await nodeContract.getDepositReservation();
     assert.equal(details.durationId, durationId, 'Deposit reservation duration ID does not match');
-    assert.equal(details.depositInput, '0x' + depositInput.toString('hex'), 'Deposit reservation DepositInput data does not match');
+    assert.equal(details.validatorPubkey, '0x' + validatorPubkey.toString('hex'), 'Deposit reservation validator pubkey does not match');
+    assert.equal(details.validatorSignature, '0x' + validatorSignature.toString('hex'), 'Deposit reservation validator signature does not match');
 }
 
 
