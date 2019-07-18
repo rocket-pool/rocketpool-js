@@ -10,7 +10,7 @@ import DepositSettings from './settings/deposit';
 import GroupSettings from './settings/group';
 import MinipoolSettings from './settings/minipool';
 import NodeSettings from './settings/node';
-import RPB from './tokens/rpb';
+import RETH from './tokens/reth';
 import RPL from './tokens/rpl';
 
 
@@ -27,7 +27,7 @@ class RocketPool {
     public readonly node: Node;
     public readonly pool: Pool;
     public readonly settings: {deposit: DepositSettings, group: GroupSettings, minipool: MinipoolSettings, node: NodeSettings};
-    public readonly tokens: {rpb: RPB, rpl: RPL};
+    public readonly tokens: {reth: RETH, rpl: RPL};
 
 
     // Constructor
@@ -46,7 +46,7 @@ class RocketPool {
             node: new NodeSettings(web3, this.contracts),
         };
         this.tokens = {
-            rpb: new RPB(web3, this.contracts),
+            reth: new RETH(web3, this.contracts),
             rpl: new RPL(web3, this.contracts),
         };
 

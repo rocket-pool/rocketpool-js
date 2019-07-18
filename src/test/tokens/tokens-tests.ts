@@ -8,9 +8,9 @@ import { deposit, withdrawStakingMinipoolDeposit, clearDeposits } from '../_help
 import { registerGroup, createGroupAccessor } from '../_helpers/group';
 import { stakeSingleMinipool } from '../_helpers/minipool';
 import { registerNode, createNodeMinipool } from '../_helpers/node';
-import { seedRpbContract } from '../_helpers/tokens';
+import { seedRethContract } from '../_helpers/tokens';
 import { transferRpl, approveRplTransfer, transferRplFrom } from './tokens-scenarios-rpl';
-import { burnRpbForEth } from './tokens-scenarios-rpb';
+import { burnRethForEth } from './tokens-scenarios-reth';
 
 // Tests
 export default function runTokensTests(web3: Web3, rp: RocketPool): void {
@@ -80,10 +80,10 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
         });
 
 
-        // RPB token
-        describe('RPB', (): void => {
+        // RETH token
+        describe('RETH', (): void => {
 
-            it('Can burn RPB for ETH', async () => {
+            it('Can burn RETH for ETH', async () => {
 
                 // Create minipool, deposit to, and stake
                 let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
@@ -94,10 +94,10 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
                 await withdrawStakingMinipoolDeposit({withdrawerContract: groupAccessorContract, depositId, minipoolAddress, weiAmount: web3.utils.toWei('4', 'ether'), from: user1});
                 await clearDeposits(rp, {depositorContract: groupAccessorContract, groupId, userId: user1, stakingDurationId: '3m'});
 
-                // Burn RPB for ETH
-                let rpbBalance = await rp.tokens.rpb.balanceOf(user1);
-                await seedRpbContract(web3, rp, {from: owner, value: rpbBalance});
-                await burnRpbForEth(web3, rp, {from: user1, amountWei: rpbBalance});
+                // Burn RETH for ETH
+                let rethBalance = await rp.tokens.reth.balanceOf(user1);
+                await seedRethContract(web3, rp, {from: owner, value: rethBalance});
+                await burnRethForEth(web3, rp, {from: user1, amountWei: rethBalance});
 
             });
 

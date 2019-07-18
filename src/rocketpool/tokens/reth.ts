@@ -9,14 +9,14 @@ import ERC20 from './ERC20';
 
 
 /**
- * Rocket Pool RPB token manager
+ * Rocket Pool RETH token manager
  */
-class RPB extends ERC20 {
+class RETH extends ERC20 {
 
 
     // Constructor
     public constructor(web3: Web3, contracts: Contracts) {
-        super(web3, contracts, 'rocketBETHToken');
+        super(web3, contracts, 'rocketETHToken');
     }
 
 
@@ -25,7 +25,7 @@ class RPB extends ERC20 {
      */
 
 
-    // Burn RPB for ETH
+    // Burn RETH for ETH
     public burnForEth(amountWei: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
@@ -40,4 +40,4 @@ class RPB extends ERC20 {
 
 
 // Exports
-export default RPB;
+export default RETH;

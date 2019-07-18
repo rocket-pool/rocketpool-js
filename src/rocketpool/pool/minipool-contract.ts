@@ -162,7 +162,7 @@ class MinipoolContract {
     }
 
 
-    // Get the amount of RPB tokens withdrawn from a deposit while staking in wei
+    // Get the amount of RETH tokens withdrawn from a deposit while staking in wei
     public getDepositStakingTokensWithdrawn(depositId: string): Promise<string> {
         return this.contract.methods.getDepositStakingTokensWithdrawn(depositId).call();
     }

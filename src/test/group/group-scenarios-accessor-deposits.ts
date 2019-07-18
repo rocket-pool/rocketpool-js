@@ -33,18 +33,18 @@ export async function refundStalledMinipoolDeposit(web3: Web3, groupAccessorCont
 
 // Withdraw a deposit from a staking minipool
 export async function withdrawStakingMinipoolDeposit(rp: RocketPool, groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, weiAmount, from}: {depositId: string, minipoolAddress: string, weiAmount: string, from: string}) {
-    let balance1 = await rp.tokens.rpb.balanceOf(from);
+    let balance1 = await rp.tokens.reth.balanceOf(from);
     await groupAccessorContract.withdrawStakingMinipoolDeposit(depositId, minipoolAddress, weiAmount, {from, gas: 8000000});
-    let balance2 = await rp.tokens.rpb.balanceOf(from);
+    let balance2 = await rp.tokens.reth.balanceOf(from);
     assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not withdrawn successfully');
 }
 
 
 // Withdraw a deposit from a withdrawn minipool
 export async function withdrawMinipoolDeposit(rp: RocketPool, groupAccessorContract: GroupAccessorContract, {depositId, minipoolAddress, from}: {depositId: string, minipoolAddress: string, from: string}) {
-    let balance1 = await rp.tokens.rpb.balanceOf(from);
+    let balance1 = await rp.tokens.reth.balanceOf(from);
     await groupAccessorContract.withdrawMinipoolDeposit(depositId, minipoolAddress, {from, gas: 8000000});
-    let balance2 = await rp.tokens.rpb.balanceOf(from);
+    let balance2 = await rp.tokens.reth.balanceOf(from);
     assert.isAbove(parseInt(balance2), parseInt(balance1), 'Deposit was not withdrawn successfully');
 }
 
