@@ -40,9 +40,9 @@ var _node3 = require('./settings/node');
 
 var _node4 = _interopRequireDefault(_node3);
 
-var _rpb = require('./tokens/rpb');
+var _reth = require('./tokens/reth');
 
-var _rpb2 = _interopRequireDefault(_rpb);
+var _reth2 = _interopRequireDefault(_reth);
 
 var _rpl = require('./tokens/rpl');
 
@@ -75,7 +75,7 @@ function RocketPool(web3, RocketStorage) {
         node: new _node4.default(web3, this.contracts)
     };
     this.tokens = {
-        rpb: new _rpb2.default(web3, this.contracts),
+        reth: new _reth2.default(web3, this.contracts),
         rpl: new _rpl2.default(web3, this.contracts)
     };
 };

@@ -148,7 +148,7 @@ var MinipoolContract = function () {
         value: function getDepositBalance(depositId) {
             return this.contract.methods.getDepositBalance(depositId).call();
         }
-        // Get the amount of RPB tokens withdrawn from a deposit while staking in wei
+        // Get the amount of RETH tokens withdrawn from a deposit while staking in wei
 
     }, {
         key: "getDepositStakingTokensWithdrawn",

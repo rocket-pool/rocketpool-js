@@ -21,24 +21,24 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Rocket Pool RPB token manager
+ * Rocket Pool RETH token manager
  */
-var RPB = function (_ERC) {
-    _inherits(RPB, _ERC);
+var RETH = function (_ERC) {
+    _inherits(RETH, _ERC);
 
     // Constructor
-    function RPB(web3, contracts) {
-        _classCallCheck(this, RPB);
+    function RETH(web3, contracts) {
+        _classCallCheck(this, RETH);
 
-        return _possibleConstructorReturn(this, (RPB.__proto__ || Object.getPrototypeOf(RPB)).call(this, web3, contracts, 'rocketBETHToken'));
+        return _possibleConstructorReturn(this, (RETH.__proto__ || Object.getPrototypeOf(RETH)).call(this, web3, contracts, 'rocketETHToken'));
     }
     /**
      * Mutators - Public
      */
-    // Burn RPB for ETH
+    // Burn RETH for ETH
 
 
-    _createClass(RPB, [{
+    _createClass(RETH, [{
         key: 'burnForEth',
         value: function burnForEth(amountWei, options, onConfirmation) {
             return this.tokenContract.then(function (tokenContract) {
@@ -47,10 +47,10 @@ var RPB = function (_ERC) {
         }
     }]);
 
-    return RPB;
+    return RETH;
 }(_ERC3.default);
 // Exports
 
 
-exports.default = RPB;
-//# sourceMappingURL=rpb.js.map
+exports.default = RETH;
+//# sourceMappingURL=reth.js.map
