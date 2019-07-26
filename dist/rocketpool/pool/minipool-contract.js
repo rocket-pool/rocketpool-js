@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -28,69 +28,81 @@ var MinipoolContract = function () {
 
 
     _createClass(MinipoolContract, [{
-        key: "getNodeDetails",
+        key: 'getNodeDetails',
         value: function getNodeDetails() {
-            return Promise.all([this.getNodeOwner(), this.getNodeContract(), this.getNodeDepositEth(), this.getNodeDepositRpl(), this.getNodeTrusted(), this.getNodeDepositExists(), this.getNodeBalance()]).then(function (_ref) {
-                var _ref2 = _slicedToArray(_ref, 7),
+            return Promise.all([this.getNodeOwner(), this.getNodeContract(), this.getNodeDepositEth(), this.getNodeDepositRpl(), this.getNodeTrusted(), this.getNodeDepositExists(), this.getNodeBalance(), this.getNodeUserFee()]).then(function (_ref) {
+                var _ref2 = _slicedToArray(_ref, 8),
                     owner = _ref2[0],
                     contract = _ref2[1],
                     depositEth = _ref2[2],
                     depositRpl = _ref2[3],
                     trusted = _ref2[4],
                     depositExists = _ref2[5],
-                    balance = _ref2[6];
+                    balance = _ref2[6],
+                    userFee = _ref2[7];
 
-                return { owner: owner, contract: contract, depositEth: depositEth, depositRpl: depositRpl, trusted: trusted, depositExists: depositExists, balance: balance };
+                return { owner: owner, contract: contract, depositEth: depositEth, depositRpl: depositRpl, trusted: trusted, depositExists: depositExists, balance: balance, userFee: userFee };
             });
         }
         // Get the node owner's address
 
     }, {
-        key: "getNodeOwner",
+        key: 'getNodeOwner',
         value: function getNodeOwner() {
             return this.contract.methods.getNodeOwner().call();
         }
         // Get the node contract address
 
     }, {
-        key: "getNodeContract",
+        key: 'getNodeContract',
         value: function getNodeContract() {
             return this.contract.methods.getNodeContract().call();
         }
         // Get the amount of ETH to be deposited by the node owner in wei
 
     }, {
-        key: "getNodeDepositEth",
+        key: 'getNodeDepositEth',
         value: function getNodeDepositEth() {
             return this.contract.methods.getNodeDepositEther().call();
         }
         // Get the amount of RPL to be deposited by the node owner in wei
 
     }, {
-        key: "getNodeDepositRpl",
+        key: 'getNodeDepositRpl',
         value: function getNodeDepositRpl() {
             return this.contract.methods.getNodeDepositRPL().call();
         }
         // Get whether the node was trusted when the minipool was created
 
     }, {
-        key: "getNodeTrusted",
+        key: 'getNodeTrusted',
         value: function getNodeTrusted() {
             return this.contract.methods.getNodeTrusted().call();
         }
         // Get whether the node owner's deposit currently exists
 
     }, {
-        key: "getNodeDepositExists",
+        key: 'getNodeDepositExists',
         value: function getNodeDepositExists() {
             return this.contract.methods.getNodeDepositExists().call();
         }
         // Get the node owner's deposited ETH balance in wei
 
     }, {
-        key: "getNodeBalance",
+        key: 'getNodeBalance',
         value: function getNodeBalance() {
             return this.contract.methods.getNodeBalance().call();
+        }
+        // Get the fee percentage charged to users by the node operator
+
+    }, {
+        key: 'getNodeUserFee',
+        value: function getNodeUserFee() {
+            var _this = this;
+
+            return this.contract.methods.getNodeUserFee().call().then(function (value) {
+                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
+            });
         }
         /**
          * Getters - Deposits
@@ -98,7 +110,7 @@ var MinipoolContract = function () {
         // Get the number of deposits in the minipool
 
     }, {
-        key: "getDepositCount",
+        key: 'getDepositCount',
         value: function getDepositCount() {
             return this.contract.methods.getDepositCount().call().then(function (value) {
                 return parseInt(value);
@@ -107,53 +119,87 @@ var MinipoolContract = function () {
         // Get all deposit details
 
     }, {
-        key: "getDepositDetails",
+        key: 'getDepositDetails',
         value: function getDepositDetails(depositId) {
-            return Promise.all([this.getDepositExists(depositId), this.getDepositUserID(depositId), this.getDepositGroupID(depositId), this.getDepositBalance(depositId), this.getDepositStakingTokensWithdrawn(depositId)]).then(function (_ref3) {
-                var _ref4 = _slicedToArray(_ref3, 5),
+            return Promise.all([this.getDepositExists(depositId), this.getDepositUserID(depositId), this.getDepositGroupID(depositId), this.getDepositBalance(depositId), this.getDepositStakingTokensWithdrawn(depositId), this.getDepositRocketPoolFee(depositId), this.getDepositGroupFee(depositId), this.getDepositCreated(depositId)]).then(function (_ref3) {
+                var _ref4 = _slicedToArray(_ref3, 8),
                     exists = _ref4[0],
                     userId = _ref4[1],
                     groupId = _ref4[2],
                     balance = _ref4[3],
-                    stakingTokensWithdrawn = _ref4[4];
+                    stakingTokensWithdrawn = _ref4[4],
+                    rocketPoolFee = _ref4[5],
+                    groupFee = _ref4[6],
+                    created = _ref4[7];
 
-                return { exists: exists, userId: userId, groupId: groupId, balance: balance, stakingTokensWithdrawn: stakingTokensWithdrawn };
+                return { exists: exists, userId: userId, groupId: groupId, balance: balance, stakingTokensWithdrawn: stakingTokensWithdrawn, rocketPoolFee: rocketPoolFee, groupFee: groupFee, created: created };
             });
         }
         // Get whether a deposit exists in the minipool
 
     }, {
-        key: "getDepositExists",
+        key: 'getDepositExists',
         value: function getDepositExists(depositId) {
             return this.contract.methods.getDepositExists(depositId).call();
         }
         // Get the user ID of a deposit
 
     }, {
-        key: "getDepositUserID",
+        key: 'getDepositUserID',
         value: function getDepositUserID(depositId) {
             return this.contract.methods.getDepositUserID(depositId).call();
         }
         // Get the group ID of a deposit
 
     }, {
-        key: "getDepositGroupID",
+        key: 'getDepositGroupID',
         value: function getDepositGroupID(depositId) {
             return this.contract.methods.getDepositGroupID(depositId).call();
         }
         // Get the current balance of a deposit
 
     }, {
-        key: "getDepositBalance",
+        key: 'getDepositBalance',
         value: function getDepositBalance(depositId) {
             return this.contract.methods.getDepositBalance(depositId).call();
         }
         // Get the amount of RETH tokens withdrawn from a deposit while staking in wei
 
     }, {
-        key: "getDepositStakingTokensWithdrawn",
+        key: 'getDepositStakingTokensWithdrawn',
         value: function getDepositStakingTokensWithdrawn(depositId) {
             return this.contract.methods.getDepositStakingTokensWithdrawn(depositId).call();
+        }
+        // Get the fee percentage charged to users by Rocket Pool
+
+    }, {
+        key: 'getDepositRocketPoolFee',
+        value: function getDepositRocketPoolFee(depositId) {
+            var _this2 = this;
+
+            return this.contract.methods.getDepositFeeRP(depositId).call().then(function (value) {
+                return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
+            });
+        }
+        // Get the fee percentage charged to users by 
+
+    }, {
+        key: 'getDepositGroupFee',
+        value: function getDepositGroupFee(depositId) {
+            var _this3 = this;
+
+            return this.contract.methods.getDepositFeeGroup(depositId).call().then(function (value) {
+                return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
+            });
+        }
+        // Get the deposit creation time
+
+    }, {
+        key: 'getDepositCreated',
+        value: function getDepositCreated(depositId) {
+            return this.contract.methods.getDepositCreated(depositId).call().then(function (value) {
+                return new Date(parseInt(value) * 1000);
+            });
         }
         /**
          * Getters - Status
@@ -161,7 +207,7 @@ var MinipoolContract = function () {
         // Get all status details
 
     }, {
-        key: "getStatusDetails",
+        key: 'getStatusDetails',
         value: function getStatusDetails() {
             return Promise.all([this.getStatus(), this.getStatusChangedTime(), this.getStatusChangedBlock(), this.getStakingDurationId(), this.getStakingDuration(), this.getValidatorPubkey(), this.getValidatorSignature(), this.getUserDepositCapacity(), this.getUserDepositTotal(), this.getStakingUserDepositsWithdrawn()]).then(function (_ref5) {
                 var _ref6 = _slicedToArray(_ref5, 10),
@@ -185,14 +231,14 @@ var MinipoolContract = function () {
         // Get the current minipool status
 
     }, {
-        key: "getStatus",
+        key: 'getStatus',
         value: function getStatus() {
             return this.contract.methods.getStatus().call();
         }
         // Get the time the status was last updated
 
     }, {
-        key: "getStatusChangedTime",
+        key: 'getStatusChangedTime',
         value: function getStatusChangedTime() {
             return this.contract.methods.getStatusChangedTime().call().then(function (value) {
                 return new Date(parseInt(value) * 1000);
@@ -201,7 +247,7 @@ var MinipoolContract = function () {
         // Get the block the status was last updated at
 
     }, {
-        key: "getStatusChangedBlock",
+        key: 'getStatusChangedBlock',
         value: function getStatusChangedBlock() {
             return this.contract.methods.getStatusChangedBlock().call().then(function (value) {
                 return parseInt(value);
@@ -210,14 +256,14 @@ var MinipoolContract = function () {
         // Get the minipool's staking duration ID
 
     }, {
-        key: "getStakingDurationId",
+        key: 'getStakingDurationId',
         value: function getStakingDurationId() {
             return this.contract.methods.getStakingDurationID().call();
         }
         // Get the minipool's staking duration in blocks
 
     }, {
-        key: "getStakingDuration",
+        key: 'getStakingDuration',
         value: function getStakingDuration() {
             return this.contract.methods.getStakingDuration().call().then(function (value) {
                 return parseInt(value);
@@ -226,37 +272,51 @@ var MinipoolContract = function () {
         // Get the minipool's validator pubkey for submission to Casper
 
     }, {
-        key: "getValidatorPubkey",
+        key: 'getValidatorPubkey',
         value: function getValidatorPubkey() {
             return this.contract.methods.getValidatorPubkey().call();
         }
         // Get the minipool's validator pubkey for submission to Casper
 
     }, {
-        key: "getValidatorSignature",
+        key: 'getValidatorSignature',
         value: function getValidatorSignature() {
             return this.contract.methods.getValidatorSignature().call();
         }
         // Get the minipool's total capacity for user deposits in wei
 
     }, {
-        key: "getUserDepositCapacity",
+        key: 'getUserDepositCapacity',
         value: function getUserDepositCapacity() {
             return this.contract.methods.getUserDepositCapacity().call();
         }
         // Get the total value of user deposits to the minipool in wei
 
     }, {
-        key: "getUserDepositTotal",
+        key: 'getUserDepositTotal',
         value: function getUserDepositTotal() {
             return this.contract.methods.getUserDepositTotal().call();
         }
         // Get the total value of user deposits withdrawn while staking in wei
 
     }, {
-        key: "getStakingUserDepositsWithdrawn",
+        key: 'getStakingUserDepositsWithdrawn',
         value: function getStakingUserDepositsWithdrawn() {
             return this.contract.methods.getStakingUserDepositsWithdrawn().call();
+        }
+        // Get the balance of the minipool in ETH when it started staking
+
+    }, {
+        key: 'getStakingBalanceStart',
+        value: function getStakingBalanceStart() {
+            return this.contract.methods.getStakingBalanceStart().call();
+        }
+        // Get the balance of the minipool in rETH when it finished staking
+
+    }, {
+        key: 'getStakingBalanceEnd',
+        value: function getStakingBalanceEnd() {
+            return this.contract.methods.getStakingBalanceEnd().call();
         }
     }]);
 
