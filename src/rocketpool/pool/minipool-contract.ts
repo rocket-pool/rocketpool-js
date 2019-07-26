@@ -12,6 +12,7 @@ export interface NodeDetails {
     trusted: boolean;
     depositExists: boolean;
     balance: string;
+    userFee: number;
 }
 
 
@@ -22,6 +23,9 @@ export interface DepositDetails {
     groupId: string;
     balance: string;
     stakingTokensWithdrawn: string;
+    rocketPoolFee: number;
+    groupFee: number;
+    created: Date;
 }
 
 
@@ -65,8 +69,9 @@ class MinipoolContract {
             this.getNodeTrusted(),
             this.getNodeDepositExists(),
             this.getNodeBalance(),
-        ]).then(([owner, contract, depositEth, depositRpl, trusted, depositExists, balance]: [string, string, string, string, boolean, boolean, string]): NodeDetails => {
-            return {owner, contract, depositEth, depositRpl, trusted, depositExists, balance};
+            this.getNodeUserFee(),
+        ]).then(([owner, contract, depositEth, depositRpl, trusted, depositExists, balance, userFee]: [string, string, string, string, boolean, boolean, string, number]): NodeDetails => {
+            return {owner, contract, depositEth, depositRpl, trusted, depositExists, balance, userFee};
         });
     }
 
@@ -113,6 +118,12 @@ class MinipoolContract {
     }
 
 
+    // Get the fee percentage charged to users by the node operator
+    public getNodeUserFee(): Promise<number> {
+        return this.contract.methods.getNodeUserFee().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+
     /**
      * Getters - Deposits
      */
@@ -132,8 +143,11 @@ class MinipoolContract {
             this.getDepositGroupID(depositId),
             this.getDepositBalance(depositId),
             this.getDepositStakingTokensWithdrawn(depositId),
-        ]).then(([exists, userId, groupId, balance, stakingTokensWithdrawn]: [boolean, string, string, string, string]): DepositDetails => {
-            return {exists, userId, groupId, balance, stakingTokensWithdrawn};
+            this.getDepositRocketPoolFee(depositId),
+            this.getDepositGroupFee(depositId),
+            this.getDepositCreated(depositId),
+        ]).then(([exists, userId, groupId, balance, stakingTokensWithdrawn, rocketPoolFee, groupFee, created]: [boolean, string, string, string, string, number, number, Date]): DepositDetails => {
+            return {exists, userId, groupId, balance, stakingTokensWithdrawn, rocketPoolFee, groupFee, created};
         });
     }
 
@@ -165,6 +179,24 @@ class MinipoolContract {
     // Get the amount of RETH tokens withdrawn from a deposit while staking in wei
     public getDepositStakingTokensWithdrawn(depositId: string): Promise<string> {
         return this.contract.methods.getDepositStakingTokensWithdrawn(depositId).call();
+    }
+
+
+    // Get the fee percentage charged to users by Rocket Pool
+    public getDepositRocketPoolFee(depositId: string): Promise<number> {
+        return this.contract.methods.getDepositFeeRP(depositId).call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+
+    // Get the fee percentage charged to users by 
+    public getDepositGroupFee(depositId: string): Promise<number> {
+        return this.contract.methods.getDepositFeeGroup(depositId).call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+
+    // Get the deposit creation time
+    public getDepositCreated(depositId: string): Promise<Date> {
+        return this.contract.methods.getDepositCreated(depositId).call().then((value: string): Date => new Date(parseInt(value) * 1000));
     }
 
 
@@ -255,6 +287,18 @@ class MinipoolContract {
     // Get the total value of user deposits withdrawn while staking in wei
     public getStakingUserDepositsWithdrawn(): Promise<string> {
         return this.contract.methods.getStakingUserDepositsWithdrawn().call();
+    }
+
+
+    // Get the balance of the minipool in ETH when it started staking
+    public getStakingBalanceStart(): Promise<string> {
+        return this.contract.methods.getStakingBalanceStart().call();
+    }
+
+
+    // Get the balance of the minipool in rETH when it finished staking
+    public getStakingBalanceEnd(): Promise<string> {
+        return this.contract.methods.getStakingBalanceEnd().call();
     }
 
 
