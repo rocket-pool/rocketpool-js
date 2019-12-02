@@ -57,7 +57,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
                     rp.settings.minipool.getMinipoolWithdrawalFeeDepositAddress(),
                     rp.settings.minipool.getMinipoolTimeout(),
                     rp.settings.minipool.getMinipoolActiveSetSize(),
-                    rp.settings.minipool.getMinipoolStakingDuration('3m'),
+                    rp.settings.minipool.getMinipoolStakingDurations(),
                 ]);
             });
 
