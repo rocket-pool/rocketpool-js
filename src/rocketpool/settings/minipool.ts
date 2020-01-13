@@ -4,6 +4,15 @@ import Contract from 'web3/eth/contract';
 import Contracts from '../contracts/contracts';
 
 
+// Staking duration details
+export interface StakingDurationDetails {
+    id: string;
+    exists: boolean;
+    epochs: number;
+    enabled: boolean;
+}
+
+
 /**
  * Rocket Pool minipool settings manager
  */
@@ -89,11 +98,67 @@ class MinipoolSettings {
     }
 
 
-    // Get the minipool staking duration by ID in blocks
-    public getMinipoolStakingDuration(durationId: string): Promise<number> {
+    // Get the minipool staking durations
+    public getMinipoolStakingDurations(): Promise<StakingDurationDetails[]> {
+        return this.getMinipoolStakingDurationCount().then((count: number): Promise<string[]> => {
+            return Promise.all([...Array(count).keys()].map((di: number): Promise<string> => {
+                return this.getMinipoolStakingDurationAt(di);
+            }));
+        }).then((durationIds: string[]): Promise<StakingDurationDetails[]> => {
+            return Promise.all(durationIds.map((durationId: string): Promise<StakingDurationDetails> => this.getMinipoolStakingDuration(durationId)));
+        });
+    }
+
+
+    // Get the details for a minipool staking duration
+    public getMinipoolStakingDuration(id: string): Promise<StakingDurationDetails> {
+        return Promise.all([
+            this.getMinipoolStakingDurationExists(id),
+            this.getMinipoolStakingDurationEpochs(id),
+            this.getMinipoolStakingDurationEnabled(id),
+        ]).then(([exists, epochs, enabled]: [boolean, number, boolean]): StakingDurationDetails => {
+            return {id, exists, epochs, enabled};
+        });
+    }
+
+
+    // Get the minipool staking duration count
+    public getMinipoolStakingDurationCount(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getMinipoolStakingDuration(durationId).call();
+            return rocketMinipoolSettings.methods.getMinipoolStakingDurationCount().call();
         }).then((value: string): number => parseInt(value));
+    }
+
+
+    // Get the minipool staking duration ID by index
+    public getMinipoolStakingDurationAt(index: number): Promise<string> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
+            return rocketMinipoolSettings.methods.getMinipoolStakingDurationAt(index).call();
+        });
+    }
+
+
+    // Get whether a minipool staking duration exists
+    public getMinipoolStakingDurationExists(id: string): Promise<boolean> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<boolean> => {
+            return rocketMinipoolSettings.methods.getMinipoolStakingDurationExists(id).call();
+        });
+    }
+
+
+    // Get the number of epochs for a minipool staking duration
+    public getMinipoolStakingDurationEpochs(id: string): Promise<number> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
+            return rocketMinipoolSettings.methods.getMinipoolStakingDurationEpochs(id).call();
+        }).then((value: string): number => parseInt(value));
+    }
+
+
+    // Get whether a minipool staking duration is enabled
+    public getMinipoolStakingDurationEnabled(id: string): Promise<boolean> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<boolean> => {
+            return rocketMinipoolSettings.methods.getMinipoolStakingDurationEnabled(id).call();
+        });
     }
 
 
