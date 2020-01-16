@@ -21,6 +21,7 @@
     "web3": "^1.0.0-beta.37"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.0.0-beta.55",
     "@chainsafe/ssz": "^0.5.2",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
