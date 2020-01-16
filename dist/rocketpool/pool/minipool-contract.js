@@ -283,6 +283,13 @@ var MinipoolContract = function () {
         value: function getValidatorSignature() {
             return this.contract.methods.getValidatorSignature().call();
         }
+        // Get the minipool's validator deposit data root for submission to Casper
+
+    }, {
+        key: 'getValidatorDepositDataRoot',
+        value: function getValidatorDepositDataRoot() {
+            return this.contract.methods.getValidatorDepositDataRoot().call();
+        }
         // Get the minipool's total capacity for user deposits in wei
 
     }, {

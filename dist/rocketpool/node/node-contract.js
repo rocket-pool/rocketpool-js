@@ -48,16 +48,17 @@ var NodeContract = function () {
     }, {
         key: 'getDepositReservation',
         value: function getDepositReservation() {
-            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId(), this.getDepositReservationValidatorPubkey(), this.getDepositReservationValidatorSignature()]).then(function (_ref3) {
-                var _ref4 = _slicedToArray(_ref3, 6),
+            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId(), this.getDepositReservationValidatorPubkey(), this.getDepositReservationValidatorSignature(), this.getDepositReservationValidatorDepositDataRoot()]).then(function (_ref3) {
+                var _ref4 = _slicedToArray(_ref3, 7),
                     created = _ref4[0],
                     etherRequired = _ref4[1],
                     rplRequired = _ref4[2],
                     durationId = _ref4[3],
                     validatorPubkey = _ref4[4],
-                    validatorSignature = _ref4[5];
+                    validatorSignature = _ref4[5],
+                    validatorDepositDataRoot = _ref4[6];
 
-                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId, validatorPubkey: validatorPubkey, validatorSignature: validatorSignature };
+                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId, validatorPubkey: validatorPubkey, validatorSignature: validatorSignature, validatorDepositDataRoot: validatorDepositDataRoot };
             });
         }
         // Get the node owner
@@ -139,6 +140,13 @@ var NodeContract = function () {
         value: function getDepositReservationValidatorSignature() {
             return this.contract.methods.getDepositReserveValidatorSignature().call();
         }
+        // Get the deposit reservation validator deposit data root
+
+    }, {
+        key: 'getDepositReservationValidatorDepositDataRoot',
+        value: function getDepositReservationValidatorDepositDataRoot() {
+            return this.contract.methods.getDepositReserveValidatorDepositDataRoot().call();
+        }
         /**
          * Mutators - Restricted to the node owner address
          */
@@ -153,8 +161,8 @@ var NodeContract = function () {
 
     }, {
         key: 'reserveDeposit',
-        value: function reserveDeposit(durationId, validatorPubkey, validatorSignature, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature).send(options), onConfirmation);
+        value: function reserveDeposit(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot, options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options), onConfirmation);
         }
         // Cancel a deposit reservation
 
