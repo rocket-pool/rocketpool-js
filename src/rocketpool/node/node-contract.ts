@@ -152,9 +152,9 @@ class NodeContract {
 
 
     // Make a deposit reservation
-    public reserveDeposit(durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public reserveDeposit(durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, validatorDepositDataRoot: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature).send(options),
+            this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options),
             onConfirmation
         );
     }
