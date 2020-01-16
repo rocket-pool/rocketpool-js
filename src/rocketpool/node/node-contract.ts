@@ -24,6 +24,7 @@ export interface NodeDepositReservation {
     durationId: string;
     validatorPubkey: string;
     validatorSignature: string;
+    validatorDepositDataRoot: string;
 }
 
 
@@ -65,8 +66,9 @@ class NodeContract {
             this.getDepositReservationDurationId(),
             this.getDepositReservationValidatorPubkey(),
             this.getDepositReservationValidatorSignature(),
-        ]).then(([created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature]: [Date, string, string, string, string, string]): NodeDepositReservation => {
-            return {created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature};
+            this.getDepositReservationValidatorDepositDataRoot(),
+        ]).then(([created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot]: [Date, string, string, string, string, string, string]): NodeDepositReservation => {
+            return {created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot};
         });
     }
 
@@ -134,6 +136,12 @@ class NodeContract {
     // Get the deposit reservation validator signature
     public getDepositReservationValidatorSignature(): Promise<string> {
         return this.contract.methods.getDepositReserveValidatorSignature().call();
+    }
+
+
+    // Get the deposit reservation validator deposit data root
+    public getDepositReservationValidatorDepositDataRoot(): Promise<string> {
+        return this.contract.methods.getDepositReserveValidatorDepositDataRoot().call();
     }
 
 

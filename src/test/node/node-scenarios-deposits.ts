@@ -1,15 +1,32 @@
 // Imports
+import Web3 from 'web3';
 import { assert } from 'chai';
 import NodeContract from '../../rocketpool/node/node-contract';
+import { getWithdrawalCredentials, getValidatorDepositDataRoot } from '../_helpers/casper';
 
 
 // Make a deposit reservation
-export async function reserveNodeDeposit(nodeContract: NodeContract, {durationId, validatorPubkey, validatorSignature, from}: {durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, from: string}) {
-    await nodeContract.reserveDeposit(durationId, validatorPubkey, validatorSignature, {from, gas: 8000000});
+export async function reserveNodeDeposit(web3: Web3, nodeContract: NodeContract, {durationId, validatorPubkey, validatorSignature, from}: {durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, from: string}) {
+
+    // Get deposit data
+    let depositData = {
+        pubkey: validatorPubkey,
+        withdrawal_credentials: getWithdrawalCredentials(web3),
+        amount: 32000000000, //gwei
+        signature: validatorSignature,
+    };
+    let validatorDepositDataRoot = getValidatorDepositDataRoot(depositData);
+
+    // Reserve deposit
+    await nodeContract.reserveDeposit(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot, {from, gas: 8000000});
+
+    // Check reservation details
     let details = await nodeContract.getDepositReservation();
     assert.equal(details.durationId, durationId, 'Deposit reservation duration ID does not match');
     assert.equal(details.validatorPubkey, '0x' + validatorPubkey.toString('hex'), 'Deposit reservation validator pubkey does not match');
     assert.equal(details.validatorSignature, '0x' + validatorSignature.toString('hex'), 'Deposit reservation validator signature does not match');
+    assert.equal(details.validatorDepositDataRoot, '0x' + validatorDepositDataRoot.toString('hex'), 'Deposit reservation validator deposit data root does not match');
+
 }
 
 

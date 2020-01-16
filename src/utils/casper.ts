@@ -1,6 +1,5 @@
 // Imports
 const crypto = require('crypto');
-const ssz = require('@chainsafesystems/ssz');
 
 
 // Create a random validator pubkey
