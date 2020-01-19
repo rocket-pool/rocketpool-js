@@ -272,6 +272,12 @@ class MinipoolContract {
     }
 
 
+    // Get the minipool's validator deposit data root for submission to Casper
+    public getValidatorDepositDataRoot(): Promise<string> {
+        return this.contract.methods.getValidatorDepositDataRoot().call();
+    }
+
+
     // Get the minipool's total capacity for user deposits in wei
     public getUserDepositCapacity(): Promise<string> {
         return this.contract.methods.getUserDepositCapacity().call();
