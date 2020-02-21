@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import Contracts from '../contracts/contracts';
-import ERC20 from './ERC20';
+import ERC20 from './erc20';
 
 
 /**
