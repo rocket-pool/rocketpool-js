@@ -129,6 +129,10 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             it('Can withdraw a deposit from a staking minipool', async () => {
 
+                // Enable staking withdrawals (disabled by default in Rocket Pool)
+                const rocketDepositSettings = await rp.contracts.get('rocketDepositSettings');
+                await rocketDepositSettings.methods.setStakingWithdrawalAllowed(true).send({from: owner, gas: 8000000});
+
                 // Create minipool, deposit to, and stake
                 let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
