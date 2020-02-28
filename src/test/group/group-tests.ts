@@ -136,7 +136,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 // Create minipool, deposit to, and stake
                 let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
+                await stakeSingleMinipool(rp, {minipoolAddress, nodeContract, nodeOwner, depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
 
                 // Withdraw deposit
                 await withdrawStakingMinipoolDeposit(rp, groupAccessorContract, {depositId, minipoolAddress, weiAmount: web3.utils.toWei('4', 'ether'), from: depositor});
@@ -151,7 +151,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
                 // Create minipool, deposit to, and stake, logout & withdraw
                 let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
+                await stakeSingleMinipool(rp, {minipoolAddress, nodeContract, nodeOwner, depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
                 await withdrawMinipool(rp, {minipoolAddress, balance: web3.utils.toWei('36', 'ether'), nodeOperator: nodeOwner, owner});
 
                 // Withdraw deposit

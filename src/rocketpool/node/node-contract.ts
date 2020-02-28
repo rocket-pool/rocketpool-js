@@ -153,10 +153,19 @@ class NodeContract {
     }
 
 
-    // Can complete a deposit
+    // Complete a deposit
     public completeDeposit(options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.deposit().send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Progress a PreLaunch minipool to staking
+    public stakeMinipool(minipoolAddress: string, validatorPubkey: Buffer, validatorSignature: Buffer, validatorDepositDataRoot: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.stakeMinipool(minipoolAddress, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options),
             onConfirmation
         );
     }
