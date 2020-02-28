@@ -49,9 +49,9 @@ export default function runPoolTests(web3: Web3, rp: RocketPool): void {
             let groupAccessorContract = await rp.group.getAccessorContract(groupAccessorAddress);
 
             // Create minipools
-            minipool1Address = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
-            minipool2Address = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '6m'});
-            minipool3Address = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '12m'});
+            minipool1Address = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
+            minipool2Address = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '6m'});
+            minipool3Address = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '12m'});
 
             // Stake minipool
             await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});

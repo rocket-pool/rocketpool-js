@@ -86,7 +86,7 @@ export default function runTokensTests(web3: Web3, rp: RocketPool): void {
             it('Can burn RETH for ETH', async () => {
 
                 // Create minipool, deposit to, and stake
-                let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
+                let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 let depositId = await deposit(rp, {depositorContract: groupAccessorContract, groupId, stakingDurationId: '3m', from: user1, value: web3.utils.toWei('4', 'ether')});
                 await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor: user1, stakingDurationId: '3m'});
 

@@ -2,8 +2,6 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import NodeContract from '../../rocketpool/node/node-contract';
-import { getValidatorPubkey, getValidatorSignature } from '../../utils/casper';
-import { getWithdrawalCredentials, getValidatorDepositDataRoot } from '../_helpers/casper';
 
 
 // Register a node
@@ -34,19 +32,10 @@ export async function registerNode(web3: Web3, rp: RocketPool, {owner}: {owner: 
 
 
 // Create minipools under a node
-export async function createNodeMinipool(web3: Web3, {nodeContract, nodeOwner, stakingDurationId}: {nodeContract: NodeContract, nodeOwner: string, stakingDurationId: string}): Promise<string> {
-
-    // Get deposit data
-    let depositData = {
-        pubkey: getValidatorPubkey(),
-        withdrawal_credentials: getWithdrawalCredentials(web3),
-        amount: 32000000000, //gwei
-        signature: getValidatorSignature(),
-    };
-    let depositDataRoot = getValidatorDepositDataRoot(depositData);
+export async function createNodeMinipool({nodeContract, nodeOwner, stakingDurationId}: {nodeContract: NodeContract, nodeOwner: string, stakingDurationId: string}): Promise<string> {
 
     // Make deposit reservation
-    await nodeContract.reserveDeposit(stakingDurationId, depositData.pubkey, depositData.signature, depositDataRoot, {from: nodeOwner, gas: 8000000});
+    await nodeContract.reserveDeposit(stakingDurationId, {from: nodeOwner, gas: 8000000});
 
     // Complete deposit
     let result = await nodeContract.completeDeposit({from: nodeOwner, gas: 8000000});
