@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
-import { deposit, clearDeposits } from '../_helpers/deposit';
+import { setRocketPoolWithdrawalKey, deposit, clearDeposits } from '../_helpers/deposit';
 import { registerGroup, createGroupAccessor } from '../_helpers/group';
 
 // Tests
@@ -15,6 +15,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool): void {
         let owner: string;
         let groupOwner: string;
         let depositor: string;
+        let withdrawalKeyOperator: string;
 
         // Group details
         let groupName: string;
@@ -30,11 +31,15 @@ export default function runDepositTests(web3: Web3, rp: RocketPool): void {
             owner = accounts[0];
             groupOwner = accounts[1];
             depositor = accounts[2];
+            withdrawalKeyOperator = accounts[9];
 
             // Create group & accessor
             [groupName, groupId] = await registerGroup(rp, {groupOwner});
             let groupAccessorAddress = await createGroupAccessor(rp, {groupId, groupOwner});
             groupAccessorContract = await rp.group.getAccessorContract(groupAccessorAddress);
+
+            // Set RP withdrawal credentials
+            await setRocketPoolWithdrawalKey(web3, rp, {nodeOperator: withdrawalKeyOperator, owner});
 
         });
 

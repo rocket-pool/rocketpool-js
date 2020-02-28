@@ -1,6 +1,26 @@
 // Imports
+import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
+import { getWithdrawalPubkey, getWithdrawalCredentials } from './casper';
+
+
+// Set Rocket Pool withdrawal credentials
+export async function setRocketPoolWithdrawalKey(web3: Web3, rp: RocketPool, {nodeOperator, owner}: {nodeOperator: string, owner: string}) {
+
+    // Register node
+    let rocketNodeAPI = await rp.contracts.get('rocketNodeAPI');
+    await rocketNodeAPI.methods.add('Australia/Brisbane').send({from: nodeOperator, gas: 8000000});
+
+    // Set node trusted status
+    let rocketAdmin = await rp.contracts.get('rocketAdmin');
+    await rocketAdmin.methods.setNodeTrusted(nodeOperator, true).send({from: owner, gas: 8000000});
+
+    // Set withdrawal credentials
+    let rocketNodeWatchtower = await rp.contracts.get('rocketNodeWatchtower');
+    await rocketNodeWatchtower.methods.updateWithdrawalKey(getWithdrawalPubkey(web3), getWithdrawalCredentials(web3)).send({from: nodeOperator, gas: 8000000});
+
+}
 
 
 // Make a deposit
