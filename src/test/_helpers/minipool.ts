@@ -2,7 +2,7 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import GroupAccessorContract from '../../rocketpool/group/group-accessor-contract';
-import NodeContract from '../../rocketpool/group/node-contract';
+import NodeContract from '../../rocketpool/node/node-contract';
 import { getValidatorPubkey, getValidatorSignature } from '../../utils/casper';
 import { getValidatorDepositDataRoot } from './casper';
 
