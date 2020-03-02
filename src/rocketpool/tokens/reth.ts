@@ -5,7 +5,7 @@ import { Tx } from 'web3/eth/types';
 import { TransactionReceipt } from 'web3/types';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
-import ERC20 from './ERC20';
+import ERC20 from './erc20';
 
 
 /**
