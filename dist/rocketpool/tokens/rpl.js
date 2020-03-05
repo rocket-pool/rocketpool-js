@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _ERC2 = require('./ERC20');
+var _erc = require('./erc20');
 
-var _ERC3 = _interopRequireDefault(_ERC2);
+var _erc2 = _interopRequireDefault(_erc);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30,7 +30,7 @@ var RPL = function (_ERC) {
     }
 
     return RPL;
-}(_ERC3.default);
+}(_erc2.default);
 // Exports
 
 

@@ -269,26 +269,33 @@ var MinipoolContract = function () {
                 return parseInt(value);
             });
         }
-        // Get the minipool's validator pubkey for submission to Casper
+        // Get the minipool's validator pubkey submitted to Casper
 
     }, {
         key: 'getValidatorPubkey',
         value: function getValidatorPubkey() {
             return this.contract.methods.getValidatorPubkey().call();
         }
-        // Get the minipool's validator pubkey for submission to Casper
+        // Get the minipool's validator signature submitted to Casper
 
     }, {
         key: 'getValidatorSignature',
         value: function getValidatorSignature() {
             return this.contract.methods.getValidatorSignature().call();
         }
-        // Get the minipool's validator deposit data root for submission to Casper
+        // Get the minipool's validator deposit data root submitted to Casper
 
     }, {
         key: 'getValidatorDepositDataRoot',
         value: function getValidatorDepositDataRoot() {
             return this.contract.methods.getValidatorDepositDataRoot().call();
+        }
+        // Get the minipool's withdrawal credentials submitted to Casper
+
+    }, {
+        key: 'getWithdrawalCredentials',
+        value: function getWithdrawalCredentials() {
+            return this.contract.methods.getWithdrawalCredentials().call();
         }
         // Get the minipool's total capacity for user deposits in wei
 
