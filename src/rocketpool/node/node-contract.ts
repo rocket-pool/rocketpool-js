@@ -22,9 +22,6 @@ export interface NodeDepositReservation {
     etherRequired: string;
     rplRequired: string;
     durationId: string;
-    validatorPubkey: string;
-    validatorSignature: string;
-    validatorDepositDataRoot: string;
 }
 
 
@@ -64,11 +61,8 @@ class NodeContract {
             this.getDepositReservationEthRequired(),
             this.getDepositReservationRplRequired(),
             this.getDepositReservationDurationId(),
-            this.getDepositReservationValidatorPubkey(),
-            this.getDepositReservationValidatorSignature(),
-            this.getDepositReservationValidatorDepositDataRoot(),
-        ]).then(([created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot]: [Date, string, string, string, string, string, string]): NodeDepositReservation => {
-            return {created, etherRequired, rplRequired, durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot};
+        ]).then(([created, etherRequired, rplRequired, durationId]: [Date, string, string, string]): NodeDepositReservation => {
+            return {created, etherRequired, rplRequired, durationId};
         });
     }
 
@@ -127,24 +121,6 @@ class NodeContract {
     }
 
 
-    // Get the deposit reservation validator pubkey
-    public getDepositReservationValidatorPubkey(): Promise<string> {
-        return this.contract.methods.getDepositReserveValidatorPubkey().call();
-    }
-
-
-    // Get the deposit reservation validator signature
-    public getDepositReservationValidatorSignature(): Promise<string> {
-        return this.contract.methods.getDepositReserveValidatorSignature().call();
-    }
-
-
-    // Get the deposit reservation validator deposit data root
-    public getDepositReservationValidatorDepositDataRoot(): Promise<string> {
-        return this.contract.methods.getDepositReserveValidatorDepositDataRoot().call();
-    }
-
-
     /**
      * Mutators - Restricted to the node owner address
      */
@@ -160,9 +136,9 @@ class NodeContract {
 
 
     // Make a deposit reservation
-    public reserveDeposit(durationId: string, validatorPubkey: Buffer, validatorSignature: Buffer, validatorDepositDataRoot: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public reserveDeposit(durationId: string, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options),
+            this.contract.methods.depositReserve(durationId).send(options),
             onConfirmation
         );
     }
@@ -177,10 +153,19 @@ class NodeContract {
     }
 
 
-    // Can complete a deposit
+    // Complete a deposit
     public completeDeposit(options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
             this.contract.methods.deposit().send(options),
+            onConfirmation
+        );
+    }
+
+
+    // Progress a PreLaunch minipool to staking
+    public stakeMinipool(minipoolAddress: string, validatorPubkey: Buffer, validatorSignature: Buffer, validatorDepositDataRoot: Buffer, options?: Tx, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.stakeMinipool(minipoolAddress, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options),
             onConfirmation
         );
     }

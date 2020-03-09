@@ -89,4 +89,4 @@ var ERC20 = function () {
 
 
 exports.default = ERC20;
-//# sourceMappingURL=ERC20.js.map
+//# sourceMappingURL=erc20.js.map

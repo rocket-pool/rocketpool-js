@@ -260,21 +260,27 @@ class MinipoolContract {
     }
 
 
-    // Get the minipool's validator pubkey for submission to Casper
+    // Get the minipool's validator pubkey submitted to Casper
     public getValidatorPubkey(): Promise<string> {
         return this.contract.methods.getValidatorPubkey().call();
     }
 
 
-    // Get the minipool's validator pubkey for submission to Casper
+    // Get the minipool's validator signature submitted to Casper
     public getValidatorSignature(): Promise<string> {
         return this.contract.methods.getValidatorSignature().call();
     }
 
 
-    // Get the minipool's validator deposit data root for submission to Casper
+    // Get the minipool's validator deposit data root submitted to Casper
     public getValidatorDepositDataRoot(): Promise<string> {
         return this.contract.methods.getValidatorDepositDataRoot().call();
+    }
+
+
+    // Get the minipool's withdrawal credentials submitted to Casper
+    public getWithdrawalCredentials(): Promise<string> {
+        return this.contract.methods.getWithdrawalCredentials().call();
     }
 
 

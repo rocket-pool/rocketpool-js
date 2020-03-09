@@ -48,17 +48,14 @@ var NodeContract = function () {
     }, {
         key: 'getDepositReservation',
         value: function getDepositReservation() {
-            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId(), this.getDepositReservationValidatorPubkey(), this.getDepositReservationValidatorSignature(), this.getDepositReservationValidatorDepositDataRoot()]).then(function (_ref3) {
-                var _ref4 = _slicedToArray(_ref3, 7),
+            return Promise.all([this.getDepositReservationCreated(), this.getDepositReservationEthRequired(), this.getDepositReservationRplRequired(), this.getDepositReservationDurationId()]).then(function (_ref3) {
+                var _ref4 = _slicedToArray(_ref3, 4),
                     created = _ref4[0],
                     etherRequired = _ref4[1],
                     rplRequired = _ref4[2],
-                    durationId = _ref4[3],
-                    validatorPubkey = _ref4[4],
-                    validatorSignature = _ref4[5],
-                    validatorDepositDataRoot = _ref4[6];
+                    durationId = _ref4[3];
 
-                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId, validatorPubkey: validatorPubkey, validatorSignature: validatorSignature, validatorDepositDataRoot: validatorDepositDataRoot };
+                return { created: created, etherRequired: etherRequired, rplRequired: rplRequired, durationId: durationId };
             });
         }
         // Get the node owner
@@ -126,27 +123,6 @@ var NodeContract = function () {
         value: function getDepositReservationDurationId() {
             return this.contract.methods.getDepositReserveDurationID().call();
         }
-        // Get the deposit reservation validator pubkey
-
-    }, {
-        key: 'getDepositReservationValidatorPubkey',
-        value: function getDepositReservationValidatorPubkey() {
-            return this.contract.methods.getDepositReserveValidatorPubkey().call();
-        }
-        // Get the deposit reservation validator signature
-
-    }, {
-        key: 'getDepositReservationValidatorSignature',
-        value: function getDepositReservationValidatorSignature() {
-            return this.contract.methods.getDepositReserveValidatorSignature().call();
-        }
-        // Get the deposit reservation validator deposit data root
-
-    }, {
-        key: 'getDepositReservationValidatorDepositDataRoot',
-        value: function getDepositReservationValidatorDepositDataRoot() {
-            return this.contract.methods.getDepositReserveValidatorDepositDataRoot().call();
-        }
         /**
          * Mutators - Restricted to the node owner address
          */
@@ -161,8 +137,8 @@ var NodeContract = function () {
 
     }, {
         key: 'reserveDeposit',
-        value: function reserveDeposit(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot, options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options), onConfirmation);
+        value: function reserveDeposit(durationId, options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserve(durationId).send(options), onConfirmation);
         }
         // Cancel a deposit reservation
 
@@ -171,12 +147,19 @@ var NodeContract = function () {
         value: function cancelDepositReservation(options, onConfirmation) {
             return (0, _transaction.handleConfirmations)(this.contract.methods.depositReserveCancel().send(options), onConfirmation);
         }
-        // Can complete a deposit
+        // Complete a deposit
 
     }, {
         key: 'completeDeposit',
         value: function completeDeposit(options, onConfirmation) {
             return (0, _transaction.handleConfirmations)(this.contract.methods.deposit().send(options), onConfirmation);
+        }
+        // Progress a PreLaunch minipool to staking
+
+    }, {
+        key: 'stakeMinipool',
+        value: function stakeMinipool(minipoolAddress, validatorPubkey, validatorSignature, validatorDepositDataRoot, options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.stakeMinipool(minipoolAddress, validatorPubkey, validatorSignature, validatorDepositDataRoot).send(options), onConfirmation);
         }
         // Withdraw a deposit from an initialised, timed out or withdrawn minipool
 

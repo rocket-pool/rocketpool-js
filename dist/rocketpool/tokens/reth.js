@@ -8,9 +8,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _transaction = require('../../utils/transaction');
 
-var _ERC2 = require('./ERC20');
+var _erc = require('./erc20');
 
-var _ERC3 = _interopRequireDefault(_ERC2);
+var _erc2 = _interopRequireDefault(_erc);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48,7 +48,7 @@ var RETH = function (_ERC) {
     }]);
 
     return RETH;
-}(_ERC3.default);
+}(_erc2.default);
 // Exports
 
 

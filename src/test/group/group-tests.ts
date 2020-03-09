@@ -118,7 +118,7 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
             it('Can refund a deposit from a stalled minipool', async () => {
 
                 // Create minipool, deposit to, and stall
-                let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
+                let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
                 await stallMinipool(web3, rp, {minipoolAddress, fromAddress: nodeOwner});
 
@@ -129,10 +129,14 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
 
             it('Can withdraw a deposit from a staking minipool', async () => {
 
+                // Enable staking withdrawals (disabled by default in Rocket Pool)
+                const rocketDepositSettings = await rp.contracts.get('rocketDepositSettings');
+                await rocketDepositSettings.methods.setStakingWithdrawalAllowed(true).send({from: owner, gas: 8000000});
+
                 // Create minipool, deposit to, and stake
-                let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
+                let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
+                await stakeSingleMinipool(rp, {minipoolAddress, nodeContract, nodeOwner, depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
 
                 // Withdraw deposit
                 await withdrawStakingMinipoolDeposit(rp, groupAccessorContract, {depositId, minipoolAddress, weiAmount: web3.utils.toWei('4', 'ether'), from: depositor});
@@ -145,9 +149,9 @@ export default function runGroupTests(web3: Web3, rp: RocketPool): void {
             it('Can withdraw a deposit from a withdrawn minipool', async () => {
 
                 // Create minipool, deposit to, and stake, logout & withdraw
-                let minipoolAddress = await createNodeMinipool(web3, {nodeContract, nodeOwner, stakingDurationId: '3m'});
+                let minipoolAddress = await createNodeMinipool({nodeContract, nodeOwner, stakingDurationId: '3m'});
                 depositId = await deposit(rp, groupAccessorContract, {groupId, durationId: '3m', from: depositor, value: web3.utils.toWei('4', 'ether')});
-                await stakeSingleMinipool(rp, {depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
+                await stakeSingleMinipool(rp, {minipoolAddress, nodeContract, nodeOwner, depositorContract: groupAccessorContract, depositor, stakingDurationId: '3m'});
                 await withdrawMinipool(rp, {minipoolAddress, balance: web3.utils.toWei('36', 'ether'), nodeOperator: nodeOwner, owner});
 
                 // Withdraw deposit
