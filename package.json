@@ -17,20 +17,20 @@
   },
   "homepage": "https://github.com/rocket-pool/rocketpool-js#readme",
   "dependencies": {
-    "pako": "^1.0.10",
-    "web3": "^1.0.0-beta.37"
+    "pako": "^1.0.11",
+    "web3": "^1.2.9"
   },
   "devDependencies": {
-    "@babel/runtime": "^7.0.0-beta.55",
-    "@chainsafe/ssz": "^0.5.2",
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
-    "@types/pako": "^1.0.0",
-    "@types/web3": "^1.0.18",
+    "@babel/runtime": "^7.10.3",
+    "@chainsafe/ssz": "^0.5.4",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^5.2.7",
+    "@types/pako": "^1.0.1",
+    "@types/web3": "^1.2.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
-    "ts-node": "^8.0.3",
-    "typescript": "^3.3.4000"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
   }
 }
