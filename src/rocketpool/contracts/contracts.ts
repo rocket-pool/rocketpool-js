@@ -1,9 +1,8 @@
 // Imports
 import Web3 from 'web3';
-import { ABIDefinition } from 'web3/eth/abi';
-import Contract from 'web3/eth/contract';
-import { EventLog } from 'web3/types';
-import ContractVersionSet from './contract-version-set';
+import { EventLog } from 'web3-core/types';
+import { Contract } from 'web3-eth-contract/types';
+import { AbiItem } from 'web3-utils/types';
 import { ContractArtifact, decodeAbi } from '../../utils/contract';
 
 
@@ -16,7 +15,7 @@ class Contracts {
     // Contracts
     private rocketStorage: Promise<Contract>;
     private contracts: {[name: string]: Promise<Contract>} = {};
-    private abis: {[name: string]: Promise<ABIDefinition[]>} = {};
+    private abis: {[name: string]: Promise<AbiItem[]>} = {};
 
 
     // Constructor
@@ -29,12 +28,12 @@ class Contracts {
 
 
     // Load ABI/s by name
-    public abi(name: string): Promise<ABIDefinition[]>;
-    public abi(names: string[]): Promise<ABIDefinition[][]>;
+    public abi(name: string): Promise<AbiItem[]>;
+    public abi(names: string[]): Promise<AbiItem[][]>;
     public abi(name: any): any {
 
         // Array mode
-        if (typeof name === "object") return Promise.all(name.map((n: string): Promise<ABIDefinition[]> => this.abi(n)));
+        if (typeof name === "object") return Promise.all(name.map((n: string): Promise<AbiItem[]> => this.abi(n)));
 
         // Use cached ABI promise
         if (this.abis[name]) return this.abis[name];
@@ -42,7 +41,7 @@ class Contracts {
         // Load and decode ABI
         this.abis[name] = this.rocketStorage
         .then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getString(this.web3.utils.soliditySha3('contract.abi', name)).call())
-        .then((abi: string): ABIDefinition[] => decodeAbi(abi));
+        .then((abi: string): AbiItem[] => decodeAbi(abi));
 
         // Return ABI promise
         return this.abis[name];
@@ -62,10 +61,10 @@ class Contracts {
         if (this.contracts[name]) return this.contracts[name];
 
         // Load contract data and initialise
-        this.contracts[name] = this.rocketStorage.then((rocketStorage: Contract): Promise<[string, ABIDefinition[]]> => Promise.all([
+        this.contracts[name] = this.rocketStorage.then((rocketStorage: Contract): Promise<[string, AbiItem[]]> => Promise.all([
             rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call(),
             this.abi(name),
-        ])).then(([address, abi]: [string, ABIDefinition[]]): Contract => new this.web3.eth.Contract(abi, address));
+        ])).then(([address, abi]: [string, AbiItem[]]): Contract => new this.web3.eth.Contract(abi, address));
 
         // Return contract promise
         return this.contracts[name];
@@ -73,31 +72,9 @@ class Contracts {
     }
 
 
-    // Load all versions of a contract by name
-    public versions(name: string): Promise<ContractVersionSet> {
-        return Promise.all([
-            this.rocketStorage.then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call()),
-            this.get('rocketUpgrade').then((rocketUpgrade: Contract): Promise<EventLog[]> => rocketUpgrade.getPastEvents('ContractUpgraded', {fromBlock: 0})),
-        ]).then(([currentAddress, upgradeEvents]: [string, EventLog[]]): string[] => {
-
-            // Get all addresses of the contract versions
-            let contractAddresses: string[] = [];
-            while (currentAddress) {
-                contractAddresses.push(currentAddress);
-                let lastUpgrade: EventLog | undefined = upgradeEvents.find((event: EventLog) => event.returnValues._newContractAddress.toLowerCase() == currentAddress.toLowerCase());
-                currentAddress = lastUpgrade ? lastUpgrade.returnValues._oldContractAddress : null;
-            }
-            return contractAddresses.reverse(); // Oldest contract versions first
-
-        })
-        .then((addresses: string[]): Promise<Contract[]> => Promise.all(addresses.map((address: string): Promise<Contract> => this.make(name, address))))
-        .then((contracts: Contract[]): ContractVersionSet => new ContractVersionSet(contracts));
-    }
-
-
     // Create a new contract instance with the specified ABI name and address
     public make(name: string, address: string): Promise<Contract> {
-        return this.abi(name).then((abi: ABIDefinition[]): Contract => new this.web3.eth.Contract(abi, address));
+        return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
     }
 
 

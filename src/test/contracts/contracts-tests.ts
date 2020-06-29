@@ -39,15 +39,6 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
                 assert.property(rocketNetworkWithdrawal, 'methods', 'Loaded contract is invalid');
             });
 
-            it('Can load all versions of a contract', async () => {
-                let rocketDepositPool = await rp.contracts.versions('rocketDepositPool');
-                assert.property(rocketDepositPool, 'contracts', 'Loaded contract version set is invalid');
-                assert.property(rocketDepositPool.current(), 'methods', 'Loaded contract version is invalid');
-                assert.property(rocketDepositPool.first(), 'methods', 'Loaded contract version is invalid');
-                let depositReceivedEvents = await rocketDepositPool.getPastEvents('DepositReceived', {fromBlock: 0});
-                assert.isArray(depositReceivedEvents, 'Invalid contract version set events');
-            });
-
             it('Can create a new contract instance', async () => {
                 let minipool = await rp.contracts.make('rocketMinipool', '0x1111111111111111111111111111111111111111');
                 assert.property(minipool, 'methods', 'Created contract is invalid');
