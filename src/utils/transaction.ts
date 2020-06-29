@@ -1,6 +1,5 @@
 // Imports
-import PromiEvent from 'web3/promiEvent';
-import { TransactionReceipt } from 'web3/types';
+import { PromiEvent, TransactionReceipt } from 'web3-core/types';
 
 
 // Transaction confirmation handler
