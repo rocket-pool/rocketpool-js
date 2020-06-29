@@ -19,7 +19,7 @@ $ truffle migrate --reset
 
 In javascript library directory, create symlink to Rocket Pool Truffle contract artifacts:
 ```
-$ ln -s ../rocketpool/build/contracts/ src/contracts
+$ ln -s ../../rocketpool/build/contracts/ src/contracts
 ```
 
 Give the Javascript library a spin:
