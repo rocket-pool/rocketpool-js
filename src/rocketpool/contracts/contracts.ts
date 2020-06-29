@@ -1,6 +1,5 @@
 // Imports
 import Web3 from 'web3';
-import { EventLog } from 'web3-core/types';
 import { Contract } from 'web3-eth-contract/types';
 import { AbiItem } from 'web3-utils/types';
 import { ContractArtifact, decodeAbi } from '../../utils/contract';
