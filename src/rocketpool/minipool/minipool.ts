@@ -87,14 +87,14 @@ class Minipool {
 
 
     // Get a minipool's details
-    public getMinipoolDetails(minipoolAddress: string): Promise<MinipoolDetails> {
+    public getMinipoolDetails(address: string): Promise<MinipoolDetails> {
         return Promise.all([
-            this.getMinipoolExists(minipoolAddress),
-            this.getMinipoolPubkey(minipoolAddress),
-            this.getMinipoolWithdrawalTotalBalance(minipoolAddress),
-            this.getMinipoolWithdrawalNodeBalance(minipoolAddress),
-            this.getMinipoolWithdrawable(minipoolAddress),
-            this.getMinipoolWithdrawalProcessed(minipoolAddress),
+            this.getMinipoolExists(address),
+            this.getMinipoolPubkey(address),
+            this.getMinipoolWithdrawalTotalBalance(address),
+            this.getMinipoolWithdrawalNodeBalance(address),
+            this.getMinipoolWithdrawable(address),
+            this.getMinipoolWithdrawalProcessed(address),
         ]).then(
             ([exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed]: [boolean, string, string, string, boolean, boolean]): MinipoolDetails =>
             ({address, exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed})
@@ -143,49 +143,49 @@ class Minipool {
 
 
     // Check whether a minipool exists
-    public getMinipoolExists(minipoolAddress: string): Promise<boolean> {
+    public getMinipoolExists(address: string): Promise<boolean> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<boolean> => {
-            return rocketMinipoolManager.methods.getMinipoolExists(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolExists(address).call();
         });
     }
 
 
     // Get a minipool's validator pubkey
-    public getMinipoolPubkey(minipoolAddress: string): Promise<string> {
+    public getMinipoolPubkey(address: string): Promise<string> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolPubkey(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolPubkey(address).call();
         });
     }
 
 
     // Get a minipool's total balance at withdrawal in wei
-    public getMinipoolWithdrawalTotalBalance(minipoolAddress: string): Promise<string> {
+    public getMinipoolWithdrawalTotalBalance(address: string): Promise<string> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(address).call();
         });
     }
 
 
     // Get a minipool's node balance at withdrawal in wei
-    public getMinipoolWithdrawalNodeBalance(minipoolAddress: string): Promise<string> {
+    public getMinipoolWithdrawalNodeBalance(address: string): Promise<string> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(address).call();
         });
     }
 
 
     // Check whether a minipool is withdrawable
-    public getMinipoolWithdrawable(minipoolAddress: string): Promise<boolean> {
+    public getMinipoolWithdrawable(address: string): Promise<boolean> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<boolean> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawable(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolWithdrawable(address).call();
         });
     }
 
 
     // Check whether a minipool's validator withdrawal has been processed
-    public getMinipoolWithdrawalProcessed(minipoolAddress: string): Promise<boolean> {
+    public getMinipoolWithdrawalProcessed(address: string): Promise<boolean> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<boolean> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalProcessed(minipoolAddress).call();
+            return rocketMinipoolManager.methods.getMinipoolWithdrawalProcessed(address).call();
         });
     }
 
