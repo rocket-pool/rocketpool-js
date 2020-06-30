@@ -26,11 +26,11 @@ class Node {
 
 
     // Contract accessors
-    private get rocketNodeManager(): Promise<Contract> {
-        return this.contracts.get('rocketNodeManager');
-    }
     private get rocketNodeDeposit(): Promise<Contract> {
         return this.contracts.get('rocketNodeDeposit');
+    }
+    private get rocketNodeManager(): Promise<Contract> {
+        return this.contracts.get('rocketNodeManager');
     }
 
 
