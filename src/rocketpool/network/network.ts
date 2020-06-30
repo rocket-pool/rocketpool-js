@@ -111,10 +111,10 @@ class Network {
 
 
     // Submit network ETH balances for an epoch
-    public submitETHBalances(epoch: number, total: string, staking: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public submitETHBalances(epoch: number, totalWei: string, stakingWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkBalances.methods.submitETHBalances(epoch, total, staking).send(options),
+                rocketNetworkBalances.methods.submitETHBalances(epoch, totalWei, stakingWei).send(options),
                 onConfirmation
             );
         });
