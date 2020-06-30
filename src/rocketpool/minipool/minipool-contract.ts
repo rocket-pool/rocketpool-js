@@ -5,6 +5,32 @@ import { Contract, SendOptions } from 'web3-eth-contract/types';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
 
 
+// Detail types
+export interface StatusDetails {
+    status: number;
+    block: number;
+    time: Date;
+}
+export interface NodeDetails {
+    address: string;
+    fee: number;
+    depositBalance: string;
+    refundBalance: string;
+    depositAssigned: boolean;
+}
+export interface UserDetails {
+    depositBalance: string;
+    depositAssigned: boolean;
+}
+export interface StakingDetails {
+    startBalance: string;
+    endBalance: string;
+    startBlock: number;
+    userStartBlock: number;
+    endBlock: number;
+}
+
+
 /**
  * RocketMinipool contract instance wrapper
  */
@@ -21,6 +47,16 @@ class MinipoolContract {
 
 
     // Status details
+    public getStatusDetails(): Promise<StatusDetails> {
+        return Promise.all([
+            this.getStatus(),
+            this.getStatusBlock(),
+            this.getStatusTime(),
+        ]).then(
+            ([status, block, time]: [number, number, Date]): StatusDetails =>
+            ({status, block, time})
+        );
+    }
     public getStatus(): Promise<number> {
         return this.contract.methods.getStatus.call();
     }
@@ -39,6 +75,18 @@ class MinipoolContract {
 
 
     // Node details
+    public getNodeDetails(): Promise<NodeDetails> {
+        return Promise.all([
+            this.getNodeAddress(),
+            this.getNodeFee(),
+            this.getNodeDepositBalance(),
+            this.getNodeRefundBalance(),
+            this.getNodeDepositAssigned(),
+        ]).then(
+            ([address, fee, depositBalance, refundBalance, depositAssigned]: [string, number, string, string, boolean]): NodeDetails =>
+            ({address, fee, depositBalance, refundBalance, depositAssigned})
+        );
+    }
     public getNodeAddress(): Promise<string> {
         return this.contract.methods.getNodeAddress.call();
     }
@@ -57,6 +105,15 @@ class MinipoolContract {
 
 
     // User deposit details
+    public getUserDetails(): Promise<UserDetails> {
+        return Promise.all([
+            this.getUserDepositBalance(),
+            this.getUserDepositAssigned(),
+        ]).then(
+            ([depositBalance, depositAssigned]: [string, boolean]): UserDetails =>
+            ({depositBalance, depositAssigned})
+        );
+    }
     public getUserDepositBalance(): Promise<string> {
         return this.contract.methods.getUserDepositBalance.call();
     }
@@ -66,6 +123,18 @@ class MinipoolContract {
 
 
     // Staking details
+    public getStakingDetails(): Promise<StakingDetails> {
+        return Promise.all([
+            this.getStakingStartBalance(),
+            this.getStakingEndBalance(),
+            this.getStakingStartBlock(),
+            this.getStakingUserStartBlock(),
+            this.getStakingEndBlock(),
+        ]).then(
+            ([startBalance, endBalance, startBlock, userStartBlock, endBlock]: [string, string, number, number, number]): StakingDetails =>
+            ({startBalance, endBalance, startBlock, userStartBlock, endBlock})
+        );
+    }
     public getStakingStartBalance(): Promise<string> {
         return this.contract.methods.getStakingStartBalance.call();
     }
