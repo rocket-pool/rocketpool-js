@@ -7,6 +7,18 @@ import { ConfirmationHandler, handleConfirmations } from '../../utils/transactio
 import MinipoolContract from './minipool-contract';
 
 
+// Minipool details
+export interface MinipoolDetails {
+    address: string;
+    exists: boolean;
+    pubkey: string;
+    withdrawalTotalBalance: string;
+    withdrawalNodeBalance: string;
+    withdrawable: boolean;
+    withdrawalProcessed: boolean;
+}
+
+
 /**
  * Rocket Pool minipool manager
  */
@@ -32,6 +44,62 @@ class Minipool {
     /**
      * Getters
      */
+
+
+    // Get all minipool addresses
+    public getMinipoolAddresses(): Promise<string[]> {
+        return this.getMinipoolCount().then((count: number): Promise<string[]> => {
+            return Promise.all([...Array(count).keys()].map((index: number): Promise<string> => {
+                return this.getMinipoolAt(index);
+            }));
+        });
+    }
+
+
+    // Get all minipool details
+    public getMinipools(): Promise<MinipoolDetails[]> {
+        return this.getMinipoolAddresses().then((addresses: string[]): Promise<MinipoolDetails[]> => {
+            return Promise.all(addresses.map((address: string): Promise<MinipoolDetails> => {
+                return this.getMinipoolDetails(address);
+            }));
+        });
+    }
+
+
+    // Get a node's minipool addresses
+    public getNodeMinipoolAddresses(nodeAddress: string): Promise<string[]> {
+        return this.getNodeMinipoolCount(nodeAddress).then((count: number): Promise<string[]> => {
+            return Promise.all([...Array(count).keys()].map((index: number): Promise<string> => {
+                return this.getNodeMinipoolAt(nodeAddress, index);
+            }));
+        });
+    }
+
+
+    // Get a node's minipool details
+    public getNodeMinipools(nodeAddress: string): Promise<MinipoolDetails[]> {
+        return this.getNodeMinipoolAddresses(nodeAddress).then((addresses: string[]): Promise<MinipoolDetails[]> => {
+            return Promise.all(addresses.map((address: string): Promise<MinipoolDetails> => {
+                return this.getMinipoolDetails(address);
+            }));
+        });
+    }
+
+
+    // Get a minipool's details
+    public getMinipoolDetails(minipoolAddress: string): Promise<MinipoolDetails> {
+        return Promise.all([
+            this.getMinipoolExists(minipoolAddress),
+            this.getMinipoolPubkey(minipoolAddress),
+            this.getMinipoolWithdrawalTotalBalance(minipoolAddress),
+            this.getMinipoolWithdrawalNodeBalance(minipoolAddress),
+            this.getMinipoolWithdrawable(minipoolAddress),
+            this.getMinipoolWithdrawalProcessed(minipoolAddress),
+        ]).then(
+            ([exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed]: [boolean, string, string, string, boolean, boolean]): MinipoolDetails =>
+            ({address, exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed})
+        );
+    }
 
 
     // Get the total minipool count
