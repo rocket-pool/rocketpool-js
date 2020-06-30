@@ -2,6 +2,7 @@
 import Web3 from 'web3';
 import { ContractArtifact } from '../utils/contract';
 import Contracts from './contracts/contracts';
+import Deposit from './deposit/deposit';
 
 
 /**
@@ -12,6 +13,7 @@ class RocketPool {
 
     // Services
     public readonly contracts: Contracts;
+    public readonly deposit: Deposit;
 
 
     // Constructor
@@ -19,6 +21,7 @@ class RocketPool {
 
         // Initialise services
         this.contracts = new Contracts(web3, RocketStorage);
+        this.deposit = new Deposit(web3, this.contracts);
 
     }
 
