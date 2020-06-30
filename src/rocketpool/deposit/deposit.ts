@@ -7,7 +7,7 @@ import { ConfirmationHandler, handleConfirmations } from '../../utils/transactio
 
 
 /**
- * Rocket Pool deposit pool
+ * Rocket Pool deposit pool manager
  */
 class Deposit {
 
