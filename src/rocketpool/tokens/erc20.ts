@@ -13,7 +13,7 @@ abstract class ERC20 {
 
 
     // Constructor
-    public constructor(private web3: Web3, private contracts: Contracts, private tokenContractName: string) {}
+    public constructor(protected web3: Web3, protected contracts: Contracts, protected tokenContractName: string) {}
 
 
     // Contract accessor

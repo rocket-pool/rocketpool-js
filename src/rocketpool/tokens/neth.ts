@@ -24,6 +24,17 @@ class NETH extends ERC20 {
      */
 
 
+    // Burn nETH for ETH
+    public burn(amountWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                tokenContract.methods.burn(amountWei).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
 }
 
 
