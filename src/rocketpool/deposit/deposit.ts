@@ -27,7 +27,7 @@ class Deposit {
      */
 
 
-    // Get the deposit pool balance
+    // Get the current deposit pool balance in wei
     public getBalance(): Promise<string> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
             return rocketDepositPool.methods.getBalance.call();
