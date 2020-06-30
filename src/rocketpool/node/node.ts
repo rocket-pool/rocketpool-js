@@ -184,7 +184,7 @@ class Node {
     public deposit(minimumNodeFee: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNodeDeposit.methods.deposit(this.web3.utils.toWei(minimumNodeFee, 'ether')).send(options),
+                rocketNodeDeposit.methods.deposit(this.web3.utils.toWei(minimumNodeFee.toString(), 'ether')).send(options),
                 onConfirmation
             );
         });
