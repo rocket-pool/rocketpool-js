@@ -5,8 +5,8 @@ import RocketPool from '../../rocketpool/rocketpool';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 
 // Tests
-export default function runContractsTests(web3: Web3, rp: RocketPool): void {
-    describe('Contracts', (): void => {
+export default function runContractsTests(web3: Web3, rp: RocketPool) {
+    describe('Contracts', () => {
 
 
         // State snapshotting
@@ -18,7 +18,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
 
 
         // ABI loading
-        describe('ABIs', (): void => {
+        describe('ABIs', () => {
 
             it('Can load a single ABI', async () => {
                 let minipoolAbi = await rp.contracts.abi('rocketMinipool');
@@ -35,7 +35,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool): void {
 
 
         // Contract loading
-        describe('Contracts', (): void => {
+        describe('Contracts', () => {
 
             it('Can load a single contract', async () => {
                 let rocketNetworkBalances = await rp.contracts.get('rocketNetworkBalances');

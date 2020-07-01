@@ -2,11 +2,11 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
-import { deposit } from './deposit-scenarios';
+import { deposit } from './scenario-deposit';
 
 // Tests
-export default function runDepositTests(web3: Web3, rp: RocketPool): void {
-    describe('Deposit', (): void => {
+export default function runDepositTests(web3: Web3, rp: RocketPool) {
+    describe('Deposit', () => {
 
 
         // Accounts
@@ -31,7 +31,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool): void {
 
 
         // Deposits
-        describe('Deposits', (): void => {
+        describe('Deposits', () => {
 
             it('Can make a deposit', async () => {
                 await deposit(web3, rp, {
