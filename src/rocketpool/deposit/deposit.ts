@@ -30,7 +30,7 @@ class Deposit {
     // Get the current deposit pool balance in wei
     public getBalance(): Promise<string> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
-            return rocketDepositPool.methods.getBalance.call();
+            return rocketDepositPool.methods.getBalance().call();
         });
     }
 
@@ -44,7 +44,7 @@ class Deposit {
     public deposit(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketDepositPool.methods.deposit.send(options),
+                rocketDepositPool.methods.deposit().send(options),
                 onConfirmation
             );
         });
@@ -55,7 +55,7 @@ class Deposit {
     public assignDeposits(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketDepositPool.methods.assignDeposits.send(options),
+                rocketDepositPool.methods.assignDeposits().send(options),
                 onConfirmation
             );
         });

@@ -58,19 +58,19 @@ class MinipoolContract {
         );
     }
     public getStatus(): Promise<number> {
-        return this.contract.methods.getStatus.call();
+        return this.contract.methods.getStatus().call();
     }
     public getStatusBlock(): Promise<number> {
-        return this.contract.methods.getStatusBlock.call().then((value: string): number => parseInt(value));
+        return this.contract.methods.getStatusBlock().call().then((value: string): number => parseInt(value));
     }
     public getStatusTime(): Promise<Date> {
-        return this.contract.methods.getStatusTime.call().then((value: string): Date => new Date(parseInt(value) * 1000));
+        return this.contract.methods.getStatusTime().call().then((value: string): Date => new Date(parseInt(value) * 1000));
     }
 
 
     // Deposit type
     public getDepositType(): Promise<number> {
-        return this.contract.methods.getDepositType.call();
+        return this.contract.methods.getDepositType().call();
     }
 
 
@@ -88,19 +88,19 @@ class MinipoolContract {
         );
     }
     public getNodeAddress(): Promise<string> {
-        return this.contract.methods.getNodeAddress.call();
+        return this.contract.methods.getNodeAddress().call();
     }
     public getNodeFee(): Promise<number> {
-        return this.contract.methods.getNodeFee.call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+        return this.contract.methods.getNodeFee().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
     public getNodeDepositBalance(): Promise<string> {
-        return this.contract.methods.getNodeDepositBalance.call();
+        return this.contract.methods.getNodeDepositBalance().call();
     }
     public getNodeRefundBalance(): Promise<string> {
-        return this.contract.methods.getNodeRefundBalance.call();
+        return this.contract.methods.getNodeRefundBalance().call();
     }
     public getNodeDepositAssigned(): Promise<boolean> {
-        return this.contract.methods.getNodeDepositAssigned.call();
+        return this.contract.methods.getNodeDepositAssigned().call();
     }
 
 
@@ -115,10 +115,10 @@ class MinipoolContract {
         );
     }
     public getUserDepositBalance(): Promise<string> {
-        return this.contract.methods.getUserDepositBalance.call();
+        return this.contract.methods.getUserDepositBalance().call();
     }
     public getUserDepositAssigned(): Promise<boolean> {
-        return this.contract.methods.getUserDepositAssigned.call();
+        return this.contract.methods.getUserDepositAssigned().call();
     }
 
 
@@ -136,19 +136,19 @@ class MinipoolContract {
         );
     }
     public getStakingStartBalance(): Promise<string> {
-        return this.contract.methods.getStakingStartBalance.call();
+        return this.contract.methods.getStakingStartBalance().call();
     }
     public getStakingEndBalance(): Promise<string> {
-        return this.contract.methods.getStakingEndBalance.call();
+        return this.contract.methods.getStakingEndBalance().call();
     }
     public getStakingStartBlock(): Promise<number> {
-        return this.contract.methods.getStakingStartBlock.call().then((value: string): number => parseInt(value));
+        return this.contract.methods.getStakingStartBlock().call().then((value: string): number => parseInt(value));
     }
     public getStakingUserStartBlock(): Promise<number> {
-        return this.contract.methods.getStakingUserStartBlock.call().then((value: string): number => parseInt(value));
+        return this.contract.methods.getStakingUserStartBlock().call().then((value: string): number => parseInt(value));
     }
     public getStakingEndBlock(): Promise<number> {
-        return this.contract.methods.getStakingEndBlock.call().then((value: string): number => parseInt(value));
+        return this.contract.methods.getStakingEndBlock().call().then((value: string): number => parseInt(value));
     }
 
 
@@ -160,7 +160,7 @@ class MinipoolContract {
     // Dissolve the minipool
     public dissolve(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.dissolve.send(options),
+            this.contract.methods.dissolve().send(options),
             onConfirmation
         );
     }
@@ -174,7 +174,7 @@ class MinipoolContract {
     // Refund node ETH refinanced from user deposited ETH
     public refund(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.refund.send(options),
+            this.contract.methods.refund().send(options),
             onConfirmation
         );
     }
@@ -192,7 +192,7 @@ class MinipoolContract {
     // Withdraw node balances & rewards from the minipool and close it
     public withdraw(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.withdraw.send(options),
+            this.contract.methods.withdraw().send(options),
             onConfirmation
         );
     }
@@ -201,7 +201,7 @@ class MinipoolContract {
     // Withdraw node balances from the minipool and close it
     public close(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.close.send(options),
+            this.contract.methods.close().send(options),
             onConfirmation
         );
     }

@@ -28,7 +28,7 @@ class NodeSettings {
     // Node registrations are currently enabled
     public getRegistrationEnabled(): Promise<boolean> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<boolean> => {
-            return rocketNodeSettings.methods.getRegistrationEnabled.call();
+            return rocketNodeSettings.methods.getRegistrationEnabled().call();
         });
     }
 
@@ -36,7 +36,7 @@ class NodeSettings {
     // Node deposits are currently enabled
     public getDepositEnabled(): Promise<boolean> {
         return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<boolean> => {
-            return rocketNodeSettings.methods.getDepositEnabled.call();
+            return rocketNodeSettings.methods.getDepositEnabled().call();
         });
     }
 

@@ -28,17 +28,17 @@ class NetworkSettings {
     // Node commission rate parameters
     public getMinimumNodeFee(): Promise<number> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
-            return rocketNetworkSettings.methods.getMinimumNodeFee.call();
+            return rocketNetworkSettings.methods.getMinimumNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
     public getTargetNodeFee(): Promise<number> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
-            return rocketNetworkSettings.methods.getTargetNodeFee.call();
+            return rocketNetworkSettings.methods.getTargetNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
     public getMaximumNodeFee(): Promise<number> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
-            return rocketNetworkSettings.methods.getMaximumNodeFee.call();
+            return rocketNetworkSettings.methods.getMaximumNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
@@ -46,7 +46,7 @@ class NetworkSettings {
     // The range of node demand values in wei to base fee calculations on (from negative to positive value)
     public getNodeFeeDemandRange(): Promise<string> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
-            return rocketNetworkSettings.methods.getNodeFeeDemandRange.call();
+            return rocketNetworkSettings.methods.getNodeFeeDemandRange().call();
         });
     }
 
@@ -54,7 +54,7 @@ class NetworkSettings {
     // The target rETH collateralization rate
     public getTargetRethCollateralRate(): Promise<number> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
-            return rocketNetworkSettings.methods.getTargetRethCollateralRate.call();
+            return rocketNetworkSettings.methods.getTargetRethCollateralRate().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 

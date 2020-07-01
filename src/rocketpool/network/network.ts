@@ -36,7 +36,7 @@ class Network {
     // Get the current network total ETH balance in wei
     public getTotalETHBalance(): Promise<string> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
-            return rocketNetworkBalances.methods.getTotalETHBalance.call();
+            return rocketNetworkBalances.methods.getTotalETHBalance().call();
         });
     }
 
@@ -44,7 +44,7 @@ class Network {
     // Get the current network staking ETH balance in wei
     public getStakingETHBalance(): Promise<string> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
-            return rocketNetworkBalances.methods.getStakingETHBalance.call();
+            return rocketNetworkBalances.methods.getStakingETHBalance().call();
         });
     }
 
@@ -52,7 +52,7 @@ class Network {
     // Get the epoch that current network balances are set for
     public getETHBalancesEpoch(): Promise<number> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
-            return rocketNetworkBalances.methods.getETHBalancesEpoch.call();
+            return rocketNetworkBalances.methods.getETHBalancesEpoch().call();
         }).then((value: string): number => parseInt(value));
     }
 
@@ -60,7 +60,7 @@ class Network {
     // Get the current network ETH utilization rate
     public getETHUtilizationRate(): Promise<number> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
-            return rocketNetworkBalances.methods.getETHUtilizationRate.call();
+            return rocketNetworkBalances.methods.getETHUtilizationRate().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
@@ -68,7 +68,7 @@ class Network {
     // Get the current network node demand in wei
     public getNodeDemand(): Promise<string> {
         return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<string> => {
-            return rocketNetworkFees.methods.getNodeDemand.call();
+            return rocketNetworkFees.methods.getNodeDemand().call();
         });
     }
 
@@ -76,7 +76,7 @@ class Network {
     // Get the current network node commission rate
     public getNodeFee(): Promise<number> {
         return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<string> => {
-            return rocketNetworkFees.methods.getNodeFee.call();
+            return rocketNetworkFees.methods.getNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
@@ -92,7 +92,7 @@ class Network {
     // Get the current withdrawal pool balance in wei
     public getWithdrawalBalance(): Promise<string> {
         return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<string> => {
-            return rocketNetworkWithdrawal.methods.getWithdrawalBalance.call();
+            return rocketNetworkWithdrawal.methods.getWithdrawalBalance().call();
         });
     }
 
@@ -100,7 +100,7 @@ class Network {
     // Get the current network validator withdrawal credentials
     public getWithdrawalCredentials(): Promise<string> {
         return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<string> => {
-            return rocketNetworkWithdrawal.methods.getWithdrawalCredentials.call();
+            return rocketNetworkWithdrawal.methods.getWithdrawalCredentials().call();
         });
     }
 

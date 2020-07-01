@@ -105,7 +105,7 @@ class Minipool {
     // Get the total minipool count
     public getMinipoolCount(): Promise<number> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolCount.call();
+            return rocketMinipoolManager.methods.getMinipoolCount().call();
         }).then((value: string): number => parseInt(value));
     }
 
@@ -193,7 +193,7 @@ class Minipool {
     // Get the total minipool queue length
     public getQueueTotalLength(): Promise<number> {
         return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<string> => {
-            return rocketMinipoolQueue.methods.getTotalLength.call();
+            return rocketMinipoolQueue.methods.getTotalLength().call();
         }).then((value: string): number => parseInt(value));
     }
 
@@ -201,7 +201,7 @@ class Minipool {
     // Get the total capacity of queued minipools in wei
     public getQueueTotalCapacity(): Promise<string> {
         return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<string> => {
-            return rocketMinipoolQueue.methods.getTotalCapacity.call();
+            return rocketMinipoolQueue.methods.getTotalCapacity().call();
         });
     }
 
@@ -209,7 +209,7 @@ class Minipool {
     // Get the effective capacity of queued minipools in wei (used in node demand calculations)
     public getQueueEffectiveCapacity(): Promise<string> {
         return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<string> => {
-            return rocketMinipoolQueue.methods.getEffectiveCapacity.call();
+            return rocketMinipoolQueue.methods.getEffectiveCapacity().call();
         });
     }
 
@@ -217,7 +217,7 @@ class Minipool {
     // Get the capacity of the next available minipool in wei
     public getQueueNextCapacity(): Promise<string> {
         return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<string> => {
-            return rocketMinipoolQueue.methods.getNextCapacity.call();
+            return rocketMinipoolQueue.methods.getNextCapacity().call();
         });
     }
 

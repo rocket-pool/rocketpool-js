@@ -28,7 +28,7 @@ class RETH extends ERC20 {
     // Returns the amount of ETH backing 1 rETH
     public getExchangeRate(): Promise<number> {
         return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
-            return tokenContract.methods.getExchangeRate.call();
+            return tokenContract.methods.getExchangeRate().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
@@ -37,7 +37,7 @@ class RETH extends ERC20 {
     // Returns the portion of rETH backed by ETH in the contract as a fraction
     public getCollateralRate(): Promise<number> {
         return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
-            return tokenContract.methods.getCollateralRate.call();
+            return tokenContract.methods.getCollateralRate().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 

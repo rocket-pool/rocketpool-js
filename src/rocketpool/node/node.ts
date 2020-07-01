@@ -95,7 +95,7 @@ class Node {
     // Get the total node count
     public getNodeCount(): Promise<number> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getNodeCount.call();
+            return rocketNodeManager.methods.getNodeCount().call();
         }).then((value: string): number => parseInt(value));
     }
 
@@ -111,7 +111,7 @@ class Node {
     // Get the total trusted node count
     public getTrustedNodeCount(): Promise<number> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getTrustedNodeCount.call();
+            return rocketNodeManager.methods.getTrustedNodeCount().call();
         }).then((value: string): number => parseInt(value));
     }
 

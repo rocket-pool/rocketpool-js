@@ -28,7 +28,7 @@ class MinipoolSettings {
     // Balance required to launch minipool in wei
     public getLaunchBalance(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getLaunchBalance.call();
+            return rocketMinipoolSettings.methods.getLaunchBalance().call();
         });
     }
 
@@ -36,17 +36,17 @@ class MinipoolSettings {
     // Required node deposit amounts in wei
     public getFullDepositNodeAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getFullDepositNodeAmount.call();
+            return rocketMinipoolSettings.methods.getFullDepositNodeAmount().call();
         });
     }
     public getHalfDepositNodeAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getHalfDepositNodeAmount.call();
+            return rocketMinipoolSettings.methods.getHalfDepositNodeAmount().call();
         });
     }
     public getEmptyDepositNodeAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getEmptyDepositNodeAmount.call();
+            return rocketMinipoolSettings.methods.getEmptyDepositNodeAmount().call();
         });
     }
 
@@ -54,17 +54,17 @@ class MinipoolSettings {
     // Required user deposit amounts in wei
     public getFullDepositUserAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getFullDepositUserAmount.call();
+            return rocketMinipoolSettings.methods.getFullDepositUserAmount().call();
         });
     }
     public getHalfDepositUserAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getHalfDepositUserAmount.call();
+            return rocketMinipoolSettings.methods.getHalfDepositUserAmount().call();
         });
     }
     public getEmptyDepositUserAmount(): Promise<string> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getEmptyDepositUserAmount.call();
+            return rocketMinipoolSettings.methods.getEmptyDepositUserAmount().call();
         });
     }
 
@@ -72,7 +72,7 @@ class MinipoolSettings {
     // Timeout period in blocks for prelaunch minipools to launch
     public getLaunchTimeout(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getLaunchTimeout.call();
+            return rocketMinipoolSettings.methods.getLaunchTimeout().call();
         }).then((value: string): number => parseInt(value));
     }
 
@@ -80,7 +80,7 @@ class MinipoolSettings {
     // Withdrawal delay in blocks before withdrawable minipools can be closed
     public getWithdrawalDelay(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getWithdrawalDelay.call();
+            return rocketMinipoolSettings.methods.getWithdrawalDelay().call();
         }).then((value: string): number => parseInt(value));
     }
 
