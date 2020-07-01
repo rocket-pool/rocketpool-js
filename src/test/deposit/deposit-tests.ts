@@ -1,9 +1,8 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
-import { deposit } from './scenario-deposit';
+import { deposit } from './deposit-scenarios';
 
 // Tests
 export default function runDepositTests(web3: Web3, rp: RocketPool): void {
@@ -35,7 +34,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool): void {
         describe('Deposits', (): void => {
 
             it('Can make a deposit', async () => {
-                await deposit(rp, {
+                await deposit(web3, rp, {
                     from: staker,
                     value: web3.utils.toWei('10', 'ether'),
                     gas: 8000000,
