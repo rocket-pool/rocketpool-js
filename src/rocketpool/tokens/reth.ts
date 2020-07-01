@@ -15,7 +15,7 @@ class RETH extends ERC20 {
 
     // Constructor
     public constructor(web3: Web3, contracts: Contracts) {
-        super(web3, contracts, 'RocketETHToken');
+        super(web3, contracts, 'rocketETHToken');
     }
 
 

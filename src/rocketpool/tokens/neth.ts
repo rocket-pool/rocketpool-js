@@ -15,7 +15,7 @@ class NETH extends ERC20 {
 
     // Constructor
     public constructor(web3: Web3, contracts: Contracts) {
-        super(web3, contracts, 'RocketNodeETHToken');
+        super(web3, contracts, 'rocketNodeETHToken');
     }
 
 
