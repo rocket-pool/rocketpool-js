@@ -1,6 +1,6 @@
 // Imports
 import Web3 from 'web3';
-import { Contract, SendOptions } from 'web3-eth-contract/types';
+import { Contract, SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 import { getTxContractEvents } from '../_utils/contract';

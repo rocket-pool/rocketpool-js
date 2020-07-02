@@ -1,6 +1,6 @@
 // Imports
 import pako from 'pako';
-import { AbiItem } from 'web3-utils/types';
+import { AbiItem } from 'web3-utils';
 
 
 // Contract artifact

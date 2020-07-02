@@ -1,5 +1,5 @@
 // Imports
-import { SendOptions } from 'web3-eth-contract/types';
+import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
 
