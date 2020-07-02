@@ -38,7 +38,7 @@ class MinipoolContract {
 
 
     // Constructor
-    public constructor(private web3: Web3, private contract: Contract) {}
+    public constructor(private web3: Web3, public readonly address: string, public readonly contract: Contract) {}
 
 
     /**
