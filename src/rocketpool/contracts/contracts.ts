@@ -12,7 +12,7 @@ class Contracts {
 
 
     // Contracts
-    private rocketStorage: Promise<Contract>;
+    public readonly rocketStorage: Promise<Contract>;
     private contracts: {[name: string]: Promise<Contract>} = {};
     private abis: {[name: string]: Promise<AbiItem[]>} = {};
 
