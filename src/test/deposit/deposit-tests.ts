@@ -30,17 +30,12 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // Deposits
-        describe('Deposits', () => {
-
-            it('Can make a deposit', async () => {
-                await deposit(web3, rp, {
-                    from: staker,
-                    value: web3.utils.toWei('10', 'ether'),
-                    gas: 8000000,
-                });
+        it('Can make a deposit', async () => {
+            await deposit(web3, rp, {
+                from: staker,
+                value: web3.utils.toWei('10', 'ether'),
+                gas: 8000000,
             });
-
         });
 
 

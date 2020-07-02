@@ -2,19 +2,10 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 
 // Tests
 export default function runContractsTests(web3: Web3, rp: RocketPool) {
     describe('Contracts', () => {
-
-
-        // State snapshotting
-        let suiteSnapshotId: string, testSnapshotId: string;
-        before(async () => { suiteSnapshotId = await takeSnapshot(web3); });
-        after(async () => { await revertSnapshot(web3, suiteSnapshotId); });
-        beforeEach(async () => { testSnapshotId = await takeSnapshot(web3); });
-        afterEach(async () => { await revertSnapshot(web3, testSnapshotId); });
 
 
         // ABI loading
@@ -22,7 +13,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
 
             it('Can load a single ABI', async () => {
                 let minipoolAbi = await rp.contracts.abi('rocketMinipool');
-                assert.isArray(minipoolAbi, 'ABI is not an array');
+                assert.isArray(minipoolAbi, 'Loaded ABI is invalid');
             });
 
             it('Can load multiple ABIs', async () => {
