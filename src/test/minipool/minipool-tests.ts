@@ -92,12 +92,34 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 assert.isFalse(allMinipools[1].withdrawable, 'Incorrect minipool withdrawable status');
                 assert.isTrue(allMinipools[2].withdrawable, 'Incorrect minipool withdrawable status');
 
+                // Get & check minipool by pubkey
+                let stakingPubkeyMinipoolAddress = await rp.minipool.getMinipoolByPubkey(stakingMinipoolPubkey);
+                assert.equal(stakingPubkeyMinipoolAddress, stakingMinipool.address, 'Incorrect minipool by pubkey');
+
             });
 
         });
 
 
-        describe('Queue', () => {});
+        describe('Queue', () => {
+
+            it('Can get queue details', async () => {
+
+                // Get details
+                let [totalLength, totalCapacity, nextCapacity] = await Promise.all([
+                    rp.minipool.getQueueTotalLength(),
+                    rp.minipool.getQueueTotalCapacity(),
+                    rp.minipool.getQueueNextCapacity(),
+                ]);
+
+                // Check details
+                assert.equal(totalLength, 2, 'Incorrect minipool queue length');
+                assert(web3.utils.toBN(totalCapacity).eq(web3.utils.toBN(web3.utils.toWei('32', 'ether'))), 'Incorrect minipool queue capacity');
+                assert(web3.utils.toBN(nextCapacity).eq(web3.utils.toBN(web3.utils.toWei('16', 'ether'))), 'Incorrect minipool queue next item capacity');
+
+            });
+
+        });
 
 
         describe('Status', () => {});
