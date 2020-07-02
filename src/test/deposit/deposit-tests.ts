@@ -37,10 +37,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
             [owner, node, staker] = await web3.eth.getAccounts();
 
             // Register node
-            await rp.node.registerNode('Australia/Brisbane', {
-                from: node,
-                gas: gasLimit,
-            });
+            await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
 
         });
 
