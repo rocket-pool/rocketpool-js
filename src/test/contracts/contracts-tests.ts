@@ -8,7 +8,6 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
     describe('Contracts', () => {
 
 
-        // ABI loading
         describe('ABIs', () => {
 
             it('Can load a single ABI', async () => {
@@ -25,7 +24,6 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // Contract loading
         describe('Contracts', () => {
 
             it('Can load a single contract', async () => {

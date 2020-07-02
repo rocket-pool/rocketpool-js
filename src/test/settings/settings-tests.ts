@@ -7,7 +7,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
     describe('Settings', () => {
 
 
-        // Deposit
         describe('Deposit', () => {
 
             it('Can get deposit settings', async () => {
@@ -23,7 +22,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // Minipool
         describe('Minipool', () => {
 
             it('Can get minipool settings', async () => {
@@ -39,7 +37,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // Network
         describe('Network', () => {
 
             it('Can get network settings', async () => {
@@ -57,7 +54,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // Node
         describe('Node', () => {
 
             it('Can get node settings', async () => {
