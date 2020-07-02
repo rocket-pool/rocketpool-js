@@ -49,6 +49,14 @@ class DepositSettings {
     }
 
 
+    // Maximum deposit pool size in wei
+    public getMaximumDepositPoolSize(): Promise<string> {
+        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
+            return rocketDepositSettings.methods.getMaximumDepositPoolSize().call();
+        });
+    }
+
+
     // Maximum number of deposit assignments to perform at once
     public getMaximumDepositAssignments(): Promise<number> {
         return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {

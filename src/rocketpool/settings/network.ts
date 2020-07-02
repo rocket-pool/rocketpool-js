@@ -25,6 +25,22 @@ class NetworkSettings {
      */
 
 
+    // ETH balance submissions are currently enabled
+    public getSubmitBalancesEnabled(): Promise<boolean> {
+        return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<boolean> => {
+            return rocketNetworkSettings.methods.getSubmitBalancesEnabled().call();
+        });
+    }
+
+
+    // Processing withdrawals is currently enabled
+    public getProcessWithdrawalsEnabled(): Promise<boolean> {
+        return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<boolean> => {
+            return rocketNetworkSettings.methods.getProcessWithdrawalsEnabled().call();
+        });
+    }
+
+
     // Node commission rate parameters
     public getMinimumNodeFee(): Promise<number> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {

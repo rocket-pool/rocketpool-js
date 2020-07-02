@@ -69,6 +69,22 @@ class MinipoolSettings {
     }
 
 
+    // Minipool exited event submissions are currently enabled
+    public getSubmitExitedEnabled(): Promise<boolean> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<boolean> => {
+            return rocketMinipoolSettings.methods.getSubmitExitedEnabled().call();
+        });
+    }
+
+
+    // Minipool withdrawable event submissions are currently enabled
+    public getSubmitWithdrawableEnabled(): Promise<boolean> {
+        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<boolean> => {
+            return rocketMinipoolSettings.methods.getSubmitWithdrawableEnabled().call();
+        });
+    }
+
+
     // Timeout period in blocks for prelaunch minipools to launch
     public getLaunchTimeout(): Promise<number> {
         return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
