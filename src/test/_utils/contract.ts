@@ -9,7 +9,7 @@ import { AbiInput } from 'web3-utils';
 // contractAddress is the address of the contract to retrieve events for
 // eventName is the name of the event to retrieve
 // eventParams is an array of objects with string 'type' and 'name' keys and an optional boolean 'indexed' key
-export function getTxContractEvents(web3: Web3, txReceipt: TransactionReceipt, contractAddress: string, eventName: string, eventParams: AbiInput[]) {
+export function getTxContractEvents(web3: Web3, txReceipt: TransactionReceipt, contractAddress: string, eventName: string, eventParams: AbiInput[]): any {
     let events = [];
     if (txReceipt.events) for (let p in txReceipt.events) events.push(txReceipt.events[p]);
     return events
