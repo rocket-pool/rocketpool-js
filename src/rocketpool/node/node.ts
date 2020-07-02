@@ -39,6 +39,16 @@ class Node {
      */
 
 
+    // Get all node details
+    public getNodes(): Promise<NodeDetails[]> {
+        return this.getNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
+            return Promise.all(addresses.map((address: string): Promise<NodeDetails> => {
+                return this.getNodeDetails(address);
+            }));
+        });
+    }
+
+
     // Get all node addresses
     public getNodeAddresses(): Promise<string[]> {
         return this.getNodeCount().then((count: number): Promise<string[]> => {
@@ -49,9 +59,9 @@ class Node {
     }
 
 
-    // Get all node details
-    public getNodes(): Promise<NodeDetails[]> {
-        return this.getNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
+    // Get all trusted node details
+    public getTrustedNodes(): Promise<NodeDetails[]> {
+        return this.getTrustedNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
             return Promise.all(addresses.map((address: string): Promise<NodeDetails> => {
                 return this.getNodeDetails(address);
             }));
@@ -64,16 +74,6 @@ class Node {
         return this.getTrustedNodeCount().then((count: number): Promise<string[]> => {
             return Promise.all([...Array(count).keys()].map((index: number): Promise<string> => {
                 return this.getTrustedNodeAt(index);
-            }));
-        });
-    }
-
-
-    // Get all trusted node details
-    public getTrustedNodes(): Promise<NodeDetails[]> {
-        return this.getTrustedNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
-            return Promise.all(addresses.map((address: string): Promise<NodeDetails> => {
-                return this.getNodeDetails(address);
             }));
         });
     }
