@@ -8,6 +8,8 @@ import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 import { createMinipool, stakeMinipool } from '../_helpers/minipool';
 import { submitExited } from './scenario-submit-exited';
 import { submitWithdrawable } from './scenario-submit-withdrawable';
+import { refund } from './scenario-refund';
+import { stake } from './scenario-stake';
 
 // Tests
 export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
@@ -23,6 +25,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         let trustedNode: string;
         let node1: string;
         let node2: string;
+        let staker: string;
 
 
         // Minipool validator keys
@@ -50,7 +53,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, trustedNode, node1, node2] = await web3.eth.getAccounts();
+            [owner, trustedNode, node1, node2, staker] = await web3.eth.getAccounts();
 
             // Register nodes
             await rp.node.registerNode('Australia/Brisbane', {from: node1, gas: gasLimit});
@@ -173,6 +176,64 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                     gas: gasLimit,
                 });
             });
+
+        });
+
+
+        describe('Contract', () => {
+
+            it('Can get a minipool\'s details', async () => {
+
+                // Get details
+                let [status, depositType, node, user, staking] = await Promise.all([
+                    withdrawableMinipool.getStatusDetails(),
+                    withdrawableMinipool.getDepositType(),
+                    withdrawableMinipool.getNodeDetails(),
+                    withdrawableMinipool.getUserDetails(),
+                    withdrawableMinipool.getStakingDetails(),
+                ]);
+
+                // Check details
+                assert.equal(status.status, 4, 'Incorrect status');
+                assert.equal(depositType, 1, 'Incorrect deposit type');
+                assert.equal(node.address, node2, 'Incorrect node address');
+                assert(web3.utils.toBN(node.depositBalance).eq(web3.utils.toBN(web3.utils.toWei('32', 'ether'))), 'Incorrect node deposit balance');
+                assert(web3.utils.toBN(node.refundBalance).eq(web3.utils.toBN(web3.utils.toWei('0', 'ether'))), 'Incorrect node refund balance');
+                assert.isTrue(node.depositAssigned, 'Incorrect node deposit assigned status');
+                assert(web3.utils.toBN(user.depositBalance).eq(web3.utils.toBN(web3.utils.toWei('0', 'ether'))), 'Incorrect user deposit balance');
+                assert.isFalse(user.depositAssigned, 'Incorrect user deposit assigned status');
+                assert(web3.utils.toBN(staking.startBalance).eq(web3.utils.toBN(web3.utils.toWei('32', 'ether'))), 'Incorrect staking start balance');
+                assert(web3.utils.toBN(staking.endBalance).eq(web3.utils.toBN(withdrawableMinipoolWithdrawalBalance)), 'Incorrect staking end balance');
+
+
+            });
+
+            it('Can refund a minipool', async () => {
+
+                // Make user deposits to assign to prelaunch minipool
+                await rp.deposit.deposit({from: staker, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+                await rp.deposit.deposit({from: staker, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+
+                // Refund
+                await refund(web3, rp, prelaunchMinipool, {
+                    from: node1,
+                    gas: gasLimit,
+                });
+
+            });
+
+            it('Can stake a minipool', async () => {
+                await stake(web3, rp, prelaunchMinipool, {
+                    from: node1,
+                    gas: gasLimit,
+                });
+            });
+
+            it('Can withdraw a minipool', async () => {});
+
+            it('Can dissolve a minipool', async () => {});
+
+            it('Can close a minipool', async () => {});
 
         });
 
