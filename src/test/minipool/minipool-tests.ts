@@ -6,10 +6,12 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 import { getValidatorPubkey } from '../_utils/beacon';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 import { createMinipool, stakeMinipool } from '../_helpers/minipool';
+import { setMinipoolSetting } from '../_helpers/settings';
 import { submitExited } from './scenario-submit-exited';
 import { submitWithdrawable } from './scenario-submit-withdrawable';
 import { refund } from './scenario-refund';
 import { stake } from './scenario-stake';
+import { withdraw } from './scenario-withdraw';
 
 // Tests
 export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
@@ -229,7 +231,18 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 });
             });
 
-            it('Can withdraw a minipool', async () => {});
+            it('Can withdraw a minipool', async () => {
+
+                // Set withdrawal delay
+                await setMinipoolSetting(rp, 'WithdrawalDelay', 0, {from: owner, gas: gasLimit});
+
+                // Withdraw
+                await withdraw(web3, rp, withdrawableMinipool, {
+                    from: node2,
+                    gas: gasLimit,
+                });
+
+            });
 
             it('Can dissolve a minipool', async () => {});
 
