@@ -103,7 +103,15 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 assert.equal(allMinipools.length, 6, 'Incorrect total minipool count');
                 assert.equal(node1Minipools.length, 5, 'Incorrect node minipool count');
 
-                // Check minipoole existence
+                // Check minipool addresses
+                assert.equal(allMinipools[0].address, initializedMinipool.address, 'Incorrect minipool address');
+                assert.equal(allMinipools[1].address, prelaunchMinipool.address, 'Incorrect minipool address');
+                assert.equal(allMinipools[2].address, stakingMinipool.address, 'Incorrect minipool address');
+                assert.equal(allMinipools[3].address, exitedMinipool.address, 'Incorrect minipool address');
+                assert.equal(allMinipools[4].address, withdrawableMinipool.address, 'Incorrect minipool address');
+                assert.equal(allMinipools[5].address, dissolvedMinipool.address, 'Incorrect minipool address');
+
+                // Check minipool existence
                 assert.isTrue(allMinipools[0].exists, 'Incorrect minipool exists status');
                 assert.isTrue(allMinipools[1].exists, 'Incorrect minipool exists status');
                 assert.isTrue(allMinipools[2].exists, 'Incorrect minipool exists status');
@@ -135,6 +143,14 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 assert.isTrue(allMinipools[4].withdrawable, 'Incorrect minipool withdrawable status');
                 assert.isFalse(allMinipools[5].withdrawable, 'Incorrect minipool withdrawable status');
 
+                // Check minipool withdrawal processed statuses
+                assert.isFalse(allMinipools[0].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+                assert.isFalse(allMinipools[1].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+                assert.isFalse(allMinipools[2].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+                assert.isFalse(allMinipools[3].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+                assert.isFalse(allMinipools[4].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+                assert.isFalse(allMinipools[5].withdrawalProcessed, 'Incorrect minipool withdrawal processed status');
+
                 // Get & check minipool by pubkey
                 let stakingPubkeyMinipoolAddress = await rp.minipool.getMinipoolByPubkey(stakingMinipoolPubkey);
                 assert.equal(stakingPubkeyMinipoolAddress, stakingMinipool.address, 'Incorrect minipool by pubkey');
@@ -149,15 +165,17 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             it('Can get queue details', async () => {
 
                 // Get details
-                let [totalLength, totalCapacity, nextCapacity] = await Promise.all([
+                let [totalLength, totalCapacity, effectiveCapacity, nextCapacity] = await Promise.all([
                     rp.minipool.getQueueTotalLength(),
                     rp.minipool.getQueueTotalCapacity(),
+                    rp.minipool.getQueueEffectiveCapacity(),
                     rp.minipool.getQueueNextCapacity(),
                 ]);
 
                 // Check details
                 assert.equal(totalLength, 3, 'Incorrect minipool queue length');
                 assert(web3.utils.toBN(totalCapacity).eq(web3.utils.toBN(web3.utils.toWei('48', 'ether'))), 'Incorrect minipool queue capacity');
+                assert(web3.utils.toBN(effectiveCapacity).eq(web3.utils.toBN(web3.utils.toWei('48', 'ether'))), 'Incorrect minipool queue effective capacity');
                 assert(web3.utils.toBN(nextCapacity).eq(web3.utils.toBN(web3.utils.toWei('16', 'ether'))), 'Incorrect minipool queue next item capacity');
 
             });
