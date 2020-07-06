@@ -10,6 +10,7 @@ import runMinipoolTests from './minipool/minipool-tests';
 import runNetworkTests from './network/network-tests';
 import runNodeTests from './node/node-tests';
 import runSettingsTests from './settings/settings-tests';
+import runTokensTests from './tokens/tokens-tests';
 
 // Initialise web3
 const web3: Web3 = new Web3('http://localhost:8545');
@@ -27,3 +28,4 @@ runMinipoolTests(web3, rp);
 runNetworkTests(web3, rp);
 runNodeTests(web3, rp);
 runSettingsTests(web3, rp);
+runTokensTests(web3, rp);
