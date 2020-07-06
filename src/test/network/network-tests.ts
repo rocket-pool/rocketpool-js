@@ -2,8 +2,13 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
+import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
+import { getValidatorPubkey } from '../_utils/beacon';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
+import { createMinipool, stakeMinipool } from '../_helpers/minipool';
 import { setNetworkSetting } from '../_helpers/settings';
+import { processWithdrawal } from './scenario-process-withdrawal';
+import { submitETHBalances } from './scenario-submit-balances';
 
 // Tests
 export default function runNetworkTests(web3: Web3, rp: RocketPool) {
@@ -16,8 +21,13 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
 
         // Accounts
         let owner: string;
+        let node: string;
         let trustedNode: string;
         let staker: string;
+
+
+        // Minipool validator keys
+        const minipoolPubkey = getValidatorPubkey();
 
 
         // State snapshotting
@@ -29,14 +39,23 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
 
 
         // Setup
+        let nodeDepositAmount = web3.utils.toWei('32', 'ether');
+        let withdrawalAmount = web3.utils.toWei('36', 'ether');
         before(async () => {
 
             // Get accounts
-            [owner, trustedNode, staker] = await web3.eth.getAccounts();
+            [owner, node, trustedNode, staker] = await web3.eth.getAccounts();
 
-            // Register node
+            // Register nodes
+            await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode, gas: gasLimit});
             await rp.node.setNodeTrusted(trustedNode, true, {from: owner, gas: gasLimit});
+
+            // Create, stake and withdraw minipool
+            let minipool = (await createMinipool(web3, rp, {from: node, value: nodeDepositAmount, gas: gasLimit}) as MinipoolContract);
+            await stakeMinipool(web3, rp, minipool, minipoolPubkey, {from: node, gas: gasLimit});
+            await rp.minipool.submitMinipoolExited(minipool.address, 1, {from: trustedNode, gas: gasLimit});
+            await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalAmount, 2, {from: trustedNode, gas: gasLimit});
 
         });
 
@@ -67,6 +86,13 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
                 assert.equal(epoch, balancesEpoch, 'Incorrect balances epoch');
                 assert.equal(utilizationRate, 0.9, 'Incorrect ETH utilization rate');
 
+            });
+
+            it('Can submit network balances', async () => {
+                await submitETHBalances(web3, rp, 1, web3.utils.toWei('10', 'ether'), web3.utils.toWei('9', 'ether'), {
+                    from: trustedNode,
+                    gas: gasLimit,
+                });
             });
 
         });
@@ -113,15 +139,27 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
                 // Set parameters
                 let amount = web3.utils.toWei('10', 'ether');
 
-                // Get withdrawal pool address
-                let withdrawalAddress = await rp.contracts.address('rocketNetworkWithdrawal');
-
                 // Deposit to withdrawal pool
+                let withdrawalAddress = await rp.contracts.address('rocketNetworkWithdrawal');
                 await web3.eth.sendTransaction({from: staker, to: withdrawalAddress, value: amount, gas: gasLimit});
 
                 // Get & check balance
                 let balance = await rp.network.getWithdrawalBalance();
                 assert(web3.utils.toBN(balance).eq(web3.utils.toBN(amount)), 'Incorrect withdrawal pool balance');
+
+            });
+
+            it('Can process a validator withdrawal', async () => {
+
+                // Deposit validator withdrawal
+                let withdrawalAddress = await rp.contracts.address('rocketNetworkWithdrawal');
+                await web3.eth.sendTransaction({from: owner, to: withdrawalAddress, value: withdrawalAmount, gas: gasLimit});
+
+                // Process withdrawal
+                await processWithdrawal(web3, rp, minipoolPubkey, {
+                    from: trustedNode,
+                    gas: gasLimit,
+                });
 
             });
 
