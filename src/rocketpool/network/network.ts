@@ -92,7 +92,7 @@ class Network {
     // Get the current withdrawal pool balance in wei
     public getWithdrawalBalance(): Promise<string> {
         return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<string> => {
-            return rocketNetworkWithdrawal.methods.getWithdrawalBalance().call();
+            return rocketNetworkWithdrawal.methods.getBalance().call();
         });
     }
 
