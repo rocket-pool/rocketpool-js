@@ -6,11 +6,11 @@ import RocketPool from '../../rocketpool/rocketpool';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 
 
-// Withdraw a minipool
-export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
+// Close a minipool
+export async function close(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
 
-    // Withdraw
-    await minipool.withdraw(options);
+    // Close
+    await minipool.close(options);
 
     // Check minipool contract
     let minipoolCode = await web3.eth.getCode(minipool.address);

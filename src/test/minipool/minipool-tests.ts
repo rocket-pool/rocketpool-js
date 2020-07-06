@@ -7,11 +7,14 @@ import { getValidatorPubkey } from '../_utils/beacon';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 import { createMinipool, stakeMinipool } from '../_helpers/minipool';
 import { setMinipoolSetting } from '../_helpers/settings';
-import { submitExited } from './scenario-submit-exited';
-import { submitWithdrawable } from './scenario-submit-withdrawable';
+import { close } from './scenario-close';
+import { dissolve } from './scenario-dissolve';
 import { refund } from './scenario-refund';
 import { stake } from './scenario-stake';
+import { submitExited } from './scenario-submit-exited';
+import { submitWithdrawable } from './scenario-submit-withdrawable';
 import { withdraw } from './scenario-withdraw';
+
 
 // Tests
 export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
@@ -68,13 +71,13 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                prelaunchMinipool = (await createMinipool(web3, rp, {from: node1, value: web3.utils.toWei('32', 'ether'), gas: gasLimit}) as MinipoolContract);
                  stakingMinipool = (await createMinipool(web3, rp, {from: node1, value: web3.utils.toWei('32', 'ether'), gas: gasLimit}) as MinipoolContract);
                   exitedMinipool = (await createMinipool(web3, rp, {from: node1, value: web3.utils.toWei('32', 'ether'), gas: gasLimit}) as MinipoolContract);
-            withdrawableMinipool = (await createMinipool(web3, rp, {from: node2, value: web3.utils.toWei('32', 'ether'), gas: gasLimit}) as MinipoolContract);
+            withdrawableMinipool = (await createMinipool(web3, rp, {from: node1, value: web3.utils.toWei('32', 'ether'), gas: gasLimit}) as MinipoolContract);
                dissolvedMinipool = (await createMinipool(web3, rp, {from: node2, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
 
             // Stake minipools
             await stakeMinipool(web3, rp, stakingMinipool, stakingMinipoolPubkey, {from: node1, gas: gasLimit});
             await stakeMinipool(web3, rp, exitedMinipool, exitedMinipoolPubkey, {from: node1, gas: gasLimit});
-            await stakeMinipool(web3, rp, withdrawableMinipool, withdrawableMinipoolPubkey, {from: node2, gas: gasLimit});
+            await stakeMinipool(web3, rp, withdrawableMinipool, withdrawableMinipoolPubkey, {from: node1, gas: gasLimit});
 
             // Set minipools to exited
             await rp.minipool.submitMinipoolExited(exitedMinipool.address, 1, {from: trustedNode, gas: gasLimit});
@@ -99,7 +102,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
                 // Check minipool indexes
                 assert.equal(allMinipools.length, 6, 'Incorrect total minipool count');
-                assert.equal(node1Minipools.length, 4, 'Incorrect node minipool count');
+                assert.equal(node1Minipools.length, 5, 'Incorrect node minipool count');
 
                 // Check minipoole existence
                 assert.isTrue(allMinipools[0].exists, 'Incorrect minipool exists status');
@@ -195,15 +198,23 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                     withdrawableMinipool.getStakingDetails(),
                 ]);
 
-                // Check details
+                // Check status details
                 assert.equal(status.status, 4, 'Incorrect status');
+
+                // Check deposit type
                 assert.equal(depositType, 1, 'Incorrect deposit type');
-                assert.equal(node.address, node2, 'Incorrect node address');
+
+                // Check node details
+                assert.equal(node.address, node1, 'Incorrect node address');
                 assert(web3.utils.toBN(node.depositBalance).eq(web3.utils.toBN(web3.utils.toWei('32', 'ether'))), 'Incorrect node deposit balance');
                 assert(web3.utils.toBN(node.refundBalance).eq(web3.utils.toBN(web3.utils.toWei('0', 'ether'))), 'Incorrect node refund balance');
                 assert.isTrue(node.depositAssigned, 'Incorrect node deposit assigned status');
+
+                // Check user deposit details
                 assert(web3.utils.toBN(user.depositBalance).eq(web3.utils.toBN(web3.utils.toWei('0', 'ether'))), 'Incorrect user deposit balance');
                 assert.isFalse(user.depositAssigned, 'Incorrect user deposit assigned status');
+
+                // Check staking details
                 assert(web3.utils.toBN(staking.startBalance).eq(web3.utils.toBN(web3.utils.toWei('32', 'ether'))), 'Incorrect staking start balance');
                 assert(web3.utils.toBN(staking.endBalance).eq(web3.utils.toBN(withdrawableMinipoolWithdrawalBalance)), 'Incorrect staking end balance');
 
@@ -238,15 +249,25 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
                 // Withdraw
                 await withdraw(web3, rp, withdrawableMinipool, {
-                    from: node2,
+                    from: node1,
                     gas: gasLimit,
                 });
 
             });
 
-            it('Can dissolve a minipool', async () => {});
+            it('Can dissolve a minipool', async () => {
+                await dissolve(web3, rp, initializedMinipool, {
+                    from: node1,
+                    gas: gasLimit,
+                });
+            });
 
-            it('Can close a minipool', async () => {});
+            it('Can close a minipool', async () => {
+                await close(web3, rp, dissolvedMinipool, {
+                    from: node2,
+                    gas: gasLimit,
+                });
+            });
 
         });
 
