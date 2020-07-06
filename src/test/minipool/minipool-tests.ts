@@ -15,7 +15,6 @@ import { submitExited } from './scenario-submit-exited';
 import { submitWithdrawable } from './scenario-submit-withdrawable';
 import { withdraw } from './scenario-withdraw';
 
-
 // Tests
 export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
     describe('Minipool', () => {
