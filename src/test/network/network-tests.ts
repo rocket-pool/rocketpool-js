@@ -1,7 +1,6 @@
 // Imports
 import { assert } from 'chai';
 import Web3 from 'web3';
-import { Contract } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 import { setNetworkSetting } from '../_helpers/settings';
