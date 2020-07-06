@@ -3,6 +3,10 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import { takeSnapshot, revertSnapshot } from '../_utils/evm';
+import { deposit } from './scenario-deposit';
+import { register } from './scenario-register';
+import { setTimezoneLocation } from './scenario-set-timezone';
+import { setNodeTrusted } from './scenario-set-trusted';
 
 // Tests
 export default function runNodeTests(web3: Web3, rp: RocketPool) {
@@ -17,6 +21,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool) {
         let owner: string;
         let node1: string;
         let node2: string;
+        let node3: string;
 
 
         // State snapshotting
@@ -31,7 +36,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, node1, node2] = await web3.eth.getAccounts();
+            [owner, node1, node2, node3] = await web3.eth.getAccounts();
 
             // Register nodes
             await rp.node.registerNode('Australia/Brisbane', {from: node1, gas: gasLimit});
@@ -63,6 +68,40 @@ export default function runNodeTests(web3: Web3, rp: RocketPool) {
                 assert.equal(allNodes[0].timezoneLocation, 'Australia/Brisbane', 'Incorrect node timezone location');
                 assert.equal(allNodes[1].timezoneLocation, 'Australia/Brisbane', 'Incorrect node timezone location');
 
+            });
+
+            it('Can register a node', async () => {
+                await register(web3, rp, 'Australia/Brisbane', {
+                    from: node3,
+                    gas: gasLimit,
+                });
+            });
+
+            it('Can set a node\'s timezone location', async () => {
+                await setTimezoneLocation(web3, rp, 'Australia/Sydney', {
+                    from: node1,
+                    gas: gasLimit,
+                });
+            });
+
+            it('Can set a node\'s trusted status', async () => {
+                await setNodeTrusted(web3, rp, node1, true, {
+                    from: owner,
+                    gas: gasLimit,
+                });
+            });
+
+        });
+
+
+        describe('Deposit', () => {
+
+            it('Can make a node deposit', async () => {
+                await deposit(web3, rp, {
+                    from: node1,
+                    value: web3.utils.toWei('32', 'ether'),
+                    gas: gasLimit,
+                });
             });
 
         });
