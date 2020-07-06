@@ -8,17 +8,33 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
     describe('Contracts', () => {
 
 
+        describe('Addresses', () => {
+
+            it('Can load a single address', async () => {
+                let minipoolManagerAddress = await rp.contracts.address('rocketMinipoolManager');
+                assert.notEqual(minipoolManagerAddress, '0x0000000000000000000000000000000000000000', 'Loaded address is invalid');
+            });
+
+            it('Can load multiple addresses', async () => {
+                let [rocketMinipoolQueueAddress, rocketMinipoolStatusAddress] = await rp.contracts.address(['rocketMinipoolQueue', 'rocketMinipoolStatus']);
+                assert.notEqual(rocketMinipoolQueueAddress, '0x0000000000000000000000000000000000000000', 'Loaded address is invalid');
+                assert.notEqual(rocketMinipoolStatusAddress, '0x0000000000000000000000000000000000000000', 'Loaded address is invalid');
+            });
+
+        });
+
+
         describe('ABIs', () => {
 
             it('Can load a single ABI', async () => {
-                let minipoolAbi = await rp.contracts.abi('rocketMinipool');
-                assert.isArray(minipoolAbi, 'Loaded ABI is invalid');
+                let minipoolManagerAbi = await rp.contracts.abi('rocketMinipoolManager');
+                assert.isArray(minipoolManagerAbi, 'Loaded ABI is invalid');
             });
 
             it('Can load multiple ABIs', async () => {
-                let [rocketMinipoolManagerAbi, rocketMinipoolQueueAbi] = await rp.contracts.abi(['rocketMinipoolManager', 'rocketMinipoolQueue']);
-                assert.isArray(rocketMinipoolManagerAbi, 'Loaded ABI is invalid');
+                let [rocketMinipoolQueueAbi, rocketMinipoolStatusAbi] = await rp.contracts.abi(['rocketMinipoolQueue', 'rocketMinipoolStatus']);
                 assert.isArray(rocketMinipoolQueueAbi, 'Loaded ABI is invalid');
+                assert.isArray(rocketMinipoolStatusAbi, 'Loaded ABI is invalid');
             });
 
         });

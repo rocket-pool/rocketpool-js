@@ -13,8 +13,9 @@ class Contracts {
 
     // Contracts
     public readonly rocketStorage: Promise<Contract>;
-    private contracts: {[name: string]: Promise<Contract>} = {};
+    private addresses: {[name: string]: Promise<string>} = {};
     private abis: {[name: string]: Promise<AbiItem[]>} = {};
+    private contracts: {[name: string]: Promise<Contract>} = {};
 
 
     // Constructor
@@ -22,6 +23,27 @@ class Contracts {
 
         // Initialise rocketStorage contract promise
         this.rocketStorage = this.web3.eth.net.getId().then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
+
+    }
+
+
+    // Load address/es by name
+    public address(name: string): Promise<string>;
+    public address(names: string[]): Promise<string[]>;
+    public address(name: any): any {
+
+        // Array mode
+        if (typeof name === "object") return Promise.all(name.map((n: string): Promise<string> => this.address(n)));
+
+        // Use cached address promise
+        if (this.addresses[name]) return this.addresses[name];
+
+        // Load address
+        this.addresses[name] = this.rocketStorage
+        .then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call());
+
+        // Return address promise
+        return this.addresses[name];
 
     }
 
@@ -61,7 +83,7 @@ class Contracts {
 
         // Load contract data and initialise
         this.contracts[name] = this.rocketStorage.then((rocketStorage: Contract): Promise<[string, AbiItem[]]> => Promise.all([
-            rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call(),
+            this.address(name),
             this.abi(name),
         ])).then(([address, abi]: [string, AbiItem[]]): Contract => new this.web3.eth.Contract(abi, address));
 
