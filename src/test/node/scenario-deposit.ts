@@ -5,6 +5,7 @@ import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 import { getTxContractEvents } from '../_utils/contract';
 
+
 // Make a node deposit
 export async function deposit(web3: Web3, rp: RocketPool, options: SendOptions) {
 

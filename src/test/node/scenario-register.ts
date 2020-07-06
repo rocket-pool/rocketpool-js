@@ -4,6 +4,7 @@ import Web3 from 'web3';
 import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
+
 // Register a node
 export async function register(web3: Web3, rp: RocketPool, timezoneLocation: string, options: SendOptions) {
 
