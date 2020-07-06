@@ -8,6 +8,7 @@ import runContractsTests from './contracts/contracts-tests';
 import runDepositTests from './deposit/deposit-tests';
 import runMinipoolTests from './minipool/minipool-tests';
 import runNetworkTests from './network/network-tests';
+import runNodeTests from './node/node-tests';
 import runSettingsTests from './settings/settings-tests';
 
 // Initialise web3
@@ -24,4 +25,5 @@ runContractsTests(web3, rp);
 runDepositTests(web3, rp);
 runMinipoolTests(web3, rp);
 runNetworkTests(web3, rp);
+runNodeTests(web3, rp);
 runSettingsTests(web3, rp);
