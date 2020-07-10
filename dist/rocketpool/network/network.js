@@ -99,7 +99,7 @@ var Network = function () {
             var _this3 = this;
 
             return this.rocketNetworkFees.then(function (rocketNetworkFees) {
-                return rocketNetworkFees.methods.getNodeFee(demand).call();
+                return rocketNetworkFees.methods.getNodeFeeByDemand(demand).call();
             }).then(function (value) {
                 return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
             });

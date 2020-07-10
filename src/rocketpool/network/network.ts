@@ -84,7 +84,7 @@ class Network {
     // Get the network node commission rate by demand value
     public getNodeFeeByDemand(demand: string): Promise<number> {
         return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<string> => {
-            return rocketNetworkFees.methods.getNodeFee(demand).call();
+            return rocketNetworkFees.methods.getNodeFeeByDemand(demand).call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
 
