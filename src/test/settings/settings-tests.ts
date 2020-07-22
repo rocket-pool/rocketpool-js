@@ -27,7 +27,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
             it('Can get minipool settings', async () => {
                 let settings = await Promise.all([
                     rp.settings.minipool.getLaunchBalance(),
-                    rp.settings.minipool.getSubmitExitedEnabled(),
                     rp.settings.minipool.getSubmitWithdrawableEnabled(),
                     rp.settings.minipool.getLaunchTimeout(),
                     rp.settings.minipool.getWithdrawalDelay(),
@@ -41,6 +40,7 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
 
             it('Can get network settings', async () => {
                 let settings = await Promise.all([
+                    rp.settings.network.getNodeConsensusThreshold(),
                     rp.settings.network.getSubmitBalancesEnabled(),
                     rp.settings.network.getProcessWithdrawalsEnabled(),
                     rp.settings.network.getMinimumNodeFee(),

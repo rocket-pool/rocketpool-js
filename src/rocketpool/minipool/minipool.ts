@@ -235,22 +235,11 @@ class Minipool {
      */
 
 
-    // Submit a minipool exited event
-    public submitMinipoolExited(minipoolAddress: string, epoch: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketMinipoolStatus.methods.submitMinipoolExited(minipoolAddress, epoch).send(options),
-                onConfirmation
-            );
-        });
-    }
-
-
     // Submit a minipool withdrawable event
-    public submitMinipoolWithdrawable(minipoolAddress: string, withdrawalBalance: string, epoch: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public submitMinipoolWithdrawable(minipoolAddress: string, withdrawalBalance: string, startEpoch: number, endEpoch: number, userStartEpoch: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, epoch).send(options),
+                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch).send(options),
                 onConfirmation
             );
         });

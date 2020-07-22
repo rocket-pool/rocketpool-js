@@ -25,6 +25,14 @@ class NetworkSettings {
      */
 
 
+    // The threshold of trusted nodes that must reach consensus on oracle data to commit it
+    public getNodeConsensusThreshold(): Promise<number> {
+        return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
+            return rocketNetworkSettings.methods.getNodeConsensusThreshold().call();
+        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+
     // ETH balance submissions are currently enabled
     public getSubmitBalancesEnabled(): Promise<boolean> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<boolean> => {

@@ -7,14 +7,14 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 
 
 // Submit a minipool withdrawable event
-export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipool: MinipoolContract, withdrawalBalance: string, epoch: number, options: SendOptions) {
+export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipool: MinipoolContract, withdrawalBalance: string, startEpoch: number, endEpoch: number, userStartEpoch: number, options: SendOptions) {
 
     // Submit event
-    await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalBalance, epoch, options);
+    await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalBalance, startEpoch, endEpoch, userStartEpoch, options);
 
     // Check status
     let status = await minipool.getStatus();
-    assert.equal(status, 4, 'Incorrect minipool status');
+    assert.equal(status, 3, 'Incorrect minipool status');
 
 }
 

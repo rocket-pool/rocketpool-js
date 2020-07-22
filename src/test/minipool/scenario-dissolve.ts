@@ -14,7 +14,7 @@ export async function dissolve(web3: Web3, rp: RocketPool, minipool: MinipoolCon
 
     // Check status
     let status = await minipool.getStatus();
-    assert.equal(status, 5, 'Incorrect minipool status');
+    assert.equal(status, 4, 'Incorrect minipool status');
 
 }
 

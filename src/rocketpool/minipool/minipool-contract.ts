@@ -21,13 +21,14 @@ export interface NodeDetails {
 export interface UserDetails {
     depositBalance: string;
     depositAssigned: boolean;
+    depositAssignedTime: Date;
 }
 export interface StakingDetails {
     startBalance: string;
     endBalance: string;
-    startBlock: number;
-    userStartBlock: number;
-    endBlock: number;
+    startEpoch: number;
+    userStartEpoch: number;
+    endEpoch: number;
 }
 
 
@@ -109,9 +110,10 @@ class MinipoolContract {
         return Promise.all([
             this.getUserDepositBalance(),
             this.getUserDepositAssigned(),
+            this.getUserDepositAssignedTime(),
         ]).then(
-            ([depositBalance, depositAssigned]: [string, boolean]): UserDetails =>
-            ({depositBalance, depositAssigned})
+            ([depositBalance, depositAssigned, depositAssignedTime]: [string, boolean, Date]): UserDetails =>
+            ({depositBalance, depositAssigned, depositAssignedTime})
         );
     }
     public getUserDepositBalance(): Promise<string> {
@@ -120,6 +122,9 @@ class MinipoolContract {
     public getUserDepositAssigned(): Promise<boolean> {
         return this.contract.methods.getUserDepositAssigned().call();
     }
+    public getUserDepositAssignedTime(): Promise<Date> {
+        return this.contract.methods.getUserDepositAssignedTime().call().then((value: string): Date => new Date(parseInt(value) * 1000));
+    }
 
 
     // Staking details
@@ -127,12 +132,12 @@ class MinipoolContract {
         return Promise.all([
             this.getStakingStartBalance(),
             this.getStakingEndBalance(),
-            this.getStakingStartBlock(),
-            this.getStakingUserStartBlock(),
-            this.getStakingEndBlock(),
+            this.getStakingStartEpoch(),
+            this.getStakingUserStartEpoch(),
+            this.getStakingEndEpoch(),
         ]).then(
-            ([startBalance, endBalance, startBlock, userStartBlock, endBlock]: [string, string, number, number, number]): StakingDetails =>
-            ({startBalance, endBalance, startBlock, userStartBlock, endBlock})
+            ([startBalance, endBalance, startEpoch, userStartEpoch, endEpoch]: [string, string, number, number, number]): StakingDetails =>
+            ({startBalance, endBalance, startEpoch, userStartEpoch, endEpoch})
         );
     }
     public getStakingStartBalance(): Promise<string> {
@@ -141,14 +146,14 @@ class MinipoolContract {
     public getStakingEndBalance(): Promise<string> {
         return this.contract.methods.getStakingEndBalance().call();
     }
-    public getStakingStartBlock(): Promise<number> {
-        return this.contract.methods.getStakingStartBlock().call().then((value: string): number => parseInt(value));
+    public getStakingStartEpoch(): Promise<number> {
+        return this.contract.methods.getStakingStartEpoch().call().then((value: string): number => parseInt(value));
     }
-    public getStakingUserStartBlock(): Promise<number> {
-        return this.contract.methods.getStakingUserStartBlock().call().then((value: string): number => parseInt(value));
+    public getStakingUserStartEpoch(): Promise<number> {
+        return this.contract.methods.getStakingUserStartEpoch().call().then((value: string): number => parseInt(value));
     }
-    public getStakingEndBlock(): Promise<number> {
-        return this.contract.methods.getStakingEndBlock().call().then((value: string): number => parseInt(value));
+    public getStakingEndEpoch(): Promise<number> {
+        return this.contract.methods.getStakingEndEpoch().call().then((value: string): number => parseInt(value));
     }
 
 

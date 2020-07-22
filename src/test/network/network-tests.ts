@@ -54,8 +54,7 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
             // Create, stake and withdraw minipool
             let minipool = (await createMinipool(web3, rp, {from: node, value: nodeDepositAmount, gas: gasLimit}) as MinipoolContract);
             await stakeMinipool(web3, rp, minipool, minipoolPubkey, {from: node, gas: gasLimit});
-            await rp.minipool.submitMinipoolExited(minipool.address, 1, {from: trustedNode, gas: gasLimit});
-            await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalAmount, 2, {from: trustedNode, gas: gasLimit});
+            await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalAmount, 0, 1, 0, {from: trustedNode, gas: gasLimit});
 
         });
 

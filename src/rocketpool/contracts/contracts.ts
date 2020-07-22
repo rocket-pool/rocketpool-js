@@ -40,7 +40,7 @@ class Contracts {
 
         // Load address
         this.addresses[name] = this.rocketStorage
-        .then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.name', name)).call());
+        .then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3('contract.address', name)).call());
 
         // Return address promise
         return this.addresses[name];
