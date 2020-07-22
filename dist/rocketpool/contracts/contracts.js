@@ -48,7 +48,7 @@ var Contracts = function () {
             if (this.addresses[name]) return this.addresses[name];
             // Load address
             this.addresses[name] = this.rocketStorage.then(function (rocketStorage) {
-                return rocketStorage.methods.getAddress(_this2.web3.utils.soliditySha3('contract.name', name)).call();
+                return rocketStorage.methods.getAddress(_this2.web3.utils.soliditySha3('contract.address', name)).call();
             });
             // Return address promise
             return this.addresses[name];

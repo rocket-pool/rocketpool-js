@@ -23,12 +23,25 @@ var NetworkSettings = function () {
 
 
     _createClass(NetworkSettings, [{
-        key: 'getSubmitBalancesEnabled',
+        key: 'getNodeConsensusThreshold',
 
         /**
          * Getters
          */
+        // The threshold of trusted nodes that must reach consensus on oracle data to commit it
+        value: function getNodeConsensusThreshold() {
+            var _this = this;
+
+            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
+                return rocketNetworkSettings.methods.getNodeConsensusThreshold().call();
+            }).then(function (value) {
+                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
+            });
+        }
         // ETH balance submissions are currently enabled
+
+    }, {
+        key: 'getSubmitBalancesEnabled',
         value: function getSubmitBalancesEnabled() {
             return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
                 return rocketNetworkSettings.methods.getSubmitBalancesEnabled().call();
@@ -48,34 +61,34 @@ var NetworkSettings = function () {
     }, {
         key: 'getMinimumNodeFee',
         value: function getMinimumNodeFee() {
-            var _this = this;
-
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getMinimumNodeFee().call();
-            }).then(function (value) {
-                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
-            });
-        }
-    }, {
-        key: 'getTargetNodeFee',
-        value: function getTargetNodeFee() {
             var _this2 = this;
 
             return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getTargetNodeFee().call();
+                return rocketNetworkSettings.methods.getMinimumNodeFee().call();
             }).then(function (value) {
                 return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
             });
         }
     }, {
+        key: 'getTargetNodeFee',
+        value: function getTargetNodeFee() {
+            var _this3 = this;
+
+            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
+                return rocketNetworkSettings.methods.getTargetNodeFee().call();
+            }).then(function (value) {
+                return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
+            });
+        }
+    }, {
         key: 'getMaximumNodeFee',
         value: function getMaximumNodeFee() {
-            var _this3 = this;
+            var _this4 = this;
 
             return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
                 return rocketNetworkSettings.methods.getMaximumNodeFee().call();
             }).then(function (value) {
-                return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
+                return parseFloat(_this4.web3.utils.fromWei(value, 'ether'));
             });
         }
         // The range of node demand values in wei to base fee calculations on (from negative to positive value)
@@ -92,12 +105,12 @@ var NetworkSettings = function () {
     }, {
         key: 'getTargetRethCollateralRate',
         value: function getTargetRethCollateralRate() {
-            var _this4 = this;
+            var _this5 = this;
 
             return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
                 return rocketNetworkSettings.methods.getTargetRethCollateralRate().call();
             }).then(function (value) {
-                return parseFloat(_this4.web3.utils.fromWei(value, 'ether'));
+                return parseFloat(_this5.web3.utils.fromWei(value, 'ether'));
             });
         }
     }, {

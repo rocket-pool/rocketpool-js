@@ -118,12 +118,13 @@ var MinipoolContract = function () {
     }, {
         key: 'getUserDetails',
         value: function getUserDetails() {
-            return Promise.all([this.getUserDepositBalance(), this.getUserDepositAssigned()]).then(function (_ref5) {
-                var _ref6 = _slicedToArray(_ref5, 2),
+            return Promise.all([this.getUserDepositBalance(), this.getUserDepositAssigned(), this.getUserDepositAssignedTime()]).then(function (_ref5) {
+                var _ref6 = _slicedToArray(_ref5, 3),
                     depositBalance = _ref6[0],
-                    depositAssigned = _ref6[1];
+                    depositAssigned = _ref6[1],
+                    depositAssignedTime = _ref6[2];
 
-                return { depositBalance: depositBalance, depositAssigned: depositAssigned };
+                return { depositBalance: depositBalance, depositAssigned: depositAssigned, depositAssignedTime: depositAssignedTime };
             });
         }
     }, {
@@ -136,20 +137,27 @@ var MinipoolContract = function () {
         value: function getUserDepositAssigned() {
             return this.contract.methods.getUserDepositAssigned().call();
         }
+    }, {
+        key: 'getUserDepositAssignedTime',
+        value: function getUserDepositAssignedTime() {
+            return this.contract.methods.getUserDepositAssignedTime().call().then(function (value) {
+                return new Date(parseInt(value) * 1000);
+            });
+        }
         // Staking details
 
     }, {
         key: 'getStakingDetails',
         value: function getStakingDetails() {
-            return Promise.all([this.getStakingStartBalance(), this.getStakingEndBalance(), this.getStakingStartBlock(), this.getStakingUserStartBlock(), this.getStakingEndBlock()]).then(function (_ref7) {
+            return Promise.all([this.getStakingStartBalance(), this.getStakingEndBalance(), this.getStakingStartEpoch(), this.getStakingUserStartEpoch(), this.getStakingEndEpoch()]).then(function (_ref7) {
                 var _ref8 = _slicedToArray(_ref7, 5),
                     startBalance = _ref8[0],
                     endBalance = _ref8[1],
-                    startBlock = _ref8[2],
-                    userStartBlock = _ref8[3],
-                    endBlock = _ref8[4];
+                    startEpoch = _ref8[2],
+                    userStartEpoch = _ref8[3],
+                    endEpoch = _ref8[4];
 
-                return { startBalance: startBalance, endBalance: endBalance, startBlock: startBlock, userStartBlock: userStartBlock, endBlock: endBlock };
+                return { startBalance: startBalance, endBalance: endBalance, startEpoch: startEpoch, userStartEpoch: userStartEpoch, endEpoch: endEpoch };
             });
         }
     }, {
@@ -163,23 +171,23 @@ var MinipoolContract = function () {
             return this.contract.methods.getStakingEndBalance().call();
         }
     }, {
-        key: 'getStakingStartBlock',
-        value: function getStakingStartBlock() {
-            return this.contract.methods.getStakingStartBlock().call().then(function (value) {
+        key: 'getStakingStartEpoch',
+        value: function getStakingStartEpoch() {
+            return this.contract.methods.getStakingStartEpoch().call().then(function (value) {
                 return parseInt(value);
             });
         }
     }, {
-        key: 'getStakingUserStartBlock',
-        value: function getStakingUserStartBlock() {
-            return this.contract.methods.getStakingUserStartBlock().call().then(function (value) {
+        key: 'getStakingUserStartEpoch',
+        value: function getStakingUserStartEpoch() {
+            return this.contract.methods.getStakingUserStartEpoch().call().then(function (value) {
                 return parseInt(value);
             });
         }
     }, {
-        key: 'getStakingEndBlock',
-        value: function getStakingEndBlock() {
-            return this.contract.methods.getStakingEndBlock().call().then(function (value) {
+        key: 'getStakingEndEpoch',
+        value: function getStakingEndEpoch() {
+            return this.contract.methods.getStakingEndEpoch().call().then(function (value) {
                 return parseInt(value);
             });
         }

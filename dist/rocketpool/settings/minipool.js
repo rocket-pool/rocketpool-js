@@ -80,15 +80,6 @@ var MinipoolSettings = function () {
                 return rocketMinipoolSettings.methods.getEmptyDepositUserAmount().call();
             });
         }
-        // Minipool exited event submissions are currently enabled
-
-    }, {
-        key: 'getSubmitExitedEnabled',
-        value: function getSubmitExitedEnabled() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getSubmitExitedEnabled().call();
-            });
-        }
         // Minipool withdrawable event submissions are currently enabled
 
     }, {

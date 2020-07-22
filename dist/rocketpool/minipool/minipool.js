@@ -261,22 +261,13 @@ var Minipool = function () {
         /**
          * Mutators - Restricted to trusted nodes
          */
-        // Submit a minipool exited event
-
-    }, {
-        key: 'submitMinipoolExited',
-        value: function submitMinipoolExited(minipoolAddress, epoch, options, onConfirmation) {
-            return this.rocketMinipoolStatus.then(function (rocketMinipoolStatus) {
-                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolExited(minipoolAddress, epoch).send(options), onConfirmation);
-            });
-        }
         // Submit a minipool withdrawable event
 
     }, {
         key: 'submitMinipoolWithdrawable',
-        value: function submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, epoch, options, onConfirmation) {
+        value: function submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch, options, onConfirmation) {
             return this.rocketMinipoolStatus.then(function (rocketMinipoolStatus) {
-                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, epoch).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch).send(options), onConfirmation);
             });
         }
     }, {
