@@ -25,12 +25,23 @@ var Network = function () {
 
 
     _createClass(Network, [{
-        key: 'getTotalETHBalance',
+        key: 'getBalancesBlock',
 
         /**
          * Getters
          */
+        // Get the block that current network balances are set for
+        value: function getBalancesBlock() {
+            return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
+                return rocketNetworkBalances.methods.getBalancesBlock().call();
+            }).then(function (value) {
+                return parseInt(value);
+            });
+        }
         // Get the current network total ETH balance in wei
+
+    }, {
+        key: 'getTotalETHBalance',
         value: function getTotalETHBalance() {
             return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
                 return rocketNetworkBalances.methods.getTotalETHBalance().call();
@@ -45,15 +56,13 @@ var Network = function () {
                 return rocketNetworkBalances.methods.getStakingETHBalance().call();
             });
         }
-        // Get the epoch that current network balances are set for
+        // Get the current network total rETH supply in wei
 
     }, {
-        key: 'getETHBalancesEpoch',
-        value: function getETHBalancesEpoch() {
+        key: 'getTotalRETHSupply',
+        value: function getTotalRETHSupply() {
             return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
-                return rocketNetworkBalances.methods.getETHBalancesEpoch().call();
-            }).then(function (value) {
-                return parseInt(value);
+                return rocketNetworkBalances.methods.getTotalRETHSupply().call();
             });
         }
         // Get the current network ETH utilization rate
@@ -125,13 +134,13 @@ var Network = function () {
         /**
          * Mutators - Restricted to trusted nodes
          */
-        // Submit network ETH balances for an epoch
+        // Submit network balances for a block
 
     }, {
-        key: 'submitETHBalances',
-        value: function submitETHBalances(epoch, totalWei, stakingWei, options, onConfirmation) {
+        key: 'submitBalances',
+        value: function submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei, options, onConfirmation) {
             return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
-                return (0, _transaction.handleConfirmations)(rocketNetworkBalances.methods.submitETHBalances(epoch, totalWei, stakingWei).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketNetworkBalances.methods.submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei).send(options), onConfirmation);
             });
         }
         // Process a validator withdrawal from the beacon chain

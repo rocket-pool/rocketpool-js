@@ -149,15 +149,12 @@ var MinipoolContract = function () {
     }, {
         key: 'getStakingDetails',
         value: function getStakingDetails() {
-            return Promise.all([this.getStakingStartBalance(), this.getStakingEndBalance(), this.getStakingStartEpoch(), this.getStakingUserStartEpoch(), this.getStakingEndEpoch()]).then(function (_ref7) {
-                var _ref8 = _slicedToArray(_ref7, 5),
+            return Promise.all([this.getStakingStartBalance(), this.getStakingEndBalance()]).then(function (_ref7) {
+                var _ref8 = _slicedToArray(_ref7, 2),
                     startBalance = _ref8[0],
-                    endBalance = _ref8[1],
-                    startEpoch = _ref8[2],
-                    userStartEpoch = _ref8[3],
-                    endEpoch = _ref8[4];
+                    endBalance = _ref8[1];
 
-                return { startBalance: startBalance, endBalance: endBalance, startEpoch: startEpoch, userStartEpoch: userStartEpoch, endEpoch: endEpoch };
+                return { startBalance: startBalance, endBalance: endBalance };
             });
         }
     }, {
@@ -169,27 +166,6 @@ var MinipoolContract = function () {
         key: 'getStakingEndBalance',
         value: function getStakingEndBalance() {
             return this.contract.methods.getStakingEndBalance().call();
-        }
-    }, {
-        key: 'getStakingStartEpoch',
-        value: function getStakingStartEpoch() {
-            return this.contract.methods.getStakingStartEpoch().call().then(function (value) {
-                return parseInt(value);
-            });
-        }
-    }, {
-        key: 'getStakingUserStartEpoch',
-        value: function getStakingUserStartEpoch() {
-            return this.contract.methods.getStakingUserStartEpoch().call().then(function (value) {
-                return parseInt(value);
-            });
-        }
-    }, {
-        key: 'getStakingEndEpoch',
-        value: function getStakingEndEpoch() {
-            return this.contract.methods.getStakingEndEpoch().call().then(function (value) {
-                return parseInt(value);
-            });
         }
         /**
          * Mutators - Public

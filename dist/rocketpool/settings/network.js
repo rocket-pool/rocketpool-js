@@ -38,13 +38,24 @@ var NetworkSettings = function () {
                 return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
             });
         }
-        // ETH balance submissions are currently enabled
+        // Balance submissions are currently enabled
 
     }, {
         key: 'getSubmitBalancesEnabled',
         value: function getSubmitBalancesEnabled() {
             return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
                 return rocketNetworkSettings.methods.getSubmitBalancesEnabled().call();
+            });
+        }
+        // The frequency in blocks at which network balances should be submitted by trusted nodes
+
+    }, {
+        key: 'getSubmitBalancesFrequency',
+        value: function getSubmitBalancesFrequency() {
+            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
+                return rocketNetworkSettings.methods.getSubmitBalancesFrequency().call();
+            }).then(function (value) {
+                return parseInt(value);
             });
         }
         // Processing withdrawals is currently enabled

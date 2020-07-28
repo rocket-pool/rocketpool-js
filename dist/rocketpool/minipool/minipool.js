@@ -247,15 +247,26 @@ var Minipool = function () {
                 return rocketMinipoolQueue.methods.getNextCapacity().call();
             });
         }
+        // Get the node reward amount for a minipool by node fee, user deposit balance, and staking start & end balances
+
+    }, {
+        key: 'getMinipoolNodeRewardAmount',
+        value: function getMinipoolNodeRewardAmount(nodeFee, userDepositBalance, startBalance, endBalance) {
+            var _this5 = this;
+
+            return this.rocketMinipoolStatus.then(function (rocketMinipoolStatus) {
+                return rocketMinipoolStatus.methods.getMinipoolNodeRewardAmount(_this5.web3.utils.toWei(nodeFee.toString(), 'ether'), userDepositBalance, startBalance, endBalance).call();
+            });
+        }
         // Get a MinipoolContract instance
 
     }, {
         key: 'getMinipoolContract',
         value: function getMinipoolContract(address) {
-            var _this5 = this;
+            var _this6 = this;
 
             return this.contracts.make('rocketMinipool', address).then(function (rocketMinipool) {
-                return new _minipoolContract2.default(_this5.web3, address, rocketMinipool);
+                return new _minipoolContract2.default(_this6.web3, address, rocketMinipool);
             });
         }
         /**
@@ -265,9 +276,9 @@ var Minipool = function () {
 
     }, {
         key: 'submitMinipoolWithdrawable',
-        value: function submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch, options, onConfirmation) {
+        value: function submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options, onConfirmation) {
             return this.rocketMinipoolStatus.then(function (rocketMinipoolStatus) {
-                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options), onConfirmation);
             });
         }
     }, {
