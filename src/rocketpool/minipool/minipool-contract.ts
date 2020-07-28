@@ -26,9 +26,6 @@ export interface UserDetails {
 export interface StakingDetails {
     startBalance: string;
     endBalance: string;
-    startEpoch: number;
-    userStartEpoch: number;
-    endEpoch: number;
 }
 
 
@@ -132,12 +129,9 @@ class MinipoolContract {
         return Promise.all([
             this.getStakingStartBalance(),
             this.getStakingEndBalance(),
-            this.getStakingStartEpoch(),
-            this.getStakingUserStartEpoch(),
-            this.getStakingEndEpoch(),
         ]).then(
-            ([startBalance, endBalance, startEpoch, userStartEpoch, endEpoch]: [string, string, number, number, number]): StakingDetails =>
-            ({startBalance, endBalance, startEpoch, userStartEpoch, endEpoch})
+            ([startBalance, endBalance]: [string, string]): StakingDetails =>
+            ({startBalance, endBalance})
         );
     }
     public getStakingStartBalance(): Promise<string> {
@@ -145,15 +139,6 @@ class MinipoolContract {
     }
     public getStakingEndBalance(): Promise<string> {
         return this.contract.methods.getStakingEndBalance().call();
-    }
-    public getStakingStartEpoch(): Promise<number> {
-        return this.contract.methods.getStakingStartEpoch().call().then((value: string): number => parseInt(value));
-    }
-    public getStakingUserStartEpoch(): Promise<number> {
-        return this.contract.methods.getStakingUserStartEpoch().call().then((value: string): number => parseInt(value));
-    }
-    public getStakingEndEpoch(): Promise<number> {
-        return this.contract.methods.getStakingEndEpoch().call().then((value: string): number => parseInt(value));
     }
 
 

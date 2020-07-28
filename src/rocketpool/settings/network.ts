@@ -33,11 +33,19 @@ class NetworkSettings {
     }
 
 
-    // ETH balance submissions are currently enabled
+    // Balance submissions are currently enabled
     public getSubmitBalancesEnabled(): Promise<boolean> {
         return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<boolean> => {
             return rocketNetworkSettings.methods.getSubmitBalancesEnabled().call();
         });
+    }
+
+
+    // The frequency in blocks at which network balances should be submitted by trusted nodes
+    public getSubmitBalancesFrequency(): Promise<number> {
+        return this.rocketNetworkSettings.then((rocketNetworkSettings: Contract): Promise<string> => {
+            return rocketNetworkSettings.methods.getSubmitBalancesFrequency().call();
+        }).then((value: string): number => parseInt(value));
     }
 
 

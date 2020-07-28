@@ -6,14 +6,14 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 
 // Submit network ETH balances
-export async function submitETHBalances(web3: Web3, rp: RocketPool, epoch: number, totalWei: string, stakingWei: string, options: SendOptions) {
+export async function submitBalances(web3: Web3, rp: RocketPool, block: number, totalEthWei: string, stakingEthWei: string, rethSupplyWei: string, options: SendOptions) {
 
     // Submit balances
-    await rp.network.submitETHBalances(epoch, totalWei, stakingWei, options);
+    await rp.network.submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei, options);
 
-    // Get & check balance
-    let totalBalance = await rp.network.getTotalETHBalance();
-    assert(web3.utils.toBN(totalBalance).eq(web3.utils.toBN(totalWei)), 'Balances were not updated successfully');
+    // Get & check ETH balance
+    let totalEthBalance = await rp.network.getTotalETHBalance();
+    assert(web3.utils.toBN(totalEthBalance).eq(web3.utils.toBN(totalEthWei)), 'Balances were not updated successfully');
 
 }
 

@@ -66,7 +66,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool) {
 
             // Stake and withdraw from minipool
             await stakeMinipool(web3, rp, minipool, minipoolPubkey, {from: node, gas: gasLimit});
-            await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalAmount, 0, 1, 0, {from: trustedNode, gas: gasLimit});
+            await rp.minipool.submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), withdrawalAmount, {from: trustedNode, gas: gasLimit});
             await minipool.withdraw({from: node, gas: gasLimit});
 
             // Process minipool withdrawal
@@ -75,7 +75,7 @@ export default function runNodeTests(web3: Web3, rp: RocketPool) {
             await rp.network.processWithdrawal(minipoolPubkey, {from: trustedNode, gas: gasLimit});
 
             // Set network balances
-            await rp.network.submitETHBalances(1, userDepositAmount, userDepositAmount, {from: trustedNode, gas: gasLimit});
+            await rp.network.submitBalances(1, userDepositAmount, userDepositAmount, userDepositAmount, {from: trustedNode, gas: gasLimit});
 
         });
 

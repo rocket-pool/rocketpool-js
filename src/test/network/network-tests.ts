@@ -8,7 +8,7 @@ import { takeSnapshot, revertSnapshot } from '../_utils/evm';
 import { createMinipool, stakeMinipool } from '../_helpers/minipool';
 import { setNetworkSetting } from '../_helpers/settings';
 import { processWithdrawal } from './scenario-process-withdrawal';
-import { submitETHBalances } from './scenario-submit-balances';
+import { submitBalances } from './scenario-submit-balances';
 
 // Tests
 export default function runNetworkTests(web3: Web3, rp: RocketPool) {
@@ -54,7 +54,7 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
             // Create, stake and withdraw minipool
             let minipool = (await createMinipool(web3, rp, {from: node, value: nodeDepositAmount, gas: gasLimit}) as MinipoolContract);
             await stakeMinipool(web3, rp, minipool, minipoolPubkey, {from: node, gas: gasLimit});
-            await rp.minipool.submitMinipoolWithdrawable(minipool.address, withdrawalAmount, 0, 1, 0, {from: trustedNode, gas: gasLimit});
+            await rp.minipool.submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), withdrawalAmount, {from: trustedNode, gas: gasLimit});
 
         });
 
@@ -64,31 +64,34 @@ export default function runNetworkTests(web3: Web3, rp: RocketPool) {
             it('Can get network balances', async () => {
 
                 // Set parameters
-                let balancesEpoch = 1;
+                let balancesBlock = 1;
                 let totalEthBalance = web3.utils.toWei('100', 'ether');
                 let stakingEthBalance = web3.utils.toWei('90', 'ether');
+                let rethSupplyBalance = web3.utils.toWei('95', 'ether');
 
                 // Submit balances
-                await rp.network.submitETHBalances(balancesEpoch, totalEthBalance, stakingEthBalance, {from: trustedNode, gas: gasLimit});
+                await rp.network.submitBalances(balancesBlock, totalEthBalance, stakingEthBalance, rethSupplyBalance, {from: trustedNode, gas: gasLimit});
 
                 // Get balances
-                let [totalEth, stakingEth, epoch, utilizationRate] = await Promise.all([
+                let [block, totalEth, stakingEth, rethSupply, utilizationRate] = await Promise.all([
+                    rp.network.getBalancesBlock(),
                     rp.network.getTotalETHBalance(),
                     rp.network.getStakingETHBalance(),
-                    rp.network.getETHBalancesEpoch(),
+                    rp.network.getTotalRETHSupply(),
                     rp.network.getETHUtilizationRate(),
                 ]);
 
                 // Check balances
+                assert.equal(block, balancesBlock, 'Incorrect balances block');
                 assert(web3.utils.toBN(totalEth).eq(web3.utils.toBN(totalEthBalance)), 'Incorrect total ETH balance');
                 assert(web3.utils.toBN(stakingEth).eq(web3.utils.toBN(stakingEthBalance)), 'Incorrect staking ETH balance');
-                assert.equal(epoch, balancesEpoch, 'Incorrect balances epoch');
+                assert(web3.utils.toBN(rethSupply).eq(web3.utils.toBN(rethSupplyBalance)), 'Incorrect total rETH supply');
                 assert.equal(utilizationRate, 0.9, 'Incorrect ETH utilization rate');
 
             });
 
             it('Can submit network balances', async () => {
-                await submitETHBalances(web3, rp, 1, web3.utils.toWei('10', 'ether'), web3.utils.toWei('9', 'ether'), {
+                await submitBalances(web3, rp, 1, web3.utils.toWei('10', 'ether'), web3.utils.toWei('9', 'ether'), web3.utils.toWei('9.5', 'ether'), {
                     from: trustedNode,
                     gas: gasLimit,
                 });

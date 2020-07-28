@@ -222,6 +222,14 @@ class Minipool {
     }
 
 
+    // Get the node reward amount for a minipool by node fee, user deposit balance, and staking start & end balances
+    public getMinipoolNodeRewardAmount(nodeFee: number, userDepositBalance: string, startBalance: string, endBalance: string): Promise<string> {
+        return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<string> => {
+            return rocketMinipoolStatus.methods.getMinipoolNodeRewardAmount(this.web3.utils.toWei(nodeFee.toString(), 'ether'), userDepositBalance, startBalance, endBalance).call();
+        });
+    }
+
+
     // Get a MinipoolContract instance
     public getMinipoolContract(address: string): Promise<MinipoolContract> {
         return this.contracts.make('rocketMinipool', address).then((rocketMinipool: Contract): MinipoolContract => {
@@ -236,10 +244,10 @@ class Minipool {
 
 
     // Submit a minipool withdrawable event
-    public submitMinipoolWithdrawable(minipoolAddress: string, withdrawalBalance: string, startEpoch: number, endEpoch: number, userStartEpoch: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public submitMinipoolWithdrawable(minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, withdrawalBalance, startEpoch, endEpoch, userStartEpoch).send(options),
+                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options),
                 onConfirmation
             );
         });

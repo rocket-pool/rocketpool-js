@@ -33,6 +33,14 @@ class Network {
      */
 
 
+    // Get the block that current network balances are set for
+    public getBalancesBlock(): Promise<number> {
+        return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
+            return rocketNetworkBalances.methods.getBalancesBlock().call();
+        }).then((value: string): number => parseInt(value));
+    }
+
+
     // Get the current network total ETH balance in wei
     public getTotalETHBalance(): Promise<string> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
@@ -49,11 +57,11 @@ class Network {
     }
 
 
-    // Get the epoch that current network balances are set for
-    public getETHBalancesEpoch(): Promise<number> {
+    // Get the current network total rETH supply in wei
+    public getTotalRETHSupply(): Promise<string> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<string> => {
-            return rocketNetworkBalances.methods.getETHBalancesEpoch().call();
-        }).then((value: string): number => parseInt(value));
+            return rocketNetworkBalances.methods.getTotalRETHSupply().call();
+        });
     }
 
 
@@ -110,11 +118,11 @@ class Network {
      */
 
 
-    // Submit network ETH balances for an epoch
-    public submitETHBalances(epoch: number, totalWei: string, stakingWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    // Submit network balances for a block
+    public submitBalances(block: number, totalEthWei: string, stakingEthWei: string, rethSupplyWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkBalances.methods.submitETHBalances(epoch, totalWei, stakingWei).send(options),
+                rocketNetworkBalances.methods.submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei).send(options),
                 onConfirmation
             );
         });
