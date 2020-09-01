@@ -35,11 +35,29 @@ var RETH = function (_ERC) {
     /**
      * Getters
      */
-    // Get the current ETH : rETH exchange rate
-    // Returns the amount of ETH backing 1 rETH
+    // Get the amount of ETH backing an amount of rETH
 
 
     _createClass(RETH, [{
+        key: 'getEthValue',
+        value: function getEthValue(rethAmountWei) {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.getEthValue(rethAmountWei).call();
+            });
+        }
+        // Get the amount of rETH backing an amount of ETH
+
+    }, {
+        key: 'getRethValue',
+        value: function getRethValue(ethAmountWei) {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.getRethValue(ethAmountWei).call();
+            });
+        }
+        // Get the current ETH : rETH exchange rate
+        // Returns the amount of ETH backing 1 rETH
+
+    }, {
         key: 'getExchangeRate',
         value: function getExchangeRate() {
             var _this2 = this;
