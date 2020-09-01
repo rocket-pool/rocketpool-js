@@ -24,6 +24,22 @@ class RETH extends ERC20 {
      */
 
 
+    // Get the amount of ETH backing an amount of rETH
+    public getEthValue(rethAmountWei: string): Promise<string> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
+            return tokenContract.methods.getEthValue(rethAmountWei).call();
+        });
+    }
+
+
+    // Get the amount of rETH backing an amount of ETH
+    public getRethValue(ethAmountWei: string): Promise<string> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
+            return tokenContract.methods.getRethValue(ethAmountWei).call();
+        });
+    }
+
+
     // Get the current ETH : rETH exchange rate
     // Returns the amount of ETH backing 1 rETH
     public getExchangeRate(): Promise<number> {
