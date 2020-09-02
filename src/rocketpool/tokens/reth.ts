@@ -49,6 +49,14 @@ class RETH extends ERC20 {
     }
 
 
+    // Get the total amount of ETH collateral available
+    public getTotalCollateral(): Promise<string> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
+            return tokenContract.methods.getTotalCollateral().call();
+        });
+    }
+
+
     // Get the current ETH collateral rate
     // Returns the portion of rETH backed by ETH in the contract as a fraction
     public getCollateralRate(): Promise<number> {

@@ -68,6 +68,15 @@ var RETH = function (_ERC) {
                 return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
             });
         }
+        // Get the total amount of ETH collateral available
+
+    }, {
+        key: 'getTotalCollateral',
+        value: function getTotalCollateral() {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.getTotalCollateral().call();
+            });
+        }
         // Get the current ETH collateral rate
         // Returns the portion of rETH backed by ETH in the contract as a fraction
 
