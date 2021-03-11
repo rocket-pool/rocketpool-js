@@ -30,8 +30,8 @@ var MinipoolSettings = function () {
          */
         // Balance required to launch minipool in wei
         value: function getLaunchBalance() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getLaunchBalance().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getLaunchBalance().call();
             });
         }
         // Required node deposit amounts in wei
@@ -39,22 +39,22 @@ var MinipoolSettings = function () {
     }, {
         key: 'getFullDepositNodeAmount',
         value: function getFullDepositNodeAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getFullDepositNodeAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getFullDepositNodeAmount().call();
             });
         }
     }, {
         key: 'getHalfDepositNodeAmount',
         value: function getHalfDepositNodeAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getHalfDepositNodeAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositNodeAmount().call();
             });
         }
     }, {
         key: 'getEmptyDepositNodeAmount',
         value: function getEmptyDepositNodeAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getEmptyDepositNodeAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositNodeAmount().call();
             });
         }
         // Required user deposit amounts in wei
@@ -62,22 +62,22 @@ var MinipoolSettings = function () {
     }, {
         key: 'getFullDepositUserAmount',
         value: function getFullDepositUserAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getFullDepositUserAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getFullDepositUserAmount().call();
             });
         }
     }, {
         key: 'getHalfDepositUserAmount',
         value: function getHalfDepositUserAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getHalfDepositUserAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call();
             });
         }
     }, {
         key: 'getEmptyDepositUserAmount',
         value: function getEmptyDepositUserAmount() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getEmptyDepositUserAmount().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositUserAmount().call();
             });
         }
         // Minipool withdrawable event submissions are currently enabled
@@ -85,8 +85,8 @@ var MinipoolSettings = function () {
     }, {
         key: 'getSubmitWithdrawableEnabled',
         value: function getSubmitWithdrawableEnabled() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getSubmitWithdrawableEnabled().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getSubmitWithdrawableEnabled().call();
             });
         }
         // Timeout period in blocks for prelaunch minipools to launch
@@ -94,8 +94,8 @@ var MinipoolSettings = function () {
     }, {
         key: 'getLaunchTimeout',
         value: function getLaunchTimeout() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getLaunchTimeout().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getLaunchTimeout().call();
             }).then(function (value) {
                 return parseInt(value);
             });
@@ -105,16 +105,16 @@ var MinipoolSettings = function () {
     }, {
         key: 'getWithdrawalDelay',
         value: function getWithdrawalDelay() {
-            return this.rocketMinipoolSettings.then(function (rocketMinipoolSettings) {
-                return rocketMinipoolSettings.methods.getWithdrawalDelay().call();
+            return this.rocketDAOProtocolSettingsMinipool.then(function (rocketDAOProtocolSettingsMinipool) {
+                return rocketDAOProtocolSettingsMinipool.methods.getWithdrawalDelay().call();
             }).then(function (value) {
                 return parseInt(value);
             });
         }
     }, {
-        key: 'rocketMinipoolSettings',
+        key: 'rocketDAOProtocolSettingsMinipool',
         get: function get() {
-            return this.contracts.get('rocketMinipoolSettings');
+            return this.contracts.get('rocketDAOProtocolSettingsMinipool');
         }
     }]);
 

@@ -32,8 +32,8 @@ var NetworkSettings = function () {
         value: function getNodeConsensusThreshold() {
             var _this = this;
 
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getNodeConsensusThreshold().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getNodeConsensusThreshold().call();
             }).then(function (value) {
                 return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
             });
@@ -43,8 +43,8 @@ var NetworkSettings = function () {
     }, {
         key: 'getSubmitBalancesEnabled',
         value: function getSubmitBalancesEnabled() {
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getSubmitBalancesEnabled().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getSubmitBalancesEnabled().call();
             });
         }
         // The frequency in blocks at which network balances should be submitted by trusted nodes
@@ -52,8 +52,8 @@ var NetworkSettings = function () {
     }, {
         key: 'getSubmitBalancesFrequency',
         value: function getSubmitBalancesFrequency() {
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getSubmitBalancesFrequency().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getSubmitBalancesFrequency().call();
             }).then(function (value) {
                 return parseInt(value);
             });
@@ -63,8 +63,8 @@ var NetworkSettings = function () {
     }, {
         key: 'getProcessWithdrawalsEnabled',
         value: function getProcessWithdrawalsEnabled() {
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getProcessWithdrawalsEnabled().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getProcessWithdrawalsEnabled().call();
             });
         }
         // Node commission rate parameters
@@ -74,8 +74,8 @@ var NetworkSettings = function () {
         value: function getMinimumNodeFee() {
             var _this2 = this;
 
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getMinimumNodeFee().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getMinimumNodeFee().call();
             }).then(function (value) {
                 return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
             });
@@ -85,8 +85,8 @@ var NetworkSettings = function () {
         value: function getTargetNodeFee() {
             var _this3 = this;
 
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getTargetNodeFee().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getTargetNodeFee().call();
             }).then(function (value) {
                 return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
             });
@@ -96,8 +96,8 @@ var NetworkSettings = function () {
         value: function getMaximumNodeFee() {
             var _this4 = this;
 
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getMaximumNodeFee().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getMaximumNodeFee().call();
             }).then(function (value) {
                 return parseFloat(_this4.web3.utils.fromWei(value, 'ether'));
             });
@@ -107,8 +107,8 @@ var NetworkSettings = function () {
     }, {
         key: 'getNodeFeeDemandRange',
         value: function getNodeFeeDemandRange() {
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getNodeFeeDemandRange().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getNodeFeeDemandRange().call();
             });
         }
         // The target rETH collateralization rate
@@ -118,16 +118,16 @@ var NetworkSettings = function () {
         value: function getTargetRethCollateralRate() {
             var _this5 = this;
 
-            return this.rocketNetworkSettings.then(function (rocketNetworkSettings) {
-                return rocketNetworkSettings.methods.getTargetRethCollateralRate().call();
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getTargetRethCollateralRate().call();
             }).then(function (value) {
                 return parseFloat(_this5.web3.utils.fromWei(value, 'ether'));
             });
         }
     }, {
-        key: 'rocketNetworkSettings',
+        key: 'rocketDAOProtocolSettingsNetwork',
         get: function get() {
-            return this.contracts.get('rocketNetworkSettings');
+            return this.contracts.get('rocketDAOProtocolSettingsNetwork');
         }
     }]);
 

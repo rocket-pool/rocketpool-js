@@ -30,8 +30,8 @@ var NodeSettings = function () {
          */
         // Node registrations are currently enabled
         value: function getRegistrationEnabled() {
-            return this.rocketNodeSettings.then(function (rocketNodeSettings) {
-                return rocketNodeSettings.methods.getRegistrationEnabled().call();
+            return this.rocketDAOProtocolSettingsNode.then(function (rocketDAOProtocolSettingsNode) {
+                return rocketDAOProtocolSettingsNode.methods.getRegistrationEnabled().call();
             });
         }
         // Node deposits are currently enabled
@@ -39,14 +39,14 @@ var NodeSettings = function () {
     }, {
         key: 'getDepositEnabled',
         value: function getDepositEnabled() {
-            return this.rocketNodeSettings.then(function (rocketNodeSettings) {
-                return rocketNodeSettings.methods.getDepositEnabled().call();
+            return this.rocketDAOProtocolSettingsNode.then(function (rocketDAOProtocolSettingsNode) {
+                return rocketDAOProtocolSettingsNode.methods.getDepositEnabled().call();
             });
         }
     }, {
-        key: 'rocketNodeSettings',
+        key: 'rocketDAOProtocolSettingsNode',
         get: function get() {
-            return this.contracts.get('rocketNodeSettings');
+            return this.contracts.get('rocketDAOProtocolSettingsNode');
         }
     }]);
 

@@ -32,7 +32,7 @@ var RETH = function (_ERC) {
     function RETH(web3, contracts) {
         _classCallCheck(this, RETH);
 
-        return _possibleConstructorReturn(this, (RETH.__proto__ || Object.getPrototypeOf(RETH)).call(this, web3, contracts, 'rocketETHToken'));
+        return _possibleConstructorReturn(this, (RETH.__proto__ || Object.getPrototypeOf(RETH)).call(this, web3, contracts, 'rocketTokenRETH'));
     }
     /**
      * Getters
@@ -81,7 +81,7 @@ var RETH = function (_ERC) {
             //return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
             //    return tokenContract.methods.getTotalCollateral().call();
             //});
-            return Promise.all([this.contracts.address('rocketETHToken').then(function (rethContractAddress) {
+            return Promise.all([this.contracts.address('rocketTokenRETH').then(function (rethContractAddress) {
                 return _this3.web3.eth.getBalance(rethContractAddress);
             }), this.contracts.get('rocketDepositPool').then(function (rocketDepositPool) {
                 return rocketDepositPool.methods.getExcessBalance().call();

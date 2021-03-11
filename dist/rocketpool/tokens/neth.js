@@ -30,7 +30,7 @@ var NETH = function (_ERC) {
     function NETH(web3, contracts) {
         _classCallCheck(this, NETH);
 
-        return _possibleConstructorReturn(this, (NETH.__proto__ || Object.getPrototypeOf(NETH)).call(this, web3, contracts, 'rocketNodeETHToken'));
+        return _possibleConstructorReturn(this, (NETH.__proto__ || Object.getPrototypeOf(NETH)).call(this, web3, contracts, 'rocketTokenNETH'));
     }
     /**
      * Mutators - Public

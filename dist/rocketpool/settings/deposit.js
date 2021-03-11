@@ -30,8 +30,8 @@ var DepositSettings = function () {
          */
         // Deposits are currently enabled
         value: function getDepositEnabled() {
-            return this.rocketDepositSettings.then(function (rocketDepositSettings) {
-                return rocketDepositSettings.methods.getDepositEnabled().call();
+            return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
+                return rocketDAOProtocolSettingsDeposit.methods.getDepositEnabled().call();
             });
         }
         // Deposit assignments are currently enabled
@@ -39,8 +39,8 @@ var DepositSettings = function () {
     }, {
         key: 'getAssignDepositsEnabled',
         value: function getAssignDepositsEnabled() {
-            return this.rocketDepositSettings.then(function (rocketDepositSettings) {
-                return rocketDepositSettings.methods.getAssignDepositsEnabled().call();
+            return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
+                return rocketDAOProtocolSettingsDeposit.methods.getAssignDepositsEnabled().call();
             });
         }
         // Minimum deposit amount in wei
@@ -48,8 +48,8 @@ var DepositSettings = function () {
     }, {
         key: 'getMinimumDeposit',
         value: function getMinimumDeposit() {
-            return this.rocketDepositSettings.then(function (rocketDepositSettings) {
-                return rocketDepositSettings.methods.getMinimumDeposit().call();
+            return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
+                return rocketDAOProtocolSettingsDeposit.methods.getMinimumDeposit().call();
             });
         }
         // Maximum deposit pool size in wei
@@ -57,8 +57,8 @@ var DepositSettings = function () {
     }, {
         key: 'getMaximumDepositPoolSize',
         value: function getMaximumDepositPoolSize() {
-            return this.rocketDepositSettings.then(function (rocketDepositSettings) {
-                return rocketDepositSettings.methods.getMaximumDepositPoolSize().call();
+            return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
+                return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositPoolSize().call();
             });
         }
         // Maximum number of deposit assignments to perform at once
@@ -66,16 +66,16 @@ var DepositSettings = function () {
     }, {
         key: 'getMaximumDepositAssignments',
         value: function getMaximumDepositAssignments() {
-            return this.rocketDepositSettings.then(function (rocketDepositSettings) {
-                return rocketDepositSettings.methods.getMaximumDepositAssignments().call();
+            return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
+                return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call();
             }).then(function (value) {
                 return parseInt(value);
             });
         }
     }, {
-        key: 'rocketDepositSettings',
+        key: 'rocketDAOProtocolSettingsDeposit',
         get: function get() {
-            return this.contracts.get('rocketDepositSettings');
+            return this.contracts.get('rocketDAOProtocolSettingsDeposit');
         }
     }]);
 
