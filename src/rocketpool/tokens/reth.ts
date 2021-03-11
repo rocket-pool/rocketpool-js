@@ -15,7 +15,7 @@ class RETH extends ERC20 {
 
     // Constructor
     public constructor(web3: Web3, contracts: Contracts) {
-        super(web3, contracts, 'rocketETHToken');
+        super(web3, contracts, 'rocketTokenRETH');
     }
 
 
@@ -56,7 +56,7 @@ class RETH extends ERC20 {
         //    return tokenContract.methods.getTotalCollateral().call();
         //});
         return Promise.all([
-            this.contracts.address('rocketETHToken').then((rethContractAddress: string): Promise<string> => {
+            this.contracts.address('rocketTokenRETH').then((rethContractAddress: string): Promise<string> => {
                 return this.web3.eth.getBalance(rethContractAddress);
             }),
             this.contracts.get('rocketDepositPool').then((rocketDepositPool: Contract): Promise<string> => {

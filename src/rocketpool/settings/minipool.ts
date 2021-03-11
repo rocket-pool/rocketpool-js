@@ -15,8 +15,8 @@ class MinipoolSettings {
 
 
     // Contract accessors
-    private get rocketMinipoolSettings(): Promise<Contract> {
-        return this.contracts.get('rocketMinipoolSettings');
+    private get rocketDAOProtocolSettingsMinipool(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsMinipool');
     }
 
 
@@ -27,68 +27,68 @@ class MinipoolSettings {
 
     // Balance required to launch minipool in wei
     public getLaunchBalance(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getLaunchBalance().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getLaunchBalance().call();
         });
     }
 
 
     // Required node deposit amounts in wei
     public getFullDepositNodeAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getFullDepositNodeAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getFullDepositNodeAmount().call();
         });
     }
     public getHalfDepositNodeAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getHalfDepositNodeAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositNodeAmount().call();
         });
     }
     public getEmptyDepositNodeAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getEmptyDepositNodeAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositNodeAmount().call();
         });
     }
 
 
     // Required user deposit amounts in wei
     public getFullDepositUserAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getFullDepositUserAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getFullDepositUserAmount().call();
         });
     }
     public getHalfDepositUserAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getHalfDepositUserAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call();
         });
     }
     public getEmptyDepositUserAmount(): Promise<string> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getEmptyDepositUserAmount().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositUserAmount().call();
         });
     }
 
 
     // Minipool withdrawable event submissions are currently enabled
     public getSubmitWithdrawableEnabled(): Promise<boolean> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<boolean> => {
-            return rocketMinipoolSettings.methods.getSubmitWithdrawableEnabled().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<boolean> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getSubmitWithdrawableEnabled().call();
         });
     }
 
 
     // Timeout period in blocks for prelaunch minipools to launch
     public getLaunchTimeout(): Promise<number> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getLaunchTimeout().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getLaunchTimeout().call();
         }).then((value: string): number => parseInt(value));
     }
 
 
     // Withdrawal delay in blocks before withdrawable minipools can be closed
     public getWithdrawalDelay(): Promise<number> {
-        return this.rocketMinipoolSettings.then((rocketMinipoolSettings: Contract): Promise<string> => {
-            return rocketMinipoolSettings.methods.getWithdrawalDelay().call();
+        return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsMinipool.methods.getWithdrawalDelay().call();
         }).then((value: string): number => parseInt(value));
     }
 

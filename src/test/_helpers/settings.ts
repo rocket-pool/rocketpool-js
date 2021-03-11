@@ -5,48 +5,48 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Deposit settings
 export async function getDepositSetting(rp: RocketPool, setting: string) {
-    const rocketDepositSettings = await rp.contracts.get('rocketDepositSettings');
-    let value = await rocketDepositSettings.methods['get' + setting]().call();
+    const rocketDAOProtocolSettingsDeposit = await rp.contracts.get('rocketDAOProtocolSettingsDeposit');
+    let value = await rocketDAOProtocolSettingsDeposit.methods['get' + setting]().call();
     return value;
 }
 export async function setDepositSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
-    const rocketDepositSettings = await rp.contracts.get('rocketDepositSettings');
-    await rocketDepositSettings.methods['set' + setting](value).send(options);
+    const rocketDAOProtocolSettingsDeposit = await rp.contracts.get('rocketDAOProtocolSettingsDeposit');
+    await rocketDAOProtocolSettingsDeposit.methods['set' + setting](value).send(options);
 }
 
 
 // Minipool settings
 export async function getMinipoolSetting(rp: RocketPool, setting: string) {
-    const rocketMinipoolSettings = await rp.contracts.get('rocketMinipoolSettings');
-    let value = await rocketMinipoolSettings.methods['get' + setting]().call();
+    const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
+    let value = await rocketDAOProtocolSettingsMinipool.methods['get' + setting]().call();
     return value;
 }
 export async function setMinipoolSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
-    const rocketMinipoolSettings = await rp.contracts.get('rocketMinipoolSettings');
-    await rocketMinipoolSettings.methods['set' + setting](value).send(options);
+    const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
+    await rocketDAOProtocolSettingsMinipool.methods['set' + setting](value).send(options);
 }
 
 
 // Network settings
 export async function getNetworkSetting(rp: RocketPool, setting: string) {
-    const rocketNetworkSettings = await rp.contracts.get('rocketNetworkSettings');
-    let value = await rocketNetworkSettings.methods['get' + setting]().call();
+    const rocketDAOProtocolSettingsNetwork = await rp.contracts.get('rocketDAOProtocolSettingsNetwork');
+    let value = await rocketDAOProtocolSettingsNetwork.methods['get' + setting]().call();
     return value;
 }
 export async function setNetworkSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
-    const rocketNetworkSettings = await rp.contracts.get('rocketNetworkSettings');
-    await rocketNetworkSettings.methods['set' + setting](value).send(options);
+    const rocketDAOProtocolSettingsNetwork = await rp.contracts.get('rocketDAOProtocolSettingsNetwork');
+    await rocketDAOProtocolSettingsNetwork.methods['set' + setting](value).send(options);
 }
 
 
 // Node settings
 export async function getNodeSetting(rp: RocketPool, setting: string) {
-    const rocketNodeSettings = await rp.contracts.get('rocketNodeSettings');
-    let value = await rocketNodeSettings.methods['get' + setting]().call();
+    const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
+    let value = await rocketDAOProtocolSettingsNode.methods['get' + setting]().call();
     return value;
 }
 export async function setNodeSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
-    const rocketNodeSettings = await rp.contracts.get('rocketNodeSettings');
-    await rocketNodeSettings.methods['set' + setting](value).send(options);
+    const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
+    await rocketDAOProtocolSettingsNode.methods['set' + setting](value).send(options);
 }
 

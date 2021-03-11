@@ -15,8 +15,8 @@ class NodeSettings {
 
 
     // Contract accessors
-    private get rocketNodeSettings(): Promise<Contract> {
-        return this.contracts.get('rocketNodeSettings');
+    private get rocketDAOProtocolSettingsNode(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsNode');
     }
 
 
@@ -27,16 +27,16 @@ class NodeSettings {
 
     // Node registrations are currently enabled
     public getRegistrationEnabled(): Promise<boolean> {
-        return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<boolean> => {
-            return rocketNodeSettings.methods.getRegistrationEnabled().call();
+        return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
+            return rocketDAOProtocolSettingsNode.methods.getRegistrationEnabled().call();
         });
     }
 
 
     // Node deposits are currently enabled
     public getDepositEnabled(): Promise<boolean> {
-        return this.rocketNodeSettings.then((rocketNodeSettings: Contract): Promise<boolean> => {
-            return rocketNodeSettings.methods.getDepositEnabled().call();
+        return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
+            return rocketDAOProtocolSettingsNode.methods.getDepositEnabled().call();
         });
     }
 

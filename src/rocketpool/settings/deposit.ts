@@ -15,8 +15,8 @@ class DepositSettings {
 
 
     // Contract accessors
-    private get rocketDepositSettings(): Promise<Contract> {
-        return this.contracts.get('rocketDepositSettings');
+    private get rocketDAOProtocolSettingsDeposit(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsDeposit');
     }
 
 
@@ -27,40 +27,40 @@ class DepositSettings {
 
     // Deposits are currently enabled
     public getDepositEnabled(): Promise<boolean> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<boolean> => {
-            return rocketDepositSettings.methods.getDepositEnabled().call();
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<boolean> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getDepositEnabled().call();
         });
     }
 
 
     // Deposit assignments are currently enabled
     public getAssignDepositsEnabled(): Promise<boolean> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<boolean> => {
-            return rocketDepositSettings.methods.getAssignDepositsEnabled().call();
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<boolean> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getAssignDepositsEnabled().call();
         });
     }
 
 
     // Minimum deposit amount in wei
     public getMinimumDeposit(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
-            return rocketDepositSettings.methods.getMinimumDeposit().call();
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getMinimumDeposit().call();
         });
     }
 
 
     // Maximum deposit pool size in wei
     public getMaximumDepositPoolSize(): Promise<string> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
-            return rocketDepositSettings.methods.getMaximumDepositPoolSize().call();
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositPoolSize().call();
         });
     }
 
 
     // Maximum number of deposit assignments to perform at once
     public getMaximumDepositAssignments(): Promise<number> {
-        return this.rocketDepositSettings.then((rocketDepositSettings: Contract): Promise<string> => {
-            return rocketDepositSettings.methods.getMaximumDepositAssignments().call();
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call();
         }).then((value: string): number => parseInt(value));
     }
 
