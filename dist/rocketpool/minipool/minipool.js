@@ -265,7 +265,7 @@ var Minipool = function () {
         value: function getMinipoolContract(address) {
             var _this6 = this;
 
-            return this.contracts.make('rocketMinipool', address).then(function (rocketMinipool) {
+            return this.contracts.make('rocketMinipoolDelegate', address).then(function (rocketMinipool) {
                 return new _minipoolContract2.default(_this6.web3, address, rocketMinipool);
             });
         }

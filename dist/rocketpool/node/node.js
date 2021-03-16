@@ -57,44 +57,17 @@ var Node = function () {
                 }));
             });
         }
-        // Get all trusted node details
-
-    }, {
-        key: 'getTrustedNodes',
-        value: function getTrustedNodes() {
-            var _this3 = this;
-
-            return this.getTrustedNodeAddresses().then(function (addresses) {
-                return Promise.all(addresses.map(function (address) {
-                    return _this3.getNodeDetails(address);
-                }));
-            });
-        }
-        // Get all trusted node addresses
-
-    }, {
-        key: 'getTrustedNodeAddresses',
-        value: function getTrustedNodeAddresses() {
-            var _this4 = this;
-
-            return this.getTrustedNodeCount().then(function (count) {
-                return Promise.all([].concat(_toConsumableArray(Array(count).keys())).map(function (index) {
-                    return _this4.getTrustedNodeAt(index);
-                }));
-            });
-        }
         // Get a node's details
 
     }, {
         key: 'getNodeDetails',
         value: function getNodeDetails(address) {
-            return Promise.all([this.getNodeExists(address), this.getNodeTrusted(address), this.getNodeTimezoneLocation(address)]).then(function (_ref) {
-                var _ref2 = _slicedToArray(_ref, 3),
+            return Promise.all([this.getNodeExists(address), this.getNodeTimezoneLocation(address)]).then(function (_ref) {
+                var _ref2 = _slicedToArray(_ref, 2),
                     exists = _ref2[0],
-                    trusted = _ref2[1],
-                    timezoneLocation = _ref2[2];
+                    timezoneLocation = _ref2[1];
 
-                return { address: address, exists: exists, trusted: trusted, timezoneLocation: timezoneLocation };
+                return { address: address, exists: exists, timezoneLocation: timezoneLocation };
             });
         }
         // Get the total node count
@@ -117,26 +90,6 @@ var Node = function () {
                 return rocketNodeManager.methods.getNodeAt(index).call();
             });
         }
-        // Get the total trusted node count
-
-    }, {
-        key: 'getTrustedNodeCount',
-        value: function getTrustedNodeCount() {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return rocketNodeManager.methods.getTrustedNodeCount().call();
-            }).then(function (value) {
-                return parseInt(value);
-            });
-        }
-        // Get a trusted node address by index
-
-    }, {
-        key: 'getTrustedNodeAt',
-        value: function getTrustedNodeAt(index) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return rocketNodeManager.methods.getTrustedNodeAt(index).call();
-            });
-        }
         // Check whether a node exists
 
     }, {
@@ -144,15 +97,6 @@ var Node = function () {
         value: function getNodeExists(address) {
             return this.rocketNodeManager.then(function (rocketNodeManager) {
                 return rocketNodeManager.methods.getNodeExists(address).call();
-            });
-        }
-        // Check whether a node is trusted
-
-    }, {
-        key: 'getNodeTrusted',
-        value: function getNodeTrusted(address) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return rocketNodeManager.methods.getNodeTrusted(address).call();
             });
         }
         // Get a node's timezone location
@@ -193,22 +137,10 @@ var Node = function () {
     }, {
         key: 'deposit',
         value: function deposit(minimumNodeFee, options, onConfirmation) {
-            var _this5 = this;
+            var _this3 = this;
 
             return this.rocketNodeDeposit.then(function (rocketNodeDeposit) {
-                return (0, _transaction.handleConfirmations)(rocketNodeDeposit.methods.deposit(_this5.web3.utils.toWei(minimumNodeFee.toString(), 'ether')).send(options), onConfirmation);
-            });
-        }
-        /**
-         * Mutators - Restricted to super users
-         */
-        // Set a node's trusted status
-
-    }, {
-        key: 'setNodeTrusted',
-        value: function setNodeTrusted(address, trusted, options, onConfirmation) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.setNodeTrusted(address, trusted).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketNodeDeposit.methods.deposit(_this3.web3.utils.toWei(minimumNodeFee.toString(), 'ether')).send(options), onConfirmation);
             });
         }
     }, {

@@ -6,8 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _transaction = require('../../utils/transaction');
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -113,45 +111,6 @@ var Network = function () {
                 return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
             });
         }
-        // Get the current withdrawal pool balance in wei
-
-    }, {
-        key: 'getWithdrawalBalance',
-        value: function getWithdrawalBalance() {
-            return this.rocketNetworkWithdrawal.then(function (rocketNetworkWithdrawal) {
-                return rocketNetworkWithdrawal.methods.getBalance().call();
-            });
-        }
-        // Get the current network validator withdrawal credentials
-
-    }, {
-        key: 'getWithdrawalCredentials',
-        value: function getWithdrawalCredentials() {
-            return this.rocketNetworkWithdrawal.then(function (rocketNetworkWithdrawal) {
-                return rocketNetworkWithdrawal.methods.getWithdrawalCredentials().call();
-            });
-        }
-        /**
-         * Mutators - Restricted to trusted nodes
-         */
-        // Submit network balances for a block
-
-    }, {
-        key: 'submitBalances',
-        value: function submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei, options, onConfirmation) {
-            return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
-                return (0, _transaction.handleConfirmations)(rocketNetworkBalances.methods.submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei).send(options), onConfirmation);
-            });
-        }
-        // Process a validator withdrawal from the beacon chain
-
-    }, {
-        key: 'processWithdrawal',
-        value: function processWithdrawal(validatorPubkey, options, onConfirmation) {
-            return this.rocketNetworkWithdrawal.then(function (rocketNetworkWithdrawal) {
-                return (0, _transaction.handleConfirmations)(rocketNetworkWithdrawal.methods.processWithdrawal(validatorPubkey).send(options), onConfirmation);
-            });
-        }
     }, {
         key: 'rocketNetworkBalances',
         get: function get() {
@@ -161,11 +120,6 @@ var Network = function () {
         key: 'rocketNetworkFees',
         get: function get() {
             return this.contracts.get('rocketNetworkFees');
-        }
-    }, {
-        key: 'rocketNetworkWithdrawal',
-        get: function get() {
-            return this.contracts.get('rocketNetworkWithdrawal');
         }
     }]);
 
