@@ -10,7 +10,6 @@ import { ConfirmationHandler, handleConfirmations } from '../../utils/transactio
 export interface NodeDetails {
     address: string;
     exists: boolean;
-    trusted: boolean;
     timezoneLocation: string;
 }
 
@@ -59,35 +58,14 @@ class Node {
     }
 
 
-    // Get all trusted node details
-    public getTrustedNodes(): Promise<NodeDetails[]> {
-        return this.getTrustedNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
-            return Promise.all(addresses.map((address: string): Promise<NodeDetails> => {
-                return this.getNodeDetails(address);
-            }));
-        });
-    }
-
-
-    // Get all trusted node addresses
-    public getTrustedNodeAddresses(): Promise<string[]> {
-        return this.getTrustedNodeCount().then((count: number): Promise<string[]> => {
-            return Promise.all([...Array(count).keys()].map((index: number): Promise<string> => {
-                return this.getTrustedNodeAt(index);
-            }));
-        });
-    }
-
-
     // Get a node's details
     public getNodeDetails(address: string): Promise<NodeDetails> {
         return Promise.all([
             this.getNodeExists(address),
-            this.getNodeTrusted(address),
             this.getNodeTimezoneLocation(address),
         ]).then(
-            ([exists, trusted, timezoneLocation]: [boolean, boolean, string]): NodeDetails =>
-            ({address, exists, trusted, timezoneLocation})
+            ([exists, timezoneLocation]: [boolean, string]): NodeDetails =>
+            ({address, exists, timezoneLocation})
         );
     }
 
@@ -108,34 +86,10 @@ class Node {
     }
 
 
-    // Get the total trusted node count
-    public getTrustedNodeCount(): Promise<number> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getTrustedNodeCount().call();
-        }).then((value: string): number => parseInt(value));
-    }
-
-
-    // Get a trusted node address by index
-    public getTrustedNodeAt(index: number): Promise<string> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getTrustedNodeAt(index).call();
-        });
-    }
-
-
     // Check whether a node exists
     public getNodeExists(address: string): Promise<boolean> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<boolean> => {
             return rocketNodeManager.methods.getNodeExists(address).call();
-        });
-    }
-
-
-    // Check whether a node is trusted
-    public getNodeTrusted(address: string): Promise<boolean> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<boolean> => {
-            return rocketNodeManager.methods.getNodeTrusted(address).call();
         });
     }
 
@@ -194,17 +148,6 @@ class Node {
     /**
      * Mutators - Restricted to super users
      */
-
-
-    // Set a node's trusted status
-    public setNodeTrusted(address: string, trusted: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketNodeManager.methods.setNodeTrusted(address, trusted).send(options),
-                onConfirmation
-            );
-        });
-    }
 
 
 }

@@ -54,7 +54,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
             });
 
             it('Can create a new contract instance', async () => {
-                let minipool = await rp.contracts.make('rocketMinipool', '0x1111111111111111111111111111111111111111');
+                let minipool = await rp.contracts.make('rocketMinipoolDelegate', '0x1111111111111111111111111111111111111111');
                 assert.property(minipool, 'methods', 'Created contract is invalid');
             });
 

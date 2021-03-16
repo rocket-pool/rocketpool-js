@@ -232,7 +232,7 @@ class Minipool {
 
     // Get a MinipoolContract instance
     public getMinipoolContract(address: string): Promise<MinipoolContract> {
-        return this.contracts.make('rocketMinipool', address).then((rocketMinipool: Contract): MinipoolContract => {
+        return this.contracts.make('rocketMinipoolDelegate', address).then((rocketMinipool: Contract): MinipoolContract => {
             return new MinipoolContract(this.web3, address, rocketMinipool);
         });
     }

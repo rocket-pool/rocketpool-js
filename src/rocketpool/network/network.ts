@@ -23,9 +23,6 @@ class Network {
     private get rocketNetworkFees(): Promise<Contract> {
         return this.contracts.get('rocketNetworkFees');
     }
-    private get rocketNetworkWithdrawal(): Promise<Contract> {
-        return this.contracts.get('rocketNetworkWithdrawal');
-    }
 
 
     /**
@@ -97,47 +94,9 @@ class Network {
     }
 
 
-    // Get the current withdrawal pool balance in wei
-    public getWithdrawalBalance(): Promise<string> {
-        return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<string> => {
-            return rocketNetworkWithdrawal.methods.getBalance().call();
-        });
-    }
-
-
-    // Get the current network validator withdrawal credentials
-    public getWithdrawalCredentials(): Promise<string> {
-        return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<string> => {
-            return rocketNetworkWithdrawal.methods.getWithdrawalCredentials().call();
-        });
-    }
-
-
     /**
      * Mutators - Restricted to trusted nodes
      */
-
-
-    // Submit network balances for a block
-    public submitBalances(block: number, totalEthWei: string, stakingEthWei: string, rethSupplyWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketNetworkBalances.methods.submitBalances(block, totalEthWei, stakingEthWei, rethSupplyWei).send(options),
-                onConfirmation
-            );
-        });
-    }
-
-
-    // Process a validator withdrawal from the beacon chain
-    public processWithdrawal(validatorPubkey: Buffer, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNetworkWithdrawal.then((rocketNetworkWithdrawal: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketNetworkWithdrawal.methods.processWithdrawal(validatorPubkey).send(options),
-                onConfirmation
-            );
-        });
-    }
 
 
 }

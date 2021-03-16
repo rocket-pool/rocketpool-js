@@ -50,20 +50,9 @@ class RETH extends ERC20 {
 
 
     // Get the total amount of ETH collateral available
-    // TODO: revert to getTotalCollateral call after new RP deployment
     public getTotalCollateral(): Promise<string> {
-        //return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
-        //    return tokenContract.methods.getTotalCollateral().call();
-        //});
-        return Promise.all([
-            this.contracts.address('rocketTokenRETH').then((rethContractAddress: string): Promise<string> => {
-                return this.web3.eth.getBalance(rethContractAddress);
-            }),
-            this.contracts.get('rocketDepositPool').then((rocketDepositPool: Contract): Promise<string> => {
-                return rocketDepositPool.methods.getExcessBalance().call();
-            }),
-        ]).then(([rethContractBalance, depositPoolExcessBalance]: [string, string]): string => {
-            return this.web3.utils.toBN(rethContractBalance).add(this.web3.utils.toBN(depositPoolExcessBalance)).toString(10);
+        return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
+            return tokenContract.methods.getTotalCollateral().call();
         });
     }
 
