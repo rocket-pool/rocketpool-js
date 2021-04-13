@@ -43,7 +43,7 @@ export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPoo
 
 
 // // Change a trusted node DAO setting while bootstrap mode is enabled
-export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPool, _settingContractInstance: string, _settingPath:string, _value: any, txOptions: SendOptions) {
+export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPool, _settingContractInstance: string, _settingPath:string, _value: any, options: SendOptions) {
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
@@ -68,8 +68,8 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
     //console.log(Number(ds1.settingValue));
 
     // Set as a bootstrapped setting. detect type first, can be a number, string or bn object
-    if(typeof(_value) == 'number' || typeof(_value) == 'string' || typeof(_value) == 'object') await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value).send(txOptions);
-    if(typeof(_value) == 'boolean') await rocketDAONodeTrusted.methods.bootstrapSettingBool(_settingContractInstance, _settingPath, _value).send(txOptions);
+    if(typeof(_value) == 'number' || typeof(_value) == 'string' || typeof(_value) == 'object') await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value).send(options);
+    if(typeof(_value) == 'boolean') await rocketDAONodeTrusted.methods.bootstrapSettingBool(_settingContractInstance, _settingPath, _value).send(options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -80,38 +80,37 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
 
 
 }
-//
-//
-// // Disable bootstrap mode
-// export async function setDaoNodeTrustedBootstrapModeDisabled(web3: Web3, rp: RocketPool, txOptions: SendOptions) {
-//
-//     // Load contracts
-//     const rocketDAONodeTrusted =  await rp.contracts.get('rocketDAONodeTrusted');
-//
-//     // Get data about the tx
-//     function getTxData() {
-//         return Promise.all([
-//             rocketDAONodeTrusted.methods.getBootstrapModeDisabled.call(),
-//         ]).then(
-//             ([bootstrapmodeDisabled]) =>
-//                 ({bootstrapmodeDisabled})
-//         );
-//     }
-//
-//     // Capture data
-//     let ds1 = await getTxData();
-//
-//     // Set as a bootstrapped member
-//     await rocketDAONodeTrusted.methods.bootstrapDisable(true, txOptions);
-//
-//     // Capture data
-//     let ds2 = await getTxData();
-//
-//     // Check ID has been recorded
-//     assert(ds2.bootstrapmodeDisabled == true, 'Bootstrap mode was not disabled');
-//
-// }
-//
+
+
+// Disable bootstrap mode
+export async function setDaoNodeTrustedBootstrapModeDisabled(web3: Web3, rp: RocketPool, options: SendOptions) {
+
+    // Load contracts
+    const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
+
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rocketDAONodeTrusted.methods.getBootstrapModeDisabled().call(),
+        ]).then(
+            ([bootstrapmodeDisabled]) =>
+                ({bootstrapmodeDisabled})
+        );
+    }
+
+    // Capture data
+    let ds1 = await getTxData();
+
+    // Set as a bootstrapped member
+    await rocketDAONodeTrusted.methods.bootstrapDisable(true).send(options);
+
+    // Capture data
+    let ds2 = await getTxData();
+
+    // Check ID has been recorded
+    assert(ds2.bootstrapmodeDisabled == true, 'Bootstrap mode was not disabled');
+}
+
 //
 // // The trusted node DAO can also upgrade contracts + abi if consensus is reached
 // export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPool, _type:string, _name:string, _abi:AbiItem[], _contractAddress: string, txOptions: SendOptions) {

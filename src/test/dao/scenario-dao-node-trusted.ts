@@ -3,6 +3,55 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import { SendOptions } from 'web3-eth-contract';
+import {proposalStates, getDAOProposalState} from "./scenario-dao-proposal";
+
+// Create a proposal for this DAO
+export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposalMessage:string, _payload:string, options: SendOptions) {
+
+    // Load contracts
+    const rocketDAOProposal = await rp.contracts.get('rocketDAOProposal');
+    const rocketDAONodeTrustedProposals = await rp.contracts.get('rocketDAONodeTrustedProposals');
+
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rocketDAOProposal.methods.getTotal().call(),
+        ]).then(
+            ([proposalTotal]) =>
+                ({proposalTotal})
+        );
+    }
+
+    // Set gas price
+    let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
+    options.gasPrice = gasPrice.toString();
+    options.gas = 1000000;
+
+    // Capture data
+    let ds1 = await getTxData();
+
+    // Add a new proposal
+    await rocketDAONodeTrustedProposals.methods.propose(_proposalMessage, _payload).send(options);
+
+    // Capture data
+    let ds2 = await getTxData();
+
+    // console.log(Number(ds1.proposalTotal), Number(ds2.proposalTotal));
+
+    // Get the current state, new proposal should be in pending
+    let state = Number(await getDAOProposalState(web3, rp, ds2.proposalTotal));
+
+    let ds1ProposalTotal = web3.utils.toBN(ds1.proposalTotal);
+    let ds2ProposalTotal = web3.utils.toBN(ds2.proposalTotal);
+
+    // Check proposals
+    assert(ds2ProposalTotal.eq(ds1ProposalTotal.add(web3.utils.toBN(1))), 'Incorrect proposal total count');
+    assert(state == proposalStates.Pending, 'Incorrect proposal state, should be pending');
+
+    // Return the proposal ID
+    return Number(ds2.proposalTotal);
+
+}
 
 
 // Join the DAO after a successful invite proposal has passed
