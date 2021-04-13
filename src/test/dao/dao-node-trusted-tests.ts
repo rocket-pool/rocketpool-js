@@ -10,6 +10,10 @@ import {setDaoNodeTrustedBootstrapMember, setDAONodeTrustedBootstrapSetting} fro
 
 export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
     describe('DAO Node Trusted', () => {
+
+        // settings
+        const gasLimit: number = 8000000;
+
         // Accounts
         let guardian: string;
         let userOne: string;
@@ -35,25 +39,21 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             const rocketStorage = await rp.contracts.get('rocketStorage');
 
             // Register nodes
-            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode1});
-            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode2});
-            await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted1});
-            await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted2});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode1, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode2, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted1, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted2, gas: gasLimit});
 
             // Add members to the DAO
             await setNodeTrusted(web3, rp, registeredNodeTrusted1, 'rocketpool_1', 'node@home.com', guardian);
             await setNodeTrusted(web3, rp, registeredNodeTrusted2, 'rocketpool_2', 'node@home.com', guardian);
 
             // Deploy new contracts
-            const rocketDAONodeTrusted = await rp.contracts.get('rocketMinipoolManager');
-            await rocketDAONodeTrusted.methods.new(rocketStorage.methods.address().call(), {from: guardian});
-
-            const rocketDAONodeTrustedUpgradeNew = await rp.contracts.get('RocketDAONodeTrustedUpgrade');
-            await rocketDAONodeTrustedUpgradeNew.methods.new(rocketStorage.methods.address().call(), {from: guardian});
+            await rp.contracts.make('rocketMinipoolManager', rocketStorage.options.address);
+            await rp.contracts.make('rocketDAONodeTrustedUpgrade', rocketStorage.options.address);
 
             // Set a small proposal cooldown
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', 10, {from: guardian});
-
         });
 
 
@@ -64,7 +64,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             // Set as trusted dao member via bootstrapping
             await shouldRevert(setDaoNodeTrustedBootstrapMember(web3, rp,'rocketpool', 'node@home.com', userOne, {
                 from: guardian
-            }), 'Non registered node added to trusted node DAO');
+            }), 'Non registered node added to trusted node DAO', 'Invalid node');
         });
 
     });

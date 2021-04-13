@@ -32,7 +32,7 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
 
         // Update a setting
         it(printTitle('userOne', 'fails to update a setting as they are not the guardian'), async () => {
-            await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp,'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {from: userOne}), "Account is not a temporary guardian");
+            await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp,'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {from: userOne}), 'User updated bootstrap setting', 'Account is not a temporary guardian');
         });
 
         // Verify each setting contract is enabled correctly. These settings are tested in greater detail in the relevant contracts
@@ -70,10 +70,9 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
             // Attempt to change a setting again
             await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {
                 from: guardian,
-            }), "Guardian updated bootstrap setting after mode disabled");
+            }), 'Guardian updated bootstrap setting after mode disabled' , 'Bootstrap mode not engaged');
 
         });
-
 
     });
 };

@@ -7,7 +7,7 @@ import { compressABI, decompressABI } from '../_utils/contract';
 import {AbiItem} from "web3-utils";
 
 
-export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _email: string, _nodeAddress: string, txOptions: SendOptions) {
+export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _email: string, _nodeAddress: string, options: SendOptions) {
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
@@ -15,7 +15,7 @@ export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPoo
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberID.call(_nodeAddress),
+            rocketDAONodeTrusted.methods.getMemberID(_nodeAddress).call(),
         ]).then(
             ([memberID]) =>
                 ({memberID})
@@ -25,8 +25,13 @@ export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPoo
     // Capture data
     let ds1 = await getTxData();
 
+    // Set gas price
+    let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
+    options.gasPrice = gasPrice.toString();
+    options.gas = 1000000;
+
     // Set as a bootstrapped member
-    await rocketDAONodeTrusted.methods.bootstrapMember(_id, _email, _nodeAddress, txOptions);
+    await rocketDAONodeTrusted.methods.bootstrapMember(_id, _email, _nodeAddress).send(options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -47,11 +52,14 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrustedSettingsContract.methods.getSettingUint().call(_settingPath),
-            rocketDAONodeTrustedSettingsContract.methods.getSettingBool().call(_settingPath)
+            rocketDAONodeTrustedSettingsContract.methods.getSettingUint(_settingPath).call(),
+            rocketDAONodeTrustedSettingsContract.methods.getSettingBool(_settingPath).call()
         ]).then(
             ([settingUintValue, settingBoolValue]) =>
-                ({settingUintValue, settingBoolValue})
+                ({
+                    settingUintValue: web3.utils.toBN(settingUintValue),
+                    settingBoolValue: settingBoolValue
+                })
         );
     }
 
@@ -60,8 +68,8 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
     //console.log(Number(ds1.settingValue));
 
     // Set as a bootstrapped setting. detect type first, can be a number, string or bn object
-    if(typeof(_value) == 'number' || typeof(_value) == 'string' || typeof(_value) == 'object') await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value, txOptions);
-    if(typeof(_value) == 'boolean') await rocketDAONodeTrusted.methods.bootstrapSettingBool(_settingContractInstance, _settingPath, _value, txOptions);
+    if(typeof(_value) == 'number' || typeof(_value) == 'string' || typeof(_value) == 'object') await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value).send(txOptions);
+    if(typeof(_value) == 'boolean') await rocketDAONodeTrusted.methods.bootstrapSettingBool(_settingContractInstance, _settingPath, _value).send(txOptions);
 
     // Capture data
     let ds2 = await getTxData();

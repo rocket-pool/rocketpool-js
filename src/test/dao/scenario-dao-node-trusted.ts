@@ -6,7 +6,7 @@ import { SendOptions } from 'web3-eth-contract';
 
 
 // Join the DAO after a successful invite proposal has passed
-export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, txOptions:SendOptions) {
+export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, options:SendOptions) {
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
@@ -17,12 +17,16 @@ export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, txOpt
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount.call(),
-            rocketTokenRPL.methods.balanceOf(txOptions.from),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.methods.address().call()),
+            rocketDAONodeTrusted.methods.getMemberCount().call(),
+            rocketTokenRPL.methods.balanceOf(options.from).call(),
+            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call(),
         ]).then(
             ([memberTotal, rplBalanceBond, rplBalanceVault]) =>
-                ({memberTotal, rplBalanceBond, rplBalanceVault})
+                ({
+                    memberTotal:  web3.utils.toBN(memberTotal),
+                    rplBalanceBond: web3.utils.toBN(rplBalanceBond),
+                    rplBalanceVault: web3.utils.toBN(rplBalanceVault)
+                })
         );
     }
 
@@ -30,8 +34,13 @@ export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, txOpt
     let ds1 = await getTxData();
     //console.log('Member Total', Number(ds1.memberTotal), web3.utils.fromWei(ds1.rplBalanceBond), web3.utils.fromWei(ds1.rplBalanceVault));
 
+    // Set gas price
+    let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
+    options.gasPrice = gasPrice.toString();
+    options.gas = 1000000;
+
     // Add a new proposal
-    await rocketDAONodeTrustedActions.methods.actionJoin(txOptions).call();
+    await rocketDAONodeTrustedActions.methods.actionJoin().send(options);
 
     // Capture data
     let ds2 = await getTxData();

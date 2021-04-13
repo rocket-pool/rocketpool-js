@@ -8,19 +8,24 @@ export async function burnFixedRPL(web3: Web3, rp: RocketPool, amount: string, o
 
     // Load contracts
     const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
-    const rocketTokenDummyRPL = await rp.contracts.get('rocketTokenDummyRPL');
+    const rocketTokenDummyRPL = await rp.contracts.get('rocketTokenRPLFixedSupply');
 
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketTokenDummyRPL.methods.balanceOf.call(options.from),
-            rocketTokenRPL.methods.totalSupply.call(),
-            rocketTokenRPL.methods.balanceOf.call(options.from),
-            rocketTokenDummyRPL.methods.balanceOf.call(rocketTokenRPL.methods.address().call()),
-            rocketTokenRPL.methods.balanceOf.call(rocketTokenRPL.methods.address().call()),
+            rocketTokenDummyRPL.methods.balanceOf(options.from).call(),
+            rocketTokenRPL.methods.totalSupply().call(),
+            rocketTokenRPL.methods.balanceOf(options.from).call(),
+            rocketTokenDummyRPL.methods.balanceOf(rocketTokenDummyRPL.options.address).call(),
+            rocketTokenRPL.methods.balanceOf(rocketTokenRPL.options.address).call(),
         ]).then(
             ([rplFixedUserBalance, rplTokenSupply, rplUserBalance, rplContractBalanceOfFixedSupply, rplContractBalanceOfSelf]) =>
-                ({rplFixedUserBalance, rplTokenSupply, rplUserBalance, rplContractBalanceOfFixedSupply, rplContractBalanceOfSelf})
+                ({
+                    rplFixedUserBalance: rplFixedUserBalance,
+                    rplTokenSupply: rplTokenSupply,
+                    rplUserBalance: web3.utils.toBN(rplUserBalance),
+                    rplContractBalanceOfFixedSupply: rplContractBalanceOfFixedSupply,
+                    rplContractBalanceOfSelf: web3.utils.toBN(rplContractBalanceOfSelf)})
         );
     }
 
@@ -32,11 +37,12 @@ export async function burnFixedRPL(web3: Web3, rp: RocketPool, amount: string, o
 
     // Set gas price
     let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
-    //options.gasPrice = gasPrice;
+    options.gasPrice = gasPrice.toString();
+    options.gas = 1000000;
 
     // Burn tokens & get tx fee
-    let txReceipt = await rocketTokenRPL.methods.swapTokens(amount).send(options);
-    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.receipt.gasUsed));
+    let txReceipt = await rp.tokens.rpl.swapTokens(amount, options);
+    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated balances
     let balances2 = await getBalances();

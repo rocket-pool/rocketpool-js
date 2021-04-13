@@ -7,15 +7,15 @@ import {SendOptions} from 'web3-eth-contract';
 export async function allowDummyRPL(web3: Web3, rp: RocketPool, to: string, amount: string, options: SendOptions) {
 
     // Load contracts
-    const rocketTokenDummyRPL = await rp.contracts.get('rocketTokenDummyRPL');
+    const rocketTokenDummyRPL = await rp.contracts.get('rocketTokenRPLFixedSupply');
 
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketTokenDummyRPL.methods.allowance.call(options.from, to),
+            rocketTokenDummyRPL.methods.allowance(options.from, to).call(),
         ]).then(
             ([tokenAllowance]) =>
-                ({tokenAllowance})
+                ({tokenAllowance: web3.utils.toBN(tokenAllowance)})
         );
     }
 
@@ -24,11 +24,11 @@ export async function allowDummyRPL(web3: Web3, rp: RocketPool, to: string, amou
 
     // Set gas price
     let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
-    //options.gasPrice = gasPrice;
+    options.gasPrice = gasPrice.toString();
 
     // Mint tokens
     let txReceipt = await rocketTokenDummyRPL.methods.approve(to, amount).send(options);
-    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.receipt.gasUsed));
+    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated balances
     let balances2 = await getBalances();

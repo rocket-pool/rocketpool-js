@@ -12,6 +12,8 @@ import NetworkSettings from './settings/network';
 import NodeSettings from './settings/node';
 import NETH from './tokens/neth';
 import RETH from './tokens/reth';
+import RPL from './tokens/rpl';
+import DummyRPL from './tokens/dummyrpl';
 import DAOProtocol from './dao/protocol/protocol';
 import DAONodeTrusted from './dao/node/trustednode';
 
@@ -29,7 +31,7 @@ class RocketPool {
     public readonly network: Network;
     public readonly node: Node;
     public readonly settings: {deposit: DepositSettings, minipool: MinipoolSettings, network: NetworkSettings, node: NodeSettings};
-    public readonly tokens: {neth: NETH, reth: RETH};
+    public readonly tokens: {neth: NETH, reth: RETH, rpl: RPL, dummyrpl: DummyRPL};
     public readonly dao: {protocol: DAOProtocol, trustednode: DAONodeTrusted};
 
 
@@ -55,6 +57,8 @@ class RocketPool {
         this.tokens = {
             neth: new NETH(web3, this.contracts),
             reth: new RETH(web3, this.contracts),
+            rpl: new RPL(web3, this.contracts),
+            dummyrpl: new DummyRPL(web3, this.contracts),
         };
 
     }

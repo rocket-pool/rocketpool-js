@@ -18,7 +18,7 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
     let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
     let rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
     let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
-    await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.methods.address().call(), _amount, { from: _account });
+    await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: _account });
     // Create invites for them to become a member
     await setDaoNodeTrustedBootstrapMember(web3, rp, id, email, _account, {from: owner});
     // Now get them to join
