@@ -1,5 +1,5 @@
 // Imports
-import { takeSnapshot, revertSnapshot } from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
 import { printTitle } from '../_utils/formatting';
 import { shouldRevert } from '../_utils/testing';
 import { compressABI } from '../_utils/contract';
@@ -8,8 +8,9 @@ import RocketPool from '../../rocketpool/rocketpool';
 import {setNodeTrusted} from '../_helpers/node';
 import {setDaoNodeTrustedBootstrapMember, setDAONodeTrustedBootstrapSetting, setDaoNodeTrustedBootstrapModeDisabled} from '../dao/scenario-dao-node-trusted-bootstrap';
 import { assert } from 'chai';
-import {daoNodeTrustedPropose} from './scenario-dao-node-trusted';
-import {getDAOProposalStartBlock} from "./scenario-dao-proposal";
+import {daoNodeTrustedExecute, daoNodeTrustedPropose, daoNodeTrustedVote, daoNodeTrustedMemberJoin, daoNodeTrustedMemberLeave} from './scenario-dao-node-trusted';
+import {getDAOProposalEndBlock, getDAOProposalStartBlock} from "./scenario-dao-proposal";
+import {mintRPL} from '../tokens/scenario-rpl-mint';
 
 export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
     describe('DAO Node Trusted', () => {
@@ -174,54 +175,59 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
             // Now mine blocks until the proposal is 'active' and can be voted on
-            // await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalID_1)-blockCurrent)+2);
-            // // Now lets vote for the new members
-            // await daoNodeTrustedVote(web3, rp, proposalID_1, true, { from: registeredNodeTrusted1 });
-            // await daoNodeTrustedVote(web3, rp, proposalID_1, true, { from: registeredNodeTrusted2 });
-            // await daoNodeTrustedVote(web3, rp, proposalID_2, true, { from: registeredNodeTrusted1 });
-            // await daoNodeTrustedVote(web3, rp, proposalID_2, true, { from: registeredNodeTrusted2 });
-            // // Current block
-            // blockCurrent = await web3.eth.getBlockNumber();
-            // // Fast forward to voting periods finishing
-            // await mineBlocks(web3, (await getDAOProposalEndBlock(proposalID_1)-blockCurrent)+2);
-            // // Proposal should be successful, lets execute it
-            // await daoNodeTrustedExecute(proposalID_1, { from: registeredNodeTrusted1 });
-            // await daoNodeTrustedExecute(proposalID_2, { from: registeredNodeTrusted1 });
-            // // Member has now been invited to join, so lets do that
-            // // We'll allow the DAO to transfer our RPL bond before joining
-            // await rplMint(registeredNode1, rplBondAmount);
-            // await rplAllowanceDAO(registeredNode1, rplBondAmount);
-            // await rplMint(registeredNode2, rplBondAmount);
-            // await rplAllowanceDAO(registeredNode2, rplBondAmount);
-            // // Join now
-            // await daoNodeTrustedMemberJoin({from: registeredNode1});
-            // await daoNodeTrustedMemberJoin({from: registeredNode2});
-            // // Now registeredNodeTrusted2 wants to leave
-            // // Encode the calldata for the proposal
-            // let proposalCalldata3 = web3.eth.abi.encodeFunctionCall(
-            //     {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
-            //     [registeredNodeTrusted2]
-            // );
-            // // Add the proposal
-            // let proposalID_3 = await daoNodeTrustedPropose('hey guys, can I please leave the DAO?', proposalCalldata3, {
-            //     from: registeredNodeTrusted2
-            // });
-            // // Current block
-            // blockCurrent = await web3.eth.getBlockNumber();
-            // // Now mine blocks until the proposal is 'active' and can be voted on
-            // await mineBlocks(web3, (await getDAOProposalStartBlock(proposalID_3)-blockCurrent)+2);
-            // // Now lets vote
-            // await daoNodeTrustedVote(proposalID_3, true, { from: registeredNodeTrusted1 });
-            // await daoNodeTrustedVote(proposalID_3, true, { from: registeredNodeTrusted2 });
-            // await daoNodeTrustedVote(proposalID_3, false, { from: registeredNode1 });
-            // await daoNodeTrustedVote(proposalID_3, true, { from: registeredNode2 });
-            // // Fast forward to this voting period finishing
-            // await mineBlocks(web3, (await getDAOProposalEndBlock(proposalID_3)-blockCurrent)+1);
-            // // Proposal should be successful, lets execute it
-            // await daoNodeTrustedExecute(proposalID_3, { from: registeredNodeTrusted2 });
-            // // Member can now leave and collect any RPL bond
-            // await daoNodeTrustedMemberLeave(registeredNodeTrusted2, {from: registeredNodeTrusted2});
+            await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalID_1)-blockCurrent)+2);
+            // Now lets vote for the new members
+            await daoNodeTrustedVote(web3, rp, proposalID_1, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID_1, true, { from: registeredNodeTrusted2 });
+            await daoNodeTrustedVote(web3, rp, proposalID_2, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID_2, true, { from: registeredNodeTrusted2 });
+            // Current block
+            blockCurrent = await web3.eth.getBlockNumber();
+            // Fast forward to voting periods finishing
+            await mineBlocks(web3, (await getDAOProposalEndBlock(web3, rp, proposalID_1)-blockCurrent)+2);
+            // Proposal should be successful, lets execute it
+            await daoNodeTrustedExecute(web3, rp, proposalID_1, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedExecute(web3, rp, proposalID_2, { from: registeredNodeTrusted1 });
+            // Member has now been invited to join, so lets do that
+            // We'll allow the DAO to transfer our RPL bond before joining
+            let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+            let rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
+            let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
+            await mintRPL(web3, rp, registeredNode1, rplBondAmount, guardian);
+            await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode1 });
+            await mintRPL(web3, rp, registeredNode2, rplBondAmount, guardian);
+            await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode2 });
+
+            // Join now
+            await daoNodeTrustedMemberJoin(web3, rp, {from: registeredNode1});
+            await daoNodeTrustedMemberJoin(web3, rp, {from: registeredNode2});
+            // Now registeredNodeTrusted2 wants to leave
+            // Encode the calldata for the proposal
+            let proposalCalldata3 = web3.eth.abi.encodeFunctionCall(
+                {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
+                [registeredNodeTrusted2]
+            );
+            // Add the proposal
+            let proposalID_3 = await daoNodeTrustedPropose(web3, rp, 'hey guys, can I please leave the DAO?', proposalCalldata3, {
+                from: registeredNodeTrusted2
+            });
+            // Current block
+            blockCurrent = await web3.eth.getBlockNumber();
+            // Now mine blocks until the proposal is 'active' and can be voted on
+            await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalID_3)-blockCurrent)+2);
+            // Now lets vote
+            await daoNodeTrustedVote(web3, rp, proposalID_3, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID_3, true, { from: registeredNodeTrusted2 });
+            await daoNodeTrustedVote(web3, rp, proposalID_3, false, { from: registeredNode1 });
+            await daoNodeTrustedVote(web3, rp, proposalID_3, true, { from: registeredNode2 });
+            // Fast forward to this voting period finishing
+            await mineBlocks(web3, (await getDAOProposalEndBlock(web3, rp, proposalID_3)-blockCurrent)+1);
+            // Proposal should be successful, lets execute it
+            await daoNodeTrustedExecute(web3, rp, proposalID_3, { from: registeredNodeTrusted2 });
+            // Member can now leave and collect any RPL bond
+            await daoNodeTrustedMemberLeave(web3, rp, registeredNodeTrusted2, {from: registeredNodeTrusted2});
         });
+
 
 
     });

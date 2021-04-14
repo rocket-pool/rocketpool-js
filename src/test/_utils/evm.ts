@@ -36,3 +36,22 @@ export function revertSnapshot(web3: Web3, snapshotId: string) {
     });
 }
 
+// Mine a number of blocks
+export async function mineBlocks(web3: Web3, numBlocks: number) {
+    for (let i = 0; i < numBlocks; ++i) {
+        await new Promise((resolve, reject) => {
+
+            (web3.currentProvider as HttpProvider).send({
+                jsonrpc: '2.0',
+                method: 'evm_mine',
+                params: [],
+                id: (new Date()).getTime(),
+            }, function(err: Error | null, response: JsonRpcResponse | undefined) {
+                if (err) { reject(err); }
+                else { resolve(); }
+            });
+
+        });
+    }
+}
+
