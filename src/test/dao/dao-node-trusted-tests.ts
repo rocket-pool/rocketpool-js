@@ -11,7 +11,7 @@ import {setDaoNodeTrustedBootstrapMember, setDAONodeTrustedBootstrapSetting, set
 import {daoNodeTrustedExecute, daoNodeTrustedPropose, daoNodeTrustedVote, daoNodeTrustedMemberJoin, daoNodeTrustedMemberLeave} from './scenario-dao-node-trusted';
 import {getDAOProposalEndBlock, getDAOProposalStartBlock, getDAOProposalState, proposalStates} from './scenario-dao-proposal';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
-import {Contract} from 'web3-eth-contract';
+import {Contract, SendOptions} from 'web3-eth-contract';
 
 export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
     describe('DAO Node Trusted', () => {
@@ -26,6 +26,9 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         let registeredNode2: string;
         let registeredNodeTrusted1: string;
         let registeredNodeTrusted2: string;
+
+
+        // Contracts
         let rocketMinipoolManagerNew: Contract;
         let rocketDAONodeTrustedUpgradeNew: Contract;
 
@@ -56,8 +59,8 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await setNodeTrusted(web3, rp, registeredNodeTrusted2, 'rocketpool_2', 'node@home.com', guardian);
 
             // Deploy new contracts
-            rocketMinipoolManagerNew = await rp.contracts.make('rocketMinipoolManager', rocketStorage.options.address);
-            rocketDAONodeTrustedUpgradeNew = await rp.contracts.make('rocketDAONodeTrustedUpgrade', rocketStorage.options.address);
+            rocketMinipoolManagerNew = await rp.contracts.make('rocketMinipoolManager', guardian);
+            rocketDAONodeTrustedUpgradeNew = await rp.contracts.make('rocketDAONodeTrustedUpgrade', guardian);
 
             // Set a small proposal cooldown
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', 10, {from: guardian});
@@ -440,6 +443,90 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', '', abi, rocketMinipoolManagerNew.options.address, {
                 from: guardian,
             }), 'Added a new contract with an invalid name', 'Invalid contract name');
+        });
+
+
+        it(printTitle('registeredNodeTrusted1', 'creates a proposal to upgrade a network contract, it passes and is executed'), async () => {
+            // Load contracts
+            let rocketStorage = await rp.contracts.get('rocketStorage')
+            // Setup our proposal settings
+            let proposalVoteBlocks = 10;
+            let proposalVoteExecuteBlocks = 10;
+            // Update now while in bootstrap mode
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
+            let abi = await rp.contracts.abi('rocketMinipoolManager')
+            // Encode the calldata for the proposal
+            let proposalCalldata = web3.eth.abi.encodeFunctionCall(
+                {name: 'proposalUpgrade', type: 'function', inputs: [{type: 'string',  name: '_type'},{type: 'string', name: '_name'},{type: 'string', name: '_contractAbi'},{type: 'address', name: '_contractAddress'}]},
+                ['upgradeContract', 'rocketNodeManager', compressABI(abi), rocketMinipoolManagerNew.options.address]
+            );
+            // Add the proposal
+            let proposalID = await daoNodeTrustedPropose(web3, rp, 'hey guys, we really should upgrade this contracts - here\'s a link to its audit reports https://link.com/audit', proposalCalldata, {
+                from: registeredNodeTrusted1
+            });
+            // Current block
+            let blockCurrent = await web3.eth.getBlockNumber();
+            // Now mine blocks until the proposal is 'active' and can be voted on
+            await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalID)-blockCurrent)+1);
+            // Now lets vote
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted2 });
+            // Proposal has passed, lets execute it now and upgrade the contract
+            await daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode1 });
+            // Lets check if the address matches the upgraded one now
+            assert.equal(await rocketStorage.methods.getAddress().call(web3.utils.soliditySha3('contract.address', 'rocketNodeManager')), rocketMinipoolManagerNew.options.address, 'Contract address was not successfully upgraded');
+            assert.isTrue(await rocketStorage.methods.getBool().call(web3.utils.soliditySha3('contract.exists', rocketMinipoolManagerNew.options.address)), 'Contract address was not successfully upgraded');
+        });
+
+        // ABIs - contract address field is ignored
+        it(printTitle('guardian', 'can upgrade a contract ABI in bootstrap mode'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'upgradeABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+            });
+        });
+
+        it(printTitle('guardian', 'cannot upgrade a contract ABI which does not exist'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'upgradeABI', 'fooBarBaz', abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+            }), 'Upgraded a contract ABI which did not exist', 'ABI does not exist');
+        });
+
+        it(printTitle('userOne', 'cannot upgrade a contract ABI'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'upgradeABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
+                from: userOne,
+            }), 'Random address upgraded a contract ABI', 'Account is not a temporary guardian');
+        });
+
+        it(printTitle('guardian', 'can add a contract ABI in bootstrap mode'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addABI', 'rocketNewFeature', abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+            });
+        });
+
+        it(printTitle('guardian', 'cannot add a new contract ABI with an invalid name'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addABI', '', abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+            }), 'Added a new contract ABI with an invalid name', 'Invalid ABI name');
+        });
+
+        it(printTitle('guardian', 'cannot add a new contract ABI with an existing name'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+            }), 'Added a new contract ABI with an existing name', 'ABI name is already in use');
+        });
+
+        it(printTitle('userOne', 'cannot add a new contract ABI'), async () => {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addABI', 'rocketNewFeature', abi, '0x0000000000000000000000000000000000000000', {
+                from: userOne,
+            }), 'Random address added a new contract ABI', 'Account is not a temporary guardian');
         });
 
     });
