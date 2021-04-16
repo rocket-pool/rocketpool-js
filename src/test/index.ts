@@ -7,6 +7,7 @@ import RocketPool from '../rocketpool/rocketpool';
 import runContractsTests from './contracts/contracts-tests';
 import runDOAProtocolTests from './dao/dao-protocol-tests';
 import runDAONodeTrustedTests from './dao/dao-node-trusted-tests';
+import runAuctionTests from './auction/auction-tests';
 import runDepositTests from './deposit/deposit-tests';
 import runMinipoolTests from './minipool/minipool-tests';
 import runNetworkTests from './network/network-tests';
@@ -34,9 +35,10 @@ console.log('| |\\ \\ (_) | (__|   <  __/ |_  | | | (_) | (_) | |');
 console.log('\\_| \\_\\___/ \\___|_|\\_\\___|\\__| \\_|  \\___/ \\___/|_|');
 
 // Run tests
-runContractsTests(web3, rp);
-runDOAProtocolTests(web3, rp);
-runDAONodeTrustedTests(web3, rp);
+//runContractsTests(web3, rp);
+//runDOAProtocolTests(web3, rp);
+//runDAONodeTrustedTests(web3, rp);
+runAuctionTests(web3, rp);
 // runDepositTests(web3, rp);
 // runMinipoolTests(web3, rp);
 // runNetworkTests(web3, rp);

@@ -5,6 +5,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
 import {setDaoNodeTrustedBootstrapMember} from '../dao/scenario-dao-node-trusted-bootstrap';
 import {daoNodeTrustedMemberJoin} from '../dao/scenario-dao-node-trusted';
+import { SendOptions } from 'web3-eth-contract';
 
 
 export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
@@ -23,4 +24,21 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
     await setDaoNodeTrustedBootstrapMember(web3, rp, id, email, _account, {from: owner});
     // Now get them to join
     await daoNodeTrustedMemberJoin(web3, rp,{from: _account});
+}
+
+export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
+    let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
+    await rocketNodeManager.methods.registerNode('Australia/Brisbane').send(options);
+}
+
+// Submit a node RPL stake
+export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
+    let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
+
+    options.gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei')).toString();
+    options.gas = 1000000;
+
+    await rocketTokenRPL.methods.approve(rocketNodeStaking.options.address, amount).send(options);
+    await rocketNodeStaking.methods.stakeRPL(amount).send(options);
 }

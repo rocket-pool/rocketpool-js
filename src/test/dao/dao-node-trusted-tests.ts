@@ -137,7 +137,6 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             let quorumThreshold = await rocketDAONodeTrustedSettings.methods.getQuorum().call();
             // Calculate the expected vote threshold
             let expectedVotes = (Number(web3.utils.fromWei(quorumThreshold)) * Number(trustedNodeCount)).toFixed(2);
-            console.log(expectedVotes);
             // Calculate it now on the contracts
             let quorumVotes = await rocketDAONodeTrusted.methods.getMemberQuorumVotesRequired().call();
             // Verify

@@ -26,18 +26,20 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
     // Return minipool instance
     if (!minipoolCreatedEvents.length) return null;
     return rp.minipool.getMinipoolContract(minipoolCreatedEvents[0].minipool);
-
 }
 
 
 // Progress a minipool to staking
 export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, validatorPubkey: Buffer | null, options: SendOptions) {
 
+    // Load contracts
+    const rocketNetworkWithdrawal = await rp.contracts.get('rocketNetworkWithdrawal');
+
     // Create validator pubkey
     if (!validatorPubkey) validatorPubkey = getValidatorPubkey();
 
     // Get withdrawal credentials
-    const withdrawalCredentials = await rp.network.getWithdrawalCredentials();
+    const withdrawalCredentials = await minipool.contract.methods.getWithdrawalCredentials().call();
 
     // Get validator deposit data
     let depositData = {
@@ -51,5 +53,35 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
     // Stake
     await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
 
+}
+
+// Submit a minipool withdrawable event
+export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
+    const rocketMinipoolStatus = await rp.contracts.get('rocketMinipoolStatus');
+    await rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options);
+}
+
+
+// Send validator balance to a minipool
+export async function payoutMinipool(minipool: MinipoolContract, options: SendOptions) {
+    await minipool.contract.methods.payout.send(options);
+}
+
+
+// Withdraw node balances & rewards from a minipool and destroy it
+export async function withdrawMinipool(minipool: MinipoolContract, options: SendOptions) {
+    await minipool.contract.methods.withdraw.send(options);
+}
+
+
+// Dissolve a minipool
+export async function dissolveMinipool(minipool: MinipoolContract, options: SendOptions) {
+    await minipool.contract.methods.dissolve.send(options);
+}
+
+
+// Close a dissolved minipool and destroy it
+export async function closeMinipool(minipool: MinipoolContract, options: SendOptions) {
+    await minipool.contract.methods.close.send(options);
 }
 
