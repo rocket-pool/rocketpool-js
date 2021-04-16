@@ -2,7 +2,7 @@
 import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
 import {shouldRevert} from '../_utils/testing';
 import {printTitle} from '../_utils/formatting';
 import {nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
@@ -16,6 +16,7 @@ import {submitPrices} from '../_helpers/network';
 import {auctionCreateLot, auctionPlaceBid, getLotPriceAtBlock, getLotStartBlock} from '../_helpers/auction';
 import {placeBid} from './scenario-place-bid';
 import {claimBid} from "./scenario-claim-bid";
+import {recoverUnclaimedRPL} from './scenario-recover-rpl';
 
 // Tests
 export default function runAuctionTests(web3: Web3, rp: RocketPool) {
@@ -360,93 +361,99 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
-        // it(printTitle('random address', 'can recover unclaimed RPL from a lot'), async () => {
-        //
-        //     // Create closed lots
-        //     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
-        //     await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
-        //     await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
-        //     await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
-        //
-        //     // Recover RPL from first lot
-        //     await recoverUnclaimedRPL(0, {
-        //         from: random1,
-        //     });
-        //
-        //     // Recover RPL from second lot
-        //     await recoverUnclaimedRPL(1, {
-        //         from: random1,
-        //     });
-        //
-        // });
+        it(printTitle('random address', 'can recover unclaimed RPL from a lot'), async () => {
+
+            // Create closed lots
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
+            await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
+
+            // Recover RPL from first lot
+            await recoverUnclaimedRPL(web3, rp, 0, {
+                from: random1,
+                gas: gasLimit
+            });
+
+            // Recover RPL from second lot
+            await recoverUnclaimedRPL(web3, rp, 1, {
+                from: random1,
+                gas: gasLimit
+            });
+
+        });
 
 
-        // it(printTitle('random address', 'cannot recover unclaimed RPL from a lot which doesn\'t exist'), async () => {
-        //
-        //     // Create closed lot
-        //     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsAuction, 'auction.lot.duration', 0, {from: owner});
-        //     await submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode});
-        //     await auctionCreateLot({from: random1});
-        //
-        //     // Attempt to recover RPL
-        //     await shouldRevert(recoverUnclaimedRPL(1, {
-        //         from: random1,
-        //     }), 'Recovered unclaimed RPL from a lot which doesn\'t exist');
-        //
-        // });
-        //
-        //
-        // it(printTitle('random address', 'cannot recover unclaimed RPL from a lot before the lot bidding period has concluded'), async () => {
-        //
-        //     // Create lot
-        //     await submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode});
-        //     await auctionCreateLot({from: random1});
-        //
-        //     // Attempt to recover RPL
-        //     await shouldRevert(recoverUnclaimedRPL(0, {
-        //         from: random1,
-        //     }), 'Recovered unclaimed RPL from a lot before its bidding period had concluded');
-        //
-        // });
-        //
-        //
-        // it(printTitle('random address', 'cannot recover unclaimed RPL from a lot twice'), async () => {
-        //
-        //     // Create closed lot
-        //     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsAuction, 'auction.lot.duration', 0, {from: owner});
-        //     await submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode});
-        //     await auctionCreateLot({from: random1});
-        //
-        //     // Recover RPL
-        //     await recoverUnclaimedRPL(0, {from: random1});
-        //
-        //     // Attempt to recover RPL again
-        //     await shouldRevert(recoverUnclaimedRPL(0, {
-        //         from: random1,
-        //     }), 'Recovered unclaimed RPL from a lot twice');
-        //
-        // });
-        //
-        //
-        // it(printTitle('random address', 'cannot recover unclaimed RPL from a lot which has no RPL to recover'), async () => {
-        //
-        //     // Set lot duration
-        //     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsAuction, 'auction.lot.duration', 10, {from: owner});
-        //
-        //     // Create lot & place bid to clear
-        //     await submitMinipoolWithdrawable(minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode});
-        //     await auctionCreateLot({from: random1});
-        //     await auctionPlaceBid(0, {from: random1, value: web3.utils.toWei('1000', 'ether')});
-        //
-        //     // Move to lot bidding period end
-        //     await mineBlocks(web3, 10);
-        //
-        //     // Attempt to recover RPL again
-        //     await shouldRevert(recoverUnclaimedRPL(0, {
-        //         from: random1,
-        //     }), 'Recovered unclaimed RPL from a lot which had no RPL to recover');
-        //
-        // });
+        it(printTitle('random address', 'cannot recover unclaimed RPL from a lot which doesn\'t exist'), async () => {
+
+            // Create closed lot
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
+
+            // Attempt to recover RPL
+            await shouldRevert(recoverUnclaimedRPL(web3, rp,1, {
+                from: random1,
+                gas: gasLimit
+            }), 'Recovered unclaimed RPL from a lot which doesn\'t exist', 'SafeMath: division by zero');
+
+        });
+
+
+        it(printTitle('random address', 'cannot recover unclaimed RPL from a lot before the lot bidding period has concluded'), async () => {
+
+            // Create lot
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
+
+            // Attempt to recover RPL
+            await shouldRevert(recoverUnclaimedRPL(web3, rp, 0, {
+                from: random1,
+                gas: gasLimit
+            }), 'Recovered unclaimed RPL from a lot before its bidding period had concluded', 'Lot bidding period has not concluded yet');
+
+        });
+
+
+        it(printTitle('random address', 'cannot recover unclaimed RPL from a lot twice'), async () => {
+
+            // Create closed lot
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
+
+            // Recover RPL
+            await recoverUnclaimedRPL(web3, rp,0, {from: random1, gas: gasLimit});
+
+            // Attempt to recover RPL again
+            await shouldRevert(recoverUnclaimedRPL(web3, rp, 0, {
+                from: random1,
+                gas: gasLimit,
+            }), 'Recovered unclaimed RPL from a lot twice', 'Unclaimed RPL has already been recovered from the lot');
+
+        });
+
+
+        it(printTitle('random address', 'cannot recover unclaimed RPL from a lot which has no RPL to recover'), async () => {
+
+            // Set lot duration
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 10, {from: owner, gas: gasLimit});
+
+            // Create lot & place bid to clear
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
+            await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('1000', 'ether'), gas: gasLimit});
+
+            // Move to lot bidding period end
+            await mineBlocks(web3, 10);
+
+            // Attempt to recover RPL again
+            await shouldRevert(recoverUnclaimedRPL(web3, rp, 0, {
+                from: random1,
+                gas: gasLimit
+            }), 'Recovered unclaimed RPL from a lot which had no RPL to recover', 'No unclaimed RPL is available to recover');
+
+        });
 
 
     });
