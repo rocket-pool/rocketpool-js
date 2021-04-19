@@ -9,20 +9,47 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 // Refund a minipool
 export async function refund(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
 
-    // Get node address
-    const nodeAddress = await minipool.getNodeAddress();
+    // Load contracts
+    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
 
-    // Get initial node balance
-    let nodeBalance1 = await web3.eth.getBalance(nodeAddress).then(value => web3.utils.toBN(value));
+    // Get parameters
+    let nodeAddress = await minipool.contract.methods.getNodeAddress().call();
+    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
 
-    // Refund
-    await minipool.refund(options);
+    // Get balances
+    function getBalances() {
+        return Promise.all([
+            minipool.contract.methods.getNodeRefundBalance().call().then((value: any) => web3.utils.toBN(value)),
+            web3.eth.getBalance(minipool.address).then((value: any) => web3.utils.toBN(value)),
+            web3.eth.getBalance(nodeWithdrawalAddress).then((value: any) => web3.utils.toBN(value)),
+        ]).then(
+            ([nodeRefund, minipoolEth, nodeEth]) =>
+                ({nodeRefund, minipoolEth, nodeEth})
+        );
+    }
 
-    // Get updated node balance
-    let nodeBalance2 = await web3.eth.getBalance(nodeAddress).then(value => web3.utils.toBN(value));
+    // Get initial balances
+    let balances1 = await getBalances();
 
-    // Check node balance
-    assert(nodeBalance2.gt(nodeBalance1), 'Refund was not performed successfully');
+    // Set gas price
+    let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
+    options.gasPrice = gasPrice.toString();
+
+    // Refund & get tx fee
+    let txReceipt = await minipool.contract.methods.refund().send(options);
+    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
+
+    // Get updated balances
+    let balances2 = await getBalances();
+
+    // Check balances
+    const zero = web3.utils.toBN(0);
+    let expectedNodeBalance = balances1.nodeEth.add(balances1.nodeRefund);
+    if (nodeWithdrawalAddress == nodeAddress) expectedNodeBalance = expectedNodeBalance.sub(txFee);
+    assert(balances1.nodeRefund.gt(zero), 'Incorrect initial node refund balance');
+    assert(balances2.nodeRefund.eq(zero), 'Incorrect updated node refund balance');
+    assert(balances2.minipoolEth.eq(balances1.minipoolEth.sub(balances1.nodeRefund)), 'Incorrect updated minipool ETH balance');
+    assert(balances2.nodeEth.eq(expectedNodeBalance), 'Incorrect updated node ETH balance');
 
 }
 

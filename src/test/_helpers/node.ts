@@ -31,6 +31,12 @@ export async function registerNode(web3: Web3, rp: RocketPool, options: SendOpti
     await rocketNodeManager.methods.registerNode('Australia/Brisbane').send(options);
 }
 
+// Set a withdrawal address for a node
+export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, withdrawalAddress: string, options: SendOptions) {
+    let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
+    await rocketNodeManager.methods.setWithdrawalAddress(withdrawalAddress).send(options);
+}
+
 // Submit a node RPL stake
 export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
     let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
