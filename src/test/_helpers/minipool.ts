@@ -7,6 +7,27 @@ import { getValidatorPubkey, getValidatorSignature, getDepositDataRoot } from '.
 import { getTxContractEvents } from '../_utils/contract';
 
 
+// Get the minimum required RPL stake for a minipool
+export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
+
+    // Load contracts
+    const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
+    const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
+    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
+
+
+    // Load data
+    let [depositUserAmount, minMinipoolStake, rplPrice] = await Promise.all([
+        rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call().then((value: any) => web3.utils.toBN(value)),
+        rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
+        rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+    ]);
+
+    // Calculate & return
+    return depositUserAmount.mul(minMinipoolStake).div(rplPrice);
+
+}
+
 // Create a minipool
 export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions): Promise<MinipoolContract | null> {
 

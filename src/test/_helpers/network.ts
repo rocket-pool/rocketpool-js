@@ -29,7 +29,7 @@ export async function getETHUtilizationRate(web3: Web3, rp: RocketPool) {
 
 
 // Submit network balances
-export async function submitBalances(web3: Web3, rp: RocketPool, block: string, totalEth: string, stakingEth: string, rethSupply: string, options: SendOptions) {
+export async function submitBalances(web3: Web3, rp: RocketPool, block: number, totalEth: string, stakingEth: number, rethSupply: string, options: SendOptions) {
     const rocketNetworkBalances = await rp.contracts.get('rocketNetworkBalances');
     await rocketNetworkBalances.methods.submitBalances(block, totalEth, stakingEth, rethSupply).send(options);
 }

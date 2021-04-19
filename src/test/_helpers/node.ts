@@ -42,3 +42,9 @@ export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, o
     await rocketTokenRPL.methods.approve(rocketNodeStaking.options.address, amount).send(options);
     await rocketNodeStaking.methods.stakeRPL(amount).send(options);
 }
+
+// Make a node deposit
+export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptions) {
+    let rocketNodeDeposit = await rp.contracts.get('rocketNodeDeposit');
+    await rocketNodeDeposit.methods.deposit(web3.utils.toWei('0', 'ether')).send(options);
+}
