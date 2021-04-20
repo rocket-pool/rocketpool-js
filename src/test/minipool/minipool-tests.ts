@@ -10,7 +10,7 @@ import { close } from './scenario-close';
 import { dissolve } from './scenario-dissolve';
 import { refund } from './scenario-refund';
 import { stake } from './scenario-stake';
-import { submitWithdrawable } from './scenario-submit-withdrawable';
+import {withdrawValidatorBalance} from './scenario-withdraw-validator-balance';
 import { withdraw } from './scenario-withdraw';
 import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
@@ -320,6 +320,206 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 from: random,
                 gas: gasLimit
             }), 'Random address staked a minipool', 'Invalid minipool owner');
+
+        });
+
+
+        //
+        // Withdraw
+        //
+
+        it(printTitle('node operator', 'can withdraw a withdrawable minipool after withdrawal delay'), async () => {
+
+            // Wait for withdrawal delay
+            await mineBlocks(web3, withdrawalDelay);
+
+            // Withdraw withdrawable minipool
+            await withdraw(web3, rp, withdrawableMinipool, {
+                from: node,
+                gas: gasLimit
+            });
+
+        });
+
+        it(printTitle('node operator', 'cannot withdraw a minipool which is not withdrawable'), async () => {
+
+            // Wait for withdrawal delay
+            await mineBlocks(web3, withdrawalDelay);
+
+            // Attempt to withdraw staking minipool
+            await shouldRevert(withdraw(web3, rp, stakingMinipool, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew a minipool which was not withdrawable', 'The minipool can only be withdrawn from while withdrawable');
+
+        });
+
+        it(printTitle('node operator', 'cannot withdraw a withdrawable minipool twice'), async () => {
+
+            // Wait for withdrawal delay
+            await mineBlocks(web3, withdrawalDelay);
+
+            // Withdraw withdrawable minipool
+            await withdraw(web3, rp, withdrawableMinipool, {
+                from: node,
+                gas: gasLimit
+            });
+
+            // Attempt to withdraw withdrawable minipool again
+            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew a minipool twice', 'The minipool has already been withdrawn from');
+
+        });
+
+        it(printTitle('node operator', 'cannot withdraw a withdrawable minipool before withdrawal delay'), async () => {
+
+            // Attempt to withdraw withdrawable minipool
+            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew a minipool before withdrawal delay', 'The minipool cannot be withdrawn from until after the withdrawal delay period');
+
+        });
+
+
+        it(printTitle('random address', 'cannot withdraw a minipool'), async () => {
+
+            // Wait for withdrawal delay
+            await mineBlocks(web3, withdrawalDelay);
+
+            // Attempt to withdraw withdrawable minipool
+            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
+                from: random,
+                gas: gasLimit
+            }), 'Random address withdrew a minipool', 'Invalid minipool owner');
+
+        });
+
+
+        //
+        // Withdraw validator balance
+        //
+        it(printTitle('system withdrawal contract', 'can send validator balance to a withdrawable minipool'), async () => {
+
+            // Send validator balance
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit
+            });
+
+        });
+
+        it(printTitle('system withdrawal contract', 'cannot send validator balance to a minipool which is not withdrawable'), async () => {
+
+            // Attempt to send validator balance
+            await shouldRevert(withdrawValidatorBalance(web3, rp, stakingMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit
+            }), 'Sent validator balance to a minipool which was not withdrawable', 'The minipool\'s validator balance can only be sent while withdrawable');
+
+        });
+
+        it(printTitle('system withdrawal contract', 'cannot send validator balance to a withdrawable minipool twice'), async () => {
+
+            // Send validator balance
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit
+            });
+
+            // Attempt to send validator balance again
+            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit
+            }), 'Sent validator balance to a minipool twice', 'The minipool\'s validator balance has already been sent');
+
+        });
+
+        it(printTitle('system withdrawal contract', 'cannot send validator balance to a withdrawable minipool while processing withdrawals is disabled'), async () => {
+
+            // Disable processing withdrawals
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.process.withdrawals.enabled', false, {from: owner});
+
+            // Attempt to send validator balance
+            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit,
+            }), 'Sent validator balance to a minipool while processing withdrawals was disabled', 'Processing withdrawals is currently disabled');
+
+        });
+
+        it(printTitle('random address', 'can send validator balance to a withdrawable minipool in one transaction'), async () => {
+
+            // Send validator balance
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: withdrawalBalance,
+                gas: gasLimit
+            });
+
+        });
+
+        it(printTitle('random address', 'can send validator balance to a withdrawable minipool across multiple transactions'), async () => {
+
+            // Get tx amount (half of withdrawal balance)
+            let amount = web3.utils.toBN(withdrawalBalance).div(web3.utils.toBN(2));
+
+            // Send initial tx
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: amount,
+                gas: gasLimit,
+            }, false);
+
+            // Send final tx
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+                from: random,
+                value: amount,
+                gas: gasLimit
+            });
+
+        });
+
+
+        //
+        // Close
+        //
+        it(printTitle('node operator', 'can close a dissolved minipool'), async () => {
+
+            // Close dissolved minipool
+            await close(web3, rp, dissolvedMinipool, {
+                from: node,
+                gas: gasLimit
+            });
+
+        });
+
+
+        it(printTitle('node operator', 'cannot close a minipool which is not dissolved'), async () => {
+
+            // Attempt to close staking minipool
+            await shouldRevert(close(web3, rp, stakingMinipool, {
+                from: node,
+                gas: gasLimit,
+            }), 'Closed a minipool which was not dissolved', 'The minipool can only be closed while dissolved');
+
+        });
+
+
+        it(printTitle('random address', 'cannot close a dissolved minipool'), async () => {
+
+            // Attempt to close dissolved minipool
+            await shouldRevert(close(web3, rp, dissolvedMinipool, {
+                from: random,
+                gas: gasLimit,
+            }), 'Random address closed a minipool', 'Invalid minipool owner');
 
         });
 
