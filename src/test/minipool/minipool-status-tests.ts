@@ -80,7 +80,6 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             stakingMinipool2 = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
             stakingMinipool3 = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
 
-
             // Make and assign deposits to minipools
             await userDeposit(web3, rp, {from: staker, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
             await userDeposit(web3, rp,{from: staker, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
@@ -95,6 +94,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             let stakingStatus1 = await stakingMinipool1.contract.methods.getStatus().call().then((value: any) => web3.utils.toBN(value));
             let stakingStatus2 = await stakingMinipool2.contract.methods.getStatus().call().then((value: any) => web3.utils.toBN(value));
             let stakingStatus3 = await stakingMinipool3.contract.methods.getStatus().call().then((value: any) => web3.utils.toBN(value));
+
             assert(stakingStatus1.eq(web3.utils.toBN(2)), 'Incorrect staking minipool status');
             assert(stakingStatus2.eq(web3.utils.toBN(2)), 'Incorrect staking minipool status');
             assert(stakingStatus3.eq(web3.utils.toBN(2)), 'Incorrect staking minipool status');
@@ -120,46 +120,46 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
                 from: trustedNode1,
                 gas: gasLimit
             });
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('38', 'ether'), {
-                from: trustedNode2,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('39', 'ether'), {
-                from: trustedNode3,
-                gas: gasLimit
-            });
-
-            // Submit identical withdrawable events to trigger update:
-
-            // Minipool 1 - rewards earned
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
-                from: trustedNode1,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
-                from: trustedNode2,
-                gas: gasLimit
-            });
-
-            // Minipool 2 - penalties applied
-            await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
-                from: trustedNode1,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
-                from: trustedNode2,
-                gas: gasLimit
-            });
-
-            // Minipool 3 - penalties applied & RPL slashed
-            await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
-                from: trustedNode1,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
-                from: trustedNode2,
-                gas: gasLimit
-            });
+            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('38', 'ether'), {
+            //     from: trustedNode2,
+            //     gas: gasLimit
+            // });
+            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('39', 'ether'), {
+            //     from: trustedNode3,
+            //     gas: gasLimit
+            // });
+            //
+            // // Submit identical withdrawable events to trigger update:
+            //
+            // // Minipool 1 - rewards earned
+            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
+            //     from: trustedNode1,
+            //     gas: gasLimit
+            // });
+            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
+            //     from: trustedNode2,
+            //     gas: gasLimit
+            // });
+            //
+            // // Minipool 2 - penalties applied
+            // await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
+            //     from: trustedNode1,
+            //     gas: gasLimit
+            // });
+            // await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
+            //     from: trustedNode2,
+            //     gas: gasLimit
+            // });
+            //
+            // // Minipool 3 - penalties applied & RPL slashed
+            // await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
+            //     from: trustedNode1,
+            //     gas: gasLimit
+            // });
+            // await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
+            //     from: trustedNode2,
+            //     gas: gasLimit
+            // });
 
         });
 
