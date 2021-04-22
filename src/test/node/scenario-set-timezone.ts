@@ -13,7 +13,7 @@ export async function setTimezoneLocation(web3: Web3, rp: RocketPool, timezoneLo
 
     // Check node's timezone location
     let nodeTimezoneLocation = await rp.node.getNodeTimezoneLocation(options.from);
-    assert.equal(nodeTimezoneLocation, timezoneLocation, 'Timezone location was not set successfully');
+    assert.equal(nodeTimezoneLocation, timezoneLocation, 'Incorrect updated timezone location');
 
 }
 

@@ -81,14 +81,14 @@ export async function setDAOProtocolBootstrapSetting(web3: Web3, rp: RocketPool,
 // };
 //
 //
-// /*** Rewards *******/
-//
-// // Set the current rewards claim period in blocks
-// export async function setRewardsClaimIntervalBlocks(intervalBlocks, txOptions) {
-//     // Set it now
-//     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsRewards, 'rpl.rewards.claim.period.blocks', intervalBlocks, txOptions);
-// };
-//
+/*** Rewards *******/
+
+// Set the current rewards claim period in blocks
+export async function setRewardsClaimIntervalBlocks(web3: Web3, rp: RocketPool, intervalBlocks: number, options: SendOptions) {
+    // Set it now
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', intervalBlocks, options);
+};
+
 //
 // // Spend the DAO treasury in bootstrap mode
 // export async function spendRewardsClaimTreasury(_invoiceID, _recipientAddress, _amount, txOptions) {

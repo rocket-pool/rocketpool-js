@@ -10,6 +10,7 @@ import {shouldRevert} from '../_utils/testing';
 import {submitBalances} from './scenario-submit-balances';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {getNodeFeeByDemand} from '../_helpers/network';
+import {submitPrices} from './scenario-submit-prices';
 
 
 // Tests

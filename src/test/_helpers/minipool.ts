@@ -85,24 +85,24 @@ export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, min
 
 // Send validator balance to a minipool
 export async function payoutMinipool(minipool: MinipoolContract, options: SendOptions) {
-    await minipool.contract.methods.payout.send(options);
+    await minipool.contract.methods.payout().send(options);
 }
 
 
 // Withdraw node balances & rewards from a minipool and destroy it
 export async function withdrawMinipool(minipool: MinipoolContract, options: SendOptions) {
-    await minipool.contract.methods.withdraw.send(options);
+    await minipool.withdraw(options);
 }
 
 
 // Dissolve a minipool
 export async function dissolveMinipool(minipool: MinipoolContract, options: SendOptions) {
-    await minipool.contract.methods.dissolve.send(options);
+    await minipool.dissolve(options);
 }
 
 
 // Close a dissolved minipool and destroy it
 export async function closeMinipool(minipool: MinipoolContract, options: SendOptions) {
-    await minipool.contract.methods.close.send(options);
+    await minipool.close(options);
 }
 
