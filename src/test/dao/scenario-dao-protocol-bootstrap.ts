@@ -89,43 +89,43 @@ export async function setRewardsClaimIntervalBlocks(web3: Web3, rp: RocketPool, 
     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', intervalBlocks, options);
 };
 
-//
-// // Spend the DAO treasury in bootstrap mode
-// export async function spendRewardsClaimTreasury(_invoiceID, _recipientAddress, _amount, txOptions) {
-//
-//     // Load contracts
-//     const rocketDAOProtocol = await RocketDAOProtocol.deployed();
-//     const rocketTokenRPL = await RocketTokenRPL.deployed();
-//     const rocketVault = await RocketVault.deployed();
-//
-//     // Get data about the tx
-//     function getTxData() {
-//         return Promise.all([
-//             rocketVault.balanceOfToken('rocketClaimDAO', rocketTokenRPL.address),
-//             rocketTokenRPL.balanceOf(_recipientAddress),
-//         ]).then(
-//             ([daoClaimTreasuryBalance, recipientBalance]) =>
-//                 ({daoClaimTreasuryBalance, recipientBalance})
-//         );
-//     }
-//
-//     // Capture data
-//     let ds1 = await getTxData();
-//
-//     // console.log(web3.utils.fromWei(ds1.daoClaimTreasuryBalance), web3.utils.fromWei(ds1.recipientBalance), web3.utils.fromWei(_amount));
-//
-//     // Perform tx
-//     await rocketDAOProtocol.bootstrapSpendTreasury(_invoiceID, _recipientAddress, _amount, txOptions);
-//
-//     // Capture data
-//     let ds2 = await getTxData();
-//
-//     // console.log(web3.utils.fromWei(ds2.daoClaimTreasuryBalance), web3.utils.fromWei(ds2.recipientBalance), web3.utils.fromWei(_amount));
-//
-//     // Verify the amount sent is correct
-//     assert(ds2.recipientBalance.eq(ds1.recipientBalance.add(_amount)), "Amount spent by treasury does not match recipients received amount");
-//
-// }
+
+// Spend the DAO treasury in bootstrap mode
+export async function spendRewardsClaimTreasury(web3: Web3, rp: RocketPool, _invoiceID: string, _recipientAddress: string, _amount: string, options: SendOptions) {
+
+    // Load contracts
+    const rocketDAOProtocol = await rp.contracts.get('rocketDAOProtocol');
+    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+    const rocketVault = await rp.contracts.get('rocketVault');
+
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rocketVault.methods.balanceOfToken('rocketClaimDAO', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rocketTokenRPL.methods.balanceOf(_recipientAddress).call().then((value: any) => web3.utils.toBN(value)),
+        ]).then(
+            ([daoClaimTreasuryBalance, recipientBalance]) =>
+                ({daoClaimTreasuryBalance, recipientBalance})
+        );
+    }
+
+    // Capture data
+    let ds1 = await getTxData();
+
+    // console.log(web3.utils.fromWei(ds1.daoClaimTreasuryBalance), web3.utils.fromWei(ds1.recipientBalance), web3.utils.fromWei(_amount));
+
+    // Perform tx
+    await rocketDAOProtocol.methods.bootstrapSpendTreasury(_invoiceID, _recipientAddress, _amount).send(options);
+
+    // Capture data
+    let ds2 = await getTxData();
+
+    // console.log(web3.utils.fromWei(ds2.daoClaimTreasuryBalance), web3.utils.fromWei(ds2.recipientBalance), web3.utils.fromWei(_amount));
+
+    // Verify the amount sent is correct
+    assert(ds2.recipientBalance.eq(ds1.recipientBalance.add(web3.utils.toBN(_amount))), "Amount spent by treasury does not match recipients received amount");
+
+}
 
 
 /*** Inflation *******/

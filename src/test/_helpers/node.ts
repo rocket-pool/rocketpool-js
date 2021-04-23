@@ -8,6 +8,13 @@ import {daoNodeTrustedMemberJoin} from '../dao/scenario-dao-node-trusted';
 import { SendOptions } from 'web3-eth-contract';
 
 
+// Get a node's RPL stake
+export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
+    let stake = await rocketNodeStaking.methods.getNodeRPLStake(nodeAddress).call();
+    return stake;
+}
+
 export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
     // Get the DAO settings
     let daoNodeSettings = await rp.contracts.get('rocketDAONodeTrustedSettingsMembers');
@@ -31,6 +38,13 @@ export async function getNodeEffectiveRPLStake(web3: Web3, rp: RocketPool, nodeA
     let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
     let effectiveStake = await rocketNodeStaking.methods.getNodeEffectiveRPLStake(nodeAddress).call();
     return effectiveStake;
+}
+
+// Get a node's minipool RPL stake
+export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
+    let minimumStake = await rocketNodeStaking.methods.getNodeMinimumRPLStake(nodeAddress).call();
+    return minimumStake;
 }
 
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
