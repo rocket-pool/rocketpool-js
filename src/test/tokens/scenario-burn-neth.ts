@@ -16,7 +16,7 @@ export async function burnNeth(web3: Web3, rp: RocketPool, amount: string, optio
         return Promise.all([
             rocketTokenNETH.methods.totalSupply().call().then((value: string) => web3.utils.toBN(value)),
             web3.eth.getBalance(rocketTokenNETH.options.address).then((value: string) => web3.utils.toBN(value)),
-            rocketTokenNETH.methods.balanceOf.call(options.from).then((value: string) => web3.utils.toBN(value)),
+            rocketTokenNETH.methods.balanceOf(options.from).call().then((value: string) => web3.utils.toBN(value)),
             web3.eth.getBalance(options.from).then((value: string) => web3.utils.toBN(value)),
         ]).then(
             ([tokenSupply, tokenEthBalance, userTokenBalance, userEthBalance]) =>
@@ -33,7 +33,7 @@ export async function burnNeth(web3: Web3, rp: RocketPool, amount: string, optio
 
     // Burn tokens & get tx fee
     let txReceipt = await rocketTokenNETH.methods.burn(amount).send(options);
-    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.receipt.gasUsed));
+    let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated balances
     let balances2 = await getBalances();

@@ -62,6 +62,10 @@ export default function runNethTests(web3: Web3, rp: RocketPool) {
             await rp.node.registerNode('Australia/Brisbane', {from: oracleNode, gas: gasLimit});
             await setNodeTrusted(web3, rp, oracleNode, 'saas_1', 'node@home.com', owner);
 
+            // Set settings
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.withdrawal.delay', 0, {from: owner, gas: gasLimit});
+
+
             // Stake RPL to cover minipools
             let rplStake = await getMinipoolMinimumRPLStake(web3, rp);
             await mintRPL(web3, rp, owner, node, rplStake);
@@ -98,6 +102,50 @@ export default function runNethTests(web3: Web3, rp: RocketPool) {
                 from: node,
                 gas: gasLimit
             });
+
+        });
+
+        it(printTitle('nETH holder', 'cannot burn an invalid amount of nETH'), async () => {
+
+            // Send ETH to the minipool to simulate receving from SWC
+            await web3.eth.sendTransaction({
+                from: oracleNode,
+                to: minipool.address,
+                value: withdrawalBalance
+            });
+
+            // Run the payout function now
+            await payoutMinipool(minipool, {
+                from: oracleNode,
+                gas: gasLimit
+            });
+
+            // Get burn amounts
+            let burnZero = web3.utils.toWei('0', 'ether');
+            let burnExcess = web3.utils.toBN(web3.utils.toWei('100', 'ether'));
+            assert(burnExcess.gt(nethBalance), 'Burn amount does not exceed nETH balance');
+
+            // Attempt to burn 0 nETH
+            await shouldRevert(burnNeth(web3, rp, burnZero.toString(), {
+                from: node,
+                gas: gasLimit
+            }), 'Burned an invalid amount of nETH', 'Invalid token burn amount');
+
+            // Attempt to burn too much nETH
+            await shouldRevert(burnNeth(web3, rp, burnExcess.toString(), {
+                from: node,
+                gas: gasLimit
+            }), 'Burned an amount of nETH greater than the token balance', 'Insufficient nETH balance');
+
+        });
+
+        it(printTitle('nETH holder', 'cannot burn nETH with an insufficient contract ETH balance'), async () => {
+
+            // Attempt to burn nETH
+            await shouldRevert(burnNeth(web3, rp, nethBalance, {
+                from: node,
+                gas: gasLimit
+            }), 'Burned nETH with an insufficient contract ETH balance', 'Insufficient ETH balance for exchange');
 
         });
 

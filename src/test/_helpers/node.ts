@@ -26,6 +26,13 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
     await daoNodeTrustedMemberJoin(web3, rp,{from: _account});
 }
 
+// Get a node's effective RPL stake
+export async function getNodeEffectiveRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
+    let effectiveStake = await rocketNodeStaking.methods.getNodeEffectiveRPLStake(nodeAddress).call();
+    return effectiveStake;
+}
+
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
     let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
     await rocketNodeManager.methods.registerNode('Australia/Brisbane').send(options);

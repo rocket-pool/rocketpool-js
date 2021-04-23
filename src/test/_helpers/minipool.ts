@@ -7,6 +7,22 @@ import { getValidatorPubkey, getValidatorSignature, getDepositDataRoot } from '.
 import { getTxContractEvents } from '../_utils/contract';
 
 
+// Get a minipool's node balance at withdrawal
+export async function getMinipoolWithdrawalNodeBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
+    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
+    let balance = await rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(minipoolAddress).call();
+    return balance;
+}
+
+
+// Get a minipool's user balance at withdrawal
+export async function getMinipoolWithdrawalUserBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
+    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
+    let totalBalance = await rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(minipoolAddress).call().then((value: any) => web3.utils.toBN(value));
+    let nodeBalance = await rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(minipoolAddress).call().then((value: any) => web3.utils.toBN(value));
+    return totalBalance.sub(nodeBalance);
+}
+
 // Get the minimum required RPL stake for a minipool
 export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
 

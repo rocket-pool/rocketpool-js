@@ -19,8 +19,11 @@ import runNodeDepositTests from './node/node-deposit-tests';
 import runNodeManagerTests from './node/node-manager-tests';
 import runNodeStakingTests from './node/node-staking-tests';
 import runNethTests from './tokens/neth-tests';
+import runRethTests from './tokens/reth-tests';
+import runRPLTests from './tokens/rpl-tests';
 import runSettingsTests from './settings/settings-tests';
 import runTokensTests from './tokens/tokens-tests';
+import runRewardsTests from './rewards/rewards-tests';
 
 
 // Initialise web3
@@ -55,6 +58,9 @@ console.log('\\_| \\_\\___/ \\___|_|\\_\\___|\\__| \\_|  \\___/ \\___/|_|');
 // TO DO runNodeDepositTests(web3, rp);
 //runNodeManagerTests(web3, rp);
 //runNodeStakingTests(web3, rp);
-runNethTests(web3, rp);
-// runSettingsTests(web3, rp);
+//runNethTests(web3, rp);
+//runRethTests(web3, rp);
+//runRPLTests(web3, rp);
+//runSettingsTests(web3, rp);
+runRewardsTests(web3, rp);
 // runTokensTests(web3, rp);

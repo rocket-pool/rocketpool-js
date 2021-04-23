@@ -49,38 +49,38 @@ export async function setDAOProtocolBootstrapSetting(web3: Web3, rp: RocketPool,
 }
 
 // Set a contract that can claim rewards
-// export async function setDAONetworkBootstrapRewardsClaimer(web3: Web3, rp: RocketPool, _contractName: string, _perc: number, options: SendOptions, expectedTotalPerc = null) {
-//     // Load contracts
-//     const rocketDAOProtocol = await rp.contracts.get('rocketDAOProtocol');
-//     const rocketDAOProtocolSettingsRewards = await rp.contracts.get('rocketDAOProtocolSettingsRewards');
-//     // Get data about the tx
-//     function getTxData() {
-//         return Promise.all([
-//             rocketDAOProtocolSettingsRewards.getRewardsClaimerPerc(_contractName),
-//             rocketDAOProtocolSettingsRewards.getRewardsClaimersPercTotal(),
-//         ]).then(
-//             ([rewardsClaimerPerc, rewardsClaimersPercTotal]) =>
-//                 ({rewardsClaimerPerc, rewardsClaimersPercTotal})
-//         );
-//     }
-//     // Capture data
-//     let dataSet1 = await getTxData();
-//     //console.log(dataSet1.rewardsClaimerPerc.toString(), dataSet1.rewardsClaimersPercTotal.toString());
-//     // Perform tx
-//     await rocketDAOProtocol.bootstrapSettingClaimer(_contractName, _perc, txOptions);
-//     // Capture data
-//     let dataSet2 = await getTxData();
-//     //console.log(dataSet2.rewardsClaimerPerc.toString(), dataSet2.rewardsClaimersPercTotal.toString());
-//     // Verify
-//     assert(dataSet2.rewardsClaimerPerc.eq(web3.utils.toBN(_perc)), 'Claim percentage not updated correctly');
-//
-//     // Verify an expected total Perc if given
-//     if(expectedTotalPerc) {
-//         assert(dataSet2.rewardsClaimersPercTotal.eq(web3.utils.toBN(web3.utils.toWei(expectedTotalPerc.toString()))), 'Total claim percentage not matching given target');
-//     }
-// };
-//
-//
+export async function setDAONetworkBootstrapRewardsClaimer(web3: Web3, rp: RocketPool, _contractName: string, _perc: string, options: SendOptions, expectedTotalPerc?: number | null) {
+    // Load contracts
+    const rocketDAOProtocol = await rp.contracts.get('rocketDAOProtocol');
+    const rocketDAOProtocolSettingsRewards = await rp.contracts.get('rocketDAOProtocolSettingsRewards');
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rocketDAOProtocolSettingsRewards.methods.getRewardsClaimerPerc(_contractName).call().then((value: any) => web3.utils.toBN(value)),
+            rocketDAOProtocolSettingsRewards.methods.getRewardsClaimersPercTotal().call().then((value: any) => web3.utils.toBN(value)),
+        ]).then(
+            ([rewardsClaimerPerc, rewardsClaimersPercTotal]) =>
+                ({rewardsClaimerPerc, rewardsClaimersPercTotal})
+        );
+    }
+    // Capture data
+    let dataSet1 = await getTxData();
+    //console.log(dataSet1.rewardsClaimerPerc.toString(), dataSet1.rewardsClaimersPercTotal.toString());
+    // Perform tx
+    await rocketDAOProtocol.methods.bootstrapSettingClaimer(_contractName, _perc).send(options);
+    // Capture data
+    let dataSet2 = await getTxData();
+    //console.log(dataSet2.rewardsClaimerPerc.toString(), dataSet2.rewardsClaimersPercTotal.toString());
+    // Verify
+    assert(dataSet2.rewardsClaimerPerc.eq(web3.utils.toBN(_perc)), 'Claim percentage not updated correctly');
+
+    // Verify an expected total Perc if given
+    if(expectedTotalPerc) {
+        assert(dataSet2.rewardsClaimersPercTotal.eq(web3.utils.toBN(web3.utils.toWei(expectedTotalPerc.toString()))), 'Total claim percentage not matching given target');
+    }
+};
+
+
 /*** Rewards *******/
 
 // Set the current rewards claim period in blocks
@@ -126,31 +126,29 @@ export async function setRewardsClaimIntervalBlocks(web3: Web3, rp: RocketPool, 
 //     assert(ds2.recipientBalance.eq(ds1.recipientBalance.add(_amount)), "Amount spent by treasury does not match recipients received amount");
 //
 // }
-//
-//
-// /*** Inflation *******/
-//
-// // Set the current RPL inflation rate
-// export async function setRPLInflationIntervalRate(yearlyInflationPerc, txOptions) {
-//     // Calculate the inflation rate per day
-//     let dailyInflation = web3.utils.toBN((1 + yearlyInflationPerc) ** (1 / (365)) * 1e18);
-//     // Set it now
-//     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsInflation, 'rpl.inflation.interval.rate', dailyInflation, txOptions);
-// };
-//
-// // Set the current RPL inflation rate blocks, how often inflation is calculated
-// export async function setRPLInflationIntervalBlocks(intervalBlocks, txOptions) {
-//     // Set it now
-//     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsInflation, 'rpl.inflation.interval.blocks', intervalBlocks, txOptions);
-// };
-//
-// // Set the current RPL inflation block interval
-// export async function setRPLInflationStartBlock(startBlock, txOptions) {
-//     // Set it now
-//     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsInflation, 'rpl.inflation.interval.start', startBlock, txOptions);
-// };
-//
-//
+
+
+/*** Inflation *******/
+
+// Set the current RPL inflation rate
+export async function setRPLInflationIntervalRate(web3: Web3, rp: RocketPool, yearlyInflationPerc: number, options: SendOptions) {
+    // Calculate the inflation rate per day
+    let dailyInflation = web3.utils.toBN((1 + yearlyInflationPerc) ** (1 / (365)) * 1e18);
+    // Set it now
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.rate', dailyInflation, options);
+};
+
+// Set the current RPL inflation rate blocks, how often inflation is calculated
+export async function setRPLInflationIntervalBlocks(web3: Web3, rp: RocketPool, intervalBlocks: number, options: SendOptions) {
+    // Set it now
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.blocks', intervalBlocks, options);
+};
+
+// Set the current RPL inflation block interval
+export async function setRPLInflationStartBlock(web3: Web3, rp: RocketPool, startBlock: number, options: SendOptions) {
+    // Set it now
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.start', startBlock, options);
+};
 
 // Disable bootstrap mode
 export async function setDaoProtocolBootstrapModeDisabled(web3: Web3, rp: RocketPool, options: SendOptions) {
