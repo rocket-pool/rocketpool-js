@@ -88,6 +88,86 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+        it(printTitle('trusted nodes', 'cannot submit network prices while price submissions are disabled'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let rplPrice = web3.utils.toWei('0.02', 'ether');
+
+            // Disable submissions
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.enabled', false, {from: owner, gas: gasLimit});
+
+            // Attempt to submit prices
+            await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted prices while price submissions were disabled', 'Submitting prices is currently disabled');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit network prices for the current block or lower'), async () => {
+
+            // Set parameters
+            let block = 2;
+            let rplPrice = web3.utils.toWei('0.02', 'ether');
+
+            // Submit prices for block to trigger update
+            await submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+            // Attempt to submit prices for current block
+            await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode3,
+                gas: gasLimit
+            }), 'Submitted prices for the current block', 'TO DO: complete this error message');
+
+            // Attempt to submit prices for lower block
+            await shouldRevert(submitPrices(web3, rp, block - 1, rplPrice, {
+                from: trustedNode3,
+                gas: gasLimit
+            }), 'Submitted prices for a lower block', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit the same network prices twice'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let rplPrice = web3.utils.toWei('0.02', 'ether');
+
+            // Submit prices for block
+            await submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+
+            // Attempt to submit prices for block again
+            await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted the same network prices twice', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('regular nodes', 'cannot submit network prices'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let rplPrice = web3.utils.toWei('0.02', 'ether');
+
+            // Attempt to submit prices
+            await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
+                from: node,
+                gas: gasLimit
+            }), 'Regular node submitted network prices', 'Invalid trusted node');
+
+        });
 
 
     });

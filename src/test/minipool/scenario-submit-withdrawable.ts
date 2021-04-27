@@ -13,6 +13,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
     const rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
     const rocketStorage = await rp.contracts.get('rocketStorage');
+    const rocketMinipoolStatus = await rp.contracts.get('rocketMinipoolStatus');
 
     // Get parameters
     let trustedNodeCount = await rocketDAONodeTrusted.methods.getMemberCount().call();
@@ -64,7 +65,9 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     options.gasPrice = gasPrice.toString();
 
     // Submit
-    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
+    await rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options);
+
+    //await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
 
     // Get updated details
     let [submission2, nodeDetails2, minipoolDetails] = await Promise.all([

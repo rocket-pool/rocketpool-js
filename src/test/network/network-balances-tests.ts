@@ -8,6 +8,7 @@ import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {submitBalances} from './scenario-submit-balances';
+import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 
 
 // Tests
@@ -83,6 +84,111 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
                 from: trustedNode2,
                 gas: gasLimit
             });
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit network balances while balance submissions are disabled'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let totalBalance = web3.utils.toWei('10', 'ether');
+            let stakingBalance = web3.utils.toWei('9', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Disable submissions
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.balances.enabled', false, {from: owner});
+
+            // Attempt to submit balances
+            await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted balances while balance submissions were disabled', 'Submitting balances is currently disabled');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit network balances for the current block or lower'), async () => {
+
+            // Set parameters
+            let block = 2;
+            let totalBalance = web3.utils.toWei('10', 'ether');
+            let stakingBalance = web3.utils.toWei('9', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Submit balances for block to trigger update
+            await submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+            // Attempt to submit balances for current block
+            await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode3,
+                gas: gasLimit
+            }), 'Submitted balances for the current block', 'TO DO: complete this error message');
+
+            // Attempt to submit balances for lower block
+            await shouldRevert(submitBalances(web3, rp, block - 1, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode3,
+                gas: gasLimit
+            }), 'Submitted balances for a lower block', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit invalid network balances'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let totalBalance = web3.utils.toWei('9', 'ether');
+            let stakingBalance = web3.utils.toWei('10', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Submit balances for block
+            await shouldRevert(submitBalances(web3,rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted invalid balances', 'Invalid network balances');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit the same network balances twice'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let totalBalance = web3.utils.toWei('10', 'ether');
+            let stakingBalance = web3.utils.toWei('9', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Submit balances for block
+            await submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+
+            // Attempt to submit balances for block again
+            await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted the same network balances twice', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('regular nodes', 'cannot submit network balances'), async () => {
+
+            // Set parameters
+            let block = 1;
+            let totalBalance = web3.utils.toWei('10', 'ether');
+            let stakingBalance = web3.utils.toWei('9', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Attempt to submit balances
+            await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: node,
+                gas: gasLimit
+            }), 'Regular node submitted network balances', 'Invalid trusted node');
 
         });
 

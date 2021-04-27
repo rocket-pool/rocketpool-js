@@ -19,7 +19,7 @@ import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {getValidatorPubkey} from '../_utils/beacon';
-import {submitWithdrawable} from './scenario-submit-withdrawal';
+import {submitWithdrawable} from './scenario-submit-withdrawable';
 
 // Tests
 export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
@@ -120,46 +120,135 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
                 from: trustedNode1,
                 gas: gasLimit
             });
-            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('38', 'ether'), {
-            //     from: trustedNode2,
-            //     gas: gasLimit
-            // });
-            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('39', 'ether'), {
-            //     from: trustedNode3,
-            //     gas: gasLimit
-            // });
-            //
-            // // Submit identical withdrawable events to trigger update:
-            //
-            // // Minipool 1 - rewards earned
-            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
-            //     from: trustedNode1,
-            //     gas: gasLimit
-            // });
-            // await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
-            //     from: trustedNode2,
-            //     gas: gasLimit
-            // });
-            //
-            // // Minipool 2 - penalties applied
-            // await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
-            //     from: trustedNode1,
-            //     gas: gasLimit
-            // });
-            // await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
-            //     from: trustedNode2,
-            //     gas: gasLimit
-            // });
-            //
-            // // Minipool 3 - penalties applied & RPL slashed
-            // await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
-            //     from: trustedNode1,
-            //     gas: gasLimit
-            // });
-            // await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
-            //     from: trustedNode2,
-            //     gas: gasLimit
-            // });
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('38', 'ether'), {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, web3.utils.toWei('39', 'ether'), {
+                from: trustedNode3,
+                gas: gasLimit
+            });
+
+            // Submit identical withdrawable events to trigger update:
+
+            // Minipool 1 - rewards earned
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance1, endBalance1, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+            // Minipool 2 - penalties applied
+            await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitWithdrawable(web3, rp, stakingMinipool2.address, startBalance2, endBalance2, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+            // Minipool 3 - penalties applied & RPL slashed
+            await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitWithdrawable(web3, rp, stakingMinipool3.address, startBalance3, endBalance3, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool while withdrawable submissions are disabled'), async () => {
+
+            // Set parameters
+            let startBalance = web3.utils.toWei('32', 'ether');
+            let endBalance = web3.utils.toWei('36', 'ether');
+
+            // Disable submissions
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.submit.withdrawable.enabled', false, {from: owner});
+
+            // Attempt to submit withdrawable event for staking minipool
+            await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted a withdrawable event while withdrawable submissions were disabled', 'Submitting withdrawable status is currently disabled');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool which is not staking'), async () => {
+
+            // Set parameters
+            let startBalance = web3.utils.toWei('32', 'ether');
+            let endBalance = web3.utils.toWei('36', 'ether');
+
+            // Submit withdrawable events to trigger update
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode2,
+                gas: gasLimit
+            });
+
+            // Attempt to submit withdrawable event for withdrawable minipool
+            await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode3,
+                gas: gasLimit
+            }), 'Submitted a withdrawable event for a minipool which was not staking', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit a withdrawable event for an invalid minipool'), async () => {
+
+            // Set parameters
+            let startBalance = web3.utils.toWei('32', 'ether');
+            let endBalance = web3.utils.toWei('36', 'ether');
+
+            // Attempt to submit withdrawable event for invalid minipool
+            await shouldRevert(submitWithdrawable(web3, rp, random, startBalance, endBalance, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted a withdrawable event for an invalid minipool', 'Invalid minipool');
+
+        });
+
+        it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool twice'), async () => {
+
+            // Set parameters
+            let startBalance = web3.utils.toWei('32', 'ether');
+            let endBalance = web3.utils.toWei('36', 'ether');
+
+            // Submit withdrawable event for staking minipool
+            await submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode1,
+                gas: gasLimit
+            });
+
+            // Attempt to submit withdrawable event for staking minipool again
+            await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted the same withdrawable event for a minipool twice', 'TO DO: complete this error message');
+
+        });
+
+        it(printTitle('regular nodes', 'cannot submit a withdrawable event for a minipool'), async () => {
+
+            // Set parameters
+            let startBalance = web3.utils.toWei('32', 'ether');
+            let endBalance = web3.utils.toWei('36', 'ether');
+
+            // Attempt to submit withdrawable event for staking minipool
+            await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+                from: node,
+                gas: gasLimit
+            }), 'Regular node submitted a withdrawable event for a minipool', 'Invalid trusted node');
 
         });
 

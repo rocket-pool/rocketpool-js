@@ -47,8 +47,6 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     // Get initial submission details
     let submission1 = await getSubmissionDetails();
 
-    console.log(await getBalances());
-
     // Submit balances
     await rocketNetworkBalances.methods.submitBalances(block, totalEth, stakingEth, rethSupply).send(options);
 
