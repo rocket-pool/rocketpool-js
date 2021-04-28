@@ -3,8 +3,6 @@ import { assert } from 'chai';
 import Web3 from 'web3';
 import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
-import { compressABI, decompressABI } from '../_utils/contract';
-import {AbiItem} from "web3-utils";
 
 // Can this trusted node make a claim yet? They need to wait 1 claim interval after being made a trusted node
 export async function rewardsClaimTrustedNodePossibleGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {

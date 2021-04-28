@@ -1,8 +1,8 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 
 // Recover unclaimed RPL from a lot
 export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: number, options: SendOptions) {

@@ -1,8 +1,7 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 
 // Get lot start/end blocks
 export async function getLotStartBlock(web3: Web3, rp: RocketPool, lotIndex: number) {

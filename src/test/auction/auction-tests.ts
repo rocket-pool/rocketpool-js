@@ -1,5 +1,5 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';

@@ -10,11 +10,9 @@ import {printTitle} from '../_utils/formatting';
 export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
     describe('DAO Protocol', () => {
 
-
         // Accounts
         let guardian: string;
         let userOne: string;
-
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -22,7 +20,6 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
         after(async () => { await revertSnapshot(web3, suiteSnapshotId); });
         beforeEach(async () => { testSnapshotId = await takeSnapshot(web3); });
         afterEach(async () => { await revertSnapshot(web3, testSnapshotId); });
-
 
         // Setup
         before(async () => {

@@ -1,11 +1,10 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
 import {setDaoNodeTrustedBootstrapMember} from '../dao/scenario-dao-node-trusted-bootstrap';
 import {daoNodeTrustedMemberJoin} from '../dao/scenario-dao-node-trusted';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 
 
 // Get a node's RPL stake

@@ -1,7 +1,6 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { SendOptions } from 'web3-eth-contract';
 
 
 // Possible states that a proposal may be in

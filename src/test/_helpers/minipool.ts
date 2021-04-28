@@ -1,10 +1,10 @@
 // Imports
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
-import { getValidatorPubkey, getValidatorSignature, getDepositDataRoot } from '../_utils/beacon';
-import { getTxContractEvents } from '../_utils/contract';
+import {getValidatorPubkey, getValidatorSignature, getDepositDataRoot} from '../_utils/beacon';
+import {getTxContractEvents} from '../_utils/contract';
 
 
 // Get a minipool's node balance at withdrawal

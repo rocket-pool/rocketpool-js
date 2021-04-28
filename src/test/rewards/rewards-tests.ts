@@ -1,25 +1,13 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {
-    getNodeEffectiveRPLStake, getNodeMinimumRPLStake, getNodeRPLStake,
-    nodeDeposit,
-    nodeStakeRPL,
-    registerNode,
-    setNodeTrusted,
-    setNodeWithdrawalAddress
-} from '../_helpers/node';
+import {getNodeEffectiveRPLStake, getNodeMinimumRPLStake, getNodeRPLStake, nodeDeposit, nodeStakeRPL, registerNode, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
 import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {
-    setDAONetworkBootstrapRewardsClaimer,
-    setDAOProtocolBootstrapSetting, setRewardsClaimIntervalBlocks,
-    setRPLInflationIntervalBlocks, setRPLInflationIntervalRate,
-    setRPLInflationStartBlock, spendRewardsClaimTreasury
-} from '../dao/scenario-dao-protocol-bootstrap';
+import {setDAONetworkBootstrapRewardsClaimer, setDAOProtocolBootstrapSetting, setRewardsClaimIntervalBlocks, setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartBlock, spendRewardsClaimTreasury} from '../dao/scenario-dao-protocol-bootstrap';
 import {submitPrices} from '../_helpers/network';
 import {rewardsClaimersPercTotalGet} from "./scenario-rewards-claim";
 import {rewardsClaimNode} from "./scenario-rewards-claim-node";

@@ -1,19 +1,12 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeDeposit, nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {nodeDeposit, nodeStakeRPL} from '../_helpers/node';
 import {approveRPL, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {getMinipoolSetting} from '../_helpers/settings';
-import {getMinipoolMinimumRPLStake} from '../_helpers/minipool';
-import {deposit} from './scenario-deposit';
-import {setDAOProtocolBootstrapSetting, setRewardsClaimIntervalBlocks} from '../dao/scenario-dao-protocol-bootstrap';
-import {register} from './scenario-register';
-import {setWithdrawalAddress} from './scenario-set-withdrawal-address';
-import {setTimezoneLocation} from './scenario-set-timezone';
+import {setRewardsClaimIntervalBlocks} from '../dao/scenario-dao-protocol-bootstrap';
 import {Contract} from 'web3-eth-contract';
 import {stakeRpl} from './scenario-stake-rpl';
 import {withdrawRpl} from './scenario-withdraw-rpl';

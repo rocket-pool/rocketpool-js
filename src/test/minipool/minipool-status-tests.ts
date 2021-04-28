@@ -1,24 +1,16 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
 import {createMinipool, getMinipoolMinimumRPLStake, stakeMinipool} from '../_helpers/minipool';
-import { setMinipoolSetting } from '../_helpers/settings';
-import { close } from './scenario-close';
-import { dissolve } from './scenario-dissolve';
-import { refund } from './scenario-refund';
-import { stake } from './scenario-stake';
-import {withdrawValidatorBalance} from './scenario-withdraw-validator-balance';
-import { withdraw } from './scenario-withdraw';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
+import {nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {userDeposit} from '../_helpers/deposit';
 import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {getValidatorPubkey} from '../_utils/beacon';
 import {submitWithdrawable} from './scenario-submit-withdrawable';
 
 // Tests
@@ -200,7 +192,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
                 from: trustedNode3,
                 gas: gasLimit
-            }), 'Submitted a withdrawable event for a minipool which was not staking', 'TO DO: complete this error message');
+            }), 'Submitted a withdrawable event for a minipool which was not staking', 'Minipool can only be set as withdrawable while staking');
 
         });
 
@@ -234,7 +226,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
                 from: trustedNode1,
                 gas: gasLimit
-            }), 'Submitted the same withdrawable event for a minipool twice', 'TO DO: complete this error message');
+            }), 'Submitted the same withdrawable event for a minipool twice', 'Duplicate submission from node');
 
         });
 

@@ -1,9 +1,9 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { SendOptions } from 'web3-eth-contract';
-import {proposalStates, getDAOProposalState} from "./scenario-dao-proposal";
+import {SendOptions} from 'web3-eth-contract';
+import {proposalStates, getDAOProposalState} from './scenario-dao-proposal';
 
 // Create a proposal for this DAO
 export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposalMessage:string, _payload:string, options: SendOptions) {
@@ -25,7 +25,7 @@ export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposa
     // Set gas price
     let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
     options.gasPrice = gasPrice.toString();
-    options.gas = 1000000;
+    options.gas = 10000000;
 
     // Capture data
     let ds1 = await getTxData();

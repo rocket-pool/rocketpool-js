@@ -1,10 +1,8 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
-import {mintRPL} from '../_helpers/tokens';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {setNodeTrusted} from '../_helpers/node';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {submitBalances} from './scenario-submit-balances';
@@ -84,7 +82,6 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
                 from: trustedNode2,
                 gas: gasLimit
             });
-
         });
 
         it(printTitle('trusted nodes', 'cannot submit network balances while balance submissions are disabled'), async () => {
@@ -128,13 +125,13 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
                 from: trustedNode3,
                 gas: gasLimit
-            }), 'Submitted balances for the current block', 'TO DO: complete this error message');
+            }), 'Submitted balances for the current block', 'Network balances for an equal or higher block are set');
 
             // Attempt to submit balances for lower block
             await shouldRevert(submitBalances(web3, rp, block - 1, totalBalance, stakingBalance, rethSupply, {
                 from: trustedNode3,
                 gas: gasLimit
-            }), 'Submitted balances for a lower block', 'TO DO: complete this error message');
+            }), 'Submitted balances for a lower block', 'Network balances for an equal or higher block are set');
 
         });
 
@@ -172,7 +169,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
                 from: trustedNode1,
                 gas: gasLimit
-            }), 'Submitted the same network balances twice', 'TO DO: complete this error message');
+            }), 'Submitted the same network balances twice', 'Duplicate submission from node');
 
         });
 

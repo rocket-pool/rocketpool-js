@@ -1,6 +1,6 @@
 // Imports
 import Web3 from 'web3';
-import { EventLog, TransactionReceipt } from 'web3-core';
+import {EventLog, TransactionReceipt} from 'web3-core';
 import {AbiInput, AbiItem} from 'web3-utils';
 const pako = require('pako');
 

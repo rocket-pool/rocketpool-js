@@ -1,10 +1,10 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
-import { compressABI, decompressABI } from '../_utils/contract';
-import {AbiItem} from "web3-utils";
+import {compressABI, decompressABI} from '../_utils/contract';
+import {AbiItem} from 'web3-utils';
 
 
 export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _email: string, _nodeAddress: string, options: SendOptions) {

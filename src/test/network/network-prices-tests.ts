@@ -1,17 +1,12 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
-import {mintRPL} from '../_helpers/tokens';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {setNodeTrusted} from '../_helpers/node';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {submitBalances} from './scenario-submit-balances';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
-import {getNodeFeeByDemand} from '../_helpers/network';
 import {submitPrices} from './scenario-submit-prices';
-
 
 // Tests
 export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
@@ -125,13 +120,13 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
                 from: trustedNode3,
                 gas: gasLimit
-            }), 'Submitted prices for the current block', 'TO DO: complete this error message');
+            }), 'Submitted prices for the current block', 'Network prices for an equal or higher block are set');
 
             // Attempt to submit prices for lower block
             await shouldRevert(submitPrices(web3, rp, block - 1, rplPrice, {
                 from: trustedNode3,
                 gas: gasLimit
-            }), 'Submitted prices for a lower block', 'TO DO: complete this error message');
+            }), 'Submitted prices for a lower block', 'Network prices for an equal or higher block are set');
 
         });
 
@@ -151,7 +146,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
                 from: trustedNode1,
                 gas: gasLimit
-            }), 'Submitted the same network prices twice', 'TO DO: complete this error message');
+            }), 'Submitted the same network prices twice', 'Duplicate submission from node');
 
         });
 

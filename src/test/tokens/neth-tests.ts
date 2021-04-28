@@ -1,23 +1,14 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
 import {getNethBalance, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {getMinipoolSetting} from '../_helpers/settings';
-import {
-    createMinipool,
-    getMinipoolMinimumRPLStake,
-    payoutMinipool,
-    stakeMinipool,
-    submitMinipoolWithdrawable,
-    withdrawMinipool
-} from '../_helpers/minipool';
+import {createMinipool, getMinipoolMinimumRPLStake, payoutMinipool, stakeMinipool, submitMinipoolWithdrawable, withdrawMinipool} from '../_helpers/minipool';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
-import {getNodeFee} from '../_helpers/network';
 import {getValidatorPubkey} from '../_utils/beacon';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 import {burnNeth} from './scenario-burn-neth';

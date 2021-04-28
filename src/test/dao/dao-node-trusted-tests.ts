@@ -1,9 +1,9 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import { printTitle } from '../_utils/formatting';
-import { shouldRevert } from '../_utils/testing';
-import { compressABI } from '../_utils/contract';
+import {printTitle} from '../_utils/formatting';
+import {shouldRevert} from '../_utils/testing';
+import {compressABI} from '../_utils/contract';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {setNodeTrusted} from '../_helpers/node';
@@ -11,7 +11,7 @@ import {setDaoNodeTrustedBootstrapMember, setDAONodeTrustedBootstrapSetting, set
 import {daoNodeTrustedExecute, daoNodeTrustedPropose, daoNodeTrustedVote, daoNodeTrustedMemberJoin, daoNodeTrustedMemberLeave} from './scenario-dao-node-trusted';
 import {getDAOProposalEndBlock, getDAOProposalStartBlock, getDAOProposalState, proposalStates} from './scenario-dao-proposal';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
-import {Contract, SendOptions} from 'web3-eth-contract';
+import {Contract} from 'web3-eth-contract';
 
 export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
     describe('DAO Node Trusted', () => {
@@ -441,6 +441,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             let abi = await rp.contracts.abi('rocketMinipoolManager')
             await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', '', abi, rocketMinipoolManagerNew.options.address, {
                 from: guardian,
+                gas: gasLimit
             }), 'Added a new contract with an invalid name', 'Invalid contract name');
         });
 
@@ -452,9 +453,9 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             let proposalVoteBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian, gas: gasLimit });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian, gas: gasLimit });
-            let abi = await rp.contracts.abi('rocketMinipoolManager')
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
                 {name: 'proposalUpgrade', type: 'function', inputs: [{type: 'string',  name: '_type'},{type: 'string', name: '_name'},{type: 'string', name: '_contractAbi'},{type: 'address', name: '_contractAddress'}]},
@@ -462,21 +463,21 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             );
             // Add the proposal
             let proposalID = await daoNodeTrustedPropose(web3, rp, 'hey guys, we really should upgrade this contracts - here\'s a link to its audit reports https://link.com/audit', proposalCalldata, {
-                from: registeredNodeTrusted1,
-                gas: gasLimit
+                from: registeredNodeTrusted1
             });
-            // Current block
+            // // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
             // Now mine blocks until the proposal is 'active' and can be voted on
             await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalID)-blockCurrent)+1);
             // Now lets vote
-            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted1, gas: gasLimit });
-            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted2, gas: gasLimit});
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted2 });
             // Proposal has passed, lets execute it now and upgrade the contract
-            await daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode1, gas: gasLimit });
+            await daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode1 });
             // Lets check if the address matches the upgraded one now
-            assert.equal(await rocketStorage.methods.getAddress().call(web3.utils.soliditySha3('contract.address', 'rocketNodeManager')), rocketMinipoolManagerNew.options.address, 'Contract address was not successfully upgraded');
-            assert.isTrue(await rocketStorage.methods.getBool().call(web3.utils.soliditySha3('contract.exists', rocketMinipoolManagerNew.options.address)), 'Contract address was not successfully upgraded');
+            assert.equal(await rocketStorage.methods.getAddress(web3.utils.soliditySha3('contract.address', 'rocketNodeManager')).call(), rocketMinipoolManagerNew.options.address, 'Contract address was not successfully upgraded');
+            assert.isTrue(await rocketStorage.methods.getBool(web3.utils.soliditySha3('contract.exists', rocketMinipoolManagerNew.options.address)).call(), 'Contract address was not successfully upgraded');
+
         });
 
         // ABIs - contract address field is ignored

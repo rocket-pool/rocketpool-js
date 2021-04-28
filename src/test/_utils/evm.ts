@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
-import { HttpProvider } from 'web3-core';
-import { JsonRpcResponse } from 'web3-core-helpers';
+import {HttpProvider} from 'web3-core';
+import {JsonRpcResponse} from 'web3-core-helpers';
 
 
 // Take a snapshot of the EVM state

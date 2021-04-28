@@ -1,11 +1,11 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import { takeSnapshot, revertSnapshot } from '../_utils/evm';
-import {getDepositSetting, setDepositSetting} from '../_helpers/settings';
-import { deposit } from './scenario-deposit';
-import { assignDeposits } from './scenario-assign-deposits';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {getDepositSetting} from '../_helpers/settings';
+import {deposit} from './scenario-deposit';
+import {assignDeposits} from './scenario-assign-deposits';
 import {nodeDeposit, nodeStakeRPL, setNodeTrusted} from "../_helpers/node";
 import {shouldRevert} from '../_utils/testing';
 import {printTitle} from '../_utils/formatting';

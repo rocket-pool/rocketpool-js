@@ -1,5 +1,5 @@
 // Assert that a transaction reverts
-import { assert } from 'chai';
+import {assert} from 'chai';
 
 export async function shouldRevert(txPromise: Promise<void>, message: string, expectedErrorMessage:string) {
     let txSuccess = false;

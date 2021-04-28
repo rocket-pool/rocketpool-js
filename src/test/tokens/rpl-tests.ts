@@ -1,32 +1,10 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
-import {getRethBalance, getRethExchangeRate, getRethTotalSupply, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {getMinipoolSetting} from '../_helpers/settings';
-import {
-    createMinipool,
-    getMinipoolMinimumRPLStake, getMinipoolWithdrawalUserBalance,
-    payoutMinipool,
-    stakeMinipool,
-    submitMinipoolWithdrawable,
-    withdrawMinipool
-} from '../_helpers/minipool';
-import {
-    setDAOProtocolBootstrapSetting,
-    setRPLInflationIntervalBlocks, setRPLInflationIntervalRate,
-    setRPLInflationStartBlock
-} from '../dao/scenario-dao-protocol-bootstrap';
-import {getNodeFee, submitBalances} from '../_helpers/network';
-import {getValidatorPubkey} from '../_utils/beacon';
-import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
-import {getDepositExcessBalance, userDeposit} from '../_helpers/deposit';
-import {burnReth} from "./scenario-burn-reth";
-import {Contract} from 'web3-eth-contract';
+import {setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartBlock} from '../dao/scenario-dao-protocol-bootstrap';
 import {mintDummyRPL} from './scenario-rpl-mint-fixed';
 import {allowDummyRPL} from './scenario-rpl-allow-fixed';
 import {burnFixedRPL} from './scenario-rpl-burn-fixed';

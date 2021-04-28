@@ -1,10 +1,7 @@
 // Imports
-import { assert } from 'chai';
 import Web3 from 'web3';
 import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
-import { compressABI, decompressABI } from '../_utils/contract';
-import {AbiItem} from "web3-utils";
 
 // Get the current rewards claim period in blocks
 export async function rewardsClaimIntervalBlocksGet(web3: Web3, rp: RocketPool, options: SendOptions) {

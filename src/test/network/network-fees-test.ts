@@ -1,13 +1,9 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
-import {mintRPL} from '../_helpers/tokens';
+import {takeSnapshot, revertSnapshot} from '../_utils/evm';
 import {printTitle} from '../_utils/formatting';
-import {shouldRevert} from '../_utils/testing';
-import {submitBalances} from './scenario-submit-balances';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {getNodeFeeByDemand} from '../_helpers/network';
 
