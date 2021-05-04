@@ -52,9 +52,9 @@ export async function registerNode(web3: Web3, rp: RocketPool, options: SendOpti
 }
 
 // Set a withdrawal address for a node
-export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, withdrawalAddress: string, options: SendOptions) {
+export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, withdrawalAddress: string, options: SendOptions) {
     let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-    await rocketNodeManager.methods.setWithdrawalAddress(withdrawalAddress).send(options);
+    await rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, true).send(options);
 }
 
 // Submit a node RPL stake

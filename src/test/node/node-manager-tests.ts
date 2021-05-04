@@ -6,7 +6,7 @@ import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {register} from './scenario-register';
-import {setWithdrawalAddress} from './scenario-set-withdrawal-address';
+import {confirmWithdrawalAddress, setWithdrawalAddress} from './scenario-set-withdrawal-address';
 import {setTimezoneLocation} from './scenario-set-timezone';
 
 
@@ -20,8 +20,10 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         // Accounts
         let owner: string;
         let node: string;
-        let registeredNode: string;
-        let withdrawalAddress: string;
+        let registeredNode1: string;
+        let registeredNode2: string;
+        let withdrawalAddress1: string;
+        let withdrawalAddress2: string;
         let random: string;
 
         // State snapshotting
@@ -36,10 +38,11 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, node, registeredNode, withdrawalAddress, random] = await web3.eth.getAccounts();
+            [owner, node, registeredNode1, registeredNode2, withdrawalAddress1, withdrawalAddress2, random] = await web3.eth.getAccounts();
 
             // Register node
-            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode1, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode2, gas: gasLimit});
 
         });
 
@@ -88,7 +91,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(register(web3, rp,'Australia/Brisbane', {
                 from: node,
                 gas: gasLimit
-            }), 'Registered a node which is already registered', 'The node is already registered in the Rocket Pool network');
+            }), 'Registered a node which is already registered', 'Item already exists in set');
 
         });
 
@@ -96,20 +99,55 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         //
         // Withdrawal address
         //
-        it(printTitle('node operator', 'can set their withdrawal address'), async () => {
+
+        it(printTitle('node operator', 'can set their withdrawal address immediately'), async () => {
 
             // Set withdrawal address
-            await setWithdrawalAddress(web3, rp, withdrawalAddress, {
-                from: registeredNode,
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress1, true, {
+                from: registeredNode1,
+                gas: gasLimit
+            });
+
+            // Set withdrawal address again
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress2, true, {
+                from: withdrawalAddress1,
+                gas: gasLimit
             });
 
         });
 
+        it(printTitle('node operator', 'can set their withdrawal address to the same value as another node operator'), async () => {
+
+            // Set withdrawal addresses
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress1, true, {
+                from: registeredNode1,
+                gas: gasLimit
+            });
+
+            await setWithdrawalAddress(web3, rp, registeredNode2, withdrawalAddress1, true, {
+                from: registeredNode2,
+                gas: gasLimit
+            });
+
+            // Set withdrawal addresses again
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress2, true, {
+                from: withdrawalAddress1,
+                gas: gasLimit
+            });
+
+            await setWithdrawalAddress(web3, rp, registeredNode2, withdrawalAddress2, true, {
+                from: withdrawalAddress1,
+                gas: gasLimit
+            });
+
+        });
+
+
         it(printTitle('node operator', 'cannot set their withdrawal address to an invalid address'), async () => {
 
             // Attempt to set withdrawal address
-            await shouldRevert(setWithdrawalAddress(web3, rp, '0x0000000000000000000000000000000000000000', {
-                from: registeredNode,
+            await shouldRevert(setWithdrawalAddress(web3, rp, registeredNode1, '0x0000000000000000000000000000000000000000', true, {
+                from: registeredNode1,
                 gas: gasLimit
             }), 'Set a withdrawal address to an invalid address', 'Invalid withdrawal address');
 
@@ -119,10 +157,46 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot set a withdrawal address'), async () => {
 
             // Attempt to set withdrawal address
-            await shouldRevert(setWithdrawalAddress(web3, rp, withdrawalAddress, {
+            await shouldRevert(setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress1, true, {
                 from: random,
                 gas: gasLimit
-            }), 'Random address set a withdrawal address', 'Invalid node');
+            }), 'Random address set a withdrawal address', 'Only a tx from a node\'s withdrawal address can update it');
+
+        });
+
+
+        it(printTitle('node operator', 'can set and confirm their withdrawal address'), async () => {
+
+            // Set & confirm withdrawal address
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress1, false, {
+                from: registeredNode1,
+                gas: gasLimit
+            });
+            await confirmWithdrawalAddress(web3, rp, registeredNode1, {
+                from: withdrawalAddress1,
+                gas: gasLimit
+            });
+
+            // Set & confirm withdrawal address again
+            await setWithdrawalAddress(web3, rp, registeredNode1, withdrawalAddress2, false, {
+                from: withdrawalAddress1,
+                gas: gasLimit
+            });
+            await confirmWithdrawalAddress(web3, rp, registeredNode1, {
+                from: withdrawalAddress2,
+                gas: gasLimit
+            });
+
+        });
+
+
+        it(printTitle('random address', 'cannot confirm itself as a withdrawal address'), async () => {
+
+            // Attempt to confirm a withdrawal address
+            await shouldRevert(confirmWithdrawalAddress(web3, rp, registeredNode1, {
+                from: random,
+                gas: gasLimit
+            }), 'Random address confirmed itself as a withdrawal address', 'Confirmation must come from the pending withdrawal address');
 
         });
 
@@ -134,7 +208,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
 
             // Set timezone location
             await setTimezoneLocation(web3, rp, 'Australia/Sydney', {
-                from: registeredNode,
+                from: registeredNode1,
                 gas: gasLimit
             });
 
@@ -145,7 +219,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
 
             // Attempt to set timezone location
             await shouldRevert(setTimezoneLocation(web3, rp, 'a', {
-                from: registeredNode,
+                from: registeredNode1,
                 gas: gasLimit
             }), 'Set a timezone location to an invalid value', 'The timezone location is invalid');
 

@@ -97,7 +97,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             await registerNode(web3, rp, {from: registeredNodeTrusted3, gas: gasLimit});
 
             // Set node 1 withdrawal address
-            await setNodeWithdrawalAddress(web3, rp, node1WithdrawalAddress, {from: registeredNode1, gas: gasLimit});
+            await setNodeWithdrawalAddress(web3, rp, registeredNode1, node1WithdrawalAddress, {from: registeredNode1, gas: gasLimit});
 
             // Set nodes as trusted
             await setNodeTrusted(web3, rp, registeredNodeTrusted1, 'saas_1', 'node@home.com', owner);

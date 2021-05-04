@@ -6,19 +6,41 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 
 // Set a node's withdrawal address
-export async function setWithdrawalAddress(web3: Web3, rp: RocketPool, withdrawalAddress: string, options: SendOptions) {
+export async function setWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, withdrawalAddress: string, confirm: boolean, options: SendOptions) {
 
     // Load contracts
     const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
 
     // Set withdrawal address
-    await rocketNodeManager.methods.setWithdrawalAddress(withdrawalAddress).send(options);
+    await rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options);
 
     // Get withdrawal address
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(options.from).call();
+    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
+    let nodePendingWithdrawalAddress = await rocketNodeManager.methods.getNodePendingWithdrawalAddress(nodeAddress).call()
 
     // Check
-    assert.equal(nodeWithdrawalAddress, withdrawalAddress, 'Incorrect updated withdrawal address');
+    if (confirm) {
+        assert.equal(nodeWithdrawalAddress, withdrawalAddress, 'Incorrect updated withdrawal address');
+    } else {
+        assert.equal(nodePendingWithdrawalAddress, withdrawalAddress, 'Incorrect updated pending withdrawal address');
+    }
+
 
 }
 
+export async function confirmWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, options: SendOptions) {
+
+    // Load contracts
+    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
+
+    // Confirm withdrawal address
+    await rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options);
+
+    // Get current & pending withdrawal addresses
+    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
+    let nodePendingWithdrawalAddress = await rocketNodeManager.methods.getNodePendingWithdrawalAddress(nodeAddress).call();
+
+    // Check
+    assert.equal(nodeWithdrawalAddress, web3.utils.toChecksumAddress(options.from), 'Incorrect updated withdrawal address');
+    assert.equal(nodePendingWithdrawalAddress, '0x0000000000000000000000000000000000000000', 'Incorrect pending withdrawal address');
+}

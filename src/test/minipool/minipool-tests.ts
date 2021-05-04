@@ -67,7 +67,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
             // Register node & set withdrawal address
             await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
-            await setNodeWithdrawalAddress(web3, rp, nodeWithdrawalAddress, {from: node, gas: gasLimit});
+            await setNodeWithdrawalAddress(web3, rp, node, nodeWithdrawalAddress, {from: node, gas: gasLimit});
 
             // Register trusted node
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode, gas: gasLimit});
