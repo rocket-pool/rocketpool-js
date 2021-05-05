@@ -21,7 +21,7 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
 
     // Call the mint function on RPL to mint any before we begin so we have accurate figures to work with
-    if(await rocketTokenRPL.methods.getInlfationIntervalsPassed().call() > 0) await rocketTokenRPL.methods.inflationMintTokens().call();
+    if(await rocketTokenRPL.methods.getInflationIntervalsPassed().call() > 0) await rocketTokenRPL.methods.inflationMintTokens().call();
 
     // Get data about the tx
     function getTxData() {

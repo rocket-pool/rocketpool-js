@@ -102,8 +102,8 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             });
 
             // Run the payout function now
-            await payoutMinipool(minipool, {
-                from: trustedNode,
+            await payoutMinipool(minipool, true, {
+                from: node,
                 gas: gasLimit
             });
 
@@ -143,8 +143,8 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             });
 
             // Run the payout function now
-            await payoutMinipool(minipool, {
-                from: trustedNode,
+            await payoutMinipool(minipool, true, {
+                from: node,
                 gas: gasLimit
             });
 

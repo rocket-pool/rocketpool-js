@@ -100,8 +100,8 @@ export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, min
 
 
 // Send validator balance to a minipool
-export async function payoutMinipool(minipool: MinipoolContract, options: SendOptions) {
-    await minipool.contract.methods.payout().send(options);
+export async function payoutMinipool(minipool: MinipoolContract, confirm: boolean = false, options: SendOptions) {
+    await minipool.contract.methods.payout(confirm).send(options);
 }
 
 

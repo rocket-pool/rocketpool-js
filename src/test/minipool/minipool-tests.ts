@@ -75,7 +75,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
             // Set settings
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.launch.timeout', launchTimeout, {from: owner, gas: gasLimit});
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.withdrawal.delay', withdrawalDelay, {from: owner});
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.withdrawal.delay', withdrawalDelay, {from: owner, gas: gasLimit});
 
             // Make user deposit to refund first prelaunch minipool
             let refundAmount = web3.utils.toWei('16', 'ether');
@@ -324,142 +324,89 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 
         //
-        // Withdraw
-        //
-
-        it(printTitle('node operator', 'can withdraw a withdrawable minipool after withdrawal delay'), async () => {
-
-            // Wait for withdrawal delay
-            await mineBlocks(web3, withdrawalDelay);
-
-            // Withdraw withdrawable minipool
-            await withdraw(web3, rp, withdrawableMinipool, {
-                from: node,
-                gas: gasLimit
-            });
-
-        });
-
-        it(printTitle('node operator', 'cannot withdraw a minipool which is not withdrawable'), async () => {
-
-            // Wait for withdrawal delay
-            await mineBlocks(web3, withdrawalDelay);
-
-            // Attempt to withdraw staking minipool
-            await shouldRevert(withdraw(web3, rp, stakingMinipool, {
-                from: node,
-                gas: gasLimit
-            }), 'Withdrew a minipool which was not withdrawable', 'The minipool can only be withdrawn from while withdrawable');
-
-        });
-
-        it(printTitle('node operator', 'cannot withdraw a withdrawable minipool twice'), async () => {
-
-            // Wait for withdrawal delay
-            await mineBlocks(web3, withdrawalDelay);
-
-            // Withdraw withdrawable minipool
-            await withdraw(web3, rp, withdrawableMinipool, {
-                from: node,
-                gas: gasLimit
-            });
-
-            // Attempt to withdraw withdrawable minipool again
-            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
-                from: node,
-                gas: gasLimit
-            }), 'Withdrew a minipool twice', 'The minipool has already been withdrawn from');
-
-        });
-
-        it(printTitle('node operator', 'cannot withdraw a withdrawable minipool before withdrawal delay'), async () => {
-
-            // Attempt to withdraw withdrawable minipool
-            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
-                from: node,
-                gas: gasLimit
-            }), 'Withdrew a minipool before withdrawal delay', 'The minipool cannot be withdrawn from until after the withdrawal delay period');
-
-        });
-
-
-        it(printTitle('random address', 'cannot withdraw a minipool'), async () => {
-
-            // Wait for withdrawal delay
-            await mineBlocks(web3, withdrawalDelay);
-
-            // Attempt to withdraw withdrawable minipool
-            await shouldRevert(withdraw(web3, rp, withdrawableMinipool, {
-                from: random,
-                gas: gasLimit
-            }), 'Random address withdrew a minipool', 'Invalid minipool owner');
-
-        });
-
-
-        //
         // Withdraw validator balance
         //
-        it(printTitle('system withdrawal contract', 'can send validator balance to a withdrawable minipool'), async () => {
-
-            // Send validator balance
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
-                from: random,
-                value: withdrawalBalance,
-                gas: gasLimit
-            });
-
-        });
-
-        it(printTitle('system withdrawal contract', 'cannot send validator balance to a minipool which is not withdrawable'), async () => {
+        it(printTitle('node operator', 'cannot send withdraw balance to a minipool which is not withdrawable'), async () => {
 
             // Attempt to send validator balance
-            await shouldRevert(withdrawValidatorBalance(web3, rp, stakingMinipool, {
-                from: random,
+            await shouldRevert(withdrawValidatorBalance(web3, rp, stakingMinipool, true, {
+                from: node,
                 value: withdrawalBalance,
                 gas: gasLimit
-            }), 'Sent validator balance to a minipool which was not withdrawable', 'The minipool\'s validator balance can only be sent while withdrawable');
+            }), 'Withdrew validator balance to a minipool which was not withdrawable', 'The minipool\'s validator balance can only be sent while withdrawable');
 
         });
 
-        it(printTitle('system withdrawal contract', 'cannot send validator balance to a withdrawable minipool twice'), async () => {
-
-            // Send validator balance
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
-                from: random,
-                value: withdrawalBalance,
-                gas: gasLimit
-            });
-
-            // Attempt to send validator balance again
-            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
-                from: random,
-                value: withdrawalBalance,
-                gas: gasLimit
-            }), 'Sent validator balance to a minipool twice', 'The minipool\'s validator balance has already been sent');
-
-        });
-
-        it(printTitle('system withdrawal contract', 'cannot send validator balance to a withdrawable minipool while processing withdrawals is disabled'), async () => {
+        it(printTitle('node', 'cannot run payout method while processing withdrawals is disabled'), async () => {
 
             // Disable processing withdrawals
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.process.withdrawals.enabled', false, {from: owner});
 
             // Attempt to send validator balance
-            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
+                from: nodeWithdrawalAddress,
+                value: withdrawalBalance,
+                gas: gasLimit
+            }), 'Payout method was run while withdrawals was disabled', "Processing withdrawals is currently disabled");
+
+        });
+
+        it(printTitle('random', 'random address cannot withdraw a node operators minipool balance'), async () => {
+
+            // Attempt to send validator balance
+            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
                 from: random,
                 value: withdrawalBalance,
-                gas: gasLimit,
-            }), 'Sent validator balance to a minipool while processing withdrawals was disabled', 'Processing withdrawals is currently disabled');
+                gas: gasLimit
+            }), 'Random address withdrew validator balance from a node operators minipool', "The payout function must be called by the current node operators withdrawal address");
+
+        });
+
+        it(printTitle('node operator', 'cannot withdraw their ETH once it is received if they do not confirm they wish to do so'), async () => {
+
+            // Send validator balance and withdraw
+            await shouldRevert(withdrawValidatorBalance(web3, rp, withdrawableMinipool, false, {
+                from: nodeWithdrawalAddress,
+                value: withdrawalBalance,
+                gas: gasLimit
+            }), 'Random address withdrew validator balance from a node operators minipool', "Node operator did not confirm they wish to payout now");
+
+        });
+
+        it(printTitle('node operator withdrawal address', 'can withdraw their ETH once it is received, then distribute ETH to the rETH contract / deposit pool and destroy the minipool'), async () => {
+
+            // Send validator balance and withdraw
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
+                from: nodeWithdrawalAddress,
+                value: withdrawalBalance,
+                gas: gasLimit
+            });
+
+        });
+
+        it(printTitle('node operator account', 'can also withdraw their ETH once it is received, then distribute ETH to the rETH contract / deposit pool and destroy the minipool'), async () => {
+
+            // Send validator balance and withdraw
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
+                from: node,
+                value: withdrawalBalance,
+                gas: gasLimit
+            });
 
         });
 
         it(printTitle('random address', 'can send validator balance to a withdrawable minipool in one transaction'), async () => {
 
-            // Send validator balance
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+            await web3.eth.sendTransaction({
                 from: random,
+                to: withdrawableMinipool.address,
                 value: withdrawalBalance,
+            });
+
+            // Process validator balance
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
+                from: nodeWithdrawalAddress,
+                value: 0,
                 gas: gasLimit
             });
 
@@ -470,19 +417,25 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             // Get tx amount (half of withdrawal balance)
             let amount = web3.utils.toBN(withdrawalBalance).div(web3.utils.toBN(2));
 
-            // Send initial tx
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
+            await web3.eth.sendTransaction({
                 from: random,
+                to: withdrawableMinipool.address,
                 value: amount,
-                gas: gasLimit,
-            }, false);
+            });
 
-            // Send final tx
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, {
-                from: random,
+            await web3.eth.sendTransaction({
+                from: owner,
+                to: withdrawableMinipool.address,
                 value: amount,
+            });
+
+            // Process payout
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, true, {
+                from: nodeWithdrawalAddress,
+                value: 0,
                 gas: gasLimit
             });
+
 
         });
 
