@@ -30,7 +30,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
                     rp.settings.minipool.getLaunchBalance(),
                     rp.settings.minipool.getSubmitWithdrawableEnabled(),
                     rp.settings.minipool.getLaunchTimeout(),
-                    rp.settings.minipool.getWithdrawalDelay(),
                 ]);
             });
 

@@ -161,7 +161,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
                 from: node,
                 gas: gasLimit
-            }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than minimum balance');
+            }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
 
         });
 

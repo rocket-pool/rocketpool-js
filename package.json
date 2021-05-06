@@ -5,7 +5,7 @@
   "main": "dist/rocketpool/rocketpool.js",
   "scripts": {
     "build": "tsc && npx babel build -d dist && rm -rf build",
-    "test": "mocha --require ts-node/register --timeout 20000 src/test/index.ts"
+    "test": "mocha --require ts-node/register --timeout 30000 src/test/index.ts"
   },
   "repository": {
     "type": "git",

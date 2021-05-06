@@ -106,7 +106,7 @@ export default function runNethTests(web3: Web3, rp: RocketPool) {
             });
 
             // Run the payout function now
-            await payoutMinipool(minipool, {
+            await payoutMinipool(minipool, true,  {
                 from: oracleNode,
                 gas: gasLimit
             });

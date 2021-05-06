@@ -58,14 +58,36 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+        it(printTitle('userOne', 'burn less fixed supply RPL than they\'ve given an allowance for'), async () => {
+
+            // Load contracts
+            const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+            // The allowance
+            let allowance = userOneRPLBalance.div(web3.utils.toBN(2));
+            // Give allowance for half to be spent
+            await allowDummyRPL(web3, rp, rocketTokenRPL.options.address, allowance.toString(), {
+                from: userOne,
+                gas: gasLimit
+            });
+
+            let amount = allowance.sub(web3.utils.toBN(web3.utils.toWei('0.000001', 'ether'))).toString()
+
+            // Burn existing fixed supply RPL for new RPL
+            await burnFixedRPL(web3, rp, amount, {
+                from: userOne,
+                gas: gasLimit
+            });
+
+        });
+
         it(printTitle('userOne', 'fails to burn more fixed supply RPL than they\'ve given an allowance for'), async () => {
 
             // Load contracts
             const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
             // The allowance
-            let allowance = userOneRPLBalance.sub(web3.utils.toBN(web3.utils.toWei('0.000001', 'ether')));
+            let allowance = userOneRPLBalance.sub(web3.utils.toBN(web3.utils.toWei('0.000001', 'ether'))).toString();
             // Give allowance for all to be sent
-            await allowDummyRPL(web3, rp, rocketTokenRPL.options.address, allowance.toString(), {
+            await allowDummyRPL(web3, rp, rocketTokenRPL.options.address, allowance, {
                 from: userOne,
                 gas: gasLimit
             });
@@ -73,9 +95,10 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(burnFixedRPL(web3, rp, userOneRPLBalance.toString(), {
                 from: userOne,
                 gas: gasLimit
-            }), 'Burned more RPL than had gave allowance for', 'Not enough allowance given for transfer of tokens');
+            }), 'Burned more RPL than had gave allowance for', 'ERC20: transfer amount exceeds allowance');
 
         });
+
 
         it(printTitle('userOne', 'fails to burn more fixed supply RPL than they have'), async () => {
 
@@ -87,11 +110,12 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             await allowDummyRPL(web3, rp, rocketTokenRPL.options.address, allowance.toString(), {
                 from: userOne,
             });
+            let amount = userOneRPLBalance.add(web3.utils.toBN(web3.utils.toWei('0.000001', 'ether'))).toString()
             // Burn existing fixed supply RPL for new RPL
-            await shouldRevert(burnFixedRPL(web3, rp, userOneRPLBalance.add(web3.utils.toBN(web3.utils.toWei('0.000001', 'ether'))).toString(), {
+            await shouldRevert(burnFixedRPL(web3, rp, amount, {
                 from: userOne,
                 gas: gasLimit
-            }), 'Burned more RPL than had owned and had given allowance for', 'Not enough RPL fixed supply tokens available to cover swap amount desired');
+            }), 'Burned more RPL than had owned and had given allowance for', 'ERC20: transfer amount exceeds balance');
 
         });
 
@@ -163,7 +187,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             }), 'Owner set start block for inflation after it had started', 'Inflation has already started');
         });
 
-        it(printTitle('userOne', 'fail to mint inflation before inflation start block has passed'), async () => {
+        it(printTitle('userOne', 'fails to mint inflation before inflation start block has passed'), async () => {
 
             // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
@@ -189,7 +213,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
-        it(printTitle('userOne', 'fail to mint inflation same block as inflation start block'), async () => {
+        it(printTitle('userOne', 'fails to mint inflation same block as inflation start block'), async () => {
 
             // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
@@ -211,11 +235,11 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             // Run the test now
             await shouldRevert(rplClaimInflation(web3, rp, config, {
                 from: userOne, gas: gasLimit
-            }), 'Inflation claimed at start block', 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
+            }), 'Inflation claimed at start block', 'Incorrect amount of minted tokens expected');
 
         });
 
-        it(printTitle('userOne', 'fail to mint inflation before an interval has passed'), async () => {
+        it(printTitle('userOne', 'fails to mint inflation before an interval has passed'), async () => {
 
             // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
@@ -237,19 +261,19 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             // Run the test now
             await shouldRevert(rplClaimInflation(web3, rp, config, {
                 from: userOne, gas: gasLimit
-            }), 'Inflation claimed before interval has passed', 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
+            }), 'Inflation claimed before interval has passed', 'Incorrect amount of minted tokens expected');
 
         });
 
-        it(printTitle('userOne', 'mint inflation after a single interval has passed'), async () => {
+        it(printTitle('userOne', 'mint inflation midway through a second interval, then mint again after another interval'), async () => {
 
             // Current block
             let blockCurrent = await web3.eth.getBlockNumber();
 
             let config = {
-                blockInterval: 2,
+                blockInterval: 15,
                 blockStart: blockCurrent + 20,
-                blockClaim: blockCurrent + 22,
+                blockClaim: blockCurrent + 35,
                 yearlyInflationTarget: 0.05
             }
 
@@ -260,7 +284,11 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             // Set the daily inflation rate
             await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
 
-            // Mint inflation now
+            // Claim inflation half way through the second interval
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += config.blockInterval + 23;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += config.blockInterval + 42;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
 
         });
@@ -272,7 +300,47 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             let blockCurrent = await web3.eth.getBlockNumber();
 
             let config = {
-                blockInterval: 3,
+                blockInterval: 2,
+                blockStart: blockCurrent + 10,
+                blockClaim: blockCurrent + 22,
+                yearlyInflationTarget: 0.025
+            }
+
+            // Set the daily inflation start block
+            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
+            // Set the daily inflation block count
+            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
+            // Set the daily inflation rate
+            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+
+            // Mint inflation now
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 3;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 10;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 67;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 105;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 149;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 151;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 155;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += 219;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+
+        });
+
+        it(printTitle('userOne', 'mint inflation at multiple random intervals'), async () => {
+
+            // Current block
+            let blockCurrent = await web3.eth.getBlockNumber();
+
+            let config = {
+                blockInterval: 2,
                 blockStart: blockCurrent + 10,
                 blockClaim: blockCurrent + 22,
                 yearlyInflationTarget: 0.025
@@ -340,13 +408,53 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
             let config = {
                 blockInterval: 2,
-                blockStart: blockCurrent + 50,
-                blockClaim: blockCurrent + 52, // 365 is an uneven number, so add one extra interval at the start
+                blockStart: blockCurrent + 20,
+                blockClaim: blockCurrent + 20, // 365 is an uneven number, so add one extra interval at the start
                 yearlyInflationTarget: 0.05
             }
 
             // How many intervals to make a year
             let totalYearBlocks = config.blockInterval * 365;
+            let quarterlyBlockAmount = totalYearBlocks / 4;
+
+            // Set the daily inflation start block
+            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
+            // Set the daily inflation block count
+            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
+            // Set the daily inflation rate
+            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+
+            // Alternate collections slightly to test slightly irregular collections
+            let altModifier = config.blockInterval * 1.1;
+
+            // Mint inflation now
+            config.blockClaim += quarterlyBlockAmount;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += quarterlyBlockAmount;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += altModifier;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += quarterlyBlockAmount;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
+            config.blockClaim += quarterlyBlockAmount - altModifier;
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 18900000);
+
+        });
+
+        it(printTitle('userTwo', 'mint two years inflation every 6 months at 5% which would equal 19,845,000 tokens'), async () => {
+
+            // Current block
+            let blockCurrent = await web3.eth.getBlockNumber();
+
+            let config = {
+                blockInterval: 3,
+                blockStart: blockCurrent + 50,
+                blockClaim: blockCurrent + 51, // 365 is an uneven number, so add two extra intervals at the start to account for 2 years
+                yearlyInflationTarget: 0.05
+            }
+
+            // How many intervals to make a year
+            let totalYearBlocks = config.blockInterval * 730;
             let quarterlyBlockAmount = totalYearBlocks / 4;
 
             // Set the daily inflation start block
@@ -364,7 +472,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             config.blockClaim += quarterlyBlockAmount;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
             config.blockClaim += quarterlyBlockAmount;
-            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 18900000);
+            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 19845000);
 
         });
 
@@ -374,7 +482,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             let blockCurrent = await web3.eth.getBlockNumber();
 
             let config = {
-                blockInterval: 1,
+                blockInterval: 2,
                 blockStart: blockCurrent + 50,
                 yearlyInflationTarget: 0.05,
                 blockClaim: 0
@@ -401,6 +509,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             }), "Minted inflation after rate set to 0", 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
 
         });
+
 
     });
 }
