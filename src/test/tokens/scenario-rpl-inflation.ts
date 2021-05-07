@@ -67,10 +67,9 @@ export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Clai
     let expectedInflationDaily = (1 + config.yearlyInflationTarget) ** (1 / (365));
     let expectedInflationLastCalcBlock = Number(blockIntervalLastCalc) == 0 && config.blockStart < config.blockClaim ? config.blockStart : Number(blockIntervalLastCalc);
     let expectedInflationIntervalsPassed = Number(inflationData1.inflationIntervalsPassed);
-
     // Get updated block number after processing blocks
     blockCurrent = await web3.eth.getBlockNumber();
-    // How many tokens to be epected minted
+    // How many tokens to be expected minted
     let expectedTokensMinted = 0;
     // Are we expecting inflation? have any intervals passed?
     if(inflationData1.inflationIntervalsPassed > 0) {
@@ -81,8 +80,8 @@ export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Clai
         // Is it going to trigger another claim on the txt that occurs?
         expectedInflationIntervalsPassed = nextExpectedClaimBlock == (blockCurrent+1) ? expectedInflationIntervalsPassed+1 : expectedInflationIntervalsPassed;
         // console.log("nextExpectedClaimBlock", nextExpectedClaimBlock);
-        //console.log("expectedInflationIntervalsPassed", expectedInflationIntervalsPassed);
-        //console.log((nextExpectedClaimBlock), (blockCurrent+1));
+        // console.log("expectedInflationIntervalsPassed", expectedInflationIntervalsPassed);
+        // console.log((nextExpectedClaimBlock), (blockCurrent+1));
         // Add an extra interval to the calculations match up
         for(let i=1; i < expectedInflationIntervalsPassed; i++) {
             expectedInflationAmount = (expectedInflationAmount * expectedInflationDaily);
@@ -90,17 +89,17 @@ export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Clai
         expectedTokensMinted = (expectedInflationAmount * totalSupplyStart) - totalSupplyStart;
     }
 
-    /*
-    console.log('');
-    console.log('Current block', await web3.eth.getBlockNumber());
-    console.log('Inflation start block', Number(inflationData1.inflationStartBlock));
-    console.log('Inflation calc block', Number(inflationData1.inflationCalcBlock));
-    console.log('Inflation interval blocks', Number(inflationData1.intervalBlocks));
-    console.log('Inflation intervals passed', Number(inflationData1.inflationIntervalsPassed));
-    console.log('Inflation calc block expected', Number(expectedInflationLastCalcBlock));
-    console.log('Inflation intervals expected', Number(expectedInflationIntervalsPassed));
-    console.log('Inflation next calc block', Number(inflationData1.inflationCalcBlock)+Number(inflationData1.intervalBlocks));
-    */
+
+    // console.log('');
+    // console.log('Current block', await web3.eth.getBlockNumber());
+    // console.log('Inflation start block', Number(inflationData1.inflationStartBlock));
+    // console.log('Inflation calc block', Number(inflationData1.inflationCalcBlock));
+    // console.log('Inflation interval blocks', Number(inflationData1.intervalBlocks));
+    // console.log('Inflation intervals passed', Number(inflationData1.inflationIntervalsPassed));
+    // console.log('Inflation calc block expected', Number(expectedInflationLastCalcBlock));
+    // console.log('Inflation intervals expected', Number(expectedInflationIntervalsPassed));
+    // console.log('Inflation next calc block', Number(inflationData1.inflationCalcBlock)+Number(inflationData1.intervalBlocks));
+
 
     // Claim tokens now
     await rocketTokenRPL.methods.inflationMintTokens().send(options);
@@ -121,10 +120,13 @@ export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Clai
     // console.log(Number(tokenAmountToMatch).toFixed(4), Number(totalSupplyEnd).toFixed(4), Number(totalSupplyStart).toFixed(4));
 
     // Verify the minted amount is correct based on inflation rate etc
-    // console.log(expectedTokensMinted.toFixed(4));
-    // console.log((totalSupplyEnd - totalSupplyStart).toFixed(4));
+    console.log('');
+    console.log("Expected Tokens Minted: " + expectedTokensMinted.toFixed(4));
+    console.log("Total Supply Start : " + totalSupplyStart);
+    console.log("Total Supply End : " + totalSupplyEnd);
+    console.log("Total Supply End - Total Supply Start: " + (totalSupplyEnd - totalSupplyStart).toFixed(4));
 
-    assert(expectedTokensMinted.toFixed(4) === (totalSupplyEnd - totalSupplyStart).toFixed(4), 'Incorrect amount of minted tokens expected');
+    assert(expectedTokensMinted.toFixed(4) == (totalSupplyEnd - totalSupplyStart).toFixed(4), 'Incorrect amount of minted tokens expected');
     // Verify the minted tokens are now stored in Rocket Vault on behalf of Rocket Rewards Pool
     assert(inflationData2.rocketVaultInternalBalanceRPL.eq(inflationData2.rocketVaultBalanceRPL), 'Incorrect amount of tokens stored in Rocket Vault for Rocket Rewards Pool');
     // Are we verifying an exact amount of tokens given as a required parameter on this pass?
