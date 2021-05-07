@@ -17,7 +17,6 @@ import runNetworkPricesTests from './network/network-prices-tests';
 import runNodeDepositTests from './node/node-deposit-tests';
 import runNodeManagerTests from './node/node-manager-tests';
 import runNodeStakingTests from './node/node-staking-tests';
-import runNethTests from './tokens/neth-tests';
 import runRethTests from './tokens/reth-tests';
 import runRPLTests from './tokens/rpl-tests';
 import runSettingsTests from './settings/settings-tests';
