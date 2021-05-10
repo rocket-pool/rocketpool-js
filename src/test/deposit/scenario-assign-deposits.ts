@@ -8,9 +8,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOptions) {
 
     // Load contracts
-    const rocketDepositPool = await rp.contracts.get('rocketDepositPool');
     const rocketDAOProtocolSettingsDeposit = await rp.contracts.get('rocketDAOProtocolSettingsDeposit');
-    const rocketMinipoolQueue = await rp.contracts.get('rocketMinipoolQueue');
     const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
     const rocketVault = await rp.contracts.get('rocketVault');
 
@@ -25,11 +23,11 @@ export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOp
         halfDepositUserAmount,
         emptyDepositUserAmount,
     ] = await Promise.all([
-        rocketDepositPool.methods.getBalance().call(),
+        rp.deposit.getBalance(),
         rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call(),
-        rocketMinipoolQueue.methods.getLength(1).call(),
-        rocketMinipoolQueue.methods.getLength(2).call(),
-        rocketMinipoolQueue.methods.getLength(3).call(),
+        rp.minipool.getQueueLength(1),
+        rp.minipool.getQueueLength(2),
+        rp.minipool.getQueueLength(3),
         rocketDAOProtocolSettingsMinipool.methods.getDepositUserAmount(1).call(),
         rocketDAOProtocolSettingsMinipool.methods.getDepositUserAmount(2).call(),
         rocketDAOProtocolSettingsMinipool.methods.getDepositUserAmount(3).call(),
@@ -57,7 +55,7 @@ export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOp
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketDepositPool.methods.getBalance().call().then((value: any) => web3.utils.toBN(value)),
+            rp.deposit.getBalance().then((value: any) => web3.utils.toBN(value)),
             web3.eth.getBalance(rocketVault.options.address).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([depositPoolEth, vaultEth]) =>
@@ -68,8 +66,8 @@ export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOp
     // Get minipool queue details
     function getMinipoolQueueDetails() {
         return Promise.all([
-            rocketMinipoolQueue.methods.getTotalLength().call().then((value: any) => web3.utils.toBN(value)),
-            rocketMinipoolQueue.methods.getTotalCapacity().call().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getQueueTotalLength().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getQueueTotalCapacity().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([totalLength, totalCapacity]) =>
                 ({totalLength, totalCapacity})
@@ -83,7 +81,7 @@ export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOp
     ]);
 
     // Assign deposits
-    await rocketDepositPool.methods.assignDeposits().send(options);
+    await rp.deposit.assignDeposits(options);
 
     // Get updated balances & minipool queue details
     let [balances2, queue2] = await Promise.all([

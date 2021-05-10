@@ -43,9 +43,9 @@ class RETH extends ERC20 {
     // Get the current ETH : rETH exchange rate
     // Returns the amount of ETH backing 1 rETH
     public getExchangeRate(): Promise<number> {
-        return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
+        return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
             return tokenContract.methods.getExchangeRate().call();
-        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+        });
     }
 
 

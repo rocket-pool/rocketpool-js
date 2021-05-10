@@ -19,7 +19,7 @@ export async function close(web3: Web3, rp: RocketPool, minipool: MinipoolContra
     // Get minipool balances
     function getMinipoolBalances() {
         return Promise.all([
-            minipool.contract.methods.getNodeDepositBalance().call().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getNodeDepositBalance().then((value: any) => web3.utils.toBN(value)),
             minipool.contract.methods.getNodeRefundBalance().call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([nodeDeposit, nodeRefund]) =>

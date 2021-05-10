@@ -9,12 +9,10 @@ import RocketPool from '../../rocketpool/rocketpool';
 export async function deposit(web3: Web3, rp: RocketPool, options: SendOptions) {
 
     // Load contracts
-    let rocketDepositPool = await rp.contracts.get('rocketDepositPool');
-    let rocketTokenRETH = await rp.contracts.get('rocketTokenRETH');
     let rocketVault = await rp.contracts.get('rocketVault');
 
     // Get parameters
-    let rethExchangeRate = await rocketTokenRETH.methods.getExchangeRate().call().then((value: any) => web3.utils.toBN(value));
+    let rethExchangeRate = await rp.tokens.reth.getExchangeRate().then((value: any) => web3.utils.toBN(value));
 
     // Get balances
     function getBalances() {

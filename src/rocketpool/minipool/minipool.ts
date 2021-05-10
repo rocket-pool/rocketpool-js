@@ -133,6 +133,13 @@ class Minipool {
         });
     }
 
+    // Get node deposit balance
+    public getNodeDepositBalance(): Promise<number> {
+        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
+            return rocketMinipoolManager.methods.getMinipoolCount().call();
+        }).then((value: string): number => parseInt(value));
+    }
+
 
     // Get a minipool address by validator pubkey
     public getMinipoolByPubkey(validatorPubkey: Buffer): Promise<string> {
@@ -189,6 +196,12 @@ class Minipool {
         });
     }
 
+    // Get the minipool queue length
+    public getQueueLength(depositType: number): Promise<number> {
+        return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<number> => {
+            return rocketMinipoolQueue.methods.getLength(depositType).call();
+        });
+    }
 
     // Get the total minipool queue length
     public getQueueTotalLength(): Promise<number> {
@@ -236,6 +249,8 @@ class Minipool {
             return new MinipoolContract(this.web3, address, rocketMinipool);
         });
     }
+
+
 
 
     /**
