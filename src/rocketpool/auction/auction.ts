@@ -144,6 +144,20 @@ class Auction {
         });
     }
 
+    // Return the lot price at a specified block given a lot index
+    public getLotPriceAtBlock(lotIndex: number, block: number): Promise<number> {
+        return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
+            return rocketAuctionManager.methods.getLotPriceAtBlock(lotIndex, block).call();
+        });
+    }
+
+    // Return the lot RPL recovered given a lot index
+    public getLotRPLRecovered(lotIndex: number): Promise<number> {
+        return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
+            return rocketAuctionManager.methods.getLotRPLRecovered(lotIndex).call();
+        });
+    }
+
     /**
      * Mutators - Public
      */
@@ -153,6 +167,24 @@ class Auction {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketAuctionManager.methods.createLot().send(options),
+                onConfirmation
+            );
+        });
+    }
+
+    public placeBid(lotIndex: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketAuctionManager.methods.placeBid(lotIndex).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+    public recoverUnclaimedRPL(lotIndex: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketAuctionManager.methods.recoverUnclaimedRPL(lotIndex).send(options),
                 onConfirmation
             );
         });

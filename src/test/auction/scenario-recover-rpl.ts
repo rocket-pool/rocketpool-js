@@ -7,14 +7,11 @@ import {SendOptions} from 'web3-eth-contract';
 // Recover unclaimed RPL from a lot
 export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: number, options: SendOptions) {
 
-    // Load contracts
-    const rocketAuctionManager = await rp.contracts.get('rocketAuctionManager');
-
     // Get auction contract details
     function getContractDetails() {
         return Promise.all([
-            rocketAuctionManager.methods.getAllottedRPLBalance().call().then((value: any) => web3.utils.toBN(value)),
-            rocketAuctionManager.methods.getRemainingRPLBalance().call().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getAllottedRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getRemainingRPLBalance().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([allottedRplBalance, remainingRplBalance]) =>
                 ({allottedRplBalance, remainingRplBalance})
@@ -24,8 +21,8 @@ export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: 
     // Get lot details
     function getLotDetails() {
         return Promise.all([
-            rocketAuctionManager.methods.getLotRPLRecovered(lotIndex).call(),
-            rocketAuctionManager.methods.getLotRemainingRPLAmount(lotIndex).call().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotRPLRecovered(lotIndex),
+            rp.auction.getLotRemainingRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([rplRecovered, remainingRplAmount]) =>
                 ({rplRecovered, remainingRplAmount})
@@ -43,7 +40,7 @@ export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: 
     options.gasPrice = gasPrice.toString();
 
     // Recover RPL
-    await rocketAuctionManager.methods.recoverUnclaimedRPL(lotIndex).send(options);
+    await rp.auction.recoverUnclaimedRPL(lotIndex, options);
 
     // Get updated details
     let [details2, lot2] = await Promise.all([

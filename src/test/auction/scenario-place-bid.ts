@@ -9,8 +9,6 @@ import {SendOptions} from 'web3-eth-contract';
 export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, options: SendOptions) {
 
     // Load contracts
-    const rocketAuctionManager = await rp.contracts.get('rocketAuctionManager');
-    const rocketAuctionSettings = await rp.contracts.get('rocketDAOProtocolSettingsAuction');
     const rocketVault = await rp.contracts.get('rocketVault');
 
     // Calculation base value
@@ -47,7 +45,7 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     // Get lot price at block
     function getLotPriceAtBlock() {
         return web3.eth.getBlock('latest')
-            .then((block: any) => rocketAuctionManager.methods.getLotPriceAtBlock(lotIndex, block.number).call());
+            .then((block: any) => rp.auction.getLotPriceAtBlock(lotIndex, block.number));
     }
 
     // Get initial lot details & balances
@@ -61,7 +59,7 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     options.gasPrice = gasPrice.toString();
 
     // Place bid
-    let txReceipt = await rocketAuctionManager.methods.placeBid(lotIndex).send(options);
+    let txReceipt = await rp.auction.placeBid(lotIndex, options);
     let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated lot details & balances
