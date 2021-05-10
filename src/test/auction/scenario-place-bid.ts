@@ -19,24 +19,16 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     // Get lot details
     function getLotDetails(bidderAddress: string) {
         return Promise.all([
-            rocketAuctionManager.methods.getLotTotalRPLAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotTotalBidAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotAddressBidAmount(lotIndex, bidderAddress).call(),
-            rocketAuctionManager.methods.getLotPriceByTotalBids(lotIndex).call(),
-            rocketAuctionManager.methods.getLotCurrentPrice(lotIndex).call(),
-            rocketAuctionManager.methods.getLotClaimedRPLAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotRemainingRPLAmount(lotIndex).call(),
+            rp.auction.getLotTotalRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotTotalBidAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotAddressBidAmount(lotIndex, bidderAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotPriceByTotalBids(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotCurrentPrice(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotClaimedRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotRemainingRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([totalRplAmount, totalBidAmount, addressBidAmount, priceByTotalBids, currentPrice, claimedRplAmount, remainingRplAmount]) =>
-                ({
-                    totalRplAmount: web3.utils.toBN(totalRplAmount),
-                    totalBidAmount: web3.utils.toBN(totalBidAmount),
-                    addressBidAmount: web3.utils.toBN(addressBidAmount),
-                    priceByTotalBids: web3.utils.toBN(priceByTotalBids),
-                    currentPrice: web3.utils.toBN(currentPrice),
-                    claimedRplAmount: web3.utils.toBN(claimedRplAmount),
-                    remainingRplAmount: web3.utils.toBN(remainingRplAmount),
-                })
+                ({totalRplAmount, totalBidAmount, addressBidAmount, priceByTotalBids, currentPrice, claimedRplAmount, remainingRplAmount})
         );
     }
 
@@ -45,14 +37,10 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
         return Promise.all([
             web3.eth.getBalance(bidderAddress).then((value: any) => web3.utils.toBN(value)),
             web3.eth.getBalance(rocketVault.options.address).then((value: any) => web3.utils.toBN(value)),
-            rocketVault.methods.balanceOf('rocketDepositPool').call(),
+            rocketVault.methods.balanceOf('rocketDepositPool').call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([bidderEth, vaultEth, depositPoolEth]) =>
-                ({
-                    bidderEth,
-                    vaultEth,
-                    depositPoolEth: web3.utils.toBN(depositPoolEth),
-                })
+                ({bidderEth, vaultEth, depositPoolEth})
         );
     }
 

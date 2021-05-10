@@ -7,11 +7,6 @@ import {SendOptions} from 'web3-eth-contract';
 // Create a new lot for auction
 export async function createLot(web3: Web3, rp: RocketPool, options: SendOptions) {
 
-    // Load contracts
-    const rocketAuctionManager = await rp.contracts.get('rocketAuctionManager');
-    const rocketAuctionSettings = await rp.contracts.get('rocketDAOProtocolSettingsAuction');
-    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
-
     // Get parameters
     const [
         lotMaxEthValue,
@@ -20,58 +15,42 @@ export async function createLot(web3: Web3, rp: RocketPool, options: SendOptions
         reservePriceRatio,
         rplPrice,
     ] = await Promise.all([
-        rocketAuctionSettings.methods.getLotMaximumEthValue().call().then((value: any) => web3.utils.toBN(value)),
-        rocketAuctionSettings.methods.getLotDuration().call().then((value: any) => web3.utils.toBN(value)),
-        rocketAuctionSettings.methods.getStartingPriceRatio().call().then((value: any) => web3.utils.toBN(value)),
-        rocketAuctionSettings.methods.getReservePriceRatio().call().then((value: any) => web3.utils.toBN(value)),
-        rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+        rp.settings.auction.getLotMaximumEthValue().then((value: any) => web3.utils.toBN(value)),
+        rp.settings.auction.getLotDuration().then((value: any) => web3.utils.toBN(value)),
+        rp.settings.auction.getStartingPriceRatio().then((value: any) => web3.utils.toBN(value)),
+        rp.settings.auction.getReservePriceRatio().then((value: any) => web3.utils.toBN(value)),
+        rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
     ]);
 
     // Get auction contract details
     function getContractDetails() {
         return Promise.all([
-            rocketAuctionManager.methods.getTotalRPLBalance().call(),
-            rocketAuctionManager.methods.getAllottedRPLBalance().call(),
-            rocketAuctionManager.methods.getRemainingRPLBalance().call(),
-            rocketAuctionManager.methods.getLotCount().call(),
+            rp.auction.getTotalRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getAllottedRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getRemainingRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotCount(),
         ]).then(
             ([totalRplBalance, allottedRplBalance, remainingRplBalance, lotCount]) =>
-                ({
-                    totalRplBalance: web3.utils.toBN(totalRplBalance),
-                    allottedRplBalance: web3.utils.toBN(allottedRplBalance),
-                    remainingRplBalance: web3.utils.toBN(remainingRplBalance),
-                    lotCount: lotCount
-                })
+                ({totalRplBalance, allottedRplBalance, remainingRplBalance, lotCount: lotCount})
         );
     }
 
     // Get lot details
     function getLotDetails(lotIndex: number) {
         return Promise.all([
-            rocketAuctionManager.methods.getLotExists(lotIndex).call(),
-            rocketAuctionManager.methods.getLotStartBlock(lotIndex).call(),
-            rocketAuctionManager.methods.getLotEndBlock(lotIndex).call(),
-            rocketAuctionManager.methods.getLotStartPrice(lotIndex).call(),
-            rocketAuctionManager.methods.getLotReservePrice(lotIndex).call(),
-            rocketAuctionManager.methods.getLotTotalRPLAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotCurrentPrice(lotIndex).call(),
-            rocketAuctionManager.methods.getLotClaimedRPLAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotRemainingRPLAmount(lotIndex).call(),
-            rocketAuctionManager.methods.getLotIsCleared(lotIndex).call(),
+            rp.auction.getLotExists(lotIndex),
+            rp.auction.getLotStartBlock(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotEndBlock(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotStartPrice(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotReservePrice(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotTotalRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotCurrentPrice(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotClaimedRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotRemainingRPLAmount(lotIndex).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotIsCleared(lotIndex),
         ]).then(
             ([exists, startBlock, endBlock, startPrice, reservePrice, totalRpl, currentPrice, claimedRpl, remainingRpl, isCleared]) =>
-                ({
-                    exists,
-                    startBlock: web3.utils.toBN(startBlock),
-                    endBlock: web3.utils.toBN(endBlock),
-                    startPrice: web3.utils.toBN(startPrice),
-                    reservePrice: web3.utils.toBN(reservePrice),
-                    totalRpl: web3.utils.toBN(totalRpl),
-                    currentPrice: web3.utils.toBN(currentPrice),
-                    claimedRpl: web3.utils.toBN(claimedRpl),
-                    remainingRpl: web3.utils.toBN(remainingRpl),
-                    isCleared
-                })
+                ({exists, startBlock, endBlock, startPrice, reservePrice, totalRpl, currentPrice, claimedRpl, remainingRpl, isCleared})
         );
     }
 
@@ -84,7 +63,7 @@ export async function createLot(web3: Web3, rp: RocketPool, options: SendOptions
     options.gas = 1000000;
 
     // Create lot
-    await rocketAuctionManager.methods.createLot().send(options);
+    await rp.auction.createLot(options);
 
     // Get updated contract details
     let [details2, lot] = await Promise.all([

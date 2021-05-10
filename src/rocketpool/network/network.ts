@@ -23,6 +23,9 @@ class Network {
     private get rocketNetworkFees(): Promise<Contract> {
         return this.contracts.get('rocketNetworkFees');
     }
+    private get rocketNetworkPrices(): Promise<Contract> {
+        return this.contracts.get('rocketNetworkPrices');
+    }
 
 
     /**
@@ -91,6 +94,13 @@ class Network {
         return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<string> => {
             return rocketNetworkFees.methods.getNodeFeeByDemand(demand).call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+    }
+
+    // Get the network RPL Price
+    public getRPLPrice(): Promise<number> {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<number> => {
+            return rocketNetworkPrices.methods.getRPLPrice().call();
+        });
     }
 
 
