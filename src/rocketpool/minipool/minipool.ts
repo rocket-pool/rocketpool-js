@@ -133,13 +133,6 @@ class Minipool {
         });
     }
 
-    // Get node deposit balance
-    public getNodeDepositBalance(): Promise<number> {
-        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolCount().call();
-        }).then((value: string): number => parseInt(value));
-    }
-
 
     // Get a minipool address by validator pubkey
     public getMinipoolByPubkey(validatorPubkey: Buffer): Promise<string> {
