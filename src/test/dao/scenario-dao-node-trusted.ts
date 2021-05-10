@@ -65,16 +65,11 @@ export async function daoNodeTrustedVote(web3: Web3, rp: RocketPool, _proposalID
         return Promise.all([
             rocketDAOProposal.methods.getTotal().call(),
             rocketDAOProposal.methods.getState(_proposalID).call(),
-            rocketDAOProposal.methods.getVotesFor(_proposalID).call(),
-            rocketDAOProposal.methods.getVotesRequired(_proposalID).call(),
+            rocketDAOProposal.methods.getVotesFor(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
+            rocketDAOProposal.methods.getVotesRequired(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([proposalTotal, proposalState, proposalVotesFor, proposalVotesRequired]) =>
-                ({
-                    proposalTotal,
-                    proposalState,
-                    proposalVotesFor: web3.utils.toBN(proposalVotesFor),
-                    proposalVotesRequired: web3.utils.toBN(proposalVotesRequired)
-                })
+                ({proposalTotal, proposalState, proposalVotesFor, proposalVotesRequired})
         );
     }
 
@@ -108,10 +103,10 @@ export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposa
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAOProposal.methods.getState(_proposalID).call(),
+            rocketDAOProposal.methods.getState(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([proposalState]) =>
-                ({proposalState: web3.utils.toBN(proposalState)})
+                ({proposalState})
         );
     }
 
@@ -148,16 +143,12 @@ export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, optio
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call(),
-            rocketTokenRPL.methods.balanceOf(options.from).call(),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call(),
+            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
+            rocketTokenRPL.methods.balanceOf(options.from).call().then((value: any) => web3.utils.toBN(value)),
+            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceBond, rplBalanceVault]) =>
-                ({
-                    memberTotal:  web3.utils.toBN(memberTotal),
-                    rplBalanceBond: web3.utils.toBN(rplBalanceBond),
-                    rplBalanceVault: web3.utils.toBN(rplBalanceVault)
-                })
+                ({memberTotal, rplBalanceBond, rplBalanceVault})
         );
     }
 
@@ -195,15 +186,12 @@ export async function daoNodeTrustedMemberLeave(web3: Web3, rp: RocketPool, _rpl
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call(),
-            rocketTokenRPL.methods.balanceOf(_rplRefundAddress).call(),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call(),
+            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
+            rocketTokenRPL.methods.balanceOf(_rplRefundAddress).call().then((value: any) => web3.utils.toBN(value)),
+            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceRefund, rplBalanceVault]) =>
-                ({
-                    memberTotal: web3.utils.toBN(memberTotal),
-                    rplBalanceRefund: web3.utils.toBN(rplBalanceRefund),
-                    rplBalanceVault: web3.utils.toBN(rplBalanceVault)
+                ({memberTotal, rplBalanceRefund, rplBalanceVault
                 })
         );
     }

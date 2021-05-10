@@ -52,14 +52,11 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrustedSettingsContract.methods.getSettingUint(_settingPath).call(),
+            rocketDAONodeTrustedSettingsContract.methods.getSettingUint(_settingPath).call().then((value: any) => web3.utils.toBN(value)),
             rocketDAONodeTrustedSettingsContract.methods.getSettingBool(_settingPath).call()
         ]).then(
             ([settingUintValue, settingBoolValue]) =>
-                ({
-                    settingUintValue: web3.utils.toBN(settingUintValue),
-                    settingBoolValue: settingBoolValue
-                })
+                ({settingUintValue, settingBoolValue})
         );
     }
 
@@ -222,16 +219,12 @@ export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call(),
-            rocketTokenRPL.methods.balanceOf(options.from).call(),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call(),
+            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
+            rocketTokenRPL.methods.balanceOf(options.from).call().then((value: any) => web3.utils.toBN(value)),
+            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceBond, rplBalanceVault]) =>
-                ({
-                    memberTotal: web3.utils.toBN(memberTotal),
-                    rplBalanceBond: web3.utils.toBN(rplBalanceBond),
-                    rplBalanceVault: web3.utils.toBN(rplBalanceVault)
-                })
+                ({memberTotal, rplBalanceBond, rplBalanceVault})
         );
     }
 
