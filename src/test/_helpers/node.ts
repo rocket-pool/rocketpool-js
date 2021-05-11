@@ -9,9 +9,7 @@ import {SendOptions} from 'web3-eth-contract';
 
 // Get a node's RPL stake
 export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
-    let stake = await rocketNodeStaking.methods.getNodeRPLStake(nodeAddress).call();
-    return stake;
+    await rp.node.getNodeRPLStake(nodeAddress);
 }
 
 export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
@@ -34,43 +32,35 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
 
 // Get a node's effective RPL stake
 export async function getNodeEffectiveRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
-    let effectiveStake = await rocketNodeStaking.methods.getNodeEffectiveRPLStake(nodeAddress).call();
-    return effectiveStake;
+    await rp.node.getNodeEffectiveRPLStake(nodeAddress);
 }
 
 // Get a node's minipool RPL stake
 export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
-    let minimumStake = await rocketNodeStaking.methods.getNodeMinimumRPLStake(nodeAddress).call();
-    return minimumStake;
+    await rp.node.getNodeMinimumRPLStake(nodeAddress);
 }
 
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
-    let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-    await rocketNodeManager.methods.registerNode('Australia/Brisbane').send(options);
+    await rp.node.registerNode('Australia/Brisbane', options);
 }
 
 // Set a withdrawal address for a node
 export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, withdrawalAddress: string, options: SendOptions) {
-    let rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-    await rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, true).send(options);
+    await rp.node.setWithdrawalAddress(nodeAddress, withdrawalAddress, true, options);
 }
 
 // Submit a node RPL stake
 export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
-    let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
     let rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
 
     options.gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei')).toString();
     options.gas = 1000000;
 
-    await rocketTokenRPL.methods.approve(rocketNodeStaking.options.address, amount).send(options);
-    await rocketNodeStaking.methods.stakeRPL(amount).send(options);
+    await rp.tokens.rpl.approve(rocketNodeStaking.options.address, amount, options);
+    await rp.node.stakeRPL(amount, options);
 }
 
 // Make a node deposit
 export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptions) {
-    let rocketNodeDeposit = await rp.contracts.get('rocketNodeDeposit');
-    await rocketNodeDeposit.methods.deposit(web3.utils.toWei('0', 'ether')).send(options);
+    await rp.node.deposit(web3.utils.toWei('0', 'ether'), options);
 }

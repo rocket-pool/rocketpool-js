@@ -65,7 +65,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     options.gasPrice = gasPrice.toString();
 
     // Submit
-    await rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options);
+    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
 
     // Get updated details
     let [submission2, node2RplStake, minipoolDetails] = await Promise.all([

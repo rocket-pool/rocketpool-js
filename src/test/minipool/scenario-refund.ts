@@ -9,17 +9,14 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 // Refund a minipool
 export async function refund(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
 
-    // Load contracts
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-
     // Get parameters
-    let nodeAddress = await minipool.contract.methods.getNodeAddress().call();
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
+    let nodeAddress = await minipool.getNodeAddress();
+    let nodeWithdrawalAddress = await rp.node.getNodeWithdrawalAddress(nodeAddress);
 
     // Get balances
     function getBalances() {
         return Promise.all([
-            minipool.contract.methods.getNodeRefundBalance().call().then((value: any) => web3.utils.toBN(value)),
+            minipool.getNodeRefundBalance().then((value: any) => web3.utils.toBN(value)),
             web3.eth.getBalance(minipool.address).then((value: any) => web3.utils.toBN(value)),
             web3.eth.getBalance(nodeWithdrawalAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
@@ -36,7 +33,7 @@ export async function refund(web3: Web3, rp: RocketPool, minipool: MinipoolContr
     options.gasPrice = gasPrice.toString();
 
     // Refund & get tx fee
-    let txReceipt = await minipool.contract.methods.refund().send(options);
+    let txReceipt = await minipool.refund(options);
     let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated balances

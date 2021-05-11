@@ -10,7 +10,6 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
-    const rocketNetworkBalances = await rp.contracts.get('rocketNetworkBalances');
     const rocketStorage = await rp.contracts.get('rocketStorage');
 
     // Get parameters
@@ -34,10 +33,10 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketNetworkBalances.methods.getBalancesBlock().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNetworkBalances.methods.getTotalETHBalance().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNetworkBalances.methods.getStakingETHBalance().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNetworkBalances.methods.getTotalRETHSupply().call().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getBalancesBlock().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getTotalETHBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getStakingETHBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getTotalRETHSupply().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([block, totalEth, stakingEth, rethSupply]) =>
                 ({block, totalEth, stakingEth, rethSupply})
@@ -48,7 +47,7 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     let submission1 = await getSubmissionDetails();
 
     // Submit balances
-    await rocketNetworkBalances.methods.submitBalances(block, totalEth, stakingEth, rethSupply).send(options);
+    await rp.network.submitBalances(block, totalEth, stakingEth, rethSupply, options);
 
     // Get updated submission details & balances
     let [submission2, balances] = await Promise.all([

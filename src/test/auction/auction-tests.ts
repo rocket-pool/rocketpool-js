@@ -121,7 +121,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Get lot start block
-            const startBlock = parseInt(await getLotStartBlock(web3, rp,0));
+            const startBlock = parseInt(String(await getLotStartBlock(web3, rp, 0)));
 
             // Set expected prices at blocks
             const values = [

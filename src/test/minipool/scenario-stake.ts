@@ -10,15 +10,13 @@ import {getValidatorSignature, getDepositDataRoot} from '../_utils/beacon';
 // Stake a minipool
 export async function stake(web3: Web3, rp: RocketPool, minipool: MinipoolContract, validatorPubkey: Buffer, withdrawalCredentials: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
     const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
 
     // Get parameters
     let launchBalance = await rocketDAOProtocolSettingsMinipool.methods.getLaunchBalance().call().then((value: any) => web3.utils.toBN(value));
 
     // Get minipool withdrawal credentials
-    if (!withdrawalCredentials) withdrawalCredentials = await minipool.contract.methods.getWithdrawalCredentials().call();
+    if (!withdrawalCredentials) withdrawalCredentials = await minipool.getWithdrawalCredentials();
 
     // Get validator deposit data
     let depositData = {
@@ -32,7 +30,7 @@ export async function stake(web3: Web3, rp: RocketPool, minipool: MinipoolContra
     // Get minipool details
     function getMinipoolDetails() {
         return Promise.all([
-            minipool.contract.methods.getStatus().call().then((value: any) => web3.utils.toBN(value)),
+            minipool.getStatus().then((value: any) => web3.utils.toBN(value)),
             web3.eth.getBalance(minipool.contract.options.address).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([status, balance]) =>
@@ -43,16 +41,16 @@ export async function stake(web3: Web3, rp: RocketPool, minipool: MinipoolContra
     // Get initial minipool details & minipool by validator pubkey
     let [details1, validatorMinipool1] = await Promise.all([
         getMinipoolDetails(),
-        rocketMinipoolManager.methods.getMinipoolByPubkey(validatorPubkey).call(),
+        rp.minipool.getMinipoolByPubkey(validatorPubkey),
     ]);
 
     // Stake
-    await minipool.contract.methods.stake(depositData.pubkey, depositData.signature, depositDataRoot).send(options);
+    await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
 
     // Get updated minipool details & minipool by validator pubkey
     let [details2, validatorMinipool2] = await Promise.all([
         getMinipoolDetails(),
-        rocketMinipoolManager.methods.getMinipoolByPubkey(validatorPubkey).call(),
+        rp.minipool.getMinipoolByPubkey(validatorPubkey),
     ]);
 
     // Check minpool details

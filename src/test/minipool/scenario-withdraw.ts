@@ -10,18 +10,17 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
 
     // Load contracts
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
     const rocketTokenNETH = await rp.contracts.get('rocketTokenNETH');
 
     // Get parameters
-    let nodeAddress = await minipool.contract.methods.getNodeAddress().call();
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
+    let nodeAddress = await minipool.getNodeAddress();
+    let nodeWithdrawalAddress = await rp.node.getNodeWithdrawalAddress(nodeAddress);
 
     // Get minipool balances
     function getMinipoolBalances() {
         return Promise.all([
             rocketTokenNETH.methods.balanceOf(minipool.contract.options.address).call().then((value: any) => web3.utils.toBN(value)),
-            minipool.contract.methods.getNodeRefundBalance().call().then((value: any) => web3.utils.toBN(value)),
+            minipool.getNodeRefundBalance().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([neth, nodeRefund]) =>
                 ({neth, nodeRefund})
@@ -43,7 +42,7 @@ export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     let [nodeBalances1, minipoolBalances, nodeWithdrawn1] = await Promise.all([
         getNodeBalances(),
         getMinipoolBalances(),
-        minipool.contract.methods.getNodeWithdrawn().call(),
+        minipool.getNodeWithdrawn(),
     ]);
 
     // Set gas price
@@ -51,13 +50,13 @@ export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     options.gasPrice = gasPrice.toString();
 
     // Withdraw & get tx fee
-    let txReceipt = await minipool.contract.methods.withdraw().send(options);
+    let txReceipt = await minipool.withdraw(options);
     let txFee = gasPrice.mul(web3.utils.toBN(txReceipt.gasUsed));
 
     // Get updated node balances & node withdrawn status
     let [nodeBalances2, nodeWithdrawn2] = await Promise.all([
         getNodeBalances(),
-        minipool.contract.methods.getNodeWithdrawn().call(),
+        minipool.getNodeWithdrawn(),
     ]);
 
     // Check minipool node withdrawn status

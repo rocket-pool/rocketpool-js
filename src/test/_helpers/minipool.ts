@@ -9,17 +9,15 @@ import {getTxContractEvents} from '../_utils/contract';
 
 // Get a minipool's node balance at withdrawal
 export async function getMinipoolWithdrawalNodeBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
-    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
-    let balance = await rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(minipoolAddress).call();
-    return balance;
+    await rp.minipool.getMinipoolWithdrawalNodeBalance(minipoolAddress);
 }
 
 
 // Get a minipool's user balance at withdrawal
 export async function getMinipoolWithdrawalUserBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
     const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
-    let totalBalance = await rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(minipoolAddress).call().then((value: any) => web3.utils.toBN(value));
-    let nodeBalance = await rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(minipoolAddress).call().then((value: any) => web3.utils.toBN(value));
+    let totalBalance = await rp.minipool.getMinipoolWithdrawalTotalBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
+    let nodeBalance = await rp.minipool.getMinipoolWithdrawalNodeBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
     return totalBalance.sub(nodeBalance);
 }
 
@@ -29,14 +27,12 @@ export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
     // Load contracts
     const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
     const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
-    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
-
 
     // Load data
     let [depositUserAmount, minMinipoolStake, rplPrice] = await Promise.all([
         rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
-        rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+        rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
     ]);
 
     // Calculate & return
@@ -51,7 +47,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
     const minipoolManagerAddress = await rp.contracts.address('rocketMinipoolManager');
 
     // Make node deposit
-    let txReceipt = await rp.node.deposit(0, options);
+    let txReceipt = await rp.node.deposit(web3.utils.toWei('0', 'ether'), options);
 
     // Get minipool created events
     let minipoolCreatedEvents = getTxContractEvents(web3, txReceipt, minipoolManagerAddress, 'MinipoolCreated', [
@@ -69,14 +65,11 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 // Progress a minipool to staking
 export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, validatorPubkey: Buffer | null, options: SendOptions) {
 
-    // Load contracts
-    const rocketNetworkWithdrawal = await rp.contracts.get('rocketNetworkWithdrawal');
-
     // Create validator pubkey
     if (!validatorPubkey) validatorPubkey = getValidatorPubkey();
 
     // Get withdrawal credentials
-    const withdrawalCredentials = await minipool.contract.methods.getWithdrawalCredentials().call();
+    const withdrawalCredentials = await minipool.getWithdrawalCredentials();
 
     // Get validator deposit data
     let depositData = {
@@ -94,8 +87,7 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 
 // Submit a minipool withdrawable event
 export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
-    const rocketMinipoolStatus = await rp.contracts.get('rocketMinipoolStatus');
-    await rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options);
+    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
 }
 
 

@@ -34,6 +34,13 @@ class Deposit {
         });
     }
 
+    // Get the excess balance
+    public getExcessBalance(): Promise<string> {
+        return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
+            return rocketDepositPool.methods.getExcessBalance().call();
+        });
+    }
+
 
     /**
      * Mutators - Public

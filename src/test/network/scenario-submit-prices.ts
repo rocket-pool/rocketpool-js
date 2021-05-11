@@ -10,7 +10,6 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
-    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
     const rocketStorage = await rp.contracts.get('rocketStorage');
 
     // Get parameters
@@ -34,8 +33,8 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
     // Get prices
     function getPrices() {
         return Promise.all([
-            rocketNetworkPrices.methods.getPricesBlock().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getPricesBlock().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([block, rplPrice]) =>
                 ({block, rplPrice})
@@ -46,7 +45,7 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
     let submission1 = await getSubmissionDetails();
 
     // Submit prices
-    await rocketNetworkPrices.methods.submitPrices(block, rplPrice).send(options);
+    await rp.network.submitPrices(block, rplPrice, options);
 
     // Get updated submission details & prices
     let [submission2, prices] = await Promise.all([
@@ -75,14 +74,11 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
 // Execute price update
 export async function executeUpdatePrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
-
     // Get prices
     function getPrices() {
         return Promise.all([
-            rocketNetworkPrices.methods.getPricesBlock().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getPricesBlock().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([block, rplPrice]) =>
                 ({block, rplPrice})
@@ -90,7 +86,7 @@ export async function executeUpdatePrices(web3: Web3, rp: RocketPool, block: num
     }
 
     // Submit prices
-    await rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice).send(options);
+    await rp.network.executeUpdatePrices(block, rplPrice, options);
 
     // Get updated submission details & prices
     let prices = await getPrices();

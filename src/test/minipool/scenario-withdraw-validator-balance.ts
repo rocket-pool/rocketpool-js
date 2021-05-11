@@ -22,7 +22,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
         rethCollateralRate,
         targetRethCollateralRate,
     ] = await Promise.all([
-        rocketTokenRETH.methods.getCollateralRate().call().then((value: any) => web3.utils.toBN(value)),
+        rp.tokens.reth.getCollateralRate().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNetwork.methods.getTargetRethCollateralRate().call().then((value: any) => web3.utils.toBN(value)),
     ]);
 

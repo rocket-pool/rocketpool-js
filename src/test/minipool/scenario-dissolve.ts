@@ -12,8 +12,8 @@ export async function dissolve(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     // Get minipool details
     function getMinipoolDetails() {
         return Promise.all([
-            minipool.contract.methods.getStatus().call().then((value: any) => web3.utils.toBN(value)),
-            minipool.contract.methods.getUserDepositBalance().call().then((value: any) => web3.utils.toBN(value)),
+            minipool.getStatus().then((value: any) => web3.utils.toBN(value)),
+            minipool.getUserDepositBalance().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([status, userDepositBalance]) =>
                 ({status, userDepositBalance})
@@ -24,7 +24,7 @@ export async function dissolve(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     let details1 = await getMinipoolDetails();
 
     // Dissolve
-    await minipool.contract.methods.dissolve().send(options);
+    await minipool.dissolve(options);
 
     // Get updated minipool details
     let details2 = await getMinipoolDetails();

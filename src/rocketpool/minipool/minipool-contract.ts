@@ -141,6 +141,14 @@ class MinipoolContract {
         return this.contract.methods.getStakingEndBalance().call();
     }
 
+    public getWithdrawalCredentials(): Promise<any> {
+        return this.contract.methods.getWithdrawalCredentials().call();
+    }
+
+    public getNodeWithdrawn(): Promise<any> {
+        return this.contract.methods.getNodeWithdrawn().call();
+    }
+
 
     /**
      * Mutators - Public
