@@ -15,7 +15,6 @@ export async function getMinipoolWithdrawalNodeBalance(web3: Web3, rp: RocketPoo
 
 // Get a minipool's user balance at withdrawal
 export async function getMinipoolWithdrawalUserBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
-    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
     let totalBalance = await rp.minipool.getMinipoolWithdrawalTotalBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
     let nodeBalance = await rp.minipool.getMinipoolWithdrawalNodeBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
     return totalBalance.sub(nodeBalance);

@@ -132,6 +132,13 @@ class Node {
         });
     }
 
+    // Get Node Pending Withdrawal Address
+    public getNodePendingWithdrawalAddress(address: string): Promise<string> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
+            return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
+        });
+    }
+
 
 
 
@@ -153,7 +160,7 @@ class Node {
     public setWithdrawalAddress(nodeAddress: string, withdrawalAddress:string, confirm: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm, options),
+                rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options),
                 onConfirmation
             );
         });
@@ -163,6 +170,15 @@ class Node {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketNodeStaking.methods.stakeRPL(amount).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+    public confirmWithdrawalAddress(nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options),
                 onConfirmation
             );
         });

@@ -91,9 +91,9 @@ class Network {
 
     // Get the network node commission rate by demand value
     public getNodeFeeByDemand(demand: string): Promise<number> {
-        return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<string> => {
+        return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<number> => {
             return rocketNetworkFees.methods.getNodeFeeByDemand(demand).call();
-        }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+        });
     }
 
 
@@ -128,9 +128,9 @@ class Network {
 
     // Submit network prices
     public submitPrices(block: number, rplPrice: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkBalances.methods.submitPrices(block, rplPrice).send(options),
+                rocketNetworkPrices.methods.submitPrices(block, rplPrice).send(options),
                 onConfirmation
             );
         });
@@ -138,9 +138,9 @@ class Network {
 
     // Execute update prices
     public executeUpdatePrices(block: number, rplPrice: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkBalances.methods.executeUpdatePrices(block, rplPrice).send(options),
+                rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice).send(options),
                 onConfirmation
             );
         });

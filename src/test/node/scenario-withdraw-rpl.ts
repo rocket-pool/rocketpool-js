@@ -27,14 +27,14 @@ export async function withdrawRpl(web3: Web3, rp: RocketPool, amount: string, op
         rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNode.methods.getMaximumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
-        rocketNetworkPrices.methods.getRPLPrice().call().then((value: any) => web3.utils.toBN(value)),
+        rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
     ]);
 
     // Get token balances
     function getTokenBalances(nodeAddress: string) {
         return Promise.all([
-            rocketTokenRPL.methods.balanceOf(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketTokenRPL.methods.balanceOf(rocketVault.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(nodeAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(rocketVault.options.address).then((value: any) => web3.utils.toBN(value)),
             rocketVault.methods.balanceOfToken('rocketNodeStaking', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([nodeRpl, vaultRpl, stakingRpl]) =>

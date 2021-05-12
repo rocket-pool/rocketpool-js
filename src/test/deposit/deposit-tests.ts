@@ -73,7 +73,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
             // Update network ETH total to 130% to alter rETH exchange rate
             let totalBalance = web3.utils.toWei('13', 'ether');
             let rethSupply = await getRethTotalSupply(web3, rp);
-            await submitBalances(web3, rp, 1, totalBalance, 0, rethSupply, {from: trustedNode, gas: gasLimit});
+            await submitBalances(web3, rp, 1, totalBalance, '0', rethSupply, {from: trustedNode, gas: gasLimit});
 
             // Get & check updated rETH exchange rate
             let exchangeRate2 = await getRethExchangeRate(web3, rp).then((value: any) => web3.utils.toBN(value));

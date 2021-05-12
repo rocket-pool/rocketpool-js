@@ -41,11 +41,11 @@ export async function getNodeDemand(web3: Web3, rp: RocketPool) {
 
 // Get the current network node fee
 export async function getNodeFee(web3: Web3, rp: RocketPool) {
-    await rp.network.getNodeFee();
+    return await rp.network.getNodeFee();
 }
 
 
 // Get the network node fee for a node demand value
 export async function getNodeFeeByDemand(web3: Web3, rp: RocketPool, nodeDemand: string) {
-    await rp.network.getNodeFeeByDemand(nodeDemand);
+    return await rp.network.getNodeFeeByDemand(nodeDemand);
 }

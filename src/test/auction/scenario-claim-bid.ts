@@ -8,15 +8,14 @@ import {SendOptions} from 'web3-eth-contract';
 export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, options: SendOptions) {
 
     // Load contracts
-    const rocketAuctionManager = await rp.contracts.get('rocketAuctionManager');
     const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
     const rocketVault = await rp.contracts.get('rocketVault');
 
     // Get auction contract details
     function getContractDetails() {
         return Promise.all([
-            rocketAuctionManager.methods.getAllottedRPLBalance().call().then((value: any) => web3.utils.toBN(value)),
-            rocketAuctionManager.methods.getRemainingRPLBalance().call().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getAllottedRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getRemainingRPLBalance().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([allottedRplBalance, remainingRplBalance]) =>
                 ({allottedRplBalance, remainingRplBalance})
@@ -26,8 +25,8 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     // Get lot details
     function getLotDetails(bidderAddress: string) {
         return Promise.all([
-            rocketAuctionManager.methods.getLotAddressBidAmount(lotIndex, bidderAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketAuctionManager.methods.getLotCurrentPrice(lotIndex).call().then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotAddressBidAmount(lotIndex, bidderAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.auction.getLotCurrentPrice(lotIndex).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([addressBidAmount, currentPrice]) =>
                 ({addressBidAmount, currentPrice})
@@ -37,8 +36,8 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     // Get balances
     function getBalances(bidderAddress: string) {
         return Promise.all([
-            rocketTokenRPL.methods.balanceOf(bidderAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketTokenRPL.methods.balanceOf(rocketVault.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(bidderAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(rocketVault.options.address).then((value: any) => web3.utils.toBN(value)),
             rocketVault.methods.balanceOfToken('rocketAuctionManager', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([bidderRpl, vaultRpl, contractRpl]) =>
@@ -58,7 +57,7 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     options.gasPrice = gasPrice.toString();
 
     // Claim RPL
-    await rocketAuctionManager.methods.claimBid(lotIndex).send(options);
+    await rp.auction.claimBid(lotIndex, options);
 
     // Get updated details & balances
     let [details2, lot2, balances2] = await Promise.all([

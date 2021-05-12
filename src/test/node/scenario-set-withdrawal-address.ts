@@ -8,15 +8,12 @@ import RocketPool from '../../rocketpool/rocketpool';
 // Set a node's withdrawal address
 export async function setWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, withdrawalAddress: string, confirm: boolean, options: SendOptions) {
 
-    // Load contracts
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-
     // Set withdrawal address
-    await rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options);
+    await rp.node.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm, options);
 
     // Get withdrawal address
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
-    let nodePendingWithdrawalAddress = await rocketNodeManager.methods.getNodePendingWithdrawalAddress(nodeAddress).call()
+    let nodeWithdrawalAddress = await rp.node.getNodeWithdrawalAddress(nodeAddress);
+    let nodePendingWithdrawalAddress = await rp.node.getNodePendingWithdrawalAddress(nodeAddress);
 
     // Check
     if (confirm) {
@@ -30,15 +27,12 @@ export async function setWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddre
 
 export async function confirmWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-
     // Confirm withdrawal address
-    await rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options);
+    await rp.node.confirmWithdrawalAddress(nodeAddress, options);
 
     // Get current & pending withdrawal addresses
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(nodeAddress).call();
-    let nodePendingWithdrawalAddress = await rocketNodeManager.methods.getNodePendingWithdrawalAddress(nodeAddress).call();
+    let nodeWithdrawalAddress = await rp.node.getNodeWithdrawalAddress(nodeAddress);
+    let nodePendingWithdrawalAddress = await rp.node.getNodePendingWithdrawalAddress(nodeAddress);
 
     // Check
     assert.equal(nodeWithdrawalAddress, web3.utils.toChecksumAddress(options.from), 'Incorrect updated withdrawal address');

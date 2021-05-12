@@ -68,7 +68,7 @@ class RETH extends ERC20 {
     // Get the total supply
     public getTotalSupply(): Promise<string> {
         return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
-            return tokenContract.methods.getTotalSupply().call();
+            return tokenContract.methods.totalSupply().call();
         });
     }
 

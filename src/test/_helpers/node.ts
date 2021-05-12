@@ -9,7 +9,7 @@ import {SendOptions} from 'web3-eth-contract';
 
 // Get a node's RPL stake
 export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    await rp.node.getNodeRPLStake(nodeAddress);
+    return await rp.node.getNodeRPLStake(nodeAddress);
 }
 
 export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
@@ -32,12 +32,12 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
 
 // Get a node's effective RPL stake
 export async function getNodeEffectiveRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    await rp.node.getNodeEffectiveRPLStake(nodeAddress);
+    return await rp.node.getNodeEffectiveRPLStake(nodeAddress);
 }
 
 // Get a node's minipool RPL stake
 export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
-    await rp.node.getNodeMinimumRPLStake(nodeAddress);
+    return await rp.node.getNodeMinimumRPLStake(nodeAddress);
 }
 
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {

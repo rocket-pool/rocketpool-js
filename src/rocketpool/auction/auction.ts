@@ -172,6 +172,17 @@ class Auction {
         });
     }
 
+
+    public claimBid(lotIndex: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketAuctionManager.methods.claimBid(lotIndex).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
     public placeBid(lotIndex: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(

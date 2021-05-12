@@ -5,37 +5,26 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Get the RPL balance of an address
 export async function getRplBalance(web3: Web3, rp:RocketPool, address: string) {
-    await rp.tokens.rpl.balanceOf(address);
+    return await rp.tokens.rpl.balanceOf(address);
 }
 
 
 // Get the rETH balance of an address
 export async function getRethBalance(web3: Web3, rp:RocketPool, address: string) {
-    await rp.tokens.reth.balanceOf(address);
+    return await rp.tokens.reth.balanceOf(address);
 }
 
 
 // Get the current rETH exchange rate
 export async function getRethExchangeRate(web3: Web3, rp:RocketPool) {
-    const rocketTokenRETH = await rp.contracts.get('rocketTokenRETH');
-    let exchangeRate = await rocketTokenRETH.methods.getExchangeRate().call();
-    return exchangeRate;
+    return rp.tokens.reth.getExchangeRate();
 }
 
 
 // Get the current rETH token supply
 export async function getRethTotalSupply(web3: Web3, rp:RocketPool) {
-    await rp.tokens.reth.getTotalSupply();
+    return await rp.tokens.reth.getTotalSupply();
 }
-
-
-// Get the nETH balance of an address
-export async function getNethBalance(web3: Web3, rp:RocketPool, address: string) {
-    const rocketTokenNETH = await rp.contracts.get('rocketTokenNETH');
-    let balance = rocketTokenNETH.methods.balanceOf(address).call();
-    return balance;
-}
-
 
 // Mint RPL to an address
 export async function mintRPL(web3: Web3, rp:RocketPool, owner:string, toAddress:string, amount:string) {

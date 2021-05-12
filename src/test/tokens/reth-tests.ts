@@ -80,7 +80,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             // Update network ETH total to alter rETH exchange rate
             let minipoolUserBalance = await getMinipoolWithdrawalUserBalance(web3, rp, minipool.address);
             let rethSupply = await getRethTotalSupply(web3, rp);
-            await submitBalances(web3, rp, 1, minipoolUserBalance, 0, rethSupply, {from: trustedNode, gas: gasLimit});
+            await submitBalances(web3, rp, 1, minipoolUserBalance.toString(), '0', rethSupply, {from: trustedNode, gas: gasLimit});
 
             // Get & check staker rETH balance
             rethBalance = await getRethBalance(web3, rp, staker1).then((value: any) => web3.utils.toBN(value));
