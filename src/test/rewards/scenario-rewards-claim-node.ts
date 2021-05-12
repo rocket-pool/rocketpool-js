@@ -19,7 +19,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Get details
     function getDetails() {
         return Promise.all([
-            rocketRewardsPool.methods.getClaimingContractAllowance('rocketClaimNode').call().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimingContractAllowance('rocketClaimNode').then((value: any) => web3.utils.toBN(value)),
             rocketNodeStaking.methods.getTotalEffectiveRPLStake().call().then((value: any) => web3.utils.toBN(value)),
             rocketNodeStaking.methods.getNodeEffectiveRPLStake(options.from).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(

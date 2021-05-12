@@ -22,6 +22,19 @@ class RPL extends ERC20 {
     /**
      * Getters
      */
+    // Get the inflation intervals that have passed
+    public getInflationIntervalsPassed(): Promise<number> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
+            return tokenContract.methods.getInflationIntervalsPassed().call();
+        });
+    }
+
+    // Get the inflation intervals that have passed
+    public inflationMintTokens(): Promise<number> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
+            return tokenContract.methods.inflationMintTokens().call();
+        });
+    }
 
 
     /**
