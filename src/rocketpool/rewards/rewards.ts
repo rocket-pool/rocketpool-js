@@ -89,6 +89,36 @@ class Rewards {
         });
     }
 
+    // Get the claim contract registered block
+    public getClaimContractRegisteredBlock(contractAddress: string, trustedNodeAddress: string): Promise<string> {
+        return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
+            return rocketRewardsPool.methods.getClaimContractRegisteredBlock(contractAddress, trustedNodeAddress).call();
+        });
+    }
+
+
+    // Get the claim contract registered block
+    public getClaimingContractUserTotalCurrent(address: string): Promise<string> {
+        return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
+            return rocketRewardsPool.methods.getClaimingContractUserTotalCurrent(address).call();
+        });
+    }
+
+    // Determine if the claim is possible
+    public getClaimPossible(address: string): Promise<string> {
+        return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
+            return rocketClaimNode.methods.getNodeClaimPossible(address).call();
+        });
+    }
+
+
+    // Get claim rewards amount
+    public getClaimRewardsAmount(address: string): Promise<string> {
+        return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<string> => {
+            return rocketClaimTrustedNode.methods.getClaimRewardsAmount(address).call();
+        });
+    }
+
 
 
     /**
@@ -97,10 +127,21 @@ class Rewards {
 
 
     // Claim from a trusted node
-    public claim(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public claimTrustedNode(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketClaimTrustedNode.methods.claim().send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    // Make a node claim
+    public claimNode(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketClaimNode.methods.claim().send(options),
                 onConfirmation
             );
         });

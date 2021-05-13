@@ -6,38 +6,30 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Can this trusted node make a claim yet? They need to wait 1 claim interval after being made a trusted node
 export async function rewardsClaimTrustedNodePossibleGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {
-    // Load contracts
-    const rocketClaimTrustedNode = await rp.contracts.get('rocketClaimTrustedNode');
-    return await rocketClaimTrustedNode.methods.getClaimPossible(trustedNodeAddress).call();
+    return await rp.rewards.getClaimPossible(trustedNodeAddress);
 };
 
 // Get the current rewards claim period in blocks
 export async function rewardsClaimTrustedNodeRegisteredBlockGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {
     // Load contracts
-    const rocketRewardsPool = await rp.contracts.get('rocketRewardsPool');
     const rocketClaimTrustedNode = await rp.contracts.get('rocketClaimTrustedNode');
     // Do it
-    return await rocketRewardsPool.methods.getClaimContractRegisteredBlock(rocketClaimTrustedNode.options.address, trustedNodeAddress).call();
+    return await rp.rewards.getClaimContractRegisteredBlock(rocketClaimTrustedNode.options.address, trustedNodeAddress);
 };
 
 // Perform rewards claims for Trusted Nodes + Minipools
 export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, trustedNodeAccount: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketRewardsPool = await rp.contracts.get('rocketRewardsPool');
-    const rocketClaimTrustedNode = await rp.contracts.get('rocketClaimTrustedNode');
-
-
     // Get data about the tx
     function getTxData() {
         return Promise.all([
             web3.eth.getBlockNumber(),
-            rocketRewardsPool.methods.getClaimIntervalBlockStart().call(),
-            rocketRewardsPool.methods.getClaimingContractAllowance('rocketClaimTrustedNode').call().then((value: any) => web3.utils.toBN(value)),
-            rocketRewardsPool.methods.getClaimingContractTotalClaimed('rocketClaimTrustedNode').call().then((value: any) => web3.utils.toBN(value)),
-            rocketRewardsPool.methods.getClaimingContractPerc('rocketClaimTrustedNode').call().then((value: any) => web3.utils.toBN(value)),
-            rocketClaimTrustedNode.methods.getClaimRewardsAmount(options.from).call().then((value: any) => web3.utils.toBN(value)),
-            rocketRewardsPool.methods.getClaimingContractUserTotalCurrent('rocketClaimTrustedNode').call().then((value: any) => web3.utils.toBN(value))
+            rp.rewards.getClaimIntervalBlockStart().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimingContractAllowance('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimingContractTotalClaimed('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimingContractPerc('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimRewardsAmount(options.from).then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimingContractUserTotalCurrent('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value))
         ]).then(
             ([currentBlock, claimIntervalBlockStart, contractClaimAllowance, contractClaimTotal, contractClaimPerc, trustedNodeClaimAmount, trustedNodeClaimIntervalTotal]) =>
                 ({currentBlock, claimIntervalBlockStart, contractClaimAllowance, contractClaimTotal, contractClaimPerc, trustedNodeClaimAmount, trustedNodeClaimIntervalTotal})
@@ -50,7 +42,7 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
     //console.log('Node DAO Contract Amount', Number(web3.utils.fromWei(ds1.currentBlock)), Number(web3.utils.fromWei(ds1.claimIntervalBlockStart)));
 
     // Perform tx
-    await rocketClaimTrustedNode.methods.claim().send(options);
+    await rp.rewards.claimTrustedNode(options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -68,7 +60,7 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
     }else{
         // Check to see if the claim tx has pushed us into a new claim interval
         // The contracts claim total should be greater than 0 due to the claim that just occured
-        assert(ds2.contractClaimTotal.gt(0), 'Contract claim amount should be > 0 for new interval');
+        assert(ds2.contractClaimTotal.gt(web3.utils.toBN(0)), 'Contract claim amount should be > 0 for new interval');
         // How many trusted nodes where in this interval? Their % claimed should be equal to that
         assert(Number(web3.utils.fromWei(ds2.contractClaimTotal)).toFixed(4) == Number(web3.utils.fromWei(ds2.contractClaimAllowance.div(ds2.trustedNodeClaimIntervalTotal))).toFixed(4), 'Contract claim amount should be equal to their desired equal allocation');
     }

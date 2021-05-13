@@ -6,22 +6,16 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Perform rewards claims for a regular node
 export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: SendOptions) {
-    // Load contracts
-    const rocketClaimNode = await rp.contracts.get('rocketClaimNode');
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-    const rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
-    const rocketRewardsPool = await rp.contracts.get('rocketRewardsPool');
-    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
 
     // Get node withdrawal address
-    let nodeWithdrawalAddress = await rocketNodeManager.methods.getNodeWithdrawalAddress(options.from).call();
+    let nodeWithdrawalAddress = await rp.node.getNodeWithdrawalAddress(options.from);
 
     // Get details
     function getDetails() {
         return Promise.all([
             rp.rewards.getClaimingContractAllowance('rocketClaimNode').then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getTotalEffectiveRPLStake().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getNodeEffectiveRPLStake(options.from).call().then((value: any) => web3.utils.toBN(value)),
+            rp.node.getNodeTotalEffectiveRPLStake().then((value: any) => web3.utils.toBN(value)),
+            rp.node.getNodeEffectiveRPLStake(options.from).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([nodesRplShare, totalRplStake, nodeRplStake]) =>
                 ({nodesRplShare, totalRplStake, nodeRplStake})
@@ -31,8 +25,8 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketRewardsPool.methods.getClaimIntervalBlockStart().call(),
-            rocketTokenRPL.methods.balanceOf(nodeWithdrawalAddress).call().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.getClaimIntervalBlockStart(),
+            rp.tokens.rpl.balanceOf(nodeWithdrawalAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([claimIntervalBlockStart, nodeRpl]) =>
                 ({claimIntervalBlockStart, nodeRpl})
@@ -46,7 +40,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     ]);
 
     // Claim rewards
-    await rocketClaimNode.methods.claim().send(options);
+    await rp.rewards.claimNode(options);
 
     // Get updated balances
     // Get updated balances

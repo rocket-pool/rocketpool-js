@@ -15,6 +15,7 @@ import NodeSettings from './settings/node';
 import RETH from './tokens/reth';
 import RPL from './tokens/rpl';
 import Rewards from './rewards/rewards';
+import Vault from './vault/vault';
 
 
 /**
@@ -33,6 +34,7 @@ class RocketPool {
     public readonly settings: {auction: AuctionSettings, deposit: DepositSettings, minipool: MinipoolSettings, network: NetworkSettings, node: NodeSettings};
     public readonly tokens: {reth: RETH, rpl: RPL};
     public readonly rewards: Rewards;
+    public readonly vault: Vault;
 
 
     // Constructor
@@ -57,6 +59,7 @@ class RocketPool {
             rpl: new RPL(web3, this.contracts),
         };
         this.rewards = new Rewards(web3, this.contracts);
+        this.vault = new Vault(web3, this.contracts);
 
     }
 

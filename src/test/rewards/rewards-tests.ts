@@ -504,6 +504,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             });
         });
 
+
         /*** DAO ***************************/
         it(printTitle('daoClaim', 'trusted node makes a claim and the DAO receives its automatic share of rewards correctly on its claim contract, then protocol DAO spends some'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%

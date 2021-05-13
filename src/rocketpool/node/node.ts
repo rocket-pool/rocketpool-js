@@ -104,12 +104,14 @@ class Node {
         });
     }
 
+
     // Check whether a node exists
     public getNodeWithdrawalAddress(address: string): Promise<string> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
             return rocketNodeManager.methods.getNodeWithdrawalAddress(address).call();
         });
     }
+
 
     // Get Node RPL Stake
     public getNodeRPLStake(address: string): Promise<string> {
@@ -118,12 +120,22 @@ class Node {
         });
     }
 
+
     // Get Node Effective RPL Stake
     public getNodeEffectiveRPLStake(address: string): Promise<string> {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
             return rocketNodeStaking.methods.getNodeEffectiveRPLStake(address).call();
         });
     }
+
+
+    // Get Node Total Effective RPL Stake
+    public getNodeTotalEffectiveRPLStake(): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+        });
+    }
+
 
     // Get Node Minimum RPL Stake
     public getNodeMinimumRPLStake(address: string): Promise<string> {
@@ -132,14 +144,13 @@ class Node {
         });
     }
 
+
     // Get Node Pending Withdrawal Address
     public getNodePendingWithdrawalAddress(address: string): Promise<string> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
             return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
         });
     }
-
-
 
 
     /**
@@ -157,6 +168,7 @@ class Node {
         });
     }
 
+
     public setWithdrawalAddress(nodeAddress: string, withdrawalAddress:string, confirm: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
@@ -166,6 +178,7 @@ class Node {
         });
     }
 
+
     public stakeRPL(amount: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
@@ -174,6 +187,7 @@ class Node {
             );
         });
     }
+
 
     public confirmWithdrawalAddress(nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {

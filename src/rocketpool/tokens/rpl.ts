@@ -19,9 +19,20 @@ class RPL extends ERC20 {
     }
 
 
+
     /**
      * Getters
      */
+
+
+    // Get contract address
+    public getAddress(): Promise<string> {
+        return this.tokenContract.then((tokenContract: Contract): string => {
+            return tokenContract.options.address;
+        });
+    }
+
+
     // Get the inflation intervals that have passed
     public getInflationIntervalsPassed(): Promise<number> {
         return this.tokenContract.then((tokenContract: Contract): Promise<number> => {

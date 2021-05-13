@@ -6,19 +6,14 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Set the address the DAO can receive rewards at
 export async function getRewardsDAOTreasuryBalance(web3: Web3, rp: RocketPool, options: SendOptions) {
-    // Load contracts
-    const rocketVault = await rp.contracts.get('rocketVault');
-    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
-    return rocketVault.methods.balanceOfToken('rocketClaimDAO', rocketTokenRPL.options.address).call();
+    let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
+    return rp.vault.balanceOfToken('rocketClaimDAO', rocketTokenRPLAddress);
 }
 
 // Set the address the DAO can receive rewards at
 export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendOptions) {
-    // Load contracts
-    const rocketVault = await rp.contracts.get('rocketVault');
-    const rocketClaimTrustedNode = await rp.contracts.get('rocketClaimTrustedNode');
-    const rocketRewardsPool = await rp.contracts.get('rocketRewardsPool');
-    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+    // Get the RPL token contract address
+    let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
     // Call the mint function on RPL to mint any before we begin so we have accurate figures to work with
     if(await rp.tokens.rpl.getInflationIntervalsPassed() > 0) await rp.tokens.rpl.inflationMintTokens();
@@ -33,7 +28,7 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
             rp.rewards.getClaimingContractAllowance('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
             rp.rewards.getClaimingContractTotalClaimed('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
             rp.rewards.getClaimIntervalRewardsTotal().then((value: any) => web3.utils.toBN(value)),
-            rocketVault.methods.balanceOfToken('rocketClaimDAO', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.vault.balanceOfToken('rocketClaimDAO', rocketTokenRPLAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([intervalsPassed, intervalBlockStart, poolRPLBalance, daoClaimPerc, daoClaimAllowance, daoContractClaimTotal, intervalRewardsTotal, daoRewardsAddressBalance]) =>
                 ({intervalsPassed, intervalBlockStart, poolRPLBalance, daoClaimPerc, daoClaimAllowance, daoContractClaimTotal, intervalRewardsTotal, daoRewardsAddressBalance})
@@ -44,7 +39,7 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     let ds1 = await getTxData();
 
     // Perform tx
-    await rp.rewards.claim(options);
+    await rp.rewards.claimTrustedNode(options);
 
     // Capture data
     let ds2 = await getTxData();
