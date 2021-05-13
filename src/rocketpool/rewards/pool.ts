@@ -10,7 +10,7 @@ import {NodeDetails} from "../node/node";
 /**
  * Rocket Pool Rewards
  */
-class Rewards {
+class Pool {
 
 
     // Constructor
@@ -20,18 +20,6 @@ class Rewards {
     // Contract accessors
     private get rocketRewardsPool(): Promise<Contract> {
         return this.contracts.get('rocketRewardsPool');
-    }
-
-    private get rocketClaimDAO(): Promise<Contract> {
-        return this.contracts.get('rocketClaimDAO');
-    }
-
-    private get rocketClaimNode(): Promise<Contract> {
-        return this.contracts.get('rocketClaimNode');
-    }
-
-    private get rocketClaimTrustedNode(): Promise<Contract> {
-        return this.contracts.get('rocketClaimTrustedNode');
     }
 
 
@@ -104,21 +92,6 @@ class Rewards {
         });
     }
 
-    // Determine if the claim is possible
-    public getClaimPossible(address: string): Promise<string> {
-        return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
-            return rocketClaimNode.methods.getNodeClaimPossible(address).call();
-        });
-    }
-
-
-    // Get claim rewards amount
-    public getClaimRewardsAmount(address: string): Promise<string> {
-        return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<string> => {
-            return rocketClaimTrustedNode.methods.getClaimRewardsAmount(address).call();
-        });
-    }
-
 
 
     /**
@@ -126,30 +99,9 @@ class Rewards {
      */
 
 
-    // Claim from a trusted node
-    public claimTrustedNode(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketClaimTrustedNode.methods.claim().send(options),
-                onConfirmation
-            );
-        });
-    }
-
-
-    // Make a node claim
-    public claimNode(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<TransactionReceipt> => {
-            return handleConfirmations(
-                rocketClaimNode.methods.claim().send(options),
-                onConfirmation
-            );
-        });
-    }
-
 
 }
 
 
 // Exports
-export default Rewards;
+export default Pool;

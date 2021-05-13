@@ -21,13 +21,13 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rp.rewards.getClaimIntervalsPassed().then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimIntervalBlockStart().then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getRPLBalance().then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractPerc('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractAllowance('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractTotalClaimed('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimIntervalRewardsTotal().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimIntervalsPassed().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimIntervalBlockStart().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getRPLBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractPerc('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractAllowance('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractTotalClaimed('rocketClaimDAO').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimIntervalRewardsTotal().then((value: any) => web3.utils.toBN(value)),
             rp.vault.balanceOfToken('rocketClaimDAO', rocketTokenRPLAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([intervalsPassed, intervalBlockStart, poolRPLBalance, daoClaimPerc, daoClaimAllowance, daoContractClaimTotal, intervalRewardsTotal, daoRewardsAddressBalance]) =>
@@ -39,7 +39,7 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     let ds1 = await getTxData();
 
     // Perform tx
-    await rp.rewards.claimTrustedNode(options);
+    await rp.rewards.claimTrustedNode.claim(options);
 
     // Capture data
     let ds2 = await getTxData();

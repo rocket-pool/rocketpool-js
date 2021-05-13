@@ -6,7 +6,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 // Can this trusted node make a claim yet? They need to wait 1 claim interval after being made a trusted node
 export async function rewardsClaimTrustedNodePossibleGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {
-    return await rp.rewards.getClaimPossible(trustedNodeAddress);
+    return await rp.rewards.claimNode.getClaimPossible(trustedNodeAddress);
 };
 
 // Get the current rewards claim period in blocks
@@ -14,7 +14,7 @@ export async function rewardsClaimTrustedNodeRegisteredBlockGet(web3: Web3, rp: 
     // Load contracts
     const rocketClaimTrustedNode = await rp.contracts.get('rocketClaimTrustedNode');
     // Do it
-    return await rp.rewards.getClaimContractRegisteredBlock(rocketClaimTrustedNode.options.address, trustedNodeAddress);
+    return await rp.rewards.pool.getClaimContractRegisteredBlock(rocketClaimTrustedNode.options.address, trustedNodeAddress);
 };
 
 // Perform rewards claims for Trusted Nodes + Minipools
@@ -24,12 +24,12 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
     function getTxData() {
         return Promise.all([
             web3.eth.getBlockNumber(),
-            rp.rewards.getClaimIntervalBlockStart().then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractAllowance('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractTotalClaimed('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractPerc('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimRewardsAmount(options.from).then((value: any) => web3.utils.toBN(value)),
-            rp.rewards.getClaimingContractUserTotalCurrent('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value))
+            rp.rewards.pool.getClaimIntervalBlockStart().then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractAllowance('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractTotalClaimed('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractPerc('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.claimTrustedNode.getClaimRewardsAmount(options.from).then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractUserTotalCurrent('rocketClaimTrustedNode').then((value: any) => web3.utils.toBN(value))
         ]).then(
             ([currentBlock, claimIntervalBlockStart, contractClaimAllowance, contractClaimTotal, contractClaimPerc, trustedNodeClaimAmount, trustedNodeClaimIntervalTotal]) =>
                 ({currentBlock, claimIntervalBlockStart, contractClaimAllowance, contractClaimTotal, contractClaimPerc, trustedNodeClaimAmount, trustedNodeClaimIntervalTotal})
@@ -42,7 +42,7 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
     //console.log('Node DAO Contract Amount', Number(web3.utils.fromWei(ds1.currentBlock)), Number(web3.utils.fromWei(ds1.claimIntervalBlockStart)));
 
     // Perform tx
-    await rp.rewards.claimTrustedNode(options);
+    await rp.rewards.claimTrustedNode.claim(options);
 
     // Capture data
     let ds2 = await getTxData();

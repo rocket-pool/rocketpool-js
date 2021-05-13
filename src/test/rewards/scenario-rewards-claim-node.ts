@@ -13,7 +13,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Get details
     function getDetails() {
         return Promise.all([
-            rp.rewards.getClaimingContractAllowance('rocketClaimNode').then((value: any) => web3.utils.toBN(value)),
+            rp.rewards.pool.getClaimingContractAllowance('rocketClaimNode').then((value: any) => web3.utils.toBN(value)),
             rp.node.getNodeTotalEffectiveRPLStake().then((value: any) => web3.utils.toBN(value)),
             rp.node.getNodeEffectiveRPLStake(options.from).then((value: any) => web3.utils.toBN(value)),
         ]).then(
@@ -25,7 +25,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Get balances
     function getBalances() {
         return Promise.all([
-            rp.rewards.getClaimIntervalBlockStart(),
+            rp.rewards.pool.getClaimIntervalBlockStart(),
             rp.tokens.rpl.balanceOf(nodeWithdrawalAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([claimIntervalBlockStart, nodeRpl]) =>
@@ -40,7 +40,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     ]);
 
     // Claim rewards
-    await rp.rewards.claimNode(options);
+    await rp.rewards.claimNode.claim(options);
 
     // Get updated balances
     // Get updated balances

@@ -14,7 +14,10 @@ import NetworkSettings from './settings/network';
 import NodeSettings from './settings/node';
 import RETH from './tokens/reth';
 import RPL from './tokens/rpl';
-import Rewards from './rewards/rewards';
+import Pool from './rewards/pool';
+import ClaimNode from './rewards/claim-node';
+import ClaimDAO from './rewards/claim-dao';
+import ClaimTrustedNode from './rewards/claim-trusted-node';
 import Vault from './vault/vault';
 
 
@@ -33,7 +36,7 @@ class RocketPool {
     public readonly node: Node;
     public readonly settings: {auction: AuctionSettings, deposit: DepositSettings, minipool: MinipoolSettings, network: NetworkSettings, node: NodeSettings};
     public readonly tokens: {reth: RETH, rpl: RPL};
-    public readonly rewards: Rewards;
+    public readonly rewards: {pool: Pool, claimNode: ClaimNode, claimDAO: ClaimDAO, claimTrustedNode: ClaimTrustedNode };
     public readonly vault: Vault;
 
 
@@ -58,7 +61,12 @@ class RocketPool {
             reth: new RETH(web3, this.contracts),
             rpl: new RPL(web3, this.contracts),
         };
-        this.rewards = new Rewards(web3, this.contracts);
+        this.rewards = {
+            pool: new Pool(web3, this.contracts),
+            claimNode: new ClaimNode(web3, this.contracts),
+            claimDAO: new ClaimDAO(web3, this.contracts),
+            claimTrustedNode: new ClaimTrustedNode(web3, this.contracts),
+        }
         this.vault = new Vault(web3, this.contracts);
 
     }

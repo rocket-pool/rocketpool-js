@@ -21,5 +21,5 @@ export async function rewardsClaimersPercTotalGet(web3: Web3, rp: RocketPool, op
 
 // Get how many blocks needed until the next claim interval
 export async function rewardsClaimIntervalsPassedGet(web3: Web3, rp: RocketPool, options: SendOptions) {
-    return await rp.rewards.getClaimIntervalsPassed();
+    return await rp.rewards.pool.getClaimIntervalsPassed();
 };
