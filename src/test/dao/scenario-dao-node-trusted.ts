@@ -8,14 +8,10 @@ import {proposalStates, getDAOProposalState} from './scenario-dao-proposal';
 // Create a proposal for this DAO
 export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposalMessage:string, _payload:string, options: SendOptions) {
 
-    // Load contracts
-    const rocketDAOProposal = await rp.contracts.get('rocketDAOProposal');
-    const rocketDAONodeTrustedProposals = await rp.contracts.get('rocketDAONodeTrustedProposals');
-
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAOProposal.methods.getTotal().call(),
+            rp.dao.proposals.getTotal(),
         ]).then(
             ([proposalTotal]) =>
                 ({proposalTotal})
@@ -31,7 +27,7 @@ export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposa
     let ds1 = await getTxData();
 
     // Add a new proposal
-    await rocketDAONodeTrustedProposals.methods.propose(_proposalMessage, _payload).send(options);
+    await rp.dao.node.trusted.proposals.propose(_proposalMessage, _payload, options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -56,17 +52,13 @@ export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposa
 // Vote on a proposal for this DAO
 export async function daoNodeTrustedVote(web3: Web3, rp: RocketPool, _proposalID: number, _vote: boolean, options: SendOptions) {
 
-    // Load contracts
-    const rocketDAOProposal = await rp.contracts.get('rocketDAOProposal');
-    const rocketDAONodeTrustedProposals = await rp.contracts.get('rocketDAONodeTrustedProposals');
-
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAOProposal.methods.getTotal().call(),
-            rocketDAOProposal.methods.getState(_proposalID).call(),
-            rocketDAOProposal.methods.getVotesFor(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
-            rocketDAOProposal.methods.getVotesRequired(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
+            rp.dao.proposals.getTotal(),
+            rp.dao.proposals.getState(_proposalID),
+            rp.dao.proposals.getVotesFor(_proposalID).then((value: any) => web3.utils.toBN(value)),
+            rp.dao.proposals.getVotesRequired(_proposalID).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([proposalTotal, proposalState, proposalVotesFor, proposalVotesRequired]) =>
                 ({proposalTotal, proposalState, proposalVotesFor, proposalVotesRequired})
@@ -82,7 +74,7 @@ export async function daoNodeTrustedVote(web3: Web3, rp: RocketPool, _proposalID
     options.gas = 1000000;
 
     // Add a new proposal
-    await rocketDAONodeTrustedProposals.methods.vote(_proposalID, _vote).send(options);
+    await rp.dao.node.trusted.proposals.vote(_proposalID, _vote, options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -96,14 +88,10 @@ export async function daoNodeTrustedVote(web3: Web3, rp: RocketPool, _proposalID
 // Execute a successful proposal
 export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposalID:number, options: SendOptions) {
 
-    // Load contracts
-    const rocketDAOProposal = await rp.contracts.get('rocketDAOProposal');
-    const rocketDAONodeTrustedProposals = await rp.contracts.get('rocketDAONodeTrustedProposals');
-
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAOProposal.methods.getState(_proposalID).call().then((value: any) => web3.utils.toBN(value)),
+            rp.dao.proposals.getState(_proposalID).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([proposalState]) =>
                 ({proposalState})
@@ -120,7 +108,7 @@ export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposa
     options.gas = 1000000;
 
     // Execute a proposal
-    await rocketDAONodeTrustedProposals.methods.execute(_proposalID).send(options);
+    await rp.dao.node.trusted.proposals.execute(_proposalID);
 
     // Capture data
     let ds2 = await getTxData();
@@ -134,18 +122,14 @@ export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposa
 // Join the DAO after a successful invite proposal has passed
 export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, options:SendOptions) {
 
-    // Load contracts
-    const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
-    const rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
-    const rocketVault =await rp.contracts.get('rocketVault');
-    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+    let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
-            rocketTokenRPL.methods.balanceOf(options.from).call().then((value: any) => web3.utils.toBN(value)),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.dao.node.trusted.node.getMemberCount().then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(options.from).then((value: any) => web3.utils.toBN(value)),
+            rp.vault.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPLAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceBond, rplBalanceVault]) =>
                 ({memberTotal, rplBalanceBond, rplBalanceVault})
@@ -162,7 +146,7 @@ export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, optio
     options.gas = 1000000;
 
     // Add a new proposal
-    await rocketDAONodeTrustedActions.methods.actionJoin().send(options);
+    await rp.dao.node.trusted.actions.actionJoin(options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -177,18 +161,14 @@ export async function daoNodeTrustedMemberJoin(web3: Web3, rp: RocketPool, optio
 // Leave the DAO after a successful leave proposal has passed
 export async function daoNodeTrustedMemberLeave(web3: Web3, rp: RocketPool, _rplRefundAddress:string, options:SendOptions) {
 
-    // Load contracts
-    const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
-    const rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
-    const rocketVault =await rp.contracts.get('rocketVault');
-    const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+    let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
-            rocketTokenRPL.methods.balanceOf(_rplRefundAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.dao.node.trusted.node.getMemberCount().then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(_rplRefundAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.vault.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPLAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceRefund, rplBalanceVault]) =>
                 ({memberTotal, rplBalanceRefund, rplBalanceVault
@@ -206,7 +186,7 @@ export async function daoNodeTrustedMemberLeave(web3: Web3, rp: RocketPool, _rpl
     options.gas = 1000000;
 
     // Add a new proposal
-    await rocketDAONodeTrustedActions.methods.actionLeave(_rplRefundAddress).send(options);
+    await rp.dao.node.trusted.actions.actionLeave(_rplRefundAddress, options);
 
     // Capture data
     let ds2 = await getTxData();

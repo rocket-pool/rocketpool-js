@@ -144,7 +144,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         });
 
         // The big test
-        it(printTitle('registeredNodeTrusted1&2', 'create two proposals for two new members that are voted in, one then chooses to leave and is allowed too'), async () => {
+        it(printTitle('registeredNodeTrusted1&2', 'create two proposals for two new members that are voted in, one then chooses to leave and is allowed to'), async () => {
             // Get the DAO settings
             let daoNodesettings = await rp.contracts.get('rocketDAONodeTrustedSettingsMembers');
             // How much RPL is required for a trusted node bond?

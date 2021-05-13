@@ -3,6 +3,12 @@ import Web3 from 'web3';
 import { ContractArtifact } from '../utils/contract';
 import Contracts from './contracts/contracts';
 import Auction from './auction/auction';
+import DAOProposal from './dao/proposals';
+import DAONodeTrusted from './dao/node/trusted/node';
+import DAONodeTrustedActions from './dao/node/trusted/actions';
+import DAONodeTrustedProposals from './dao/node/trusted/proposals';
+import DAONodeTrustedSettings from './dao/node/trusted/settings';
+import DAOProtocolSettings from './dao/protocol/settings';
 import Deposit from './deposit/deposit';
 import Minipool from './minipool/minipool';
 import Network from './network/network';
@@ -30,6 +36,20 @@ class RocketPool {
     // Services
     public readonly contracts: Contracts;
     public readonly auction: Auction;
+    public readonly dao: {
+        node: {
+            trusted: {
+                actions: DAONodeTrustedActions,
+                node: DAONodeTrusted,
+                proposals: DAONodeTrustedProposals,
+                settings: DAONodeTrustedSettings,
+            }
+        },
+        protocol: {
+            settings: DAOProtocolSettings,
+        },
+        proposals: DAOProposal,
+    }
     public readonly deposit: Deposit;
     public readonly minipool: Minipool;
     public readonly network: Network;
@@ -46,6 +66,20 @@ class RocketPool {
         // Initialise services
         this.contracts = new Contracts(web3, RocketStorage);
         this.auction = new Auction(web3, this.contracts);
+        this.dao = {
+           node: {
+               trusted: {
+                   actions: new DAONodeTrustedActions(web3, this.contracts),
+                   node: new DAONodeTrusted(web3, this.contracts),
+                   proposals: new DAONodeTrustedProposals(web3, this.contracts),
+                   settings: new DAONodeTrustedSettings(web3, this.contracts)
+               }
+           },
+           protocol: {
+               settings: new DAOProtocolSettings(web3, this.contracts),
+           },
+           proposals: new DAOProposal(web3, this.contracts),
+        };
         this.deposit = new Deposit(web3, this.contracts);
         this.minipool = new Minipool(web3, this.contracts);
         this.network = new Network(web3, this.contracts);
