@@ -8,9 +8,6 @@ import RocketPool from '../../rocketpool/rocketpool';
 // Register a node
 export async function register(web3: Web3, rp: RocketPool, timezoneLocation: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketNodeManager = await rp.contracts.get('rocketNodeManager');
-
     // Get node details
     function getNodeDetails(nodeAddress: string) {
         return Promise.all([

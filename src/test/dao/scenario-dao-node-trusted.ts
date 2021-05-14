@@ -108,7 +108,7 @@ export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposa
     options.gas = 1000000;
 
     // Execute a proposal
-    await rp.dao.node.trusted.proposals.execute(_proposalID);
+    await rp.dao.node.trusted.proposals.execute(_proposalID, options);
 
     // Capture data
     let ds2 = await getTxData();

@@ -1,3 +1,4 @@
+
 // Imports
 import {assert} from 'chai';
 import Web3 from 'web3';

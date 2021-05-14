@@ -25,10 +25,26 @@ class DAONodeTrustedSettings {
         return this.contracts.get('rocketDAONodeTrustedSettingsMembers');
     }
 
+    private get rocketDAOProtocolSettingsDeposit(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsDeposit');
+    }
+
+    private get rocketDAOProtocolSettingsMinipool(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsMinipool');
+    }
+
 
     /**
      * Getters
      */
+
+
+    // Get member id given an address
+    public getMaximumDepositAssignments(): Promise<string> {
+        return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call();
+        });
+    }
 
 
 

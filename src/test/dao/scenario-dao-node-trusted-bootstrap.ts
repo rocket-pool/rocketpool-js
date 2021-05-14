@@ -9,13 +9,10 @@ import {AbiItem} from 'web3-utils';
 
 export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _email: string, _nodeAddress: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
-
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberID(_nodeAddress).call(),
+            rp.dao.node.trusted.node.getMemberID(_nodeAddress),
         ]).then(
             ([memberID]) =>
                 ({memberID})
@@ -31,7 +28,7 @@ export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPoo
     options.gas = 1000000;
 
     // Set as a bootstrapped member
-    await rocketDAONodeTrusted.methods.bootstrapMember(_id, _email, _nodeAddress).send(options);
+    await rp.dao.node.trusted.node.bootstrapMember(_id, _email, _nodeAddress, options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -66,7 +63,7 @@ export async function setDAONodeTrustedBootstrapSetting(web3: Web3, rp: RocketPo
 
     // Set as a bootstrapped setting. detect type first, can be a number, string or bn object
     if(typeof(_value) == 'number' || typeof(_value) == 'string' || typeof(_value) == 'object') await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value).send(options);
-    if(typeof(_value) == 'boolean') await rocketDAONodeTrusted.methods.bootstrapSettingBool(_settingContractInstance, _settingPath, _value).send(options);
+    if(typeof(_value) == 'boolean') await rp.dao.node.trusted.node.bootstrapSettingBool(_settingContractInstance, _settingPath, _value, options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -88,7 +85,7 @@ export async function setDaoNodeTrustedBootstrapModeDisabled(web3: Web3, rp: Roc
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getBootstrapModeDisabled().call(),
+            rp.dao.node.trusted.node.getBootstrapModeDisabled(),
         ]).then(
             ([bootstrapmodeDisabled]) =>
                 ({bootstrapmodeDisabled})
@@ -99,7 +96,7 @@ export async function setDaoNodeTrustedBootstrapModeDisabled(web3: Web3, rp: Roc
     let ds1 = await getTxData();
 
     // Set as a bootstrapped member
-    await rocketDAONodeTrusted.methods.bootstrapDisable(true).send(options);
+    await rp.dao.node.trusted.node.bootstrapDisable(true, options);
 
     // Capture data
     let ds2 = await getTxData();
@@ -211,17 +208,14 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
 // A registered node attempting to join as a member due to low DAO member count
 export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool, _id: string, _email: string, options: SendOptions) {
 
-    // Load contracts
-    const rocketDAONodeTrusted =  await rp.contracts.get('rocketDAONodeTrusted');
-    const rocketVault =  await rp.contracts.get('rocketVault');
-    const rocketTokenRPL =  await rp.contracts.get('rocketTokenRPL');
+    let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
     // Get data about the tx
     function getTxData() {
         return Promise.all([
-            rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value)),
-            rocketTokenRPL.methods.balanceOf(options.from).call().then((value: any) => web3.utils.toBN(value)),
-            rocketVault.methods.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPL.options.address).call().then((value: any) => web3.utils.toBN(value)),
+            rp.dao.node.trusted.node.getMemberCount().then((value: any) => web3.utils.toBN(value)),
+            rp.tokens.rpl.balanceOf(options.from).then((value: any) => web3.utils.toBN(value)),
+            rp.vault.balanceOfToken('rocketDAONodeTrustedActions', rocketTokenRPLAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([memberTotal, rplBalanceBond, rplBalanceVault]) =>
                 ({memberTotal, rplBalanceBond, rplBalanceVault})
@@ -238,7 +232,7 @@ export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool
     options.gas = 1000000;
 
     // Add a new proposal
-    await rocketDAONodeTrusted.methods.memberJoinRequired(_id, _email).send(options);
+    await rp.dao.node.trusted.node.memberJoinRequired(_id, _email, options);
 
     // Capture data
     let ds2 = await getTxData();

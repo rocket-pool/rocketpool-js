@@ -27,7 +27,6 @@ class DAONodeTrustedProposals {
      */
 
 
-
     /**
      * Mutators - Public
      */

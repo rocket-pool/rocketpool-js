@@ -58,6 +58,28 @@ class DAOProposal {
     }
 
 
+    // Get start given a proposal id
+    public getStart(proposalID: number): Promise<number> {
+        return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+            return rocketDAOProposal.methods.getStart(proposalID).call();
+        });
+    }
+
+    // Get end given a proposal id
+    public getEnd(proposalID: number): Promise<number> {
+        return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+            return rocketDAOProposal.methods.getEnd(proposalID).call();
+        });
+    }
+
+    // Get votes against
+    public getVotesAgainst(proposalID: number): Promise<number> {
+        return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+            return rocketDAOProposal.methods.getVotesAgainst(proposalID).call();
+        });
+    }
+
+
 
     /**
      * Mutators - Public
