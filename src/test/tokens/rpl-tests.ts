@@ -42,6 +42,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('userOne', 'burn all their current fixed supply RPL for new RPL'), async () => {
 
             // Load contracts
@@ -57,6 +58,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('userOne', 'burn less fixed supply RPL than they\'ve given an allowance for'), async () => {
 
@@ -79,6 +81,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('userOne', 'fails to burn more fixed supply RPL than they\'ve given an allowance for'), async () => {
 
@@ -119,6 +122,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('userOne', 'fails to set start block for inflation'), async () => {
             // Current block
             let currentBlock = await web3.eth.getBlockNumber();
@@ -129,6 +133,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             }), 'Non owner set start block for inlfation', 'Account is not a temporary guardian');
         });
 
+
         it(printTitle('guardian', 'succeeds setting future start block for inflation'), async () => {
             // Current block
             let currentBlock = await web3.eth.getBlockNumber();
@@ -138,6 +143,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
         });
+
 
         it(printTitle('guardian', 'succeeds setting future start block for inflation twice'), async () => {
             // Current block
@@ -156,6 +162,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             });
         });
 
+
         it(printTitle('guardian', 'fails to set start block for inflation less than current block'), async () => {
             // Current block
             let currentBlock = await web3.eth.getBlockNumber();
@@ -165,6 +172,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Owner set old start block for inflation', 'Inflation interval start block must be a future block');
         });
+
 
         it(printTitle('guardian', 'fails to set start block for inflation after inflation has begun'), async () => {
             // Current block
@@ -186,6 +194,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Owner set start block for inflation after it had started', 'Inflation has already started');
         });
+
 
         it(printTitle('userOne', 'fails to mint inflation before inflation start block has passed'), async () => {
 
@@ -213,6 +222,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('userOne', 'fails to mint inflation same block as inflation start block'), async () => {
 
             // Current block
@@ -239,6 +249,8 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
+
         it(printTitle('userOne', 'fails to mint inflation before an interval has passed'), async () => {
 
             // Current block
@@ -264,6 +276,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             }), 'Inflation claimed before interval has passed', 'Incorrect amount of minted tokens expected');
 
         });
+
 
         it(printTitle('userOne', 'mint inflation midway through a second interval, then mint again after another interval'), async () => {
 
@@ -292,6 +305,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
 
         });
+
 
         it(printTitle('userOne', 'mint inflation at multiple random intervals'), async () => {
 
@@ -332,6 +346,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
 
         });
+
 
         it(printTitle('userOne', 'mint one years inflation after 365 days at 5% which would equal 18,900,000 tokens'), async () => {
 
@@ -400,6 +415,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('userTwo', 'mint two years inflation every 6 months at 5% which would equal 19,845,000 tokens'), async () => {
 
             // Current block
@@ -434,6 +450,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 19845000);
 
         });
+
 
         it(printTitle('userOne', 'mint one years inflation, then set inflation rate to 0 to prevent new inflation'), async () => {
 

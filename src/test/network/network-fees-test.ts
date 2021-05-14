@@ -48,6 +48,7 @@ export default function runNetworkFeesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('network node fee', 'has correct value based on node demand'), async () => {
 
             // Set expected fees for node demand values

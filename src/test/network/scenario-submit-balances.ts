@@ -30,6 +30,7 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
         );
     }
 
+
     // Get balances
     function getBalances() {
         return Promise.all([
@@ -77,4 +78,3 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     }
 
 }
-

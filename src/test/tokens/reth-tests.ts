@@ -92,6 +92,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('rETH holder', 'can burn rETH for ETH collateral'), async () => {
 
             // Send ETH to the minipool to simulate receving from SWC
@@ -115,6 +116,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('rETH holder', 'can burn rETH for excess deposit pool ETH'), async () => {
 
             // Make user deposit
@@ -132,6 +134,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('rETH holder', 'cannot burn an invalid amount of rETH'), async () => {
 
@@ -164,6 +167,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             }), 'Burned an amount of rETH greater than the token balance', 'Insufficient rETH balance');
 
         });
+
 
         it(printTitle('rETH holder', 'cannot burn rETH with insufficient collateral'), async () => {
 

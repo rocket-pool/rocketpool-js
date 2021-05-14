@@ -32,12 +32,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Start Block given a lotIndex
     public getLotStartBlock(lotIndex: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotStartBlock(lotIndex).call();
         });
     }
+
 
     // Return the Lot End Block given a lotIndex
     public getLotEndBlock(lotIndex: number): Promise<number> {
@@ -46,12 +48,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Start Price given a lotIndex
     public getLotStartPrice(lotIndex: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotStartPrice(lotIndex).call();
         });
     }
+
 
     // Return the Lot Reserve Price given a lotIndex
     public getLotReservePrice(lotIndex: number): Promise<number> {
@@ -60,12 +64,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Total Bid Amount given a lotIndex
     public getLotTotalBidAmount(lotIndex: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotTotalBidAmount(lotIndex).call();
         });
     }
+
 
     // Return the Lot Total RPL Amount given a lotIndex
     public getLotTotalRPLAmount(lotIndex: number): Promise<number> {
@@ -74,12 +80,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Address Bid Amount given a lotIndex and a bidderAddress
     public getLotAddressBidAmount(lotIndex: number, bidderAddress: string): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotAddressBidAmount(lotIndex, bidderAddress).call();
         });
     }
+
 
     // Return the Lot Current Price by Total Bids given a lotIndex
     public getLotPriceByTotalBids(lotIndex: number): Promise<number> {
@@ -88,12 +96,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Current Price given a lotIndex
     public getLotCurrentPrice(lotIndex: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotCurrentPrice(lotIndex).call();
         });
     }
+
 
     // Return the Lot Claimed Amount given a lotIndex
     public getLotClaimedRPLAmount(lotIndex: number): Promise<number> {
@@ -102,12 +112,14 @@ class Auction {
         });
     }
 
+
     // Return the Lot Remaining RPL Amount given a lotIndex
     public getLotRemainingRPLAmount(lotIndex: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotRemainingRPLAmount(lotIndex).call();
         });
     }
+
 
     // Return the Lot Remaining RPL Amount given a lotIndex
     public getLotIsCleared(lotIndex: number): Promise<boolean> {
@@ -116,12 +128,14 @@ class Auction {
         });
     }
 
+
     // Return the total RPL balance
     public getTotalRPLBalance(): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getTotalRPLBalance().call();
         });
     }
+
 
     // Return the allotted RPL balance
     public getAllottedRPLBalance(): Promise<number> {
@@ -130,12 +144,14 @@ class Auction {
         });
     }
 
+
     // Return the remaining RPL balance
     public getRemainingRPLBalance(): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getRemainingRPLBalance().call();
         });
     }
+
 
     // Return the lot count
     public getLotCount(): Promise<number> {
@@ -144,12 +160,14 @@ class Auction {
         });
     }
 
+
     // Return the lot price at a specified block given a lot index
     public getLotPriceAtBlock(lotIndex: number, block: number): Promise<number> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<number> => {
             return rocketAuctionManager.methods.getLotPriceAtBlock(lotIndex, block).call();
         });
     }
+
 
     // Return the lot RPL recovered given a lot index
     public getLotRPLRecovered(lotIndex: number): Promise<number> {
@@ -158,10 +176,10 @@ class Auction {
         });
     }
 
+
     /**
      * Mutators - Public
      */
-
     // Create a lot
     public createLot(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {

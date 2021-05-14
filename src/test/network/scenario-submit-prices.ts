@@ -30,6 +30,7 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
         );
     }
 
+
     // Get prices
     function getPrices() {
         return Promise.all([
@@ -71,6 +72,8 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
     }
 
 }
+
+
 // Execute price update
 export async function executeUpdatePrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, options: SendOptions) {
 

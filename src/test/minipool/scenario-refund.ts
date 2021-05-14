@@ -49,4 +49,3 @@ export async function refund(web3: Web3, rp: RocketPool, minipool: MinipoolContr
     assert(balances2.nodeEth.eq(expectedNodeBalance), 'Incorrect updated node ETH balance');
 
 }
-

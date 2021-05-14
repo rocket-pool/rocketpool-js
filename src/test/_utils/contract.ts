@@ -23,10 +23,13 @@ export function getTxContractEvents(web3: Web3, txReceipt: TransactionReceipt, c
         }), log.raw!.data, log.raw!.topics.slice(1)));
 }
 
+
 // Compress / decompress contract ABIs
 export function compressABI(abi:AbiItem[]) {
     return Buffer.from(pako.deflate(JSON.stringify(abi))).toString('base64');
 }
+
+
 export function decompressABI(abi:string) {
     return JSON.parse(pako.inflate(Buffer.from(abi, 'base64'), {to: 'string'}));
 }

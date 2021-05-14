@@ -25,8 +25,6 @@ abstract class ERC20 {
     /**
      * Getters
      */
-
-
     // Get the token balance of an account
     public balanceOf(account: string): Promise<string> {
         return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
@@ -46,8 +44,6 @@ abstract class ERC20 {
     /**
      * Mutators - Public
      */
-
-
     // Transfer tokens to a recipient
     public transfer(to: string, amountWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {

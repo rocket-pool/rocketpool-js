@@ -4,10 +4,12 @@ import Web3 from 'web3';
 import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
+
 // Can this trusted node make a claim yet? They need to wait 1 claim interval after being made a trusted node
 export async function rewardsClaimTrustedNodePossibleGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {
     return await rp.rewards.claimNode.getClaimPossible(trustedNodeAddress);
 };
+
 
 // Get the current rewards claim period in blocks
 export async function rewardsClaimTrustedNodeRegisteredBlockGet(web3: Web3, rp: RocketPool, trustedNodeAddress: string, options: SendOptions) {
@@ -16,6 +18,7 @@ export async function rewardsClaimTrustedNodeRegisteredBlockGet(web3: Web3, rp: 
     // Do it
     return await rp.rewards.pool.getClaimContractRegisteredBlock(rocketClaimTrustedNode.options.address, trustedNodeAddress);
 };
+
 
 // Perform rewards claims for Trusted Nodes + Minipools
 export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, trustedNodeAccount: string, options: SendOptions) {
@@ -69,5 +72,3 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
     assert(ds2.contractClaimTotal.lte(ds2.contractClaimAllowance), 'Trusted node claimed more than contracts allowance');
 
 };
-
-

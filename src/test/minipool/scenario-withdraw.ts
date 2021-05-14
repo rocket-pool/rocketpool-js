@@ -27,6 +27,7 @@ export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolCon
         );
     }
 
+
     // Get node balances
     function getNodeBalances() {
         return Promise.all([
@@ -70,4 +71,3 @@ export async function withdraw(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     assert(nodeBalances2.eth.eq(expectedNodeEthBalance), 'Incorrect updated node ETH balance');
 
 }
-

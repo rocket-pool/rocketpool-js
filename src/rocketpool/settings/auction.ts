@@ -23,13 +23,13 @@ class AuctionSettings {
     /**
      * Getters
      */
-
     // Return the Lot Maximum Eth Value Setting
     public getLotMaximumEthValue(): Promise<number> {
         return this.rocketDAOProtocolSettingsAuction.then((rocketDAOProtocolSettingsAuction: Contract): Promise<number> => {
             return rocketDAOProtocolSettingsAuction.methods.getLotMaximumEthValue().call();
         });
     }
+
 
     // Return the Lot Duration Setting
     public getLotDuration(): Promise<number> {
@@ -38,12 +38,16 @@ class AuctionSettings {
         });
     }
 
+
+
     // Return the Starting Price Ratio Setting
     public getStartingPriceRatio(): Promise<number> {
         return this.rocketDAOProtocolSettingsAuction.then((rocketDAOProtocolSettingsAuction: Contract): Promise<number> => {
             return rocketDAOProtocolSettingsAuction.methods.getStartingPriceRatio().call();
         });
     }
+
+
 
     // Return the Reserve Price Ratio Setting
     public getReservePriceRatio(): Promise<number> {

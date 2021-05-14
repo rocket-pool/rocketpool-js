@@ -23,8 +23,6 @@ class NodeSettings {
     /**
      * Getters
      */
-
-
     // Node registrations are currently enabled
     public getRegistrationEnabled(): Promise<boolean> {
         return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {

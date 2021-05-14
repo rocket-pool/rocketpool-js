@@ -59,6 +59,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'can make a deposit to create a minipool'), async () => {
 
             // Stake RPL to cover minipools
@@ -82,6 +83,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('node operator', 'cannot make a deposit while deposits are disabled'), async () => {
 
@@ -108,6 +110,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
             }), 'Made a deposit while deposits were disabled', 'Node deposits are currently disabled');
 
         });
+
 
         it(printTitle('node operator', 'cannot make a deposit with a minimum node fee exceeding the current network node fee'), async () => {
 
@@ -136,6 +139,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'cannot make a deposit with an invalid amount'), async () => {
 
             // Stake RPL to cover minipool
@@ -157,6 +161,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
             }), 'Made a deposit with an invalid deposit amount', 'Invalid node deposit amount');
 
         });
+
 
         it(printTitle('node operator', 'cannot make a deposit with insufficient RPL staked'), async () => {
 
@@ -182,6 +187,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted node operator', 'can make a deposit to create an empty minipool'), async () => {
 
             // Stake RPL to cover minipool
@@ -198,6 +204,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('regular node operator', 'cannot make a deposit to create an empty minipool'), async () => {
 
             // Stake RPL to cover minipool
@@ -213,6 +220,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
             }), 'Regular node created an empty minipool', 'Only members of the trusted node DAO may create unbonded minipools');
 
         });
+
 
         it(printTitle('random address', 'cannot make a deposit'), async () => {
 

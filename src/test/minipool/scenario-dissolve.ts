@@ -36,4 +36,3 @@ export async function dissolve(web3: Web3, rp: RocketPool, minipool: MinipoolCon
     assert(details2.userDepositBalance.eq(web3.utils.toBN(0)), 'Incorrect updated minipool user deposit balance');
 
 }
-

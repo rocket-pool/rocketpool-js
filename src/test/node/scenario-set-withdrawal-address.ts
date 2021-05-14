@@ -25,6 +25,7 @@ export async function setWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddre
 
 }
 
+
 export async function confirmWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, options: SendOptions) {
 
     // Confirm withdrawal address

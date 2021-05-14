@@ -59,6 +59,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'cannot register a node while registrations are disabled'), async () => {
 
             // Disable registrations
@@ -72,6 +73,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'cannot register a node with an invalid timezone location'), async () => {
 
             // Attempt to register node
@@ -81,6 +83,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
             }), 'Registered a node with an invalid timezone location', 'The timezone location is invalid');
 
         });
+
 
         it(printTitle('node operator', 'cannot register a node which is already registered'), async () => {
 
@@ -99,7 +102,6 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         //
         // Withdrawal address
         //
-
         it(printTitle('node operator', 'can set their withdrawal address immediately'), async () => {
 
             // Set withdrawal address
@@ -115,6 +117,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('node operator', 'can set their withdrawal address to the same value as another node operator'), async () => {
 

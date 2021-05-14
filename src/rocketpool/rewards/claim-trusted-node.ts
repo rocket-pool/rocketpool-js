@@ -26,8 +26,6 @@ class Rewards {
     /**
      * Getters
      */
-
-
     // Get claim rewards amount
     public getClaimRewardsAmount(address: string): Promise<string> {
         return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<string> => {
@@ -39,8 +37,6 @@ class Rewards {
     /**
      * Mutators - Public
      */
-
-
     // Claim from a trusted node
     public claim(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<TransactionReceipt> => {

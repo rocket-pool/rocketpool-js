@@ -26,14 +26,13 @@ class Vault {
     /**
      * Getters
      */
-
-
     // Get contract address
     public getAddress(): Promise<string> {
         return this.rocketVault.then((rocketVault: Contract): string => {
             return rocketVault.options.address;
         });
     }
+
 
     // Get the claim intervals that have passed
     public balanceOfToken(contractAddress:string, tokenAddress: string): Promise<string> {

@@ -144,6 +144,8 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
                 ({address, abi})
         );
     }
+
+
     function getContractAddressData(_contractAddress: string) {
         return Promise.all([
             rocketStorage.methods.getBool(web3.utils.soliditySha3('contract.exists', _contractAddress)).call(),

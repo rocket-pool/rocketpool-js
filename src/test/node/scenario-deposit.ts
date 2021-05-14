@@ -24,6 +24,7 @@ export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string
         );
     }
 
+
     // Get minipool details
     function getMinipoolDetails(minipoolAddress: string) {
         return rp.minipool.getMinipoolContract(minipoolAddress).then((minipool: MinipoolContract) => Promise.all([
@@ -79,4 +80,3 @@ export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string
     assert.isTrue(minipoolDetails.nodeDepositAssigned, 'Incorrect created minipool node deposit assigned status');
 
 }
-

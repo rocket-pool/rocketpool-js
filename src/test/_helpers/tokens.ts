@@ -26,6 +26,7 @@ export async function getRethTotalSupply(web3: Web3, rp:RocketPool) {
     return await rp.tokens.reth.getTotalSupply();
 }
 
+
 // Mint RPL to an address
 export async function mintRPL(web3: Web3, rp:RocketPool, owner:string, toAddress:string, amount:string) {
     const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');

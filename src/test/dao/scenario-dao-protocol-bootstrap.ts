@@ -48,6 +48,7 @@ export async function setDAOProtocolBootstrapSetting(web3: Web3, rp: RocketPool,
 
 }
 
+
 // Set a contract that can claim rewards
 export async function setDAONetworkBootstrapRewardsClaimer(web3: Web3, rp: RocketPool, _contractName: string, _perc: string, options: SendOptions, expectedTotalPerc?: number | null) {
     // Load contracts
@@ -138,17 +139,20 @@ export async function setRPLInflationIntervalRate(web3: Web3, rp: RocketPool, ye
     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.rate', dailyInflation, options);
 };
 
+
 // Set the current RPL inflation rate blocks, how often inflation is calculated
 export async function setRPLInflationIntervalBlocks(web3: Web3, rp: RocketPool, intervalBlocks: number, options: SendOptions) {
     // Set it now
     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.blocks', intervalBlocks, options);
 };
 
+
 // Set the current RPL inflation block interval
 export async function setRPLInflationStartBlock(web3: Web3, rp: RocketPool, startBlock: number, options: SendOptions) {
     // Set it now
     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.start', startBlock, options);
 };
+
 
 // Disable bootstrap mode
 export async function setDaoProtocolBootstrapModeDisabled(web3: Web3, rp: RocketPool, options: SendOptions) {

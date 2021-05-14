@@ -53,4 +53,3 @@ export async function close(web3: Web3, rp: RocketPool, minipool: MinipoolContra
     assert.equal(minipoolCode, '0x', 'Minipool contract was not destroyed');
 
 }
-

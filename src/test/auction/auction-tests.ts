@@ -81,6 +81,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot create a lot while lot creation is disabled'), async () => {
 
             // Slash RPL assigned to minipool to fill auction contract
@@ -95,6 +96,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }), 'Created a lot while lot creation was disabled', 'Creating lots is currently disabled');
 
         });
+
 
         it(printTitle('random address', 'cannot create a lot with an insufficient RPL balance'), async () => {
 
@@ -144,6 +146,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }
 
         });
+
 
         it(printTitle('random address', 'can place a bid on a lot'), async () => {
 
@@ -196,6 +199,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot bid on a lot which doesn\'t exist'), async () => {
 
             // Create lot
@@ -209,6 +213,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }), 'Bid on a lot which doesn\'t exist', 'SafeMath: division by zero');
 
         });
+
 
         it(printTitle('random address', 'cannot bid on a lot while bidding is disabled'), async () => {
 
@@ -227,6 +232,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot bid an invalid amount on a lot'), async () => {
 
             // Create lot
@@ -240,6 +246,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }), 'Bid an invalid amount on a lot', 'Invalid bid amount');
 
         });
+
 
         it(printTitle('random address', 'cannot bid on a lot after the lot bidding period has concluded'), async () => {
 
@@ -319,6 +326,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot claim RPL from a lot which doesn\'t exist'), async () => {
 
             // Create lot & place bid to clear
@@ -332,6 +340,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }), 'Claimed RPL from a lot which doesn\'t exist', 'SafeMath: division by zero');
 
         });
+
 
         it(printTitle('random address', 'cannot claim RPL from a lot before it has cleared'), async () => {
 
@@ -347,6 +356,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot claim RPL from a lot it has not bid on'), async () => {
 
             // Create lot & place bid to clear
@@ -360,6 +370,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             }), 'Address claimed RPL from a lot it has not bid on', 'Lot has not cleared yet');
 
         });
+
 
         it(printTitle('random address', 'can recover unclaimed RPL from a lot'), async () => {
 

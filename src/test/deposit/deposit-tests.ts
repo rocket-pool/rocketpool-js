@@ -88,6 +88,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('staker', 'cannot make a deposit while deposits are disabled'), async () => {
 
             // Disable deposits
@@ -101,6 +102,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
             }), 'Made a deposit while deposits are disabled', 'Deposits into Rocket Pool are currently disabled');
 
         });
+
 
         it(printTitle('staker', 'cannot make a deposit below the minimum deposit amount'), async () => {
 
@@ -118,6 +120,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('staker', 'cannot make a deposit which would exceed the maximum deposit pool size'), async () => {
 
             // Set max deposit pool size
@@ -131,6 +134,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
             }), 'Made a deposit which exceeds the maximum deposit pool size', 'The deposit pool size after depositing exceeds the maximum size');
 
         });
+
 
         //
         // Assign deposits
@@ -169,6 +173,7 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('random address', 'cannot assign deposits while deposit assignment is disabled'), async () => {
 

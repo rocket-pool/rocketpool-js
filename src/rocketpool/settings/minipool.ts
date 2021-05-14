@@ -23,8 +23,6 @@ class MinipoolSettings {
     /**
      * Getters
      */
-
-
     // Balance required to launch minipool in wei
     public getLaunchBalance(): Promise<string> {
         return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
@@ -39,11 +37,15 @@ class MinipoolSettings {
             return rocketDAOProtocolSettingsMinipool.methods.getFullDepositNodeAmount().call();
         });
     }
+
+
     public getHalfDepositNodeAmount(): Promise<string> {
         return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositNodeAmount().call();
         });
     }
+
+
     public getEmptyDepositNodeAmount(): Promise<string> {
         return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositNodeAmount().call();
@@ -57,11 +59,15 @@ class MinipoolSettings {
             return rocketDAOProtocolSettingsMinipool.methods.getFullDepositUserAmount().call();
         });
     }
+
+
     public getHalfDepositUserAmount(): Promise<string> {
         return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call();
         });
     }
+
+
     public getEmptyDepositUserAmount(): Promise<string> {
         return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsMinipool.methods.getEmptyDepositUserAmount().call();

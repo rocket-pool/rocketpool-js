@@ -4,11 +4,13 @@ import Web3 from 'web3';
 import { SendOptions } from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
+
 // Set the address the DAO can receive rewards at
 export async function getRewardsDAOTreasuryBalance(web3: Web3, rp: RocketPool, options: SendOptions) {
     let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
     return rp.vault.balanceOfToken('rocketClaimDAO', rocketTokenRPLAddress);
 }
+
 
 // Set the address the DAO can receive rewards at
 export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendOptions) {
@@ -61,5 +63,3 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     }
 
 };
-
-

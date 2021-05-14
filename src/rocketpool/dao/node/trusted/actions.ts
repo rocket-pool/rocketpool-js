@@ -42,6 +42,7 @@ class DAONodeTrustedActions {
         });
     }
 
+
     // Leave the DAO
     public actionLeave(refundAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {

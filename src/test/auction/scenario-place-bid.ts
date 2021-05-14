@@ -14,6 +14,7 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
     // Calculation base value
     const calcBase = web3.utils.toBN(web3.utils.toWei('1', 'ether'));
 
+
     // Get lot details
     function getLotDetails(bidderAddress: string) {
         return Promise.all([
@@ -30,6 +31,7 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
         );
     }
 
+
     // Get balances
     function getBalances(bidderAddress: string) {
         return Promise.all([
@@ -42,11 +44,13 @@ export async function placeBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
         );
     }
 
+
     // Get lot price at block
     function getLotPriceAtBlock() {
         return web3.eth.getBlock('latest')
             .then((block: any) => rp.auction.getLotPriceAtBlock(lotIndex, block.number));
     }
+
 
     // Get initial lot details & balances
     let [lot1, balances1] = await Promise.all([

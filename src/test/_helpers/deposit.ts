@@ -9,10 +9,12 @@ export async function getDepositExcessBalance(web3: Web3, rp: RocketPool) {
     return excessBalance;
 }
 
+
 // Make a deposit
 export async function userDeposit(web3: Web3, rp: RocketPool, options:SendOptions) {
     await rp.deposit.deposit(options);
 }
+
 
 // Assign deposits
 export async function assignDeposits(web3: Web3, rp: RocketPool, options:SendOptions) {

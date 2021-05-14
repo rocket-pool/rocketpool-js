@@ -33,12 +33,14 @@ class DAONodeTrusted {
         });
     }
 
+
     // Get the number of DAO Members
     public getMemberCount(): Promise<number> {
         return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<number> => {
             return rocketDAONodeTrusted.methods.getMemberCount().call();
         });
     }
+
 
     // Check if Bootstrap Mode is enabled
     public getBootstrapModeDisabled(): Promise<boolean> {
@@ -52,7 +54,6 @@ class DAONodeTrusted {
     /**
      * Mutators - Public
      */
-
     // Bootstrap a DAO Member
     public bootstrapMember(id: string, email: string, nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
@@ -62,6 +63,7 @@ class DAONodeTrusted {
             );
         });
     }
+
 
     // Bootstrap a Boolean Setting
     public bootstrapSettingBool(settingContractInstance: string, settingPath: string, value: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
@@ -73,6 +75,7 @@ class DAONodeTrusted {
         });
     }
 
+
     // Bootstrap disable
     public bootstrapDisable(value: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
@@ -82,6 +85,7 @@ class DAONodeTrusted {
             );
         });
     }
+
 
     // Bootstrap disable
     public memberJoinRequired(id: string, email: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {

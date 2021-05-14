@@ -125,6 +125,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('userOne', 'fails to set interval blocks for rewards claim period'), async () => {
             // Set the rewards claims interval in blocks
             await shouldRevert(setRewardsClaimIntervalBlocks(web3, rp, 100, {
@@ -132,6 +133,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Non owner set interval blocks for rewards claim period', 'Account is not a temporary guardian');
         });
+
 
         it(printTitle('guardian', 'succeeds setting interval blocks for rewards claim period'), async () => {
             // Set the rewards claims interval in blocks
@@ -149,6 +151,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Non owner set contract claimer percentage for rewards', 'Account is not a temporary guardian');
         });
+
 
         it(printTitle('guardian', 'set contract claimer percentage for rewards, then update it'), async () => {
             // Set the amount this contract can claim
@@ -168,6 +171,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             });
         });
 
+
         it(printTitle('guardian', 'set contract claimer percentage for rewards, then update it to zero'), async () => {
             // Get the total current claims amounts
             let totalClaimersPerc = parseFloat(web3.utils.fromWei(await rewardsClaimersPercTotalGet(web3, rp, {
@@ -186,6 +190,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }, totalClaimersPerc);
         });
 
+
         it(printTitle('guardian', 'set contract claimers total percentage to 100%'), async () => {
             // Get the total current claims amounts
             let totalClaimersPerc = parseFloat(web3.utils.fromWei(await rewardsClaimersPercTotalGet(web3, rp, {
@@ -200,6 +205,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }, 1);
         });
+
 
         it(printTitle('guardian', 'fail to set contract claimers total percentage over 100%'), async () => {
             // Get the total current claims amounts
@@ -216,6 +222,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), "Total claimers percentrage over 100%", 'Claimers cannot total more than 100%');
         });
 
+
         it(printTitle('userOne', 'fails to call claim method on rewards pool contract as they are not a registered claimer contract'), async () => {
             // Init rewards pool
             const rocketRewardsPool = await rp.contracts.get('rocketRewardsPool');
@@ -228,8 +235,6 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         /*** Regular Nodes **************************/
-
-
         it(printTitle('node', 'can claim RPL'), async () => {
 
             // Initialize RPL inflation & claims contract
@@ -266,6 +271,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node', 'cannot claim RPL before inflation has begun'), async () => {
 
             // Initialize claims contract
@@ -281,6 +287,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), 'Node claimed RPL before RPL inflation began', 'Claiming contract must have an allowance of more than 0');
 
         });
+
 
         it(printTitle('node', 'cannot claim RPL while the node claim contract is disabled'), async () => {
 
@@ -303,6 +310,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), 'Node claimed RPL while node claim contract was disabled', 'The node is currently unable to claim');
 
         });
+
 
         it(printTitle('node', 'cannot claim RPL twice in the same interval'), async () => {
 
@@ -328,6 +336,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), 'Node claimed RPL twice in the same interval', 'Claimer is not entitled to tokens, they have already claimed in this interval or they are claiming more rewards than available to this claiming contract.');
 
         });
+
 
         it(printTitle('node', 'cannot claim RPL while their node is undercollateralized'), async () => {
 
@@ -358,8 +367,8 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         });
 
-        /*** Trusted Node **************************/
 
+        /*** Trusted Node **************************/
         it(printTitle('trustedNode1', 'fails to call claim before RPL inflation has begun'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
             let rplInflationStartBlock = await rplInflationSetup();
@@ -375,6 +384,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), "Made claim before RPL inflation started", "This trusted node is not able to claim yet and must wait until a full claim interval passes");
         });
+
 
         it(printTitle('trustedNode1', 'makes a claim, then fails to make another in the same claim interval'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
@@ -399,6 +409,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), "Made claim again before next interval", "Claimer is not entitled to tokens, they have already claimed in this interval or they are claiming more rewards than available to this claiming contract");
         });
 
+
         it(printTitle('trustedNode3', 'fails to claim rewards as they have not waited one claim interval'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
             let rplInflationStartBlock = await rplInflationSetup();
@@ -421,6 +432,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             }), "Made claim before next interval", "This trusted node is not able to claim yet and must wait until a full claim interval passes");
         });
 
+
         it(printTitle('trustedNode1', 'fails to make a claim when trusted node contract claim perc is set to 0'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
             let rplInflationStartBlock = await rplInflationSetup();
@@ -438,6 +450,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), "Made claim again before next interval", "This trusted node is not able to claim yet and must wait until a full claim interval passes");
         });
+
 
         it(printTitle('trustedNode1+4', 'trusted node 1 makes a claim after RPL inflation has begun and newly registered trusted node 4 claim in next interval'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
@@ -465,6 +478,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
         });
+
 
         it(printTitle('trustedNode1+2+3', 'trusted node 1 makes a claim after RPL inflation has begun, claim rate is changed, then trusted node 2 makes a claim and newly registered trusted node 3 claim in next interval'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
@@ -536,6 +550,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             })
         });
 
+
         it(printTitle('daoClaim', 'trusted node makes a claim and the DAO receives its automatic share of rewards correctly on its claim contract, then fails to spend more than it has'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
             let rplInflationStartBlock = await rplInflationSetup();
@@ -563,6 +578,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), "Protocol DAO spent more RPL than it had in its treasury", "You cannot send 0 RPL or more than the DAO has in its account");
         });
+
 
         it(printTitle('daoClaim', 'trusted node make a claim and the DAO claim rate is set to 0, trusted node makes another 2 claims'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%
@@ -596,6 +612,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
         });
+
 
         it(printTitle('daoClaim', 'trusted nodes make multiples claims, rewards sent to dao claims contract, DAO rewards address is set and next claims send its balance to its rewards address'), async () => {
             // Setup RPL inflation for occuring every 10 blocks at 5%

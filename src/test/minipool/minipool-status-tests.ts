@@ -104,6 +104,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner });
         });
 
+
         async function trustedNode4JoinDao() {
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode4, gas: gasLimit})
             await setNodeTrusted(web3, rp, trustedNode4, 'saas_4', 'node@home.com', owner);
@@ -138,6 +139,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             // Member can now leave and collect any RPL bond
             await daoNodeTrustedMemberLeave(web3, rp, trustedNode4, { from: trustedNode4 });
         }
+
 
         //
         // Submit withdrawable
@@ -200,6 +202,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool while withdrawable submissions are disabled'), async () => {
 
             // Set parameters
@@ -216,6 +219,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted a withdrawable event while withdrawable submissions were disabled', 'Submitting withdrawable status is currently disabled');
 
         });
+
 
         it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool which is not staking'), async () => {
 
@@ -241,6 +245,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit a withdrawable event for an invalid minipool'), async () => {
 
             // Set parameters
@@ -254,6 +259,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted a withdrawable event for an invalid minipool', 'Invalid minipool');
 
         });
+
 
         it(printTitle('trusted nodes', 'cannot submit a withdrawable event for a minipool twice'), async () => {
 
@@ -275,6 +281,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('regular nodes', 'cannot submit a withdrawable event for a minipool'), async () => {
 
             // Set parameters
@@ -288,6 +295,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             }), 'Regular node submitted a withdrawable event for a minipool', 'Invalid trusted node');
 
         });
+
 
         it(printTitle('random', 'can execute status update when consensus is reached after member count changes'), async () => {
             // Setup

@@ -64,4 +64,3 @@ export async function stake(web3: Web3, rp: RocketPool, minipool: MinipoolContra
     assert.equal(validatorMinipool2, minipool.address, 'Incorrect updated minipool by validator pubkey');
 
 }
-

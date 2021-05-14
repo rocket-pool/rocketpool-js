@@ -61,6 +61,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         async function trustedNode4JoinDao() {
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode4, gas: gasLimit})
             await setNodeTrusted(web3, rp, trustedNode4, 'saas_4', 'node@home.com', owner);
@@ -132,6 +133,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit network prices while price submissions are disabled'), async () => {
 
             // Set parameters
@@ -148,6 +150,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted prices while price submissions were disabled', 'Submitting prices is currently disabled');
 
         });
+
 
         it(printTitle('trusted nodes', 'cannot submit network prices for the current block or lower'), async () => {
 
@@ -179,6 +182,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit the same network prices twice'), async () => {
 
             // Set parameters
@@ -199,6 +203,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('regular nodes', 'cannot submit network prices'), async () => {
 
             // Set parameters
@@ -212,6 +217,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             }), 'Regular node submitted network prices', 'Invalid trusted node');
 
         });
+
 
         it(printTitle('random', 'can execute price update when consensus is reached after member count changes'), async () => {
             // Setup

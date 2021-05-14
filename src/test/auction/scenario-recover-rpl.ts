@@ -7,6 +7,7 @@ import {SendOptions} from 'web3-eth-contract';
 // Recover unclaimed RPL from a lot
 export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: number, options: SendOptions) {
 
+
     // Get auction contract details
     function getContractDetails() {
         return Promise.all([
@@ -18,6 +19,7 @@ export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: 
         );
     }
 
+
     // Get lot details
     function getLotDetails() {
         return Promise.all([
@@ -28,6 +30,7 @@ export async function recoverUnclaimedRPL(web3: Web3, rp: RocketPool, lotIndex: 
                 ({rplRecovered, remainingRplAmount})
         );
     }
+
 
     // Get initial details
     let [details1, lot1] = await Promise.all([

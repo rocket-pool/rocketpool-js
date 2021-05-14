@@ -58,5 +58,4 @@ export async function burnFixedRPL(web3: Web3, rp: RocketPool, amount: string, o
     assert(balances2.rplUserBalance.eq(balances1.rplUserBalance.add(mintAmount)), 'Incorrect updated user token balance');
     assert(balances2.rplContractBalanceOfSelf.eq(balances1.rplContractBalanceOfSelf.sub(mintAmount)), 'RPL contract has not sent the RPL to the user address');
 
-
 }

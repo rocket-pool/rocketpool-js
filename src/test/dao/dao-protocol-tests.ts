@@ -32,6 +32,7 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp,'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {from: userOne}), 'User updated bootstrap setting', 'Account is not a temporary guardian');
         });
 
+
         // Verify each setting contract is enabled correctly. These settings are tested in greater detail in the relevant contracts
         it(printTitle('guardian', 'updates a setting in each settings contract while bootstrap mode is enabled'), async () => {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {
@@ -53,6 +54,7 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
                 from: guardian
             });
         });
+
 
         // Update a setting, then try again
         it(printTitle('guardian', 'updates a setting, then fails to update a setting again after bootstrap mode is disabled'), async () => {

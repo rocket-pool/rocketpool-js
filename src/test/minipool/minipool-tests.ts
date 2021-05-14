@@ -131,7 +131,6 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         //
         // General
         //
-
         it(printTitle('random address', 'cannot send ETH to non-payable minipool delegate methods'), async () => {
 
             // Attempt to send ETH to view method
@@ -150,6 +149,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('minipool', 'has correct withdrawal credentials'), async () => {
 
             // Withdrawal credentials settings
@@ -165,6 +165,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         //
         // Refund
         //
@@ -177,6 +178,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('node operator', 'cannot refund with no refinanced node deposit balance'), async () => {
 
@@ -196,6 +198,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         //
         // Dissolve
         //
@@ -213,6 +216,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'cannot dissolve their own staking minipools'), async () => {
 
             // Attempt to dissolve staking minipool
@@ -222,6 +226,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             }), 'Dissolved a staking minipool', 'The minipool can only be dissolved while initialized or in prelaunch');
 
         });
+
 
         it(printTitle('random address', 'can dissolve a timed out minipool at prelaunch'), async () => {
 
@@ -236,6 +241,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot dissolve a minipool which is not at prelaunch'), async () => {
 
             // Time prelaunch minipool out
@@ -248,6 +254,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             }), 'Random address dissolved a minipool which was not at prelaunch', 'The minipool can only be dissolved by its owner unless it has timed out');
 
         });
+
 
         it(printTitle('random address', 'cannot dissolve a minipool which has not timed out'), async () => {
 
@@ -270,6 +277,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('node operator', 'cannot stake a minipool which is not at prelaunch'), async () => {
 
@@ -297,6 +305,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             }), 'Staked a minipool with a reused validator pubkey', 'Validator pubkey is already in use');
 
         });
+
 
         it(printTitle('node operator', 'cannot stake a minipool with incorrect withdrawal credentials'), async () => {
 
@@ -337,6 +346,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node', 'cannot run payout method while processing withdrawals is disabled'), async () => {
 
             // Disable processing withdrawals
@@ -351,6 +361,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random', 'random address cannot withdraw a node operators minipool balance'), async () => {
 
             // Attempt to send validator balance
@@ -361,6 +372,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             }), 'Random address withdrew validator balance from a node operators minipool', "The payout function must be called by the current node operators withdrawal address");
 
         });
+
 
         it(printTitle('node operator', 'cannot withdraw their ETH once it is received if they do not confirm they wish to do so'), async () => {
 
@@ -373,6 +385,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator withdrawal address', 'can withdraw their ETH once it is received, then distribute ETH to the rETH contract / deposit pool and destroy the minipool'), async () => {
 
             // Send validator balance and withdraw
@@ -384,6 +397,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator account', 'can also withdraw their ETH once it is received, then distribute ETH to the rETH contract / deposit pool and destroy the minipool'), async () => {
 
             // Send validator balance and withdraw
@@ -394,6 +408,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('random address', 'can send validator balance to a withdrawable minipool in one transaction'), async () => {
 
@@ -411,6 +426,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
         });
+
 
         it(printTitle('random address', 'can send validator balance to a withdrawable minipool across multiple transactions'), async () => {
 

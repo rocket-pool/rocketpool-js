@@ -64,6 +64,7 @@ export async function assignDeposits(web3: Web3, rp: RocketPool, options: SendOp
         );
     }
 
+
     // Get minipool queue details
     function getMinipoolQueueDetails() {
         return Promise.all([

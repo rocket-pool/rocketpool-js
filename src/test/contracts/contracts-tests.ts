@@ -6,8 +6,8 @@ import {printTitle} from "../_utils/formatting";
 
 // Tests
 export default function runContractsTests(web3: Web3, rp: RocketPool) {
-    describe('Contracts', () => {
 
+    describe('Contracts', () => {
 
         describe('Addresses', () => {
 
@@ -15,6 +15,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
                 let minipoolManagerAddress = await rp.contracts.address('rocketMinipoolManager');
                 assert.notEqual(minipoolManagerAddress, '0x0000000000000000000000000000000000000000', 'Loaded address is invalid');
             });
+
 
             it(printTitle('User', 'Can load multiple addresses'), async () => {
                 let [rocketMinipoolQueueAddress, rocketMinipoolStatusAddress] = await rp.contracts.address(['rocketMinipoolQueue', 'rocketMinipoolStatus']);
@@ -32,6 +33,7 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
                 assert.isArray(minipoolManagerAbi, 'Loaded ABI is invalid');
             });
 
+
             it(printTitle('User', 'Can load multiple ABIs'), async () => {
                 let [rocketMinipoolQueueAbi, rocketMinipoolStatusAbi] = await rp.contracts.abi(['rocketMinipoolQueue', 'rocketMinipoolStatus']);
                 assert.isArray(rocketMinipoolQueueAbi, 'Loaded ABI is invalid');
@@ -48,11 +50,13 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
                 assert.property(rocketNetworkBalances, 'methods', 'Loaded contract is invalid');
             });
 
+
             it(printTitle('User', 'Can load multiple contracts'), async () => {
                 let [rocketNetworkFees, rocketNetworkWithdrawal] = await rp.contracts.get(['rocketNetworkFees', 'rocketNetworkWithdrawal']);
                 assert.property(rocketNetworkFees, 'methods', 'Loaded contract is invalid');
                 assert.property(rocketNetworkWithdrawal, 'methods', 'Loaded contract is invalid');
             });
+
 
             it(printTitle('User', 'Can create a new contract instance'), async () => {
                 let minipool = await rp.contracts.make('rocketMinipoolDelegate', '0x1111111111111111111111111111111111111111');

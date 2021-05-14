@@ -21,6 +21,7 @@ export interface Claim {
     yearlyInflationTarget: number
 }
 
+
 // Claim the inflation after a set amount of blocks have passed
 export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Claim, options: SendOptions, tokenAmountToMatch: number = 0) {
 

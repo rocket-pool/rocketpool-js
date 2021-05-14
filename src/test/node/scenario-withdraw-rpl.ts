@@ -42,6 +42,7 @@ export async function withdrawRpl(web3: Web3, rp: RocketPool, amount: string, op
         );
     }
 
+
     // Get staking details
     function getStakingDetails(nodeAddress: string) {
         return Promise.all([
@@ -55,6 +56,7 @@ export async function withdrawRpl(web3: Web3, rp: RocketPool, amount: string, op
                 ({totalStake, totalEffectiveStake, nodeStake, nodeEffectiveStake, nodeMinipoolLimit})
         );
     }
+
 
     // Get minipool counts
     function getMinipoolCounts(nodeAddress: string) {
@@ -103,4 +105,3 @@ export async function withdrawRpl(web3: Web3, rp: RocketPool, amount: string, op
     assert(details2.nodeMinipoolLimit.eq(expectedNodeMinipoolLimit), 'Incorrect updated node minipool limit');
 
 }
-

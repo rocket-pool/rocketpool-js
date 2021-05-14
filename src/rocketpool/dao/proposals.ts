@@ -25,7 +25,6 @@ class DAOProposal {
     /**
      * Getters
      */
-
     // Get the total of DAO Proposals
     public getTotal(): Promise<number> {
         return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
@@ -65,12 +64,14 @@ class DAOProposal {
         });
     }
 
+
     // Get end given a proposal id
     public getEnd(proposalID: number): Promise<number> {
         return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
             return rocketDAOProposal.methods.getEnd(proposalID).call();
         });
     }
+
 
     // Get votes against
     public getVotesAgainst(proposalID: number): Promise<number> {

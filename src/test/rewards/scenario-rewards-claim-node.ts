@@ -22,6 +22,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
         );
     }
 
+
     // Get balances
     function getBalances() {
         return Promise.all([
@@ -60,5 +61,3 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Check balances
     assert(balances2.nodeRpl.sub(balances1.nodeRpl).eq(expectedClaimAmount), 'Incorrect updated node RPL balance');
 };
-
-

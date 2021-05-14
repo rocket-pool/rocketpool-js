@@ -51,6 +51,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'can stake RPL'), async () => {
 
             // Set parameters
@@ -75,6 +76,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('random address', 'cannot stake RPL'), async () => {
 
             // Set parameters
@@ -88,6 +90,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             }), 'Random address staked RPL', 'Invalid node');
 
         });
+
 
         it(printTitle('node operator', 'can withdraw staked RPL'), async () => {
 
@@ -107,6 +110,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('node operator', 'cannot withdraw staked RPL during the cooldown period'), async () => {
 
             // Set parameters
@@ -122,6 +126,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             }), 'Withdrew staked RPL during the cooldown period', 'The withdrawal cooldown period has not passed');
 
         });
+
 
         it(printTitle('node operator', 'cannot withdraw more RPL than they have staked'), async () => {
 
@@ -142,6 +147,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             }), 'Withdrew more RPL than was staked', 'Withdrawal amount exceeds node\'s staked RPL balance');
 
         });
+
 
         it(printTitle('node operator', 'cannot withdraw RPL leaving the node undercollateralized'), async () => {
 
@@ -164,6 +170,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
 
         });
+
 
         it(printTitle('random address', 'cannot withdraw staked RPL'), async () => {
 

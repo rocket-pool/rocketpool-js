@@ -20,6 +20,7 @@ export async function getMinipoolWithdrawalUserBalance(web3: Web3, rp: RocketPoo
     return totalBalance.sub(nodeBalance);
 }
 
+
 // Get the minimum required RPL stake for a minipool
 export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
 
@@ -38,6 +39,7 @@ export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
     return depositUserAmount.mul(minMinipoolStake).div(rplPrice);
 
 }
+
 
 // Create a minipool
 export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions): Promise<MinipoolContract | null> {
@@ -84,6 +86,7 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 
 }
 
+
 // Submit a minipool withdrawable event
 export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
     await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
@@ -112,4 +115,3 @@ export async function dissolveMinipool(minipool: MinipoolContract, options: Send
 export async function closeMinipool(minipool: MinipoolContract, options: SendOptions) {
     await minipool.close(options);
 }
-

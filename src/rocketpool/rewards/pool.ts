@@ -26,14 +26,13 @@ class Pool {
     /**
      * Getters
      */
-
-
     // Get the claim intervals that have passed
     public getClaimIntervalsPassed(): Promise<string> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
             return rocketRewardsPool.methods.getClaimIntervalsPassed().call();
         });
     }
+
 
     // Get the claim intervals block start
     public getClaimIntervalBlockStart(): Promise<string> {
@@ -42,12 +41,14 @@ class Pool {
         });
     }
 
+
     // Get the rpl balance
     public getRPLBalance(): Promise<string> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
             return rocketRewardsPool.methods.getRPLBalance().call();
         });
     }
+
 
     // Get the claiming contract percentage
     public getClaimingContractPerc(contract: string): Promise<string> {
@@ -56,6 +57,7 @@ class Pool {
         });
     }
 
+
     // Get the claiming contract allowance
     public getClaimingContractAllowance(contract: string): Promise<number> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<number> => {
@@ -63,12 +65,14 @@ class Pool {
         });
     }
 
+
     // Get the claiming contract total claimed
     public getClaimingContractTotalClaimed(contract: string): Promise<string> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
             return rocketRewardsPool.methods.getClaimingContractTotalClaimed(contract).call();
         });
     }
+
 
     // Get the claim interval rewards total
     public getClaimIntervalRewardsTotal(): Promise<string> {

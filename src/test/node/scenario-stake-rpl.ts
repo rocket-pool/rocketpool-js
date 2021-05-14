@@ -42,6 +42,7 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
         );
     }
 
+
     // Get staking details
     function getStakingDetails(nodeAddress: string) {
         return Promise.all([
@@ -55,6 +56,7 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
                 ({totalStake, totalEffectiveStake, nodeStake, nodeEffectiveStake, nodeMinipoolLimit})
         );
     }
+
 
     // Get minipool counts
     function getMinipoolCounts(nodeAddress: string) {
@@ -103,4 +105,3 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     assert(details2.nodeMinipoolLimit.eq(expectedNodeMinipoolLimit), 'Incorrect updated node minipool limit');
 
 }
-

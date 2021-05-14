@@ -36,6 +36,7 @@ export function revertSnapshot(web3: Web3, snapshotId: string) {
     });
 }
 
+
 // Mine a number of blocks
 export async function mineBlocks(web3: Web3, numBlocks: number) {
     for (let i = 0; i < numBlocks; ++i) {
@@ -54,4 +55,3 @@ export async function mineBlocks(web3: Web3, numBlocks: number) {
         });
     }
 }
-

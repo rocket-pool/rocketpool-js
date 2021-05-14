@@ -30,7 +30,6 @@ class DAONodeTrustedProposals {
     /**
      * Mutators - Public
      */
-
     // Make a Proposal to the DAO
     public propose(message: string, payload: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
@@ -41,6 +40,7 @@ class DAONodeTrustedProposals {
         });
     }
 
+
     // Vote on an existing DAO Proposal
     public vote(proposalID: number, vote: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
@@ -50,6 +50,7 @@ class DAONodeTrustedProposals {
             );
         });
     }
+
 
     // Execute an existing DAO Proposal
     public execute(proposalID: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {

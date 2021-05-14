@@ -23,8 +23,6 @@ class RPL extends ERC20 {
     /**
      * Getters
      */
-
-
     // Get contract address
     public getAddress(): Promise<string> {
         return this.tokenContract.then((tokenContract: Contract): string => {
@@ -40,6 +38,7 @@ class RPL extends ERC20 {
         });
     }
 
+
     // Get the inflation intervals that have passed
     public inflationMintTokens(): Promise<number> {
         return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
@@ -51,8 +50,6 @@ class RPL extends ERC20 {
     /**
      * Mutators - Public
      */
-
-
     // Swap current RPL fixed supply tokens for new RPL
     public swapTokens(amountWei: any, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {

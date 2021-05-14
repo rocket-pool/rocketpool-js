@@ -48,6 +48,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'can submit network balances'), async () => {
 
             // Set parameters
@@ -84,6 +85,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             });
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit network balances while balance submissions are disabled'), async () => {
 
             // Set parameters
@@ -102,6 +104,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted balances while balance submissions were disabled', 'Submitting balances is currently disabled');
 
         });
+
 
         it(printTitle('trusted nodes', 'cannot submit network balances for the current block or lower'), async () => {
 
@@ -135,6 +138,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+
         it(printTitle('trusted nodes', 'cannot submit invalid network balances'), async () => {
 
             // Set parameters
@@ -150,6 +154,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted invalid balances', 'Invalid network balances');
 
         });
+
 
         it(printTitle('trusted nodes', 'cannot submit the same network balances twice'), async () => {
 
@@ -172,6 +177,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             }), 'Submitted the same network balances twice', 'Duplicate submission from node');
 
         });
+
 
         it(printTitle('regular nodes', 'cannot submit network balances'), async () => {
 

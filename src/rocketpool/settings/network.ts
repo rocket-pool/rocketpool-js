@@ -63,11 +63,15 @@ class NetworkSettings {
             return rocketDAOProtocolSettingsNetwork.methods.getMinimumNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
+
+
     public getTargetNodeFee(): Promise<number> {
         return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsNetwork.methods.getTargetNodeFee().call();
         }).then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
     }
+
+
     public getMaximumNodeFee(): Promise<number> {
         return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<string> => {
             return rocketDAOProtocolSettingsNetwork.methods.getMaximumNodeFee().call();

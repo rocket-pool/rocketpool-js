@@ -34,6 +34,7 @@ class Deposit {
         });
     }
 
+
     // Get the excess balance
     public getExcessBalance(): Promise<string> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
@@ -45,8 +46,6 @@ class Deposit {
     /**
      * Mutators - Public
      */
-
-
     // Make a deposit
     public deposit(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {

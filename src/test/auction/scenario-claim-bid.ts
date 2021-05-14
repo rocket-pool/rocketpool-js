@@ -22,6 +22,7 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
         );
     }
 
+
     // Get lot details
     function getLotDetails(bidderAddress: string) {
         return Promise.all([
@@ -32,6 +33,7 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
                 ({addressBidAmount, currentPrice})
         );
     }
+
 
     // Get balances
     function getBalances(bidderAddress: string) {
@@ -44,6 +46,7 @@ export async function claimBid(web3: Web3, rp: RocketPool, lotIndex: number, opt
                 ({bidderRpl, vaultRpl, contractRpl})
         );
     }
+
 
     // Get initial details & balances
     let [details1, lot1, balances1] = await Promise.all([

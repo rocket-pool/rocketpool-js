@@ -35,6 +35,7 @@ export async function createLot(web3: Web3, rp: RocketPool, options: SendOptions
         );
     }
 
+
     // Get lot details
     function getLotDetails(lotIndex: number) {
         return Promise.all([
@@ -53,6 +54,7 @@ export async function createLot(web3: Web3, rp: RocketPool, options: SendOptions
                 ({exists, startBlock, endBlock, startPrice, reservePrice, totalRpl, currentPrice, claimedRpl, remainingRpl, isCleared})
         );
     }
+
 
     // Get initial contract details
     let details1 = await getContractDetails();

@@ -22,8 +22,6 @@ class RETH extends ERC20 {
     /**
      * Getters
      */
-
-
     // Get the amount of ETH backing an amount of rETH
     public getEthValue(rethAmountWei: string): Promise<string> {
         return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
@@ -76,8 +74,6 @@ class RETH extends ERC20 {
     /**
      * Mutators - Public
      */
-
-
     // Burn rETH for ETH
     public burn(amountWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {

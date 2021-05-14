@@ -40,4 +40,3 @@ export async function register(web3: Web3, rp: RocketPool, timezoneLocation: str
     assert.equal(details.timezoneLocation, timezoneLocation, 'Incorrect node timezone location');
 
 }
-

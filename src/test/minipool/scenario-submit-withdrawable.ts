@@ -33,6 +33,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
         );
     }
 
+
     // Get minipool details
     function getMinipoolDetails() {
         return rp.minipool.getMinipoolContract(minipoolAddress).then((minipool: MinipoolContract) => Promise.all([
@@ -45,6 +46,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
                 ({status, startBalance, endBalance, userDepositBalance})
         );
     }
+
 
     // Get node details
     function getNodeDetails() {
@@ -116,6 +118,7 @@ export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoo
                 ({status, startBalance, endBalance, userDepositBalance})
         );
     }
+
 
     // Get node details
     function getNodeDetails() {

@@ -12,6 +12,7 @@ export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: s
     return await rp.node.getNodeRPLStake(nodeAddress);
 }
 
+
 export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
     // Get the DAO settings
     let daoNodeSettings = await rp.contracts.get('rocketDAONodeTrustedSettingsMembers');
@@ -30,24 +31,29 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
     await daoNodeTrustedMemberJoin(web3, rp,{from: _account});
 }
 
+
 // Get a node's effective RPL stake
 export async function getNodeEffectiveRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
     return await rp.node.getNodeEffectiveRPLStake(nodeAddress);
 }
+
 
 // Get a node's minipool RPL stake
 export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
     return await rp.node.getNodeMinimumRPLStake(nodeAddress);
 }
 
+
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
     await rp.node.registerNode('Australia/Brisbane', options);
 }
+
 
 // Set a withdrawal address for a node
 export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, nodeAddress: string, withdrawalAddress: string, options: SendOptions) {
     await rp.node.setWithdrawalAddress(nodeAddress, withdrawalAddress, true, options);
 }
+
 
 // Submit a node RPL stake
 export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
@@ -59,6 +65,7 @@ export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, o
     await rp.tokens.rpl.approve(rocketNodeStaking.options.address, amount, options);
     await rp.node.stakeRPL(amount, options);
 }
+
 
 // Make a node deposit
 export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptions) {

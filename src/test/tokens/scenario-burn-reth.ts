@@ -21,4 +21,3 @@ export async function burnReth(web3: Web3, rp: RocketPool, amount: string, optio
     assert(ethBalance2.gt(ethBalance1), 'Tokens were not burned for ETH successfully');
 
 }
-
