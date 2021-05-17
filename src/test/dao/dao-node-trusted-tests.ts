@@ -160,9 +160,11 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             let rplBondAmount = web3.utils.fromWei(await daoNodesettings.methods.getRPLBond().call());
             // Setup our proposal settings
             let proposalVoteBlocks = 10;
+            let proposalVoteDelayBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: guardian });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             // Disable bootstrap mode
             await setDaoNodeTrustedBootstrapModeDisabled(web3, rp, { from: guardian });
@@ -250,9 +252,11 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
             // Setup our proposal settings
             let proposalVoteBlocks = 10;
+            let proposalVoteDelayBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: guardian });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             // Add our 3rd member
             await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool', 'node@home.com', guardian);
@@ -290,9 +294,11 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         it(printTitle('registeredNode2', 'is made a new member after a proposal is created, they fail to vote on that proposal'), async () => {
             // Setup our proposal settings
             let proposalVoteBlocks = 10;
+            let proposalVoteDelayBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: guardian });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
@@ -319,9 +325,11 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         it(printTitle('registeredNodeTrusted2', 'fails to execute a successful proposal after it expires'), async () => {
             // Setup our proposal settings
             let proposalVoteBlocks = 10;
+            let proposalVoteDelayBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: guardian });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
@@ -473,9 +481,11 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             let rocketStorage = await rp.contracts.get('rocketStorage')
             // Setup our proposal settings
             let proposalVoteBlocks = 10;
+            let proposalVoteDelayBlocks = 10;
             let proposalVoteExecuteBlocks = 10;
             // Update now while in bootstrap mode
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: guardian });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             let abi = await rp.contracts.abi('rocketMinipoolManager');
             // Encode the calldata for the proposal
