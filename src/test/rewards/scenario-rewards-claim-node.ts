@@ -26,11 +26,11 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     // Get balances
     function getBalances() {
         return Promise.all([
-            rp.rewards.pool.getClaimIntervalBlockStart(),
+            rp.rewards.pool.getClaimIntervalTimeStart(),
             rp.tokens.rpl.balanceOf(nodeWithdrawalAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
-            ([claimIntervalBlockStart, nodeRpl]) =>
-                ({claimIntervalBlockStart, nodeRpl})
+            ([claimIntervalTimeStart, nodeRpl]) =>
+                ({claimIntervalTimeStart, nodeRpl})
         );
     }
 
@@ -55,7 +55,7 @@ export async function rewardsClaimNode(web3: Web3, rp: RocketPool, options: Send
     let claimPerc = calcBase.mul(details2.nodeRplStake).div(details2.totalRplStake);
     let expectedClaimAmount = details2.nodesRplShare.mul(claimPerc).div(calcBase);
 
-    // console.log(Number(balances1.claimIntervalBlockStart), Number(balances2.claimIntervalBlockStart));
+    // console.log(Number(balances1.claimIntervalTimeStart), Number(balances2.claimIntervalTimeStart));
     // console.log(web3.utils.fromWei(balances2.nodeRpl.sub(balances1.nodeRpl)), web3.utils.fromWei(expectedClaimAmount));
 
     // Check balances

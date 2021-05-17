@@ -41,7 +41,7 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsDeposit', 'deposit.minimum', web3.utils.toWei('2'), {
                 from: guardian
             });
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.blocks', 400, {
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.rate', 400, {
                 from: guardian
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.submit.withdrawable.enabled', true, {
@@ -50,7 +50,7 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.enabled', true, {
                 from: guardian
             });
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', 100, {
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.time', 100, {
                 from: guardian
             });
         });

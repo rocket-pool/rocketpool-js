@@ -84,10 +84,10 @@ export async function setDAONetworkBootstrapRewardsClaimer(web3: Web3, rp: Rocke
 
 /*** Rewards *******/
 
-// Set the current rewards claim period in blocks
-export async function setRewardsClaimIntervalBlocks(web3: Web3, rp: RocketPool, intervalBlocks: number, options: SendOptions) {
+// Set the current rewards claim period in seconds
+export async function setRewardsClaimIntervalTime(web3: Web3, rp: RocketPool, intervalTime: number, options: SendOptions) {
     // Set it now
-    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', intervalBlocks, options);
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', intervalTime, options);
 };
 
 
@@ -148,9 +148,9 @@ export async function setRPLInflationIntervalBlocks(web3: Web3, rp: RocketPool, 
 
 
 // Set the current RPL inflation block interval
-export async function setRPLInflationStartBlock(web3: Web3, rp: RocketPool, startBlock: number, options: SendOptions) {
+export async function setRPLInflationStartTime(web3: Web3, rp: RocketPool, startTime: number, options: SendOptions) {
     // Set it now
-    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.start', startBlock, options);
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.start', startTime, options);
 };
 
 

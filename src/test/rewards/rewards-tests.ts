@@ -2,12 +2,12 @@
 import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks, getCurrentTime, increaseTime} from '../_utils/evm';
 import {getNodeEffectiveRPLStake, getNodeMinimumRPLStake, getNodeRPLStake, nodeDeposit, nodeStakeRPL, registerNode, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
 import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {setDAONetworkBootstrapRewardsClaimer, setDAOProtocolBootstrapSetting, setRewardsClaimIntervalBlocks, setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartBlock, spendRewardsClaimTreasury} from '../dao/scenario-dao-protocol-bootstrap';
+import {setDAONetworkBootstrapRewardsClaimer, setDAOProtocolBootstrapSetting, setRewardsClaimIntervalTime, setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartTime, spendRewardsClaimTreasury} from '../dao/scenario-dao-protocol-bootstrap';
 import {submitPrices} from '../_helpers/network';
 import {rewardsClaimersPercTotalGet} from "./scenario-rewards-claim";
 import {rewardsClaimNode} from "./scenario-rewards-claim-node";
@@ -21,6 +21,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         // settings
         const gasLimit: number = 8000000;
+        const ONE_DAY = 24 * 60 * 60;
 
         // Accounts
         let owner: string;
@@ -46,26 +47,27 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         let claimIntervalBlocks: number = 16;
         // Interval for calculating inflation
         let rewardIntervalBlocks: number = 5;
+        const claimIntervalTime = ONE_DAY * 28;
 
         // Set some RPL inflation scenes
         let rplInflationSetup = async function() {
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Starting block for when inflation will begin
-            let blockStart = blockCurrent+3;
-            // Interval for calculating inflation
-            let blockInterval = rewardIntervalBlocks;
+            let timeStart = currentTime + ONE_DAY;
             // Yearly inflation target
             let yearlyInflationTarget = 0.05;
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, blockInterval, { from: owner, gas: gasLimit });
+            // Set the daily inflation start time
+            await setRPLInflationStartTime(web3, rp, timeStart, { from: owner, gas: gasLimit });
             // Set the daily inflation rate
             await setRPLInflationIntervalRate(web3, rp, yearlyInflationTarget, { from: owner, gas: gasLimit });
+
+            // claimIntervalTime must be greater than rewardIntervalTime for tests to properly function
+            assert(claimIntervalTime > ONE_DAY, 'Tests will not function correctly unless claimIntervalTime is greater than inflation period (1 day)');
+
             // Return the starting block for inflation when it will be available
-            return blockStart + blockInterval;
+            return timeStart + ONE_DAY;
         }
 
         // Set a rewards claiming contract
@@ -73,7 +75,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             // Set the amount this contract can claim
             await setDAONetworkBootstrapRewardsClaimer(web3, rp, _claimContract, web3.utils.toWei(_claimAmountPerc.toString(), 'ether'), { from: owner, gas: gasLimit });
             // Set the claim interval blocks
-            await setRewardsClaimIntervalBlocks(web3, rp, claimIntervalBlocks, { from: owner, gas: gasLimit });
+            await setRewardsClaimIntervalTime(web3, rp, claimIntervalBlocks, { from: owner, gas: gasLimit });
         }
 
         before(async () => {
@@ -128,7 +130,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'fails to set interval blocks for rewards claim period'), async () => {
             // Set the rewards claims interval in blocks
-            await shouldRevert(setRewardsClaimIntervalBlocks(web3, rp, 100, {
+            await shouldRevert(setRewardsClaimIntervalTime(web3, rp, 100, {
                 from: userOne,
                 gas: gasLimit
             }), 'Non owner set interval blocks for rewards claim period', 'Account is not a temporary guardian');
@@ -137,7 +139,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('guardian', 'succeeds setting interval blocks for rewards claim period'), async () => {
             // Set the rewards claims interval in blocks
-            await setRewardsClaimIntervalBlocks(web3, rp,100, {
+            await setRewardsClaimIntervalTime(web3, rp,100, {
                 from: owner,
                 gas: gasLimit
             });
@@ -238,13 +240,13 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         it(printTitle('node', 'can claim RPL'), async () => {
 
             // Initialize RPL inflation & claims contract
-            let rplInflationStartBlock = await rplInflationSetup();
+            let rplInflationStartTime = await rplInflationSetup();
             await rewardsContractSetup('rocketClaimNode', 0.5);
 
             // Move to inflation start plus one claim interval
-            let currentBlock = await web3.eth.getBlockNumber();
-            assert.isBelow(currentBlock, rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            await mineBlocks(web3, rplInflationStartBlock + claimIntervalBlocks - currentBlock);
+            let currentTime = await getCurrentTime(web3);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
 
             // Claim RPL
             await rewardsClaimNode(web3, rp,{
@@ -257,7 +259,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             });
 
             // Move to next claim interval
-            await mineBlocks(web3, claimIntervalBlocks);
+            await increaseTime(web3, claimIntervalTime);
 
             // Claim RPL again
             await rewardsClaimNode(web3, rp,{
@@ -277,14 +279,11 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             // Initialize claims contract
             await rewardsContractSetup('rocketClaimNode', 0.5);
 
-            // Move ahead one claim interval
-            await mineBlocks(web3, claimIntervalBlocks);
-
             // Attempt to claim RPL
             await shouldRevert(rewardsClaimNode(web3, rp,{
                 from: registeredNode1,
                 gas: gasLimit
-            }), 'Node claimed RPL before RPL inflation began', 'Claiming contract must have an allowance of more than 0');
+            }), 'Node claimed RPL before RPL inflation began', 'The node is currently unable to claim');
 
         });
 
@@ -292,13 +291,13 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         it(printTitle('node', 'cannot claim RPL while the node claim contract is disabled'), async () => {
 
             // Initialize RPL inflation & claims contract
-            let rplInflationStartBlock = await rplInflationSetup();
+            let rplInflationStartTime = await rplInflationSetup();
             await rewardsContractSetup('rocketClaimNode', 0.5);
 
             // Move to inflation start plus one claim interval
-            let currentBlock = await web3.eth.getBlockNumber();
-            assert.isBelow(currentBlock, rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            await mineBlocks(web3, rplInflationStartBlock + claimIntervalBlocks - currentBlock);
+            let currentTime = await getCurrentTime(web3);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start block');
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
 
             // Disable RocketClaimNode claims contract
             await setDAONetworkBootstrapRewardsClaimer(web3, rp,'rocketClaimNode', web3.utils.toWei('0', 'ether'), {from: owner, gas: gasLimit});
@@ -315,13 +314,13 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         it(printTitle('node', 'cannot claim RPL twice in the same interval'), async () => {
 
             // Initialize RPL inflation & claims contract
-            let rplInflationStartBlock = await rplInflationSetup();
+            let rplInflationStartTime = await rplInflationSetup();
             await rewardsContractSetup('rocketClaimNode', 0.5);
 
             // Move to inflation start plus one claim interval
-            let currentBlock = await web3.eth.getBlockNumber();
-            assert.isBelow(currentBlock, rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            await mineBlocks(web3, rplInflationStartBlock + claimIntervalBlocks - currentBlock);
+            let currentTime = await getCurrentTime(web3);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
 
             // Claim RPL
             await rewardsClaimNode(web3, rp,{
@@ -341,13 +340,13 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         it(printTitle('node', 'cannot claim RPL while their node is undercollateralized'), async () => {
 
             // Initialize RPL inflation & claims contract
-            let rplInflationStartBlock = await rplInflationSetup();
+            let rplInflationStartTime = await rplInflationSetup();
             await rewardsContractSetup('rocketClaimNode', 0.5);
 
             // Move to inflation start plus one claim interval
-            let currentBlock = await web3.eth.getBlockNumber();
-            assert.isBelow(currentBlock, rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            await mineBlocks(web3, rplInflationStartBlock + claimIntervalBlocks - currentBlock);
+            let currentTime = await getCurrentTime(web3);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
 
             // Decrease RPL price to undercollateralize node
             await submitPrices(web3, rp, 10, web3.utils.toWei('0.01', 'ether'), {from: registeredNodeTrusted1, gas: gasLimit});
@@ -363,21 +362,21 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             // Attempt to claim RPL
             await shouldRevert(rewardsClaimNode(web3, rp, {
                 from: registeredNode1, gas: gasLimit,
-            }), 'Node claimed RPL while undercollateralized', 'The node is currently unable to claim');
+            }), 'Node claimed RPL while under collateralized', 'The node is currently unable to claim');
 
         });
 
 
         /*** Trusted Node **************************/
         it(printTitle('trustedNode1', 'fails to call claim before RPL inflation has begun'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.5);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Now make sure we can't claim yet
             await shouldRevert(rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted1, {
                 from: registeredNodeTrusted1,
@@ -387,16 +386,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trustedNode1', 'makes a claim, then fails to make another in the same claim interval'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.1);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Move to start of RPL inflation and ahead one claim interval
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now
             await rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted1, {
                 from: registeredNodeTrusted1,
@@ -411,20 +410,18 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trustedNode3', 'fails to claim rewards as they have not waited one claim interval'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.15);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            // Move to start of RPL inflation
-            await mineBlocks(web3, rplInflationStartBlock-blockCurrent);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            // Move to start of RPL inflation and ahead one claim interval
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make node 4 trusted now
             await setNodeTrusted(web3, rp, registeredNodeTrusted3, 'saas_3', 'node@home.com', owner);
-            // Get the current block
-            blockCurrent = await web3.eth.getBlockNumber();
             // Make a claim now
             await shouldRevert(rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted3, {
                 from: registeredNodeTrusted3,
@@ -434,16 +431,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trustedNode1', 'fails to make a claim when trusted node contract claim perc is set to 0'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0);
             // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Move to start of RPL inflation and ahead one claim interval
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now
             await shouldRevert(rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted1, {
                 from: registeredNodeTrusted1,
@@ -453,16 +450,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trustedNode1+4', 'trusted node 1 makes a claim after RPL inflation has begun and newly registered trusted node 4 claim in next interval'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.0123);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            // Move to start of RPL inflation
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            // Move to start of RPL inflation and ahead one claim interval
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now
             await rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted1, {
                 from: registeredNodeTrusted1,
@@ -471,7 +468,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             // Make node 3 trusted now
             await setNodeTrusted(web3, rp, registeredNodeTrusted3, 'saas_3', 'node@home.com', owner);
             // Move to next claim interval
-            await mineBlocks(web3, claimIntervalBlocks);
+            await increaseTime(web3, claimIntervalTime);
             // Attempt claim in the next interval
             await rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted3, {
                 from: registeredNodeTrusted3,
@@ -481,18 +478,18 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trustedNode1+2+3', 'trusted node 1 makes a claim after RPL inflation has begun, claim rate is changed, then trusted node 2 makes a claim and newly registered trusted node 3 claim in next interval'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Set the contracts perc it can claim 1 =100%
             let claimPercOrig = 0.1;
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', claimPercOrig);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            // Move to start of RPL inflation
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            // Move to start of RPL inflation and ahead one claim interval
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now
             await rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted1, {
                 from: registeredNodeTrusted1,
@@ -509,8 +506,8 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             });
             // Make node 3 trusted now
             await setNodeTrusted(web3, rp, registeredNodeTrusted3, 'saas_3', 'node@home.com', owner);
-            // Move to 2 claim intervals ahead
-            await mineBlocks(web3, claimIntervalBlocks+claimIntervalBlocks);
+            // Move ahead 2 claim intervals
+            await increaseTime(web3, claimIntervalTime);
             // Attempt claim in the next interval with new inflation rate
             await rewardsClaimTrustedNode(web3, rp, registeredNodeTrusted3, {
                 from: registeredNodeTrusted3,
@@ -521,16 +518,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
         /*** DAO ***************************/
         it(printTitle('daoClaim', 'trusted node makes a claim and the DAO receives its automatic share of rewards correctly on its claim contract, then protocol DAO spends some'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.1);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Move to start of RPL inflation and ahead a few claim intervals to simulate some being missed
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+(claimIntervalBlocks*3));
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime * 3);
             // Make a claim now from a trusted node and verify the DAO collected it's perc
             await rewardsClaimDAO(web3, rp, {
                 from: registeredNodeTrusted1,
@@ -552,16 +549,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('daoClaim', 'trusted node makes a claim and the DAO receives its automatic share of rewards correctly on its claim contract, then fails to spend more than it has'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.1);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Move to start of RPL inflation and ahead a few claim intervals to simulate some being missed
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+(claimIntervalBlocks*3));
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime * 3);
             // Make a claim now from another trusted node
             await rewardsClaimDAO(web3, rp,{
                 from: registeredNodeTrusted2,
@@ -581,16 +578,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('daoClaim', 'trusted node make a claim and the DAO claim rate is set to 0, trusted node makes another 2 claims'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.1);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
             // Move to start of RPL inflation and ahead a few claim intervals to simulate some being missed
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now from a trusted node and verify the DAO collected it's perc
             await rewardsClaimDAO(web3, rp, {
                 from: registeredNodeTrusted1,
@@ -605,7 +602,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             });
             await rewardsContractSetup('rocketClaimTrustedNode', 0.2);
             // Next interval
-            await mineBlocks(web3, claimIntervalBlocks);
+            await increaseTime(web3, claimIntervalTime);
             // Make another claim, dao shouldn't receive anything
             await rewardsClaimDAO (web3, rp, {
                 from: registeredNodeTrusted2,
@@ -615,16 +612,16 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('daoClaim', 'trusted nodes make multiples claims, rewards sent to dao claims contract, DAO rewards address is set and next claims send its balance to its rewards address'), async () => {
-            // Setup RPL inflation for occuring every 10 blocks at 5%
-            let rplInflationStartBlock = await rplInflationSetup();
+            // Setup RPL inflation
+            let rplInflationStartTime = await rplInflationSetup();
             // Init this claiming contract on the rewards pool
             await rewardsContractSetup('rocketClaimTrustedNode', 0.1);
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Can this trusted node claim before there is any inflation available?
-            assert(blockCurrent < rplInflationStartBlock, 'Current block should be below RPL inflation start block');
-            // Move to start of RPL inflation and ahead one claim interval
-            await mineBlocks(web3, (rplInflationStartBlock-blockCurrent)+claimIntervalBlocks);
+            assert.isBelow(currentTime, rplInflationStartTime, 'Current block should be below RPL inflation start time');
+            // Move to start of RPL inflation and ahead a few claim intervals to simulate some being missed
+            await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
             // Make a claim now from a trusted node and verify the DAO collected it's perc
             await rewardsClaimDAO(web3, rp,{
                 from: registeredNodeTrusted1,
@@ -635,7 +632,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
             // Next interval
-            await mineBlocks(web3, claimIntervalBlocks);
+            await increaseTime(web3, claimIntervalTime);
             // Node claim again
             await rewardsClaimDAO(web3, rp,{
                 from: registeredNodeTrusted1,

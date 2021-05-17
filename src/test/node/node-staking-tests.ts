@@ -6,7 +6,7 @@ import {nodeDeposit, nodeStakeRPL} from '../_helpers/node';
 import {approveRPL, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {setRewardsClaimIntervalBlocks} from '../dao/scenario-dao-protocol-bootstrap';
+import {setRewardsClaimIntervalTime} from '../dao/scenario-dao-protocol-bootstrap';
 import {Contract} from 'web3-eth-contract';
 import {stakeRpl} from './scenario-stake-rpl';
 import {withdrawRpl} from './scenario-withdraw-rpl';
@@ -98,7 +98,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             const rplAmount = web3.utils.toWei('10000', 'ether');
 
             // Remove withdrawal cooldown period
-            await setRewardsClaimIntervalBlocks(web3, rp, 0, {from: owner, gas: gasLimit});
+            await setRewardsClaimIntervalTime(web3, rp, 0, {from: owner, gas: gasLimit});
 
             // Stake RPL
             await nodeStakeRPL(web3, rp, rplAmount, {from: node, gas: gasLimit});
@@ -135,7 +135,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             const withdrawAmount = web3.utils.toWei('20000', 'ether');
 
             // Remove withdrawal cooldown period
-            await setRewardsClaimIntervalBlocks(web3, rp,0, {from: owner, gas: gasLimit});
+            await setRewardsClaimIntervalTime(web3, rp,0, {from: owner, gas: gasLimit});
 
             // Stake RPL
             await nodeStakeRPL(web3, rp, stakeAmount, {from: node, gas: gasLimit});
@@ -155,7 +155,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             const rplAmount = web3.utils.toWei('10000', 'ether');
 
             // Remove withdrawal cooldown period
-            await setRewardsClaimIntervalBlocks(web3, rp,0, {from: owner, gas: gasLimit});
+            await setRewardsClaimIntervalTime(web3, rp,0, {from: owner, gas: gasLimit});
 
             // Stake RPL
             await nodeStakeRPL(web3, rp, rplAmount, {from: node, gas: gasLimit});
@@ -178,7 +178,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             const rplAmount = web3.utils.toWei('10000', 'ether');
 
             // Remove withdrawal cooldown period
-            await setRewardsClaimIntervalBlocks(web3, rp, 0, {from: owner, gas: gasLimit});
+            await setRewardsClaimIntervalTime(web3, rp, 0, {from: owner, gas: gasLimit});
 
             // Stake RPL
             await nodeStakeRPL(web3, rp, rplAmount, {from: node, gas: gasLimit});

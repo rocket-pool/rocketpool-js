@@ -35,9 +35,9 @@ class Pool {
 
 
     // Get the claim intervals block start
-    public getClaimIntervalBlockStart(): Promise<string> {
+    public getClaimIntervalTimeStart(): Promise<string> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
-            return rocketRewardsPool.methods.getClaimIntervalBlockStart().call();
+            return rocketRewardsPool.methods.getClaimIntervalTimeStart().call();
         });
     }
 
@@ -81,10 +81,10 @@ class Pool {
         });
     }
 
-    // Get the claim contract registered block
-    public getClaimContractRegisteredBlock(contractAddress: string, trustedNodeAddress: string): Promise<string> {
+    // Get the claim contract registered time
+    public getClaimContractRegisteredTime(contractAddress: string, trustedNodeAddress: string): Promise<string> {
         return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
-            return rocketRewardsPool.methods.getClaimContractRegisteredBlock(contractAddress, trustedNodeAddress).call();
+            return rocketRewardsPool.methods.getClaimContractRegisteredTime(contractAddress, trustedNodeAddress).call();
         });
     }
 

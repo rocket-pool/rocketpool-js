@@ -1,14 +1,14 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, getCurrentTime, increaseTime} from '../_utils/evm';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartBlock} from '../dao/scenario-dao-protocol-bootstrap';
+import {setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartTime} from '../dao/scenario-dao-protocol-bootstrap';
 import {mintDummyRPL} from './scenario-rpl-mint-fixed';
 import {allowDummyRPL} from './scenario-rpl-allow-fixed';
 import {burnFixedRPL} from './scenario-rpl-burn-fixed';
-import {rplClaimInflation} from "./scenario-rpl-inflation";
+import {rplClaimInflation, rplSetInflationConfig} from "./scenario-rpl-inflation";
 
 // Tests
 export default function runRPLTests(web3: Web3, rp: RocketPool) {
@@ -16,11 +16,11 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         // settings
         const gasLimit: number = 8000000;
+        const ONE_DAY = 24 * 60 * 60;
 
         // Accounts
         let owner: string;
         let userOne: string;
-        let userTwo: string;
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -35,7 +35,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, userOne, userTwo] = await web3.eth.getAccounts();
+            [owner, userOne] = await web3.eth.getAccounts();
 
             // Mint RPL fixed supply for the users to simulate current users having RPL
             await mintDummyRPL(web3, rp, userOne, userOneRPLBalance.toString(), {from: owner, gas: gasLimit});
@@ -123,97 +123,95 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        it(printTitle('userOne', 'fails to set start block for inflation'), async () => {
-            // Current block
-            let currentBlock = await web3.eth.getBlockNumber();
-            // Set the start block for inflation
-            await shouldRevert(setRPLInflationStartBlock(web3, rp, currentBlock + 10, {
+        it(printTitle('userOne', 'fails to set start time for inflation'), async () => {
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+            // Set the start time for inflation
+            await shouldRevert(setRPLInflationStartTime(web3, rp,currentTime+3600, {
                 from: userOne,
                 gas: gasLimit
-            }), 'Non owner set start block for inlfation', 'Account is not a temporary guardian');
+            }), 'Non owner set start time for inlfation', 'Account is not a temporary guardian');
         });
 
 
-        it(printTitle('guardian', 'succeeds setting future start block for inflation'), async () => {
-            // Current block
-            let currentBlock = await web3.eth.getBlockNumber();
+        it(printTitle('guardian', 'succeeds setting future start time for inflation'), async () => {
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Set the start block for inflation
-            await setRPLInflationStartBlock(web3, rp, currentBlock + 10, {
+            await setRPLInflationStartTime(web3, rp,currentTime+3600, {
                 from: owner,
                 gas: gasLimit
             });
         });
 
 
-        it(printTitle('guardian', 'succeeds setting future start block for inflation twice'), async () => {
-            // Current block
-            let currentBlock = await web3.eth.getBlockNumber();
-            // Set the start block for inflation
-            await setRPLInflationStartBlock(web3, rp,currentBlock + 10, {
+        it(printTitle('guardian', 'succeeds setting future start time for inflation twice'), async () => {
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+            // Set the start time for inflation
+            await setRPLInflationStartTime(web3, rp, currentTime+3600, {
                 from: owner,
                 gas: gasLimit
             });
-            // Current block
-            currentBlock = await web3.eth.getBlockNumber();
-            // Set the start block for inflation
-            await setRPLInflationStartBlock(web3, rp,currentBlock + 10, {
+            // Fast-forward
+            await increaseTime(web3, 1800);
+            // Current time
+            currentTime = await getCurrentTime(web3);
+            // Set the start time for inflation
+            await setRPLInflationStartTime(web3, rp,currentTime+3600, {
                 from: owner,
                 gas: gasLimit
             });
         });
 
 
-        it(printTitle('guardian', 'fails to set start block for inflation less than current block'), async () => {
-            // Current block
-            let currentBlock = await web3.eth.getBlockNumber();
+        it(printTitle('guardian', 'fails to set start time for inflation less than current block'), async () => {
+            // Current time
+            let currentTime = await getCurrentTime(web3);
             // Set the start block for inflation
-            await shouldRevert(setRPLInflationStartBlock(web3, rp,currentBlock -  1, {
+            await shouldRevert(setRPLInflationStartTime(web3, rp,currentTime-1000, {
                 from: owner,
                 gas: gasLimit
-            }), 'Owner set old start block for inflation', 'Inflation interval start block must be a future block');
+            }), 'Owner set old start time for inflation', 'Inflation interval start time must be in the future');
         });
 
 
-        it(printTitle('guardian', 'fails to set start block for inflation after inflation has begun'), async () => {
-            // Current block
-            let currentBlock = await web3.eth.getBlockNumber();
-            // Inflation start block
-            let inflationStartBlock = currentBlock + 10;
-            // Set the start block for inflation
-            await setRPLInflationStartBlock(web3, rp, inflationStartBlock, {
+        it(printTitle('guardian', 'fails to set start time for inflation after inflation has begun'), async () => {
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+            // Inflation start time
+            let inflationStartTime = currentTime+3600;
+            // Set the start time for inflation
+            await setRPLInflationStartTime(web3, rp, inflationStartTime, {
                 from: owner,
                 gas: gasLimit
             });
             // Fast forward to when inflation has begun
-            await mineBlocks(web3, inflationStartBlock+1);
-            // Current block
-            currentBlock = await web3.eth.getBlockNumber();
+            await increaseTime(web3, inflationStartTime+60)
+            // Current time
+            currentTime = await getCurrentTime(web3);
             // Set the start block for inflation
-            await shouldRevert(setRPLInflationStartBlock(web3, rp, currentBlock + 10, {
+            await shouldRevert(setRPLInflationStartTime(web3, rp, currentTime+3600, {
                 from: owner,
                 gas: gasLimit
-            }), 'Owner set start block for inflation after it had started', 'Inflation has already started');
+            }), 'Owner set start time for inflation after it had started', 'Inflation has already started');
         });
 
 
         it(printTitle('userOne', 'fails to mint inflation before inflation start block has passed'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
 
             let config = {
-                blockInterval: 1,
-                blockStart: blockCurrent + 30,
-                blockClaim: blockCurrent + 20,
+                timeInterval: 0,
+                timeStart: currentTime + 3600,
+                timeClaim: currentTime + 1800,
                 yearlyInflationTarget: 0.05
-            }
+            };
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Run the test now
             await shouldRevert(rplClaimInflation(web3, rp, config, {
@@ -225,27 +223,23 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'fails to mint inflation same block as inflation start block'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
 
             let config = {
-                blockInterval: 1,
-                blockStart: blockCurrent + 20,
-                blockClaim: blockCurrent + 20,
+                timeInterval: 0,
+                timeStart: currentTime + 3600,
+                timeClaim: currentTime + 1800,
                 yearlyInflationTarget: 0.05
             }
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Run the test now
             await shouldRevert(rplClaimInflation(web3, rp, config, {
                 from: userOne, gas: gasLimit
-            }), 'Inflation claimed at start block', 'Incorrect amount of minted tokens expected');
+            }), 'Inflation claimed at start block', 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
 
         });
 
@@ -253,55 +247,47 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'fails to mint inflation before an interval has passed'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
 
             let config = {
-                blockInterval: 2,
-                blockStart: blockCurrent + 50,
-                blockClaim: blockCurrent + 51,
+                timeInterval: 0,
+                timeStart: currentTime + 1800,
+                timeClaim: currentTime + 3600,      // Mid way through first interval
                 yearlyInflationTarget: 0.05
             }
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Run the test now
             await shouldRevert(rplClaimInflation(web3, rp, config, {
                 from: userOne, gas: gasLimit
-            }), 'Inflation claimed before interval has passed', 'Incorrect amount of minted tokens expected');
+            }), 'Inflation claimed before interval has passed', 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
 
         });
 
 
         it(printTitle('userOne', 'mint inflation midway through a second interval, then mint again after another interval'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
 
             let config = {
-                blockInterval: 15,
-                blockStart: blockCurrent + 20,
-                blockClaim: blockCurrent + 35,
+                timeInterval: ONE_DAY,
+                timeStart: currentTime + ONE_DAY,
+                timeClaim: currentTime + (ONE_DAY*2.5),      // Claim mid way through second interval
                 yearlyInflationTarget: 0.05
-            }
+            };
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Claim inflation half way through the second interval
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += config.blockInterval + 23;
+            config.timeClaim += config.timeInterval;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += config.blockInterval + 42;
+            config.timeClaim += config.timeInterval;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
 
         });
@@ -309,40 +295,39 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'mint inflation at multiple random intervals'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+
+            const INTERVAL = ONE_DAY
+            const HALF_INTERVAL = INTERVAL/2
 
             let config = {
-                blockInterval: 2,
-                blockStart: blockCurrent + 10,
-                blockClaim: blockCurrent + 22,
+                timeInterval: INTERVAL,
+                timeStart: currentTime + INTERVAL,
+                timeClaim: currentTime + (INTERVAL*5),
                 yearlyInflationTarget: 0.025
-            }
+            };
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Mint inflation now
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 3;
+            config.timeClaim += HALF_INTERVAL * 3;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 10;
+            config.timeClaim += HALF_INTERVAL * 10;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 67;
+            config.timeClaim += HALF_INTERVAL * 20;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 105;
+            config.timeClaim += HALF_INTERVAL * 24;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 149;
+            config.timeClaim += HALF_INTERVAL * 32;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 151;
+            config.timeClaim += HALF_INTERVAL * 38;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 155;
+            config.timeClaim += HALF_INTERVAL * 53;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += 219;
+            config.timeClaim += HALF_INTERVAL * 70;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
 
         });
@@ -350,25 +335,22 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'mint one years inflation after 365 days at 5% which would equal 18,900,000 tokens'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+
+            const ONE_DAY = 24 * 60 * 60
 
             let config = {
-                blockInterval: 2,
-                blockStart: blockCurrent + 50,
-                yearlyInflationTarget: 0.05,
-                blockClaim: 0
-            }
+                timeInterval: ONE_DAY,
+                timeStart: currentTime + ONE_DAY,
+                timeClaim: currentTime + ONE_DAY + (ONE_DAY * 365),
+                yearlyInflationTarget: 0.05
+            };
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Mint inflation now
-            config.blockClaim = config.blockStart + (365 * config.blockInterval);
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 18900000);
 
 
@@ -377,40 +359,29 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'mint one years inflation every quarter at 5% which would equal 18,900,000 tokens'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+
+            const ONE_DAY = 24 * 60 * 60
+            const QUARTER_YEAR = ONE_DAY * 365 / 4
 
             let config = {
-                blockInterval: 2,
-                blockStart: blockCurrent + 20,
-                blockClaim: blockCurrent + 20,
+                timeInterval: ONE_DAY,
+                timeStart: currentTime + ONE_DAY,
+                timeClaim: currentTime + ONE_DAY + QUARTER_YEAR,
                 yearlyInflationTarget: 0.05
-            }
+            };
 
-            // How many intervals to make a year
-            let totalYearBlocks = config.blockInterval * 365;
-            let quarterlyBlockAmount = totalYearBlocks / 4;
-
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
-
-            // Alternate collections slightly to test slightly irregular collections
-            let altModifier = config.blockInterval * 1.1;
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Mint inflation now
-            config.blockClaim += quarterlyBlockAmount;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount;
+            config.timeClaim += QUARTER_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += altModifier;
+            config.timeClaim += QUARTER_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount;
-            await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount - altModifier;
+            config.timeClaim += QUARTER_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 18900000);
 
         });
@@ -418,35 +389,29 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userTwo', 'mint two years inflation every 6 months at 5% which would equal 19,845,000 tokens'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+
+            const ONE_DAY = 24 * 60 * 60
+            const HALF_YEAR = ONE_DAY * 365 / 2
 
             let config = {
-                blockInterval: 3,
-                blockStart: blockCurrent + 50,
-                blockClaim: blockCurrent + 51, // 365 is an uneven number, so add two extra intervals at the start to account for 2 years
+                timeInterval: ONE_DAY,
+                timeStart: currentTime + ONE_DAY,
+                timeClaim: currentTime + ONE_DAY + HALF_YEAR,
                 yearlyInflationTarget: 0.05
-            }
+            };
 
-            // How many intervals to make a year
-            let totalYearBlocks = config.blockInterval * 730;
-            let quarterlyBlockAmount = totalYearBlocks / 4;
-
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp, config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp, config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp, config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Mint inflation now
-            config.blockClaim += quarterlyBlockAmount;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount;
+            config.timeClaim += HALF_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount;
+            config.timeClaim += HALF_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit });
-            config.blockClaim += quarterlyBlockAmount;
+            config.timeClaim += HALF_YEAR;
             await rplClaimInflation(web3, rp, config, { from: userOne, gas: gasLimit }, 19845000);
 
         });
@@ -454,32 +419,29 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('userOne', 'mint one years inflation, then set inflation rate to 0 to prevent new inflation'), async () => {
 
-            // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            // Current time
+            let currentTime = await getCurrentTime(web3);
+
+            const ONE_DAY = 24 * 60 * 60
 
             let config = {
-                blockInterval: 2,
-                blockStart: blockCurrent + 50,
-                yearlyInflationTarget: 0.05,
-                blockClaim: 0
-            }
+                timeInterval: ONE_DAY,
+                timeStart: currentTime + ONE_DAY,
+                timeClaim: currentTime + ONE_DAY + (ONE_DAY * 365),
+                yearlyInflationTarget: 0.05
+            };
 
-            // Set the daily inflation start block
-            await setRPLInflationStartBlock(web3, rp,config.blockStart, { from: owner, gas: gasLimit });
-            // Set the daily inflation block count
-            await setRPLInflationIntervalBlocks(web3, rp,config.blockInterval, { from: owner, gas: gasLimit });
-            // Set the daily inflation rate
-            await setRPLInflationIntervalRate(web3, rp,config.yearlyInflationTarget, { from: owner, gas: gasLimit });
+            // Set config
+            await rplSetInflationConfig(web3, rp, config, { from: owner });
 
             // Mint inflation now
-            config.blockClaim = config.blockStart + (365 * config.blockInterval);
             await rplClaimInflation(web3, rp,config, { from: userOne, gas: gasLimit }, 18900000);
 
             // Now set inflation to 0
             await setRPLInflationIntervalRate(web3, rp,0, { from: owner, gas: gasLimit });
 
             // Attempt to collect inflation
-            config.blockClaim = config.blockStart + (720 * config.blockInterval);
+            config.timeClaim += (ONE_DAY * 365)
             await shouldRevert(rplClaimInflation(web3, rp, config, {
                 from: userOne, gas: gasLimit
             }), "Minted inflation after rate set to 0", 'New tokens cannot be minted at the moment, either no intervals have passed, inflation has not begun or inflation rate is set to 0');
