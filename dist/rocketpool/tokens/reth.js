@@ -60,12 +60,8 @@ var RETH = function (_ERC) {
     }, {
         key: 'getExchangeRate',
         value: function getExchangeRate() {
-            var _this2 = this;
-
             return this.tokenContract.then(function (tokenContract) {
                 return tokenContract.methods.getExchangeRate().call();
-            }).then(function (value) {
-                return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
             });
         }
         // Get the total amount of ETH collateral available
@@ -83,12 +79,17 @@ var RETH = function (_ERC) {
     }, {
         key: 'getCollateralRate',
         value: function getCollateralRate() {
-            var _this3 = this;
-
             return this.tokenContract.then(function (tokenContract) {
                 return tokenContract.methods.getCollateralRate().call();
-            }).then(function (value) {
-                return parseFloat(_this3.web3.utils.fromWei(value, 'ether'));
+            });
+        }
+        // Get the total supply
+
+    }, {
+        key: 'getTotalSupply',
+        value: function getTotalSupply() {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.totalSupply().call();
             });
         }
         /**

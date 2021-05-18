@@ -36,6 +36,15 @@ var Deposit = function () {
                 return rocketDepositPool.methods.getBalance().call();
             });
         }
+        // Get the excess balance
+
+    }, {
+        key: 'getExcessBalance',
+        value: function getExcessBalance() {
+            return this.rocketDepositPool.then(function (rocketDepositPool) {
+                return rocketDepositPool.methods.getExcessBalance().call();
+            });
+        }
         /**
          * Mutators - Public
          */

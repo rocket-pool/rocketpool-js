@@ -108,6 +108,60 @@ var Node = function () {
                 return rocketNodeManager.methods.getNodeTimezoneLocation(address).call();
             });
         }
+        // Check whether a node exists
+
+    }, {
+        key: 'getNodeWithdrawalAddress',
+        value: function getNodeWithdrawalAddress(address) {
+            return this.rocketNodeManager.then(function (rocketNodeManager) {
+                return rocketNodeManager.methods.getNodeWithdrawalAddress(address).call();
+            });
+        }
+        // Get Node RPL Stake
+
+    }, {
+        key: 'getNodeRPLStake',
+        value: function getNodeRPLStake(address) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getNodeRPLStake(address).call();
+            });
+        }
+        // Get Node Effective RPL Stake
+
+    }, {
+        key: 'getNodeEffectiveRPLStake',
+        value: function getNodeEffectiveRPLStake(address) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getNodeEffectiveRPLStake(address).call();
+            });
+        }
+        // Get Node Total Effective RPL Stake
+
+    }, {
+        key: 'getNodeTotalEffectiveRPLStake',
+        value: function getNodeTotalEffectiveRPLStake() {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+            });
+        }
+        // Get Node Minimum RPL Stake
+
+    }, {
+        key: 'getNodeMinimumRPLStake',
+        value: function getNodeMinimumRPLStake(address) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getNodeMinimumRPLStake(address).call();
+            });
+        }
+        // Get Node Pending Withdrawal Address
+
+    }, {
+        key: 'getNodePendingWithdrawalAddress',
+        value: function getNodePendingWithdrawalAddress(address) {
+            return this.rocketNodeManager.then(function (rocketNodeManager) {
+                return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
+            });
+        }
         /**
          * Mutators - Public
          */
@@ -118,6 +172,27 @@ var Node = function () {
         value: function registerNode(timezoneLocation, options, onConfirmation) {
             return this.rocketNodeManager.then(function (rocketNodeManager) {
                 return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.registerNode(timezoneLocation).send(options), onConfirmation);
+            });
+        }
+    }, {
+        key: 'setWithdrawalAddress',
+        value: function setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm, options, onConfirmation) {
+            return this.rocketNodeManager.then(function (rocketNodeManager) {
+                return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options), onConfirmation);
+            });
+        }
+    }, {
+        key: 'stakeRPL',
+        value: function stakeRPL(amount, options, onConfirmation) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return (0, _transaction.handleConfirmations)(rocketNodeStaking.methods.stakeRPL(amount).send(options), onConfirmation);
+            });
+        }
+    }, {
+        key: 'confirmWithdrawalAddress',
+        value: function confirmWithdrawalAddress(nodeAddress, options, onConfirmation) {
+            return this.rocketNodeManager.then(function (rocketNodeManager) {
+                return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options), onConfirmation);
             });
         }
         /**
@@ -137,10 +212,8 @@ var Node = function () {
     }, {
         key: 'deposit',
         value: function deposit(minimumNodeFee, options, onConfirmation) {
-            var _this3 = this;
-
             return this.rocketNodeDeposit.then(function (rocketNodeDeposit) {
-                return (0, _transaction.handleConfirmations)(rocketNodeDeposit.methods.deposit(_this3.web3.utils.toWei(minimumNodeFee.toString(), 'ether')).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketNodeDeposit.methods.deposit(minimumNodeFee).send(options), onConfirmation);
             });
         }
     }, {
@@ -152,6 +225,11 @@ var Node = function () {
         key: 'rocketNodeManager',
         get: function get() {
             return this.contracts.get('rocketNodeManager');
+        }
+    }, {
+        key: 'rocketNodeStaking',
+        get: function get() {
+            return this.contracts.get('rocketNodeStaking');
         }
     }]);
 
