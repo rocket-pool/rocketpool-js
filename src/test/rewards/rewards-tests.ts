@@ -7,7 +7,7 @@ import {getNodeEffectiveRPLStake, getNodeMinimumRPLStake, getNodeRPLStake, nodeD
 import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {setDAONetworkBootstrapRewardsClaimer, setDAOProtocolBootstrapSetting, setRewardsClaimIntervalTime, setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartTime, spendRewardsClaimTreasury} from '../dao/scenario-dao-protocol-bootstrap';
+import {setDAONetworkBootstrapRewardsClaimer, setDAOProtocolBootstrapSetting, setRewardsClaimIntervalTime, setRPLInflationIntervalRate, setRPLInflationStartTime, spendRewardsClaimTreasury} from '../dao/scenario-dao-protocol-bootstrap';
 import {submitPrices} from '../_helpers/network';
 import {rewardsClaimersPercTotalGet} from "./scenario-rewards-claim";
 import {rewardsClaimNode} from "./scenario-rewards-claim-node";

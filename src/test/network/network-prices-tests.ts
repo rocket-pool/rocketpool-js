@@ -37,6 +37,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         // Constants
         let proposalCooldown = 10
         let proposalVoteBlocks = 10
+        let proposalVoteDelayBlocks = 10;
 
 
         before(async () => {
@@ -58,6 +59,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             // Set a small proposal cooldown
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner });
 
         });
 

@@ -87,7 +87,7 @@ export async function setDAONetworkBootstrapRewardsClaimer(web3: Web3, rp: Rocke
 // Set the current rewards claim period in seconds
 export async function setRewardsClaimIntervalTime(web3: Web3, rp: RocketPool, intervalTime: number, options: SendOptions) {
     // Set it now
-    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', intervalTime, options);
+    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.time', intervalTime, options);
 };
 
 
@@ -137,13 +137,6 @@ export async function setRPLInflationIntervalRate(web3: Web3, rp: RocketPool, ye
     let dailyInflation = web3.utils.toBN((1 + yearlyInflationPerc) ** (1 / (365)) * 1e18);
     // Set it now
     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.rate', dailyInflation, options);
-};
-
-
-// Set the current RPL inflation rate blocks, how often inflation is calculated
-export async function setRPLInflationIntervalBlocks(web3: Web3, rp: RocketPool, intervalBlocks: number, options: SendOptions) {
-    // Set it now
-    await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.blocks', intervalBlocks, options);
 };
 
 

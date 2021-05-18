@@ -4,7 +4,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, getCurrentTime, increaseTime} from '../_utils/evm';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {setRPLInflationIntervalBlocks, setRPLInflationIntervalRate, setRPLInflationStartTime} from '../dao/scenario-dao-protocol-bootstrap';
+import {setRPLInflationIntervalRate, setRPLInflationStartTime} from '../dao/scenario-dao-protocol-bootstrap';
 import {mintDummyRPL} from './scenario-rpl-mint-fixed';
 import {allowDummyRPL} from './scenario-rpl-allow-fixed';
 import {burnFixedRPL} from './scenario-rpl-burn-fixed';

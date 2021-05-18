@@ -10,6 +10,7 @@ import {setRewardsClaimIntervalTime} from '../dao/scenario-dao-protocol-bootstra
 import {Contract} from 'web3-eth-contract';
 import {stakeRpl} from './scenario-stake-rpl';
 import {withdrawRpl} from './scenario-withdraw-rpl';
+import {setDAONodeTrustedBootstrapSetting} from "../dao/scenario-dao-node-trusted-bootstrap";
 
 
 // Tests

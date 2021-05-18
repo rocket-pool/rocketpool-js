@@ -45,6 +45,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
         // Constants
         let proposalCooldown = 10
         let proposalVoteBlocks = 10
+        let proposalVoteDelayBlocks = 10;
 
         // Setup
         let stakingMinipool1: MinipoolContract;
@@ -102,6 +103,8 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             // Set a small proposal cooldown
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner });
+
         });
 
 
@@ -119,6 +122,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
                 {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
                 [trustedNode4]
             );
+
             // Add the proposal
             let proposalId = await daoNodeTrustedPropose(web3, rp,'hey guys, can I please leave the DAO?', proposalCallData, {
                 from: trustedNode4,

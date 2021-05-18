@@ -112,7 +112,6 @@ export async function daoNodeTrustedExecute(web3: Web3, rp: RocketPool, _proposa
 
     // Capture data
     let ds2 = await getTxData();
-    //console.log(Number(ds2.proposalState));
 
     // Check it was updated
     assert(ds2.proposalState.eq(web3.utils.toBN(6)), 'Proposal is not in the executed state');
