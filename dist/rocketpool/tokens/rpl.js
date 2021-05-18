@@ -21,36 +21,66 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Rocket Pool NETH token manager
+ * Rocket Pool RPL token manager
  */
-var NETH = function (_ERC) {
-    _inherits(NETH, _ERC);
+var RPL = function (_ERC) {
+    _inherits(RPL, _ERC);
 
     // Constructor
-    function NETH(web3, contracts) {
-        _classCallCheck(this, NETH);
+    function RPL(web3, contracts) {
+        _classCallCheck(this, RPL);
 
-        return _possibleConstructorReturn(this, (NETH.__proto__ || Object.getPrototypeOf(NETH)).call(this, web3, contracts, 'rocketTokenNETH'));
+        return _possibleConstructorReturn(this, (RPL.__proto__ || Object.getPrototypeOf(RPL)).call(this, web3, contracts, 'rocketTokenRPL'));
     }
     /**
-     * Mutators - Public
+     * Getters
      */
-    // Burn nETH for ETH
+    // Get contract address
 
 
-    _createClass(NETH, [{
-        key: 'burn',
-        value: function burn(amountWei, options, onConfirmation) {
+    _createClass(RPL, [{
+        key: 'getAddress',
+        value: function getAddress() {
             return this.tokenContract.then(function (tokenContract) {
-                return (0, _transaction.handleConfirmations)(tokenContract.methods.burn(amountWei).send(options), onConfirmation);
+                return tokenContract.options.address;
+            });
+        }
+        // Get the inflation intervals that have passed
+
+    }, {
+        key: 'getInflationIntervalsPassed',
+        value: function getInflationIntervalsPassed() {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.getInflationIntervalsPassed().call();
+            });
+        }
+        // Get the inflation intervals that have passed
+
+    }, {
+        key: 'inflationMintTokens',
+        value: function inflationMintTokens() {
+            return this.tokenContract.then(function (tokenContract) {
+                return tokenContract.methods.inflationMintTokens().call();
+            });
+        }
+        /**
+         * Mutators - Public
+         */
+        // Swap current RPL fixed supply tokens for new RPL
+
+    }, {
+        key: 'swapTokens',
+        value: function swapTokens(amountWei, options, onConfirmation) {
+            return this.tokenContract.then(function (tokenContract) {
+                return (0, _transaction.handleConfirmations)(tokenContract.methods.swapTokens(amountWei).send(options), onConfirmation);
             });
         }
     }]);
 
-    return NETH;
+    return RPL;
 }(_erc2.default);
 // Exports
 
 
-exports.default = NETH;
-//# sourceMappingURL=neth.js.map
+exports.default = RPL;
+//# sourceMappingURL=rpl.js.map

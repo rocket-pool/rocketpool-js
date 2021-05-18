@@ -28,16 +28,21 @@ class Node {
     private get rocketNodeDeposit(): Promise<Contract> {
         return this.contracts.get('rocketNodeDeposit');
     }
+
+
     private get rocketNodeManager(): Promise<Contract> {
         return this.contracts.get('rocketNodeManager');
+    }
+
+
+    private get rocketNodeStaking(): Promise<Contract> {
+        return this.contracts.get('rocketNodeStaking');
     }
 
 
     /**
      * Getters
      */
-
-
     // Get all node details
     public getNodes(): Promise<NodeDetails[]> {
         return this.getNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
@@ -102,6 +107,54 @@ class Node {
     }
 
 
+    // Check whether a node exists
+    public getNodeWithdrawalAddress(address: string): Promise<string> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
+            return rocketNodeManager.methods.getNodeWithdrawalAddress(address).call();
+        });
+    }
+
+
+    // Get Node RPL Stake
+    public getNodeRPLStake(address: string): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getNodeRPLStake(address).call();
+        });
+    }
+
+
+    // Get Node Effective RPL Stake
+    public getNodeEffectiveRPLStake(address: string): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getNodeEffectiveRPLStake(address).call();
+        });
+    }
+
+
+    // Get Node Total Effective RPL Stake
+    public getNodeTotalEffectiveRPLStake(): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+        });
+    }
+
+
+    // Get Node Minimum RPL Stake
+    public getNodeMinimumRPLStake(address: string): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getNodeMinimumRPLStake(address).call();
+        });
+    }
+
+
+    // Get Node Pending Withdrawal Address
+    public getNodePendingWithdrawalAddress(address: string): Promise<string> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
+            return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
+        });
+    }
+
+
     /**
      * Mutators - Public
      */
@@ -112,6 +165,36 @@ class Node {
         return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 rocketNodeManager.methods.registerNode(timezoneLocation).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    public setWithdrawalAddress(nodeAddress: string, withdrawalAddress:string, confirm: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    public stakeRPL(amount: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeStaking.methods.stakeRPL(amount).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    public confirmWithdrawalAddress(nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options),
                 onConfirmation
             );
         });
@@ -135,10 +218,10 @@ class Node {
 
 
     // Make a node deposit
-    public deposit(minimumNodeFee: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public deposit(minimumNodeFee: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNodeDeposit.methods.deposit(this.web3.utils.toWei(minimumNodeFee.toString(), 'ether')).send(options),
+                rocketNodeDeposit.methods.deposit(minimumNodeFee).send(options),
                 onConfirmation
             );
         });

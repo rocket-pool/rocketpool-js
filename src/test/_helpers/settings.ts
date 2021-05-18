@@ -1,5 +1,5 @@
 // Imports
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
 
@@ -9,6 +9,8 @@ export async function getDepositSetting(rp: RocketPool, setting: string) {
     let value = await rocketDAOProtocolSettingsDeposit.methods['get' + setting]().call();
     return value;
 }
+
+
 export async function setDepositSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
     const rocketDAOProtocolSettingsDeposit = await rp.contracts.get('rocketDAOProtocolSettingsDeposit');
     await rocketDAOProtocolSettingsDeposit.methods['set' + setting](value).send(options);
@@ -21,6 +23,8 @@ export async function getMinipoolSetting(rp: RocketPool, setting: string) {
     let value = await rocketDAOProtocolSettingsMinipool.methods['get' + setting]().call();
     return value;
 }
+
+
 export async function setMinipoolSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
     const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
     await rocketDAOProtocolSettingsMinipool.methods['set' + setting](value).send(options);
@@ -33,6 +37,8 @@ export async function getNetworkSetting(rp: RocketPool, setting: string) {
     let value = await rocketDAOProtocolSettingsNetwork.methods['get' + setting]().call();
     return value;
 }
+
+
 export async function setNetworkSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
     const rocketDAOProtocolSettingsNetwork = await rp.contracts.get('rocketDAOProtocolSettingsNetwork');
     await rocketDAOProtocolSettingsNetwork.methods['set' + setting](value).send(options);
@@ -45,8 +51,9 @@ export async function getNodeSetting(rp: RocketPool, setting: string) {
     let value = await rocketDAOProtocolSettingsNode.methods['get' + setting]().call();
     return value;
 }
+
+
 export async function setNodeSetting(rp: RocketPool, setting: string, value: any, options: SendOptions) {
     const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
     await rocketDAOProtocolSettingsNode.methods['set' + setting](value).send(options);
 }
-

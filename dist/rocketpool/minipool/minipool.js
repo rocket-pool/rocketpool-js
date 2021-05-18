@@ -209,6 +209,15 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getMinipoolWithdrawalProcessed(address).call();
             });
         }
+        // Get the minipool queue length
+
+    }, {
+        key: 'getQueueLength',
+        value: function getQueueLength(depositType) {
+            return this.rocketMinipoolQueue.then(function (rocketMinipoolQueue) {
+                return rocketMinipoolQueue.methods.getLength(depositType).call();
+            });
+        }
         // Get the total minipool queue length
 
     }, {

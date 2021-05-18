@@ -33,9 +33,13 @@ class Minipool {
     private get rocketMinipoolManager(): Promise<Contract> {
         return this.contracts.get('rocketMinipoolManager');
     }
+
+
     private get rocketMinipoolQueue(): Promise<Contract> {
         return this.contracts.get('rocketMinipoolQueue');
     }
+
+
     private get rocketMinipoolStatus(): Promise<Contract> {
         return this.contracts.get('rocketMinipoolStatus');
     }
@@ -44,8 +48,6 @@ class Minipool {
     /**
      * Getters
      */
-
-
     // Get all minipool details
     public getMinipools(): Promise<MinipoolDetails[]> {
         return this.getMinipoolAddresses().then((addresses: string[]): Promise<MinipoolDetails[]> => {
@@ -189,6 +191,12 @@ class Minipool {
         });
     }
 
+    // Get the minipool queue length
+    public getQueueLength(depositType: number): Promise<number> {
+        return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<number> => {
+            return rocketMinipoolQueue.methods.getLength(depositType).call();
+        });
+    }
 
     // Get the total minipool queue length
     public getQueueTotalLength(): Promise<number> {
@@ -238,11 +246,10 @@ class Minipool {
     }
 
 
+
     /**
      * Mutators - Restricted to trusted nodes
      */
-
-
     // Submit a minipool withdrawable event
     public submitMinipoolWithdrawable(minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {

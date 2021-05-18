@@ -1,7 +1,7 @@
 // Imports
-import { assert } from 'chai';
+import {assert} from 'chai';
 import Web3 from 'web3';
-import { SendOptions } from 'web3-eth-contract';
+import {SendOptions} from 'web3-eth-contract';
 import RocketPool from '../../rocketpool/rocketpool';
 
 
@@ -21,4 +21,3 @@ export async function burnReth(web3: Web3, rp: RocketPool, amount: string, optio
     assert(ethBalance2.gt(ethBalance1), 'Tokens were not burned for ETH successfully');
 
 }
-

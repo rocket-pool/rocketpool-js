@@ -167,6 +167,16 @@ var MinipoolContract = function () {
         value: function getStakingEndBalance() {
             return this.contract.methods.getStakingEndBalance().call();
         }
+    }, {
+        key: 'getWithdrawalCredentials',
+        value: function getWithdrawalCredentials() {
+            return this.contract.methods.getWithdrawalCredentials().call();
+        }
+    }, {
+        key: 'getNodeWithdrawn',
+        value: function getNodeWithdrawn() {
+            return this.contract.methods.getNodeWithdrawn().call();
+        }
         /**
          * Mutators - Public
          */

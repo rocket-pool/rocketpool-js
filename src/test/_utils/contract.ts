@@ -1,7 +1,8 @@
 // Imports
 import Web3 from 'web3';
-import { EventLog, TransactionReceipt } from 'web3-core';
-import { AbiInput } from 'web3-utils';
+import {EventLog, TransactionReceipt} from 'web3-core';
+import {AbiInput, AbiItem} from 'web3-utils';
+const pako = require('pako');
 
 
 // Get arbitrary contract events from a transaction result
@@ -20,5 +21,16 @@ export function getTxContractEvents(web3: Web3, txReceipt: TransactionReceipt, c
             if (decodeParam.indexed && (decodeParam.type == 'string' || decodeParam.type == 'bytes')) decodeParam.type = 'bytes32'; // Issues decoding indexed string and bytes parameters
             return decodeParam;
         }), log.raw!.data, log.raw!.topics.slice(1)));
+}
+
+
+// Compress / decompress contract ABIs
+export function compressABI(abi:AbiItem[]) {
+    return Buffer.from(pako.deflate(JSON.stringify(abi))).toString('base64');
+}
+
+
+export function decompressABI(abi:string) {
+    return JSON.parse(pako.inflate(Buffer.from(abi, 'base64'), {to: 'string'}));
 }
 

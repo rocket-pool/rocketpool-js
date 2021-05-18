@@ -1,6 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
+import {printTitle} from '../_utils/formatting';
 
 // Tests
 export default function runSettingsTests(web3: Web3, rp: RocketPool) {
@@ -9,7 +10,7 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
 
         describe('Deposit', () => {
 
-            it('Can get deposit settings', async () => {
+            it(printTitle('User', 'Can get deposit settings'), async () => {
                 let settings = await Promise.all([
                     rp.settings.deposit.getDepositEnabled(),
                     rp.settings.deposit.getAssignDepositsEnabled(),
@@ -24,12 +25,11 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
 
         describe('Minipool', () => {
 
-            it('Can get minipool settings', async () => {
+            it(printTitle('User', 'Can get minipool settings'), async () => {
                 let settings = await Promise.all([
                     rp.settings.minipool.getLaunchBalance(),
                     rp.settings.minipool.getSubmitWithdrawableEnabled(),
                     rp.settings.minipool.getLaunchTimeout(),
-                    rp.settings.minipool.getWithdrawalDelay(),
                 ]);
             });
 
@@ -38,7 +38,7 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
 
         describe('Network', () => {
 
-            it('Can get network settings', async () => {
+            it(printTitle('User', 'Can get network settings'), async () => {
                 let settings = await Promise.all([
                     rp.settings.network.getNodeConsensusThreshold(),
                     rp.settings.network.getSubmitBalancesEnabled(),
@@ -57,7 +57,7 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
 
         describe('Node', () => {
 
-            it('Can get node settings', async () => {
+            it(printTitle('User', 'Can get node settings'), async () => {
                 let settings = await Promise.all([
                     rp.settings.node.getRegistrationEnabled(),
                     rp.settings.node.getDepositEnabled(),
