@@ -24,6 +24,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         let userOne: string;
         let registeredNode1: string;
         let registeredNode2: string;
+        let registeredNode3: string;
         let registeredNodeTrusted1: string;
         let registeredNodeTrusted2: string;
 
@@ -44,13 +45,14 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         // Setup
         before(async () => {
             // Get accounts
-            [guardian, userOne, registeredNode1, registeredNode2, registeredNodeTrusted1, registeredNodeTrusted2] = await web3.eth.getAccounts();
+            [guardian, userOne, registeredNode1, registeredNode2, registeredNode3, registeredNodeTrusted1, registeredNodeTrusted2] = await web3.eth.getAccounts();
 
             const rocketStorage = await rp.contracts.get('rocketStorage');
 
             // Register nodes
             await rp.node.registerNode('Australia/Brisbane', {from: registeredNode1, gas: gasLimit});
             await rp.node.registerNode('Australia/Brisbane', {from: registeredNode2, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: registeredNode3, gas: gasLimit});
             await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted1, gas: gasLimit});
             await rp.node.registerNode('Australia/Brisbane', {from: registeredNodeTrusted2, gas: gasLimit});
 
@@ -168,6 +170,16 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
             // Disable bootstrap mode
             await setDaoNodeTrustedBootstrapModeDisabled(web3, rp, { from: guardian });
+            // We'll allow the DAO to transfer our RPL bond before joining
+            let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+            let rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
+            let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
+            // We only have 2 members now that bootstrap mode is disabled and proposals can only be made with 3, lets get a regular node to join via the emergency method
+            await mintRPL(web3, rp, registeredNode3, rplBondAmount, guardian);
+            await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode3 });
+            await setDaoNodeTrustedMemberRequired(web3, rp, 'rocketpool_emergency_node_op', 'node3@home.com', {
+                from: registeredNode3,
+            });
             // New Member 1
             // Encode the calldata for the proposal
             let proposalCalldata1 = web3.eth.abi.encodeFunctionCall(
@@ -205,10 +217,6 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await daoNodeTrustedExecute(web3, rp, proposalID_1, { from: registeredNodeTrusted1 });
             await daoNodeTrustedExecute(web3, rp, proposalID_2, { from: registeredNodeTrusted1 });
             // Member has now been invited to join, so lets do that
-            // We'll allow the DAO to transfer our RPL bond before joining
-            let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
-            let rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
-            let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
             await mintRPL(web3, rp, registeredNode1, rplBondAmount, guardian);
             await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode1 });
             await mintRPL(web3, rp, registeredNode2, rplBondAmount, guardian);
