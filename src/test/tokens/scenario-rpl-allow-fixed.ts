@@ -12,7 +12,7 @@ export async function allowDummyRPL(web3: Web3, rp: RocketPool, to: string, amou
     // Get balances
     function getBalances() {
         return Promise.all([
-            rocketTokenDummyRPL.methods.allowance(options.from, to).call(),
+            rp.tokens.legacyrpl.allowance(options.from, to),
         ]).then(
             ([tokenAllowance]) =>
                 ({tokenAllowance: web3.utils.toBN(tokenAllowance)})

@@ -80,6 +80,10 @@ var _rpl = require('./tokens/rpl');
 
 var _rpl2 = _interopRequireDefault(_rpl);
 
+var _legacyrpl = require('./tokens/legacyrpl');
+
+var _legacyrpl2 = _interopRequireDefault(_legacyrpl);
+
 var _pool = require('./rewards/pool');
 
 var _pool2 = _interopRequireDefault(_pool);
@@ -144,7 +148,8 @@ function RocketPool(web3, RocketStorage) {
     };
     this.tokens = {
         reth: new _reth2.default(web3, this.contracts),
-        rpl: new _rpl2.default(web3, this.contracts)
+        rpl: new _rpl2.default(web3, this.contracts),
+        legacyrpl: new _legacyrpl2.default(web3, this.contracts)
     };
     this.rewards = {
         pool: new _pool2.default(web3, this.contracts),
