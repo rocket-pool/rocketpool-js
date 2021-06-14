@@ -47,6 +47,14 @@ class RPL extends ERC20 {
     }
 
 
+    // Get the total supply
+    public totalSupply(): Promise<number> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
+            return tokenContract.methods.totalSupply().call();
+        });
+    }
+
+
     /**
      * Mutators - Public
      */

@@ -50,15 +50,32 @@ class DAONodeTrusted {
     }
 
 
+    // Get the number of votes needed for a proposal to pass
+    public getProposalQuorumVotesRequired(): Promise<number> {
+        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<number> => {
+            return rocketDAONodeTrusted.methods.getProposalQuorumVotesRequired().call();
+        });
+    }
+
+
+    // Check if a member is valid
+    public getMemberIsValid(address: string): Promise<number> {
+        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<number> => {
+            return rocketDAONodeTrusted.methods.getMemberIsValid(address).call();
+        });
+    }
+
+
+
 
     /**
      * Mutators - Public
      */
     // Bootstrap a DAO Member
-    public bootstrapMember(id: string, email: string, nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public bootstrapMember(id: string, url: string, nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketDAONodeTrusted.methods.bootstrapMember(id, email, nodeAddress).send(options),
+                rocketDAONodeTrusted.methods.bootstrapMember(id, url, nodeAddress).send(options),
                 onConfirmation
             );
         });

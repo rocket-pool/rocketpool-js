@@ -21,16 +21,20 @@ export async function getDAOProposalState(web3: Web3, rp: RocketPool, proposalID
 
 
 // Get the block a proposal can start being voted on
-export async function getDAOProposalStartBlock(web3: Web3, rp: RocketPool, proposalID:number) {
+export async function getDAOProposalStartTime(web3: Web3, rp: RocketPool, proposalID:number) {
     return await rp.dao.proposals.getStart(proposalID);
 };
 
 
 // Get the block a proposal can end being voted on
-export async function getDAOProposalEndBlock(web3: Web3, rp: RocketPool, proposalID:number) {
+export async function getDAOProposalEndTime(web3: Web3, rp: RocketPool, proposalID:number) {
     return await rp.dao.proposals.getEnd(proposalID);
 };
 
+// Get the block a proposal expires
+export async function getDAOProposalExpires(web3: Web3, rp: RocketPool, proposalID: number) {
+    return await rp.dao.proposals.getExpires(proposalID);
+}
 
 // Get the vote count for a proposal
 export async function getDAOProposalVotesFor(web3: Web3, rp: RocketPool, proposalID:number) {

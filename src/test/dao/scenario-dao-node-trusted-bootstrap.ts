@@ -7,7 +7,7 @@ import {compressABI, decompressABI} from '../_utils/contract';
 import {AbiItem} from 'web3-utils';
 
 
-export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _email: string, _nodeAddress: string, options: SendOptions) {
+export async function setDAONodeTrustedBootstrapMember(web3: Web3, rp: RocketPool, _id: string, _url: string, _nodeAddress: string, options: SendOptions) {
 
     // Get data about the tx
     function getTxData() {
@@ -28,7 +28,7 @@ export async function setDaoNodeTrustedBootstrapMember(web3: Web3, rp: RocketPoo
     options.gas = 1000000;
 
     // Set as a bootstrapped member
-    await rp.dao.node.trusted.node.bootstrapMember(_id, _email, _nodeAddress, options);
+    await rp.dao.node.trusted.node.bootstrapMember(_id, _url, _nodeAddress, options);
 
     // Capture data
     let ds2 = await getTxData();

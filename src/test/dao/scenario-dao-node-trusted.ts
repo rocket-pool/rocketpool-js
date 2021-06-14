@@ -5,6 +5,21 @@ import RocketPool from '../../rocketpool/rocketpool';
 import {SendOptions} from 'web3-eth-contract';
 import {proposalStates, getDAOProposalState} from './scenario-dao-proposal';
 
+// Returns true if the address is a DAO member
+export async function getDAOMemberIsValid(web3: Web3, rp: RocketPool, _nodeAddress: string, options: SendOptions) {
+    return await rp.dao.node.trusted.node.getMemberIsValid(_nodeAddress);
+};
+
+// Get the total members
+export async function getDAONodeMemberCount(web3: Web3, rp: RocketPool, options: SendOptions) {
+    return await rp.dao.node.trusted.node.getMemberCount();
+};
+
+// Get the number of votes needed for a proposal to pass
+export async function getDAONodeProposalQuorumVotesRequired(web3: Web3, rp: RocketPool, proposalID:string, txOptions: SendOptions) {
+    return await rp.dao.node.trusted.node.getProposalQuorumVotesRequired();
+};
+
 // Create a proposal for this DAO
 export async function daoNodeTrustedPropose(web3: Web3, rp: RocketPool, _proposalMessage:string, _payload:string, options: SendOptions) {
 
@@ -82,6 +97,20 @@ export async function daoNodeTrustedVote(web3: Web3, rp: RocketPool, _proposalID
     // Check proposals
     if(ds2.proposalState == proposalStates.Active) assert(ds2.proposalVotesFor.lt(ds2.proposalVotesRequired), 'Proposal state is active, votes for proposal should be less than the votes required');
     if(ds2.proposalState == proposalStates.Succeeded) assert(ds2.proposalVotesFor.gte(ds2.proposalVotesRequired), 'Proposal state is successful, yet does not have the votes required');
+
+}
+
+// Cancel a proposal for this DAO
+export async function daoNodeTrustedCancel(web3: Web3, rp: RocketPool, _proposalID:number, options: SendOptions) {
+
+    // Add a new proposal
+    await rp.dao.node.trusted.proposals.cancel(_proposalID, options);
+
+    // Get the current state
+    let state = Number(await getDAOProposalState(web3, rp,_proposalID));
+
+    // Check proposals
+    assert(state == proposalStates.Cancelled, 'Incorrect proposal state, should be cancelled');
 
 }
 

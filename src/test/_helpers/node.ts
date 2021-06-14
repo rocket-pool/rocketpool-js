@@ -2,7 +2,7 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
-import {setDaoNodeTrustedBootstrapMember} from '../dao/scenario-dao-node-trusted-bootstrap';
+import {setDAONodeTrustedBootstrapMember} from '../dao/scenario-dao-node-trusted-bootstrap';
 import {daoNodeTrustedMemberJoin} from '../dao/scenario-dao-node-trusted';
 import {SendOptions} from 'web3-eth-contract';
 
@@ -13,7 +13,7 @@ export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: s
 }
 
 
-export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, email: string, owner:string) {
+export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: string, id: string, url: string, owner:string) {
     // Get the DAO settings
     let daoNodeSettings = await rp.contracts.get('rocketDAONodeTrustedSettingsMembers');
     // How much RPL is required for a trusted node bond?
@@ -26,7 +26,7 @@ export async function setNodeTrusted(web3: Web3, rp: RocketPool, _account: strin
     let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
     await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: _account });
     // Create invites for them to become a member
-    await setDaoNodeTrustedBootstrapMember(web3, rp, id, email, _account, {from: owner});
+    await setDAONodeTrustedBootstrapMember(web3, rp, id, url, _account, {from: owner});
     // Now get them to join
     await daoNodeTrustedMemberJoin(web3, rp,{from: _account});
 }

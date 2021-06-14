@@ -62,6 +62,16 @@ class DAONodeTrustedProposals {
         });
     }
 
+    // Cancel an existing DAO Proposal
+    public cancel(proposalID: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketDAONodeTrustedProposals.methods.cancel(proposalID).send(options),
+                onConfirmation
+            );
+        });
+    }
+
 
 
 }
