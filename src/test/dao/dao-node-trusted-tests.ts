@@ -14,7 +14,7 @@ import {
     daoNodeTrustedVote,
     daoNodeTrustedMemberJoin,
     daoNodeTrustedMemberLeave,
-    daoNodeTrustedCancel, getDAOMemberIsValid
+    daoNodeTrustedCancel, getDAOMemberIsValid, daoNodeTrustedMemberChallengeMake, daoNodeTrustedMemberChallengeDecide
 } from './scenario-dao-node-trusted';
 import {getDAOProposalEndTime, getDAOProposalStartTime, getDAOProposalState, proposalStates,  getDAOProposalExpires} from './scenario-dao-proposal';
 import {mintRPL} from '../tokens/scenario-rpl-mint';
@@ -453,19 +453,17 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         it(printTitle('registeredNodeTrusted1', 'creates a proposal to kick registeredNodeTrusted2 with a 50% fine, it is successful and registeredNodeTrusted2 is kicked and receives 50% of their bond'), async () => {
             // Add our 3rd member so proposals can pass
             await setNodeTrusted(web3, rp, registeredNode3, 'rocketpool_3', 'node3@home.com', guardian);
-            // Add our 3rd member
-            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool', 'node3@home.com', guardian);
             // How much bond has registeredNodeTrusted2 paid?
-            let registeredNodeTrusted2BondAmount = await daoNode.getMemberRPLBondAmount.call(registeredNodeTrusted2);
+            let registeredNodeTrusted2BondAmount = await rp.dao.node.trusted.node.getMemberRPLBondAmount(registeredNodeTrusted2).then((value: any) => web3.utils.toBN(value));
             // How much to fine? 33%
             let registeredNodeTrusted2BondAmountFine = registeredNodeTrusted2BondAmount.div(web3.utils.toBN(3));
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
                 {name: 'proposalKick', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}, {type: 'uint256', name: '_rplFine'}]},
-                [registeredNodeTrusted2, registeredNodeTrusted2BondAmountFine]
+                [registeredNodeTrusted2, registeredNodeTrusted2BondAmountFine.toString()]
             );
             // Get the RPL total supply
-            let rplTotalSupply1 = await rp.tokens.rpl.totalSupply();
+            let rplTotalSupply1 = await rp.tokens.rpl.totalSupply().then((value: any) => web3.utils.toBN(value));
             // Add the proposal
             let proposalID = await daoNodeTrustedPropose(web3, rp, 'hey guys, this member hasn\'t logged on for weeks, lets boot them with a 33% fine!', proposalCalldata, {
                 from: registeredNodeTrusted1
@@ -482,18 +480,19 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             // Proposal has passed, lets execute it now
             await daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode1 });
             // Member should be kicked now, let's check their RPL balance has their 33% bond returned
-            let rplBalance = await rp.tokens.rpl.balanceOf(registeredNodeTrusted2);
+            let rplBalance = await rp.tokens.rpl.balanceOf(registeredNodeTrusted2).then((value: any) => web3.utils.toBN(value));
             //console.log(web3.utils.fromWei(await rocketTokenRPL.balanceOf.call(registeredNodeTrusted2)));
             assert((registeredNodeTrusted2BondAmount.sub(registeredNodeTrusted2BondAmountFine)).eq(rplBalance), "registeredNodeTrusted2 remaining RPL balance is incorrect");
-            assert(await getDAOMemberIsValid(web3, rp, registeredNodeTrusted2, {}) === false, "registeredNodeTrusted2 is still a member of the DAO");
+            assert(await getDAOMemberIsValid(web3, rp, registeredNodeTrusted2) === false, "registeredNodeTrusted2 is still a member of the DAO");
             // The 33% fine should be burned
-            let rplTotalSupply2 = await rp.tokens.rpl.totalSupply();
+            let rplTotalSupply2 = await rp.tokens.rpl.totalSupply().then((value: any) => web3.utils.toBN(value));
             assert(rplTotalSupply1.sub(rplTotalSupply2).eq(registeredNodeTrusted2BondAmountFine), "RPL total supply did not decrease by fine amount");
         });
 
 
         it(printTitle('registeredNode2', 'is made a new member after a proposal is created, they fail to vote on that proposal'), async () => {
-
+            // Add our 3rd member
+            await setNodeTrusted(web3, rp, registeredNode2, 'rocketpool_3', 'node3@home.com', guardian);
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
                 {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
@@ -517,12 +516,36 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('registeredNodeTrusted2', 'fails to execute a successful proposal after it expires'), async () => {
-            // Setup our proposal settings
-            let proposalVoteBlocks = 10;
-            let proposalVoteExecuteBlocks = 10;
-            // Update now while in bootstrap mode
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
+            // Add our 3rd member so proposals can pass
+            await setNodeTrusted(web3, rp, registeredNode2, 'rocketpool_3', 'node3@home.com', guardian);
+            // Encode the calldata for the proposal
+            let proposalCalldata = web3.eth.abi.encodeFunctionCall(
+                {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
+                [registeredNodeTrusted1]
+            );
+            // Add the proposal
+            let proposalID = await daoNodeTrustedPropose(web3, rp, 'hey guys, can I please leave the DAO?', proposalCalldata, {
+                from: registeredNodeTrusted1
+            });
+            // Current time
+            let timeCurrent = await getCurrentTime(web3);
+            // Now increase time until the proposal is 'active' and can be voted on
+            await increaseTime(web3, (await getDAOProposalStartTime(web3, rp, proposalID)-timeCurrent)+2);
+            // Now lets vote
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted1 });
+            await daoNodeTrustedVote(web3, rp, proposalID, true, { from: registeredNodeTrusted2 });
+            // Fast forward to this voting period finishing and executing period expiring
+            await increaseTime(web3, (await getDAOProposalExpires(web3, rp, proposalID)-timeCurrent)+2);
+            // Verify correct expired status
+            assert(await getDAOProposalState(web3, rp, proposalID) == proposalStates.Expired, 'Proposal state is not Expired');
+            // Execution should fail
+            await shouldRevert(daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode2 }), 'Member execute proposal after it had expired', 'Proposal has not succeeded, has expired or has already been executed');
+        });
+
+
+        it(printTitle('registeredNodeTrusted2', 'checks to see if a proposal has expired after being successfully voted for, but not executed'), async () => {
+            // Add our 3rd member so proposals can pass
+            await setNodeTrusted(web3, rp, registeredNode2, 'rocketpool_3', 'node3@home.com', guardian);
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(
                 {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
@@ -543,6 +566,97 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await increaseTime(web3, (await getDAOProposalExpires(web3, rp, proposalID)-timeCurrent)+2);
             // Execution should fail
             await shouldRevert(daoNodeTrustedExecute(web3, rp, proposalID, { from: registeredNode2 }), 'Member execute proposal after it had expired', 'Proposal has not succeeded, has expired or has already been executed');
+            // Cancel should fail
+            await shouldRevert(daoNodeTrustedCancel(web3, rp, proposalID, { from: registeredNodeTrusted1 }), 'Member cancelled proposal after it had expired', 'Proposal can only be cancelled if pending or active');
+        });
+
+
+        it(printTitle('registeredNodeTrusted1', 'challenges another members node to respond and it does successfully in the window required'), async () => {
+            // Add a 3rd member
+            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool_3', 'node2@home.com', guardian);
+            // Update our challenge settings
+            let challengeWindowTime = 60 * 60;
+            let challengeCooldownTime = 60 * 60;
+            // Update now while in bootstrap mode
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.window', challengeWindowTime, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.cooldown', challengeCooldownTime, { from: guardian });
+            // Attempt to challenge a non-member
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode2, { from: registeredNodeTrusted1 }), 'A non member was challenged', 'Invalid trusted node');
+            // Challenge the 3rd member
+            await daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, { from: registeredNodeTrusted1 });
+            // Attempt to challenge again
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, { from: registeredNodeTrusted1 }), 'Member was challenged again', 'Member is already being challenged');
+            // Attempt to challenge another member before cooldown has passed
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNodeTrusted2, { from: registeredNodeTrusted1 }), 'Member challenged another user before cooldown had passed', 'You must wait for the challenge cooldown to pass before issuing another challenge');
+            // Have 3rd member respond to the challenge successfully
+            await daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNode1, true, { from: registeredNode1 });
+            // Wait until the original initiator's cooldown window has passed and they attempt another challenge
+            await increaseTime(web3, challengeCooldownTime);
+            await daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, { from: registeredNodeTrusted1 });
+            // Fast forward to past the challenge window with the challenged node responding
+            await increaseTime(web3, challengeWindowTime);
+            // Have 3rd member respond to the challenge successfully again, but after the challenge window has expired and before another member decides it
+            await daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNode1, true, { from: registeredNode1 });
+        });
+
+
+        it(printTitle('registeredNodeTrusted1', 'challenges another members node to respond, they do not in the window required and lose their membership + bond'), async () => {
+            // Add a 3rd member
+            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool_3', 'node2@home.com', guardian);
+            // Update our challenge settings
+            let challengeWindowTime = 60 * 60;
+            let challengeCooldownTime = 60 * 60;
+            // Update now while in bootstrap mode
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.window', challengeWindowTime, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.cooldown', challengeCooldownTime, { from: guardian });
+            // Try to challenge yourself
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, { from: registeredNode1 }), 'Member challenged themselves', 'You cannot challenge yourself');
+            // Challenge the 3rd member
+            await daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, { from: registeredNodeTrusted1 });
+            // Attempt to decide a challenge on a member that hasn't been challenged
+            await shouldRevert(daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNodeTrusted2, true, { from: registeredNodeTrusted1 }), 'Member decided challenge on member without a challenge', 'Member hasn\'t been challenged or they have successfully responded to the challenge already');
+            // Have another member try to decide the result before the window passes, it shouldn't change and they should still be a member
+            await shouldRevert(daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNode1, true, { from: registeredNodeTrusted2 }), 'Member decided challenge before refute window passed', 'Refute window has not yet passed');
+            // Fast forward to past the challenge window with the challenged node responding
+            await increaseTime(web3, challengeWindowTime);
+            // Decide the challenge now after the node hasn't responded in the challenge window
+            await daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNode1, false, { from: registeredNodeTrusted2 });
+        });
+
+
+        it(printTitle('registeredNode2', 'as a regular node challenges a DAO members node to respond by paying ETH, they do not respond in the window required and lose their membership + bond'), async () => {
+            // How much ETH is required for a regular node to challenge a DAO member
+            let challengeCost = await rp.dao.node.trusted.settings.getChallengeCost();
+
+            // Add a 3rd member
+            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool_3', 'node2@home.com', guardian);
+            // Update our challenge settings
+            let challengeWindowTime = 60 * 60;
+            let challengeCooldownTime = 60 * 60;
+            // Update now while in bootstrap mode
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.window', challengeWindowTime, { from: guardian });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.challenge.cooldown', challengeCooldownTime, { from: guardian });
+            // Attempt to challenge a non member
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, userOne, {
+                from: registeredNode2
+            }), 'Challenged a non DAO member', 'Invalid trusted node');
+            // Attempt to challenge as a non member
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNodeTrusted2, {
+                from: userOne
+            }), 'Challenged a non DAO member', 'Invalid node');
+            // Challenge the 3rd member as a regular node, should revert as we haven't paid to challenge
+            await shouldRevert(daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, {
+                from: registeredNode2
+            }), 'Regular node challenged DAO member without paying challenge fee', 'Non DAO members must pay ETH to challenge a members node');
+            // Ok pay now to challenge
+            await daoNodeTrustedMemberChallengeMake(web3, rp, registeredNode1, {
+                value: challengeCost,
+                from: registeredNode2
+            });
+            // Fast forward to past the challenge window with the challenged node responding
+            await increaseTime(web3, challengeWindowTime);
+            // Decide the challenge now after the node hasn't responded in the challenge window
+            await daoNodeTrustedMemberChallengeDecide(web3, rp, registeredNode1, false, { from: registeredNodeTrusted2 });
         });
 
 
@@ -671,12 +785,8 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         it(printTitle('registeredNodeTrusted1', 'creates a proposal to upgrade a network contract, it passes and is executed'), async () => {
             // Load contracts
             let rocketStorage = await rp.contracts.get('rocketStorage')
-            // Setup our proposal settings
-            let proposalVoteBlocks = 10;
-            let proposalVoteExecuteBlocks = 10;
-            // Update now while in bootstrap mode
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: guardian });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.execute.blocks', proposalVoteExecuteBlocks, { from: guardian });
+            // Add a 3rd member
+            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool_3', 'node2@home.com', guardian);
             let abi = await rp.contracts.abi('rocketMinipoolManager');
             // Encode the calldata for the proposal
             let proposalCalldata = web3.eth.abi.encodeFunctionCall(

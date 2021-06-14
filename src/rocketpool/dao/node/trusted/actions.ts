@@ -54,6 +54,28 @@ class DAONodeTrustedActions {
     }
 
 
+    // Challenge Make
+    public actionChallengeMake(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketDAONodeTrustedActions.methods.actionChallengeMake(address).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
+    // Challenge Decide
+    public actionChallengeDecide(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketDAONodeTrustedActions.methods.actionChallengeDecide(address).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
 }
 
 

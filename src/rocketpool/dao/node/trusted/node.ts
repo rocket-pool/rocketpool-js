@@ -59,9 +59,24 @@ class DAONodeTrusted {
 
 
     // Check if a member is valid
-    public getMemberIsValid(address: string): Promise<number> {
-        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<number> => {
+    public getMemberIsValid(address: string): Promise<boolean> {
+        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<boolean> => {
             return rocketDAONodeTrusted.methods.getMemberIsValid(address).call();
+        });
+    }
+
+
+    // Get member RPL bond amount
+    public getMemberRPLBondAmount(address: string): Promise<string> {
+        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<string> => {
+            return rocketDAONodeTrusted.methods.getMemberRPLBondAmount(address).call();
+        });
+    }
+
+    // Get member is challenger
+    public getMemberIsChallenged(address: string): Promise<boolean> {
+        return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<boolean> => {
+            return rocketDAONodeTrusted.methods.getMemberIsChallenged(address).call();
         });
     }
 

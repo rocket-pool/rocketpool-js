@@ -6,7 +6,7 @@ import {SendOptions} from 'web3-eth-contract';
 import {proposalStates, getDAOProposalState} from './scenario-dao-proposal';
 
 // Returns true if the address is a DAO member
-export async function getDAOMemberIsValid(web3: Web3, rp: RocketPool, _nodeAddress: string, options: SendOptions) {
+export async function getDAOMemberIsValid(web3: Web3, rp: RocketPool, _nodeAddress: string) {
     return await rp.dao.node.trusted.node.getMemberIsValid(_nodeAddress);
 };
 
@@ -223,5 +223,65 @@ export async function daoNodeTrustedMemberLeave(web3: Web3, rp: RocketPool, _rpl
     // Verify
     assert(ds2.memberTotal.eq(ds1.memberTotal.sub(web3.utils.toBN(1))), 'Member count has not decreased');
     assert(ds2.rplBalanceVault.eq(ds1.rplBalanceVault.sub(ds2.rplBalanceRefund)), 'Member RPL refund address does not contain the correct RPL bond amount');
+
+}
+
+
+// Challenger a members node to respond and signal it is still alive
+export async function daoNodeTrustedMemberChallengeMake(web3: Web3, rp: RocketPool, _nodeAddress: string, options: SendOptions) {
+
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rp.dao.node.trusted.node.getMemberIsValid(_nodeAddress),
+            rp.dao.node.trusted.node.getMemberIsChallenged(_nodeAddress),
+        ]).then(
+            ([currentMemberStatus, memberChallengedStatus]) =>
+                ({currentMemberStatus, memberChallengedStatus})
+        );
+    }
+
+    // Capture data
+    let ds1 = await getTxData();
+
+    // Add a new proposal
+    await rp.dao.node.trusted.actions.actionChallengeMake(_nodeAddress, options);
+
+    // Capture data
+    let ds2 = await getTxData();
+
+    // Check member count has increased
+    assert(ds1.currentMemberStatus == true, 'Challenged member has had their membership removed');
+    assert(ds1.memberChallengedStatus == false, 'Challenged a member that was already challenged');
+    assert(ds2.memberChallengedStatus == true, 'Member did not become challenged');
+
+}
+
+
+// Decide a challenges outcome
+export async function daoNodeTrustedMemberChallengeDecide(web3: Web3, rp: RocketPool, _nodeAddress: string, _expectedMemberStatus: boolean, options: SendOptions) {
+
+    // Get data about the tx
+    function getTxData() {
+        return Promise.all([
+            rp.dao.node.trusted.node.getMemberIsValid(_nodeAddress),
+            rp.dao.node.trusted.node.getMemberIsChallenged(_nodeAddress),
+        ]).then(
+            ([currentMemberStatus, memberChallengedStatus]) =>
+                ({currentMemberStatus, memberChallengedStatus})
+        );
+    }
+
+    // Capture data
+    let ds1 = await getTxData();
+
+    // Add a new proposal
+    await rp.dao.node.trusted.actions.actionChallengeDecide(_nodeAddress, options);
+
+    // Capture data
+    let ds2 = await getTxData();
+
+    // Check member count has increased
+    assert(ds2.currentMemberStatus == _expectedMemberStatus, 'Challenged member did not become their expected status');
 
 }
