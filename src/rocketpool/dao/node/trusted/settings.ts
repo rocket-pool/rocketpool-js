@@ -51,7 +51,7 @@ class DAONodeTrustedSettings {
     // How much it costs a non-member to challenge a members node. It's free for current members to challenge other members.
     public getChallengeCost(): Promise<string> {
         return this.rocketDAONodeTrustedSettingsMembers.then((rocketDAONodeTrustedSettingsMembers: Contract): Promise<string> => {
-            return rocketDAONodeTrustedSettingsMembers.methods.getChallengCost().call();
+            return rocketDAONodeTrustedSettingsMembers.methods.getChallengeCost().call();
         });
     }
 

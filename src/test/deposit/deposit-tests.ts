@@ -14,6 +14,7 @@ import {submitBalances} from '../_helpers/network';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {userDeposit} from '../_helpers/deposit';
 import {getMinipoolMinimumRPLStake} from '../_helpers/minipool';
+import {setDAONodeTrustedBootstrapSetting} from "../dao/scenario-dao-node-trusted-bootstrap";
 
 // Tests
 export default function runDepositTests(web3: Web3, rp: RocketPool) {
@@ -149,6 +150,8 @@ export default function runDepositTests(web3: Web3, rp: RocketPool) {
 
             // Disable deposit assignment
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsDeposit', 'deposit.assign.enabled', false, {from: owner});
+            // Disable minimum unbonded commission threshold
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsMembers', 'members.minipool.unbonded.min.fee', '0', {from: owner});
 
             // Stake RPL to cover minipools
             let minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);

@@ -57,9 +57,9 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             await setNodeTrusted(web3, rp, trustedNode3, 'saas_3', 'node@home.com', owner);
 
             // Set a small proposal cooldown
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner, gas: gasLimit });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner, gas: gasLimit });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner, gas: gasLimit });
 
         });
 

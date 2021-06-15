@@ -78,3 +78,34 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     }
 
 }
+
+
+// Execute update network balances
+export async function executeUpdateBalances(web3: Web3, rp: RocketPool, block: number, totalEth: string, stakingEth: string, rethSupply: string, options: SendOptions) {
+
+    // Get balances
+    function getBalances() {
+        return Promise.all([
+            rp.network.getBalancesBlock().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getTotalETHBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getStakingETHBalance().then((value: any) => web3.utils.toBN(value)),
+            rp.network.getTotalRETHSupply().then((value: any) => web3.utils.toBN(value)),
+        ]).then(
+            ([block, totalEth, stakingEth, rethSupply]) =>
+                ({block, totalEth, stakingEth, rethSupply})
+        );
+    }
+
+    // Submit balances
+    await rp.network.executeUpdateBalances(block, totalEth, stakingEth, rethSupply, options);
+
+    // Get updated balances
+    let balances = await getBalances()
+
+    // Check balances
+    assert(balances.block.eq(web3.utils.toBN(block)), 'Incorrect updated network balances block');
+    assert(balances.totalEth.eq(web3.utils.toBN(totalEth)), 'Incorrect updated network total ETH balance');
+    assert(balances.stakingEth.eq(web3.utils.toBN(stakingEth)), 'Incorrect updated network staking ETH balance');
+    assert(balances.rethSupply.eq(web3.utils.toBN(rethSupply)), 'Incorrect updated network total rETH supply');
+
+}

@@ -2,7 +2,7 @@
 import {assert} from 'chai';
 
 
-export async function shouldRevert(txPromise: Promise<void>, message: string, expectedErrorMessage:string) {
+export async function shouldRevert(txPromise: Promise<any>, message: string, expectedErrorMessage:string) {
     let txSuccess = false;
     try {
         await txPromise;

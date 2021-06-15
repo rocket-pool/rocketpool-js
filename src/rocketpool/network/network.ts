@@ -148,6 +148,17 @@ class Network {
     }
 
 
+    // Execute update balances
+    public executeUpdateBalances(block: number, totalEth: string, stakingEth: string, rethSupply: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNetworkBalances.then((rocketNetworkBalances: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNetworkBalances.methods.executeUpdateBalances(block, totalEth, stakingEth, rethSupply).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+
 }
 
 

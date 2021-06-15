@@ -10,6 +10,9 @@ import {printTitle} from '../_utils/formatting';
 export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
     describe('DAO Protocol', () => {
 
+        // settings
+        const gasLimit: number = 8000000;
+
         // Accounts
         let guardian: string;
         let userOne: string;
@@ -29,32 +32,32 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
 
         // Update a setting
         it(printTitle('userOne', 'fails to update a setting as they are not the guardian'), async () => {
-            await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp,'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {from: userOne}), 'User updated bootstrap setting', 'Account is not a temporary guardian');
+            await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp,'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {from: userOne, gas: gasLimit}), 'User updated bootstrap setting', 'Account is not a temporary guardian');
         });
 
 
         // Verify each setting contract is enabled correctly. These settings are tested in greater detail in the relevant contracts
         it(printTitle('guardian', 'updates a setting in each settings contract while bootstrap mode is enabled'), async () => {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsDeposit', 'deposit.minimum', web3.utils.toWei('2'), {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'rpl.inflation.interval.blocks', 400, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsMinipool', 'minipool.submit.withdrawable.enabled', true, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.enabled', true, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsRewards', 'rpl.rewards.claim.period.blocks', 100, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsInflation', 'network.reth.deposit.delay', 500, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
         });
 
@@ -63,15 +66,15 @@ export default function runDAOProtocolTests(web3: Web3, rp: RocketPool) {
         it(printTitle('guardian', 'updates a setting, then fails to update a setting again after bootstrap mode is disabled'), async () => {
             // Set via bootstrapping
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             // Disable bootstrap mode
             await setDaoProtocolBootstrapModeDisabled(web3, rp,{
-                from: guardian
+                from: guardian, gas: gasLimit
             });
             // Attempt to change a setting again
             await shouldRevert(setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', true, {
-                from: guardian,
+                from: guardian, gas: gasLimit
             }), 'Guardian updated bootstrap setting after mode disabled' , 'Bootstrap mode not engaged');
 
         });

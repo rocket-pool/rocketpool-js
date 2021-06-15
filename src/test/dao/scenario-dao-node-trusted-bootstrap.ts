@@ -208,7 +208,7 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
 
 
 // A registered node attempting to join as a member due to low DAO member count
-export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool, _id: string, _email: string, options: SendOptions) {
+export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool, _id: string, _url: string, options: SendOptions) {
 
     let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
@@ -234,7 +234,7 @@ export async function setDaoNodeTrustedMemberRequired(web3: Web3, rp: RocketPool
     options.gas = 1000000;
 
     // Add a new proposal
-    await rp.dao.node.trusted.node.memberJoinRequired(_id, _email, options);
+    await rp.dao.node.trusted.node.memberJoinRequired(_id, _url, options);
 
     // Capture data
     let ds2 = await getTxData();

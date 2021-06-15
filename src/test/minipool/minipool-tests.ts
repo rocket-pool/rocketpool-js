@@ -18,6 +18,8 @@ import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {getValidatorPubkey} from '../_utils/beacon';
+import {getNetworkSetting} from "../_helpers/settings";
+import {getNodeFee} from "../_helpers/network";
 
 // Tests
 export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
@@ -195,6 +197,17 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 from: node,
                 gas: gasLimit
             }), 'Refunded from a minipool with no refund balance', 'No amount of the node deposit is available for refund');
+
+        });
+
+
+        it(printTitle('random address', 'cannot refund a refinanced node deposit balance'), async () => {
+
+            // Attempt refund from minipool with refund balance
+            await shouldRevert(refund(web3, rp, prelaunchMinipool, {
+                from: random,
+                gas: gasLimit
+            }), 'Random address refunded from a minipool', 'Invalid minipool owner');
 
         });
 
@@ -489,6 +502,49 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit,
             }), 'Random address closed a minipool', 'Invalid minipool owner');
 
+        });
+
+
+        //
+        // Unbonded minipools
+        //
+        it(printTitle('trusted node', 'cannot create an unbonded minipool if node fee is < 80% of maximum'), async () => {
+            // Sanity check that current node fee is less than 80% of maximum
+            let nodeFee = await getNodeFee(web3, rp).then((value: any) => web3.utils.toBN(value));
+            let maximumNodeFee = await getNetworkSetting(rp, 'MaximumNodeFee').then((value: any) => web3.utils.toBN(value));
+            assert(nodeFee.lt(maximumNodeFee.muln(0.8)), 'Node fee is greater than 80% of maximum fee');
+
+            // Stake RPL to cover minipool
+            let minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
+            let rplStake = minipoolRplStake.mul(web3.utils.toBN(6));
+            await mintRPL(web3, rp, owner, trustedNode, rplStake);
+            await nodeStakeRPL(web3, rp, rplStake, {from: trustedNode, gas: gasLimit});
+
+            // Creating an unbonded minipool should revert
+            await shouldRevert(createMinipool(web3, rp, {from: trustedNode, value: '0', gas: gasLimit}),
+                'Trusted node was able to create unbonded minipool with fee < 80% of max',
+                'Current commission rate is not high enough to create unbonded minipools'
+            );
+        });
+
+
+        it(printTitle('trusted node', 'can create an unbonded minipool if node fee is > 80% of maximum'), async () => {
+            // Deposit enough unassigned ETH to increase the fee above 80% of max
+            await userDeposit(web3, rp, {from: random, value: web3.utils.toWei('900', 'ether'), gas: gasLimit});
+
+            // Sanity check that current node fee is greater than 80% of maximum
+            let nodeFee = await getNodeFee(web3, rp).then((value: any) => web3.utils.toBN(value));
+            let maximumNodeFee = await getNetworkSetting(rp, 'MaximumNodeFee').then((value: any) => web3.utils.toBN(value));
+            assert(nodeFee.gt(maximumNodeFee.muln(0.8)), 'Node fee is not greater than 80% of maximum fee');
+
+            // Stake RPL to cover minipool
+            let minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
+            let rplStake = minipoolRplStake.mul(web3.utils.toBN(6));
+            await mintRPL(web3, rp, owner, trustedNode, rplStake);
+            await nodeStakeRPL(web3, rp, rplStake, {from: trustedNode, gas: gasLimit});
+
+            // Creating the unbonded minipool
+            await createMinipool(web3, rp,{from: trustedNode, value: '0', gas: gasLimit});
         });
 
 

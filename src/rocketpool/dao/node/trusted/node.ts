@@ -120,10 +120,10 @@ class DAONodeTrusted {
 
 
     // Bootstrap disable
-    public memberJoinRequired(id: string, email: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public memberJoinRequired(id: string, url: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketDAONodeTrusted.methods.memberJoinRequired(id, email).send(options),
+                rocketDAONodeTrusted.methods.memberJoinRequired(id, url).send(options),
                 onConfirmation
             );
         });
