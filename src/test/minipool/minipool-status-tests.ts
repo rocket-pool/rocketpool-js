@@ -45,7 +45,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
         // Constants
         let proposalCooldown = 10
         let proposalVoteBlocks = 10
-        let proposalVoteDelayBlocks = 10;
+        let proposalVoteDelayBlocks = 4;
 
         // Setup
         let stakingMinipool1: MinipoolContract;
@@ -133,15 +133,15 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             // Now mine blocks until the proposal is 'active' and can be voted on
             await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalId)-blockCurrent)+2);
             // Now lets vote
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode1 });
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode2 });
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode3 });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode1, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode2, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode3, gas: gasLimit });
             // Fast forward to this voting period finishing
             await mineBlocks(web3, (await getDAOProposalEndBlock(web3, rp, proposalId)-blockCurrent)+1);
             // Proposal should be successful, lets execute it
-            await daoNodeTrustedExecute(web3, rp, proposalId, { from: trustedNode1 });
+            await daoNodeTrustedExecute(web3, rp, proposalId, { from: trustedNode1, gas: gasLimit });
             // Member can now leave and collect any RPL bond
-            await daoNodeTrustedMemberLeave(web3, rp, trustedNode4, { from: trustedNode4 });
+            await daoNodeTrustedMemberLeave(web3, rp, trustedNode4, { from: trustedNode4, gas: gasLimit });
         }
 
 

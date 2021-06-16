@@ -39,14 +39,6 @@ class RPL extends ERC20 {
     }
 
 
-    // Get the inflation intervals that have passed
-    public inflationMintTokens(): Promise<number> {
-        return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
-            return tokenContract.methods.inflationMintTokens().call();
-        });
-    }
-
-
     // Get the total supply
     public totalSupply(): Promise<number> {
         return this.tokenContract.then((tokenContract: Contract): Promise<number> => {
@@ -63,6 +55,16 @@ class RPL extends ERC20 {
         return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
                 tokenContract.methods.swapTokens(amountWei).send(options),
+                onConfirmation
+            );
+        });
+    }
+
+    // Inflation mint tokens
+    public inflationMintTokens(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                tokenContract.methods.inflationMintTokens().send(options),
                 onConfirmation
             );
         });

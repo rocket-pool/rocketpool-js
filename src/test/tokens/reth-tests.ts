@@ -2,7 +2,7 @@
 import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
 import {nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
 import {getRethBalance, getRethExchangeRate, getRethTotalSupply, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
@@ -13,7 +13,8 @@ import {submitBalances} from '../_helpers/network';
 import {getValidatorPubkey} from '../_utils/beacon';
 import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 import {getDepositExcessBalance, userDeposit} from '../_helpers/deposit';
-import {burnReth} from "./scenario-burn-reth";
+import {burnReth} from './scenario-burn-reth';
+import {transferReth} from './scenario-transfer-reth';
 
 
 // Tests
@@ -26,9 +27,11 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
         // Accounts
         let owner: string;
         let node: string;
+        let nodeWithdrawalAddress: string;
         let trustedNode: string;
         let staker1: string;
         let staker2: string;
+        let random: string;
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -44,6 +47,8 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
         let validatorPubkey = getValidatorPubkey();
         let withdrawalBalance = web3.utils.toWei('36', 'ether');
         let rethBalance: any;
+        let submitPricesFrequency = 50;
+        let depositDelay = 100;
 
         before(async () => {
 
@@ -51,7 +56,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             let exchangeRate1 = await getRethExchangeRate(web3, rp).then((value: any) => web3.utils.toBN(value));
 
             // Get accounts
-            [owner, node, trustedNode, staker1, staker2] = await web3.eth.getAccounts();
+            [owner, node, nodeWithdrawalAddress, trustedNode, staker1, staker2, random] = await web3.eth.getAccounts();
 
             // Make deposit
             await userDeposit(web3, rp, {from: staker1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
@@ -64,8 +69,9 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             await setNodeTrusted(web3, rp, trustedNode, 'saas_1', 'node@home.com', owner);
 
             // Set settings
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('1', 'ether'), {from: owner});
-
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('1', 'ether'), {from: owner, gas: gasLimit});
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', submitPricesFrequency, {from: owner});
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.deposit.delay', depositDelay, {from: owner});
 
             // Stake RPL to cover minipools
             let rplStake = await getMinipoolMinimumRPLStake(web3, rp);
@@ -93,7 +99,86 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
         });
 
 
+        it(printTitle('rETH holder', 'cannot burn rETH before enough time has passed'), async () => {
+
+            // Make user deposit
+            const depositAmount = web3.utils.toBN(web3.utils.toWei('20', 'ether'));
+            await userDeposit(web3, rp, {from: staker2, value: depositAmount, gas: gasLimit});
+
+            // Check deposit pool excess balance
+            let excessBalance = await getDepositExcessBalance(web3, rp);
+            assert(web3.utils.toBN(excessBalance).eq(depositAmount), 'Incorrect deposit pool excess balance');
+
+            // Burn rETH
+            await shouldRevert(burnReth(web3, rp, rethBalance, {
+                from: staker1,
+                gas: gasLimit
+            }), 'Burn should have failed before enough time has passed', 'Not enough time has passed since deposit');
+
+        });
+
+
+        it(printTitle('rETH holder', 'cannot transfer rETH before enough time has passed'), async () => {
+
+            // Make user deposit
+            const depositAmount = web3.utils.toBN(web3.utils.toWei('20', 'ether'));
+            await userDeposit(web3, rp, {from: staker2, value: depositAmount, gas: gasLimit});
+
+            // Transfer rETH
+            await shouldRevert(transferReth(web3, rp, random, rethBalance, {
+                from: staker1,
+                gas: gasLimit
+            }), 'Transfer should have failed before enough time has passed',  'Not enough time has passed since deposit');
+
+        });
+
+
+        it(printTitle('rETH holder', 'can transfer rETH after enough time has passed'), async () => {
+
+            // Make user deposit
+            const depositAmount = web3.utils.toBN(web3.utils.toWei('20', 'ether'));
+            await userDeposit(web3, rp, {from: staker2, value: depositAmount, gas: gasLimit});
+
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
+
+            // Transfer rETH
+            await transferReth(web3, rp, random, rethBalance, {
+                from: staker1,
+                gas: gasLimit
+            });
+
+        });
+
+
+        it(printTitle('rETH holder', 'can transfer rETH without waiting if received via transfer'), async () => {
+
+            // Make user deposit
+            const depositAmount = web3.utils.toBN(web3.utils.toWei('20', 'ether'));
+            await userDeposit(web3, rp,{from: staker2, value: depositAmount, gas: gasLimit});
+
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
+
+            // Transfer rETH
+            await transferReth(web3, rp, random, rethBalance, {
+                from: staker1,
+                gas: gasLimit
+            });
+
+            // Transfer rETH again
+            await transferReth(web3, rp, staker1, rethBalance, {
+                from: random,
+                gas: gasLimit
+            });
+
+        });
+
+
         it(printTitle('rETH holder', 'can burn rETH for ETH collateral'), async () => {
+
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
 
             // Send ETH to the minipool to simulate receving from SWC
             await web3.eth.sendTransaction({
@@ -127,6 +212,9 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             let excessBalance = await getDepositExcessBalance(web3, rp);
             assert(web3.utils.toBN(excessBalance).eq(depositAmount), 'Incorrect deposit pool excess balance');
 
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
+
             // Burn rETH
             await burnReth(web3, rp, rethBalance, {
                 from: staker1,
@@ -137,6 +225,9 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('rETH holder', 'cannot burn an invalid amount of rETH'), async () => {
+
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
 
             // Send ETH to the minipool to simulate receving from SWC
             await web3.eth.sendTransaction({
@@ -170,6 +261,9 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('rETH holder', 'cannot burn rETH with insufficient collateral'), async () => {
+
+            // Wait "network.reth.deposit.delay" blocks
+            await mineBlocks(web3, depositDelay);
 
             // Attempt to burn rETH for contract collateral
             await shouldRevert(burnReth(web3, rp, rethBalance, {
