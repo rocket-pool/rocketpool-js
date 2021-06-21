@@ -9,6 +9,7 @@ import {executeUpdateBalances, submitBalances} from './scenario-submit-balances'
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {daoNodeTrustedExecute, daoNodeTrustedMemberLeave, daoNodeTrustedPropose, daoNodeTrustedVote} from '../dao/scenario-dao-node-trusted';
 import {getDAOProposalEndBlock, getDAOProposalStartBlock} from '../dao/scenario-dao-proposal';
+import {setDAONodeTrustedBootstrapSetting} from "../dao/scenario-dao-node-trusted-bootstrap";
 
 
 // Tests
@@ -30,6 +31,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
         // Constants
         let proposalCooldown = 10
         let proposalVoteBlocks = 10
+        let proposalVoteDelayBlocks = 4;
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -54,6 +56,12 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             await setNodeTrusted(web3, rp, trustedNode2, 'saas_2', 'node@home.com', owner);
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode3, gas: gasLimit});
             await setNodeTrusted(web3, rp, trustedNode3, 'saas_3', 'node@home.com', owner);
+
+            // Set a small proposal cooldown
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner, gas: gasLimit });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner, gas: gasLimit });
+            // Set a small vote delay
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner, gas: gasLimit });
 
         });
 
@@ -150,6 +158,24 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
 
         });
 
+        it(printTitle('trusted nodes', 'cannot submit network balances for a future block'), async () => {
+
+            // Get current block
+            let blockCurrent = await web3.eth.getBlockNumber();
+
+            // Set parameters
+            let block = blockCurrent + 1;
+            let totalBalance = web3.utils.toWei('10', 'ether');
+            let stakingBalance = web3.utils.toWei('9', 'ether');
+            let rethSupply = web3.utils.toWei('8', 'ether');
+
+            // Attempt to submit balances for future block
+            await shouldRevert(submitBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
+                from: trustedNode1,
+                gas: gasLimit
+            }), 'Submitted balances for a future block', 'Balances can not be submitted for a future block');
+
+        });
 
         it(printTitle('trusted nodes', 'cannot submit network balances for the current block or lower'), async () => {
 
@@ -289,7 +315,7 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(executeUpdateBalances(web3, rp, block, totalBalance, stakingBalance, rethSupply, {
                 from: random,
                 gas: gasLimit
-            }), 'Random account could execute update balances without consensus', '');
+            }), 'Random account could execute update balances without consensus', 'Consensus has not been reached');
         });
 
     });

@@ -61,7 +61,6 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             // Add members to the DAO
             await setNodeTrusted(web3, rp, registeredNodeTrusted1, 'rocketpool_1', 'node@home.com', guardian);
             await setNodeTrusted(web3, rp, registeredNodeTrusted2, 'rocketpool_2', 'node@home.com', guardian);
-            await setNodeTrusted(web3, rp, registeredNodeTrusted3, 'rocketpool_3', 'node@home.com', guardian);
 
             // Deploy new contracts
             rocketMinipoolManagerNew = await rp.contracts.make('rocketMinipoolManager', guardian);
@@ -443,6 +442,8 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         it(printTitle('registeredNodeTrusted1', 'creates a proposal to kick registeredNodeTrusted2 with a 50% fine, it is successful and registeredNodeTrusted2 is kicked and receives 50% of their bond'), async () => {
             // Add our 3rd member so proposals can pass
             await setNodeTrusted(web3, rp, registeredNode3, 'rocketpool_3', 'node3@home.com', guardian);
+            // Add our 3rd member
+            await setNodeTrusted(web3, rp, registeredNode1, 'rocketpool', 'node@home.com', guardian);
             // How much bond has registeredNodeTrusted2 paid?
             let registeredNodeTrusted2BondAmount = await rp.dao.node.trusted.node.getMemberRPLBondAmount(registeredNodeTrusted2).then((value: any) => web3.utils.toBN(value));
             // How much to fine? 33%

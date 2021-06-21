@@ -57,7 +57,7 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
     ]);
 
     // Check if balances should be updated
-    let expectUpdatedBalances = submission2.count.mul(web3.utils.toBN(2)).gte(trustedNodeCount);
+    let expectUpdatedBalances = submission2.count.mul(web3.utils.toBN(2)).gt(trustedNodeCount);
 
     // Check submission details
     assert.isFalse(submission1.nodeSubmitted, 'Incorrect initial node submitted status');

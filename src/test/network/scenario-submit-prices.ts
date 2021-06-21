@@ -6,7 +6,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 
 
 // Submit network prices
-export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, options: SendOptions) {
+export async function  submitPrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, options: SendOptions) {
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
@@ -16,8 +16,8 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
     let trustedNodeCount = await rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value));
 
     // Get submission keys
-    let nodeSubmissionKey = web3.utils.soliditySha3('network.prices.submitted.node.key', options.from, block, rplPrice);
-    let submissionCountKey = web3.utils.soliditySha3('network.prices.submitted.count', block, rplPrice);
+    let nodeSubmissionKey = web3.utils.soliditySha3('network.prices.submitted.node.key', options.from, block, rplPrice, web3.utils.toBN('0'));
+    let submissionCountKey = web3.utils.soliditySha3('network.prices.submitted.count', block, rplPrice, web3.utils.toBN('0'));
 
     // Get submission details
     function getSubmissionDetails() {
@@ -46,7 +46,7 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
     let submission1 = await getSubmissionDetails();
 
     // Submit prices
-    await rp.network.submitPrices(block, rplPrice, options);
+    await rp.network.submitPrices(block, rplPrice, '0', options);
 
     // Get updated submission details & prices
     let [submission2, prices] = await Promise.all([
@@ -89,7 +89,7 @@ export async function executeUpdatePrices(web3: Web3, rp: RocketPool, block: num
     }
 
     // Submit prices
-    await rp.network.executeUpdatePrices(block, rplPrice, options);
+    await rp.network.executeUpdatePrices(block, rplPrice, '0', options);
 
     // Get updated submission details & prices
     let prices = await getPrices();

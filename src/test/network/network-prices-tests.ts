@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks, increaseTime, getCurrentTime} from '../_utils/evm';
 import {setNodeTrusted} from '../_helpers/node';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
@@ -9,7 +9,7 @@ import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-boots
 import {executeUpdatePrices, submitPrices} from './scenario-submit-prices';
 import {setDAONodeTrustedBootstrapSetting} from '../dao/scenario-dao-node-trusted-bootstrap';
 import {daoNodeTrustedExecute, daoNodeTrustedMemberLeave, daoNodeTrustedPropose, daoNodeTrustedVote} from '../dao/scenario-dao-node-trusted';
-import {getDAOProposalEndBlock, getDAOProposalStartBlock} from '../dao/scenario-dao-proposal';
+import {getDAOProposalEndTime, getDAOProposalStartTime} from '../dao/scenario-dao-proposal';
 
 // Tests
 export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
@@ -35,8 +35,8 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         afterEach(async () => { await revertSnapshot(web3, testSnapshotId); });
 
         // Constants
-        let proposalCooldown = 10
-        let proposalVoteBlocks = 10
+        let proposalCooldown = 60 * 60
+        let proposalVoteTime = 60 * 60
         let proposalVoteDelayBlocks = 4;
 
 
@@ -58,7 +58,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
             // Set a small proposal cooldown
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.cooldown', proposalCooldown, { from: owner, gas: gasLimit });
-            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteBlocks, { from: owner, gas: gasLimit });
+            await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.blocks', proposalVoteTime, { from: owner, gas: gasLimit });
             await setDAONodeTrustedBootstrapSetting(web3, rp, 'rocketDAONodeTrustedSettingsProposals', 'proposal.vote.delay.blocks', proposalVoteDelayBlocks, { from: owner, gas: gasLimit });
 
         });
@@ -72,7 +72,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
 
         async function trustedNode4LeaveDao() {
             // Wait enough time to do a new proposal
-            await mineBlocks(web3, proposalCooldown);
+            await increaseTime(web3, proposalCooldown);
             // Encode the calldata for the proposal
             let proposalCallData = web3.eth.abi.encodeFunctionCall(
                 {name: 'proposalLeave', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}]},
@@ -84,15 +84,16 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
             // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            let timeCurrent = await getCurrentTime(web3);
             // Now mine blocks until the proposal is 'active' and can be voted on
-            await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalId)-blockCurrent)+2);
+            await increaseTime(web3, (await getDAOProposalStartTime(web3, rp, proposalId)-timeCurrent)+2);
             // Now lets vote
             await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode1, gas: gasLimit });
             await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode2, gas: gasLimit });
             await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode3, gas: gasLimit });
             // Fast forward to this voting period finishing
-            await mineBlocks(web3, (await getDAOProposalEndBlock(web3, rp, proposalId)-blockCurrent)+1);
+            timeCurrent = await getCurrentTime(web3);
+            await increaseTime(web3, (await getDAOProposalEndTime(web3, rp, proposalId)-timeCurrent)+2);
             // Proposal should be successful, lets execute it
             await daoNodeTrustedExecute(web3, rp, proposalId, { from: trustedNode1, gas: gasLimit });
             // Member can now leave and collect any RPL bond
@@ -103,7 +104,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         it(printTitle('trusted nodes', 'can submit network prices'), async () => {
 
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
 
             // Submit different prices
@@ -121,7 +122,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             });
 
             // Set parameters
-            block = 2;
+            block = await web3.eth.getBlockNumber();
 
             // Submit identical prices to trigger update
             await submitPrices(web3, rp, block, rplPrice, {
@@ -139,7 +140,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         it(printTitle('trusted nodes', 'cannot submit network prices while price submissions are disabled'), async () => {
 
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
 
             // Disable submissions
@@ -157,7 +158,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         it(printTitle('trusted nodes', 'cannot submit network prices for the current block or lower'), async () => {
 
             // Set parameters
-            let block = 2;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
 
             // Submit prices for block to trigger update
@@ -188,7 +189,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         it(printTitle('trusted nodes', 'cannot submit the same network prices twice'), async () => {
 
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
 
             // Submit prices for block
@@ -209,7 +210,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         it(printTitle('regular nodes', 'cannot submit network prices'), async () => {
 
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
 
             // Attempt to submit prices
@@ -225,7 +226,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             // Setup
             await trustedNode4JoinDao();
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
             // Submit same price from 2 nodes (not enough for 4 member consensus but enough for 3)
             await submitPrices(web3, rp, block, rplPrice, {
@@ -250,7 +251,7 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             // Setup
             await trustedNode4JoinDao();
             // Set parameters
-            let block = 1;
+            let block = await web3.eth.getBlockNumber();
             let rplPrice = web3.utils.toWei('0.02', 'ether');
             // Submit same price from 2 nodes (not enough for 4 member consensus)
             await submitPrices(web3, rp, block, rplPrice, {
@@ -267,6 +268,39 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Random account could execute update prices without consensus', 'Consensus has not been reached');
         });
+
+        // it(printTitle('random', 'should calculate the correct latest reportable block'), async () => {
+        //     // Mint some RPL so we can stake
+        //     await mintRPL(web3, rp, owner, trustedNode1, web3.utils.toWei('10000', 'ether'));
+        //     // Load contract
+        //     const rocketNetworkPrices = await RocketNetworkPrices.deployed();
+        //     // Set update frequency to 500
+        //     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', 500, { from: owner, gas: gasLimit });
+        //     // Mine to block 800
+        //     const block = await web3.eth.getBlockNumber();
+        //     await mineBlocks(web3, 800 - block);
+        //     // Set the RPL price to 1:1 at block 500
+        //     await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode1, gas: gasLimit });
+        //     await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode2, gas: gasLimit });
+        //     // Record the latest reportable block (should be 500)
+        //     const latest1 = await rocketNetworkPrices.getLatestReportableBlock();
+        //     assert(latest1.eq(web3.utils.toBN(500)), 'Incorrect latest reportable block')
+        //     // Update effective RPL stake on-chain by staking
+        //     await nodeStakeRPL(web3.utils.toWei('1.6', 'ether'), {from: trustedNode1});
+        //     await nodeDeposit({from: trustedNode1, value: web3.utils.toWei('16', 'ether')});
+        //     const onchain1 = await rocketNetworkPrices.getEffectiveRPLStakeUpdatedBlock();      // Should contain the current block number (~800)
+        //     // Record the latest reportable block
+        //     const latest2 = await rocketNetworkPrices.getLatestReportableBlock();
+        //     // Updating on-chain effective stake should not change the latest reportable block (should still be 500)
+        //     assert(latest1.eq(latest2), 'Latest reportable block changed');
+        //     // Change the update frequency to 300
+        //     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsNetwork, 'network.submit.prices.frequency', 300, {from: owner});
+        //     const latest3 = await rocketNetworkPrices.getLatestReportableBlock();
+        //     // We've simulated the edge case where the on-chain value of the effective RPL stake was updated and then a change to the update frequency
+        //     // resulted in the latest window falling on a block lower than the on-chain update. So the contract should now report the block that it was last
+        //     // updated instead of the latest window
+        //     assert(latest3.eq(onchain1), 'Incorrect latest reportable block');
+        // })
 
 
     });

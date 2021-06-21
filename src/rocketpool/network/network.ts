@@ -127,10 +127,10 @@ class Network {
 
 
     // Submit network prices
-    public submitPrices(block: number, rplPrice: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public submitPrices(block: number, rplPrice: string, effectiveRplStake: string,  options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkPrices.methods.submitPrices(block, rplPrice).send(options),
+                rocketNetworkPrices.methods.submitPrices(block, rplPrice, effectiveRplStake).send(options),
                 onConfirmation
             );
         });
@@ -138,10 +138,10 @@ class Network {
 
 
     // Execute update prices
-    public executeUpdatePrices(block: number, rplPrice: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public executeUpdatePrices(block: number, rplPrice: string, effectiveRplStake: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice).send(options),
+                rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice, effectiveRplStake).send(options),
                 onConfirmation
             );
         });
