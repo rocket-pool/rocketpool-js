@@ -1,14 +1,14 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks, getCurrentTime, increaseTime} from '../_utils/evm';
 import {setNodeTrusted} from '../_helpers/node';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {executeUpdateBalances, submitBalances} from './scenario-submit-balances';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {daoNodeTrustedExecute, daoNodeTrustedMemberLeave, daoNodeTrustedPropose, daoNodeTrustedVote} from '../dao/scenario-dao-node-trusted';
-import {getDAOProposalEndBlock, getDAOProposalStartBlock} from '../dao/scenario-dao-proposal';
+import {getDAOProposalEndBlock, getDAOProposalEndTime, getDAOProposalStartBlock} from '../dao/scenario-dao-proposal';
 import {setDAONodeTrustedBootstrapSetting} from "../dao/scenario-dao-node-trusted-bootstrap";
 
 
@@ -86,19 +86,20 @@ export default function runNetworkBalancesTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
             // Current block
-            let blockCurrent = await web3.eth.getBlockNumber();
+            let timeCurrent = await getCurrentTime(web3);
             // Now mine blocks until the proposal is 'active' and can be voted on
-            await mineBlocks(web3, (await getDAOProposalStartBlock(web3, rp, proposalId)-blockCurrent)+2);
+            await increaseTime(web3, (await getDAOProposalStartBlock(web3, rp, proposalId)-timeCurrent)+2);
             // Now lets vote
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode1 });
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode2 });
-            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode3 });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode1, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode2, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId, true, { from: trustedNode3, gas: gasLimit });
             // Fast forward to this voting period finishing
-            await mineBlocks(web3, (await getDAOProposalEndBlock(web3, rp, proposalId)-blockCurrent)+1);
+            timeCurrent = await getCurrentTime(web3);
+            await increaseTime(web3, (await getDAOProposalEndTime(web3, rp, proposalId)-timeCurrent)+2);
             // Proposal should be successful, lets execute it
-            await daoNodeTrustedExecute(web3, rp, proposalId, { from: trustedNode1 });
+            await daoNodeTrustedExecute(web3, rp, proposalId, { from: trustedNode1, gas: gasLimit });
             // Member can now leave and collect any RPL bond
-            await daoNodeTrustedMemberLeave(web3, rp, trustedNode4, { from: trustedNode4 });
+            await daoNodeTrustedMemberLeave(web3, rp, trustedNode4, { from: trustedNode4, gas: gasLimit });
         }
 
 

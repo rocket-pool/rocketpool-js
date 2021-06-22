@@ -112,6 +112,27 @@ class Network {
     }
 
 
+    public getLatestReportableBlock(): Promise<string> {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<string> => {
+           return rocketNetworkPrices.methods.getLatestReportableBlock().call();
+        });
+    }
+
+
+    public getEffectiveRPLStake(): Promise<string> {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<string> => {
+            return rocketNetworkPrices.methods.getEffectiveRPLStake().call();
+        });
+    }
+
+
+    public getEffectiveRPLStakeUpdatedBlock(): Promise<string> {
+        return this.rocketNetworkPrices.then((rocketNetworkPrices: Contract): Promise<string> => {
+            return rocketNetworkPrices.methods.getEffectiveRPLStakeUpdatedBlock().call();
+        });
+    }
+
+
     /**
      * Mutators - Restricted to trusted nodes
      */

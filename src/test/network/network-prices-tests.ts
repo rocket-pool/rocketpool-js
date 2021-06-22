@@ -1,8 +1,9 @@
 // Imports
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks, increaseTime, getCurrentTime} from '../_utils/evm';
-import {setNodeTrusted} from '../_helpers/node';
+import {nodeDeposit, nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
@@ -10,6 +11,7 @@ import {executeUpdatePrices, submitPrices} from './scenario-submit-prices';
 import {setDAONodeTrustedBootstrapSetting} from '../dao/scenario-dao-node-trusted-bootstrap';
 import {daoNodeTrustedExecute, daoNodeTrustedMemberLeave, daoNodeTrustedPropose, daoNodeTrustedVote} from '../dao/scenario-dao-node-trusted';
 import {getDAOProposalEndTime, getDAOProposalStartTime} from '../dao/scenario-dao-proposal';
+import {mintRPL} from '../_helpers/tokens';
 
 // Tests
 export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
@@ -269,38 +271,36 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
             }), 'Random account could execute update prices without consensus', 'Consensus has not been reached');
         });
 
-        // it(printTitle('random', 'should calculate the correct latest reportable block'), async () => {
-        //     // Mint some RPL so we can stake
-        //     await mintRPL(web3, rp, owner, trustedNode1, web3.utils.toWei('10000', 'ether'));
-        //     // Load contract
-        //     const rocketNetworkPrices = await RocketNetworkPrices.deployed();
-        //     // Set update frequency to 500
-        //     await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', 500, { from: owner, gas: gasLimit });
-        //     // Mine to block 800
-        //     const block = await web3.eth.getBlockNumber();
-        //     await mineBlocks(web3, 800 - block);
-        //     // Set the RPL price to 1:1 at block 500
-        //     await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode1, gas: gasLimit });
-        //     await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode2, gas: gasLimit });
-        //     // Record the latest reportable block (should be 500)
-        //     const latest1 = await rocketNetworkPrices.getLatestReportableBlock();
-        //     assert(latest1.eq(web3.utils.toBN(500)), 'Incorrect latest reportable block')
-        //     // Update effective RPL stake on-chain by staking
-        //     await nodeStakeRPL(web3.utils.toWei('1.6', 'ether'), {from: trustedNode1});
-        //     await nodeDeposit({from: trustedNode1, value: web3.utils.toWei('16', 'ether')});
-        //     const onchain1 = await rocketNetworkPrices.getEffectiveRPLStakeUpdatedBlock();      // Should contain the current block number (~800)
-        //     // Record the latest reportable block
-        //     const latest2 = await rocketNetworkPrices.getLatestReportableBlock();
-        //     // Updating on-chain effective stake should not change the latest reportable block (should still be 500)
-        //     assert(latest1.eq(latest2), 'Latest reportable block changed');
-        //     // Change the update frequency to 300
-        //     await setDAOProtocolBootstrapSetting(RocketDAOProtocolSettingsNetwork, 'network.submit.prices.frequency', 300, {from: owner});
-        //     const latest3 = await rocketNetworkPrices.getLatestReportableBlock();
-        //     // We've simulated the edge case where the on-chain value of the effective RPL stake was updated and then a change to the update frequency
-        //     // resulted in the latest window falling on a block lower than the on-chain update. So the contract should now report the block that it was last
-        //     // updated instead of the latest window
-        //     assert(latest3.eq(onchain1), 'Incorrect latest reportable block');
-        // })
+        it(printTitle('random', 'should calculate the correct latest reportable block'), async () => {
+            // Mint some RPL so we can stake
+            await mintRPL(web3, rp, owner, trustedNode1, web3.utils.toWei('10000', 'ether'));
+            // Set update frequency to 5000
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', 500, { from: owner, gas: gasLimit });
+            // Mine to block 800
+            const block = await web3.eth.getBlockNumber();
+            await mineBlocks(web3, 800 - block);
+            // Set the RPL price to 1:1 at block 500
+            await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode1, gas: gasLimit });
+            await submitPrices(web3, rp, 500, web3.utils.toWei('1', 'ether'), { from: trustedNode2, gas: gasLimit });
+            // Record the latest reportable block (should be 500)
+            const latest1 = await rp.network.getLatestReportableBlock().then((value: any) => web3.utils.toBN(value));
+            assert(latest1.eq(web3.utils.toBN(500)), 'Incorrect latest reportable block')
+            // Update effective RPL stake on-chain by staking
+            await nodeStakeRPL(web3, rp, web3.utils.toWei('1.6', 'ether'), { from: trustedNode1, gas: gasLimit });
+            await nodeDeposit(web3, rp, { from: trustedNode1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit });
+            const onchain1 = await rp.network.getEffectiveRPLStakeUpdatedBlock().then((value: any) => web3.utils.toBN(value));      // Should contain the current block number (~800)
+            // Record the latest reportable block
+            const latest2 = await rp.network.getLatestReportableBlock().then((value: any) => web3.utils.toBN(value));
+            // Updating on-chain effective stake should not change the latest reportable block (should still be 500)
+            assert(latest1.eq(latest2), 'Latest reportable block changed');
+            // Change the update frequency to 300
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', 300, { from: owner, gas: gasLimit });
+            const latest3 = await rp.network.getLatestReportableBlock().then((value: any) => web3.utils.toBN(value));
+            // We've simulated the edge case where the on-chain value of the effective RPL stake was updated and then a change to the update frequency
+            // resulted in the latest window falling on a block lower than the on-chain update. So the contract should now report the block that it was last
+            // updated instead of the latest window
+            assert(latest3.eq(onchain1), 'Incorrect latest reportable block');
+        })
 
 
     });
