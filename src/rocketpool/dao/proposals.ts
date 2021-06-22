@@ -83,7 +83,7 @@ class DAOProposal {
     // Get the block a proposal expires
     public getExpires(proposalID: number): Promise<number> {
         return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-            return rocketDAOProposal.methods.getVotesAgainst(proposalID).call();
+            return rocketDAOProposal.methods.getExpires(proposalID).call();
         });
     }
 
