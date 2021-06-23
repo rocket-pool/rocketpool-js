@@ -3,7 +3,7 @@ import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
-import {nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
+import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
 import {getRethBalance, getRethExchangeRate, getRethTotalSupply, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
@@ -47,7 +47,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
         let validatorPubkey = getValidatorPubkey();
         let withdrawalBalance = web3.utils.toWei('36', 'ether');
         let rethBalance: any;
-        let submitPricesFrequency = 50;
+        let submitPricesFrequency = 500;
         let depositDelay = 100;
 
         before(async () => {
@@ -59,19 +59,20 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             [owner, node, nodeWithdrawalAddress, trustedNode, staker1, staker2, random] = await web3.eth.getAccounts();
 
             // Make deposit
-            await userDeposit(web3, rp, {from: staker1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+            await userDeposit(web3, rp, { from: staker1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit });
 
             // Register node
-            await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane',  {from: node, gas: gasLimit });
+            await setNodeWithdrawalAddress(web3, rp, node, nodeWithdrawalAddress, { from: node, gas: gasLimit });
 
             // Register trusted nodes
             await rp.node.registerNode('Australia/Brisbane', {from: trustedNode, gas: gasLimit});
             await setNodeTrusted(web3, rp, trustedNode, 'saas_1', 'node@home.com', owner);
 
             // Set settings
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('1', 'ether'), {from: owner, gas: gasLimit});
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', submitPricesFrequency, {from: owner});
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.deposit.delay', depositDelay, {from: owner});
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('1', 'ether'), { from: owner, gas: gasLimit });
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.submit.prices.frequency', submitPricesFrequency, { from: owner, gas: gasLimit });
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.deposit.delay', depositDelay, { from: owner, gas: gasLimit });
 
             // Stake RPL to cover minipools
             let rplStake = await getMinipoolMinimumRPLStake(web3, rp);
@@ -80,13 +81,13 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 
             // Create and withdraw from withdrawable minipool
             minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
-            await stakeMinipool(web3, rp, minipool, validatorPubkey, {from: node, gas: gasLimit});
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), withdrawalBalance, {from: trustedNode, gas: gasLimit});
+            await stakeMinipool(web3, rp, minipool, validatorPubkey, { from: node, gas: gasLimit });
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), withdrawalBalance, { from: trustedNode, gas: gasLimit });
 
             // Update network ETH total to alter rETH exchange rate
             let minipoolUserBalance = await getMinipoolWithdrawalUserBalance(web3, rp, minipool.address);
             let rethSupply = await getRethTotalSupply(web3, rp);
-            await submitBalances(web3, rp, 1, minipoolUserBalance.toString(), '0', rethSupply, {from: trustedNode, gas: gasLimit});
+            await submitBalances(web3, rp, 1, minipoolUserBalance.toString(), '0', rethSupply, { from: trustedNode, gas: gasLimit });
 
             // Get & check staker rETH balance
             rethBalance = await getRethBalance(web3, rp, staker1).then((value: any) => web3.utils.toBN(value));
@@ -180,7 +181,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             // Wait "network.reth.deposit.delay" blocks
             await mineBlocks(web3, depositDelay);
 
-            // Send ETH to the minipool to simulate receving from SWC
+            // Send ETH to the minipool to simulate receiving from SWC
             await web3.eth.sendTransaction({
                 from: trustedNode,
                 to: minipool.address,

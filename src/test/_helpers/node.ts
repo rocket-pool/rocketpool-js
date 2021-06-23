@@ -43,6 +43,19 @@ export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAdd
     return await rp.node.getNodeMinimumRPLStake(nodeAddress);
 }
 
+// Get total effective RPL stake
+export async function getTotalEffectiveRPLStake(web3: Web3, rp: RocketPool) {
+    let totalStake = await rp.node.getTotalEffectiveRPLStake();
+    return totalStake;
+}
+
+
+// Get calculated effective RPL stake
+export async function getCalculatedTotalEffectiveRPLStake(web3: Web3, rp: RocketPool, price: string) {
+    let totalStake = await rp.node.calculateTotalEffectiveRPLStake(0, 0, price);
+    return totalStake;
+}
+
 
 export async function registerNode(web3: Web3, rp: RocketPool, options: SendOptions) {
     await rp.node.registerNode('Australia/Brisbane', options);

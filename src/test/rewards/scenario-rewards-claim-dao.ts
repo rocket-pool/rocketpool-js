@@ -18,7 +18,9 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
     let rocketTokenRPLAddress = await rp.tokens.rpl.getAddress();
 
     // Call the mint function on RPL to mint any before we begin so we have accurate figures to work with
-    if(await rp.tokens.rpl.getInflationIntervalsPassed() > 0) await rp.tokens.rpl.inflationMintTokens();
+    if(await rp.tokens.rpl.getInflationIntervalsPassed() > 0) {
+        await rp.tokens.rpl.inflationMintTokens(options);
+    }
 
     // Get data about the tx
     function getTxData() {

@@ -116,7 +116,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.price.reserve', web3.utils.toWei('0', 'ether'), {from: owner, gas: gasLimit});
 
             // Set RPL price
-            await submitPrices(web3, rp,1, web3.utils.toWei('1', 'ether'), {from: trustedNode, gas: gasLimit});
+            let block = await web3.eth.getBlockNumber();
+            await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0',{from: trustedNode, gas: gasLimit});
 
             // Create lot
             await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});

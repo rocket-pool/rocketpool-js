@@ -28,8 +28,8 @@ export async function submitBalances(web3: Web3, rp: RocketPool, block: number, 
 
 
 // Submit network token prices
-export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, options: SendOptions) {
-    await rp.network.submitPrices(block, rplPrice, options);
+export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rplPrice: string, effectiveRplStake: string, options: SendOptions) {
+    await rp.network.submitPrices(block, rplPrice, effectiveRplStake, options);
 }
 
 

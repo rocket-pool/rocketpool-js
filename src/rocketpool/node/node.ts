@@ -155,6 +155,22 @@ class Node {
     }
 
 
+    // Get Total Effective RPL Stake
+    public getTotalEffectiveRPLStake(): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+        });
+    }
+
+
+    // Get Total Effective RPL Stake
+    public calculateTotalEffectiveRPLStake(offset: Number, limit: Number, rplPrice: string): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.calculateTotalEffectiveRPLStake(offset, limit, rplPrice).call();
+        });
+    }
+
+
     /**
      * Mutators - Public
      */

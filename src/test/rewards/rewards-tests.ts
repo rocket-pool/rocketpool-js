@@ -3,7 +3,17 @@ import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, mineBlocks, getCurrentTime, increaseTime} from '../_utils/evm';
-import {getNodeEffectiveRPLStake, getNodeMinimumRPLStake, getNodeRPLStake, nodeDeposit, nodeStakeRPL, registerNode, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
+import {
+    getCalculatedTotalEffectiveRPLStake,
+    getNodeEffectiveRPLStake,
+    getNodeMinimumRPLStake,
+    getNodeRPLStake,
+    nodeDeposit,
+    nodeStakeRPL,
+    registerNode,
+    setNodeTrusted,
+    setNodeWithdrawalAddress
+} from '../_helpers/node';
 import {mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
@@ -106,9 +116,10 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             await setNodeTrusted(web3, rp, registeredNodeTrusted2, 'saas_2', 'node@home.com', owner);
 
             // Set max per-minipool stake to 100% and RPL price to 1 ether
-            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNode', 'node.per.minipool.stake.maximum', web3.utils.toWei('1', 'ether'), {from: owner, gas: gasLimit});
-            await submitPrices(web3, rp, 1, web3.utils.toWei('1', 'ether'), {from: registeredNodeTrusted1, gas: gasLimit});
-            await submitPrices(web3, rp, 1, web3.utils.toWei('1', 'ether'), {from: registeredNodeTrusted2, gas: gasLimit});
+            const block = await web3.eth.getBlockNumber();
+            await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNode', 'node.per.minipool.stake.maximum', web3.utils.toWei('1', 'ether'), { from: owner, gas: gasLimit });
+            await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0', { from: registeredNodeTrusted1, gas: gasLimit });
+            await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0', { from: registeredNodeTrusted2, gas: gasLimit });
 
             // Stake RPL against nodes and create minipools to set effective stakes
             await mintRPL(web3, rp, owner, registeredNode1, web3.utils.toWei('32', 'ether'));
@@ -349,8 +360,10 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             await increaseTime(web3, rplInflationStartTime - currentTime + claimIntervalTime);
 
             // Decrease RPL price to undercollateralize node
-            await submitPrices(web3, rp, 10, web3.utils.toWei('0.01', 'ether'), {from: registeredNodeTrusted1, gas: gasLimit});
-            await submitPrices(web3, rp, 10, web3.utils.toWei('0.01', 'ether'), {from: registeredNodeTrusted2, gas: gasLimit});
+            const block = await web3.eth.getBlockNumber();
+            const calculatedTotalEffectiveStake = await getCalculatedTotalEffectiveRPLStake(web3, rp, web3.utils.toWei('0.01', 'ether'));
+            await submitPrices(web3, rp, block, web3.utils.toWei('0.01', 'ether'), calculatedTotalEffectiveStake, { from: registeredNodeTrusted1, gas: gasLimit });
+            await submitPrices(web3, rp, block, web3.utils.toWei('0.01', 'ether'), calculatedTotalEffectiveStake, { from: registeredNodeTrusted2, gas: gasLimit });
 
             // Get & check node's current and minimum RPL stakes
             let [currentRplStake, minimumRplStake] = await Promise.all([
@@ -539,7 +552,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
             // Get the balance of the DAO treasury and spend it
-            let daoTreasuryBalance = await getRewardsDAOTreasuryBalance(web3, rp, { from: registeredNodeTrusted1, gas: gasLimit});
+            let daoTreasuryBalance = await getRewardsDAOTreasuryBalance(web3, rp, { from: registeredNodeTrusted1, gas: gasLimit });
             // Now spend some via the protocol DAO in bootstrap mode
             await spendRewardsClaimTreasury(web3, rp, 'invoice123', daoInvoiceRecipient, daoTreasuryBalance, {
                 from: owner,

@@ -12,6 +12,7 @@ import {getMinipoolMinimumRPLStake} from '../_helpers/minipool';
 import {deposit} from './scenario-deposit';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {getNodeFee} from "../_helpers/network";
+import {userDeposit} from "../_helpers/deposit";
 
 
 // Tests
@@ -189,6 +190,9 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('trusted node operator', 'can make a deposit to create an empty minipool'), async () => {
+
+            // Deposit enough unassigned ETH to increase the fee above 80% of max
+            await userDeposit(web3, rp,{from: random, value: web3.utils.toWei('900', 'ether'), gas: gasLimit });
 
             // Stake RPL to cover minipool
             let rplStake = await getMinipoolMinimumRPLStake(web3, rp);
