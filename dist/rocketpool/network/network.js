@@ -121,6 +121,27 @@ var Network = function () {
                 return rocketNetworkPrices.methods.getPricesBlock().call();
             });
         }
+    }, {
+        key: 'getLatestReportableBlock',
+        value: function getLatestReportableBlock() {
+            return this.rocketNetworkPrices.then(function (rocketNetworkPrices) {
+                return rocketNetworkPrices.methods.getLatestReportableBlock().call();
+            });
+        }
+    }, {
+        key: 'getEffectiveRPLStake',
+        value: function getEffectiveRPLStake() {
+            return this.rocketNetworkPrices.then(function (rocketNetworkPrices) {
+                return rocketNetworkPrices.methods.getEffectiveRPLStake().call();
+            });
+        }
+    }, {
+        key: 'getEffectiveRPLStakeUpdatedBlock',
+        value: function getEffectiveRPLStakeUpdatedBlock() {
+            return this.rocketNetworkPrices.then(function (rocketNetworkPrices) {
+                return rocketNetworkPrices.methods.getEffectiveRPLStakeUpdatedBlock().call();
+            });
+        }
         /**
          * Mutators - Restricted to trusted nodes
          */
@@ -137,18 +158,27 @@ var Network = function () {
 
     }, {
         key: 'submitPrices',
-        value: function submitPrices(block, rplPrice, options, onConfirmation) {
+        value: function submitPrices(block, rplPrice, effectiveRplStake, options, onConfirmation) {
             return this.rocketNetworkPrices.then(function (rocketNetworkPrices) {
-                return (0, _transaction.handleConfirmations)(rocketNetworkPrices.methods.submitPrices(block, rplPrice).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketNetworkPrices.methods.submitPrices(block, rplPrice, effectiveRplStake).send(options), onConfirmation);
             });
         }
         // Execute update prices
 
     }, {
         key: 'executeUpdatePrices',
-        value: function executeUpdatePrices(block, rplPrice, options, onConfirmation) {
+        value: function executeUpdatePrices(block, rplPrice, effectiveRplStake, options, onConfirmation) {
             return this.rocketNetworkPrices.then(function (rocketNetworkPrices) {
-                return (0, _transaction.handleConfirmations)(rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketNetworkPrices.methods.executeUpdatePrices(block, rplPrice, effectiveRplStake).send(options), onConfirmation);
+            });
+        }
+        // Execute update balances
+
+    }, {
+        key: 'executeUpdateBalances',
+        value: function executeUpdateBalances(block, totalEth, stakingEth, rethSupply, options, onConfirmation) {
+            return this.rocketNetworkBalances.then(function (rocketNetworkBalances) {
+                return (0, _transaction.handleConfirmations)(rocketNetworkBalances.methods.executeUpdateBalances(block, totalEth, stakingEth, rethSupply).send(options), onConfirmation);
             });
         }
     }, {

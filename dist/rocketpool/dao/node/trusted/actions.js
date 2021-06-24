@@ -48,6 +48,24 @@ var DAONodeTrustedActions = function () {
                 return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionLeave(refundAddress).send(options), onConfirmation);
             });
         }
+        // Challenge Make
+
+    }, {
+        key: 'actionChallengeMake',
+        value: function actionChallengeMake(address, options, onConfirmation) {
+            return this.rocketDAONodeTrustedActions.then(function (rocketDAONodeTrustedActions) {
+                return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionChallengeMake(address).send(options), onConfirmation);
+            });
+        }
+        // Challenge Decide
+
+    }, {
+        key: 'actionChallengeDecide',
+        value: function actionChallengeDecide(address, options, onConfirmation) {
+            return this.rocketDAONodeTrustedActions.then(function (rocketDAONodeTrustedActions) {
+                return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionChallengeDecide(address).send(options), onConfirmation);
+            });
+        }
     }, {
         key: 'rocketDAONodeTrustedActions',
         get: function get() {

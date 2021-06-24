@@ -57,6 +57,15 @@ var DAONodeTrustedProposals = function () {
                 return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedProposals.methods.execute(proposalID).send(options), onConfirmation);
             });
         }
+        // Cancel an existing DAO Proposal
+
+    }, {
+        key: 'cancel',
+        value: function cancel(proposalID, options, onConfirmation) {
+            return this.rocketDAONodeTrustedProposals.then(function (rocketDAONodeTrustedProposals) {
+                return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedProposals.methods.cancel(proposalID).send(options), onConfirmation);
+            });
+        }
     }, {
         key: 'rocketDAONodeTrustedProposals',
         get: function get() {

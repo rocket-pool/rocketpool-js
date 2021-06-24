@@ -54,13 +54,13 @@ var RPL = function (_ERC) {
                 return tokenContract.methods.getInflationIntervalsPassed().call();
             });
         }
-        // Get the inflation intervals that have passed
+        // Get the total supply
 
     }, {
-        key: 'inflationMintTokens',
-        value: function inflationMintTokens() {
+        key: 'totalSupply',
+        value: function totalSupply() {
             return this.tokenContract.then(function (tokenContract) {
-                return tokenContract.methods.inflationMintTokens().call();
+                return tokenContract.methods.totalSupply().call();
             });
         }
         /**
@@ -73,6 +73,15 @@ var RPL = function (_ERC) {
         value: function swapTokens(amountWei, options, onConfirmation) {
             return this.tokenContract.then(function (tokenContract) {
                 return (0, _transaction.handleConfirmations)(tokenContract.methods.swapTokens(amountWei).send(options), onConfirmation);
+            });
+        }
+        // Inflation mint tokens
+
+    }, {
+        key: 'inflationMintTokens',
+        value: function inflationMintTokens(options, onConfirmation) {
+            return this.tokenContract.then(function (tokenContract) {
+                return (0, _transaction.handleConfirmations)(tokenContract.methods.inflationMintTokens().send(options), onConfirmation);
             });
         }
     }]);

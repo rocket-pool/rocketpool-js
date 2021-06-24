@@ -88,6 +88,15 @@ var DAOProposal = function () {
                 return rocketDAOProposal.methods.getVotesAgainst(proposalID).call();
             });
         }
+        // Get the block a proposal expires
+
+    }, {
+        key: 'getExpires',
+        value: function getExpires(proposalID) {
+            return this.rocketDAOProposal.then(function (rocketDAOProposal) {
+                return rocketDAOProposal.methods.getExpires(proposalID).call();
+            });
+        }
     }, {
         key: 'rocketDAOProposal',
         get: function get() {

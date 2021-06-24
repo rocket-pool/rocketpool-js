@@ -162,6 +162,24 @@ var Node = function () {
                 return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
             });
         }
+        // Get Total Effective RPL Stake
+
+    }, {
+        key: 'getTotalEffectiveRPLStake',
+        value: function getTotalEffectiveRPLStake() {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+            });
+        }
+        // Get Total Effective RPL Stake
+
+    }, {
+        key: 'calculateTotalEffectiveRPLStake',
+        value: function calculateTotalEffectiveRPLStake(offset, limit, rplPrice) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.calculateTotalEffectiveRPLStake(offset, limit, rplPrice).call();
+            });
+        }
         /**
          * Mutators - Public
          */

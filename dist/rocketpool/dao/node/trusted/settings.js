@@ -34,6 +34,15 @@ var DAONodeTrustedSettings = function () {
                 return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call();
             });
         }
+        // How much it costs a non-member to challenge a members node. It's free for current members to challenge other members.
+
+    }, {
+        key: 'getChallengeCost',
+        value: function getChallengeCost() {
+            return this.rocketDAONodeTrustedSettingsMembers.then(function (rocketDAONodeTrustedSettingsMembers) {
+                return rocketDAONodeTrustedSettingsMembers.methods.getChallengeCost().call();
+            });
+        }
     }, {
         key: 'rocketDAONodeTrustedSettingsProposals',
         get: function get() {

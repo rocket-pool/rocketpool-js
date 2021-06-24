@@ -54,6 +54,42 @@ var DAONodeTrusted = function () {
                 return rocketDAONodeTrusted.methods.getBootstrapModeDisabled().call();
             });
         }
+        // Get the number of votes needed for a proposal to pass
+
+    }, {
+        key: 'getProposalQuorumVotesRequired',
+        value: function getProposalQuorumVotesRequired() {
+            return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
+                return rocketDAONodeTrusted.methods.getProposalQuorumVotesRequired().call();
+            });
+        }
+        // Check if a member is valid
+
+    }, {
+        key: 'getMemberIsValid',
+        value: function getMemberIsValid(address) {
+            return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
+                return rocketDAONodeTrusted.methods.getMemberIsValid(address).call();
+            });
+        }
+        // Get member RPL bond amount
+
+    }, {
+        key: 'getMemberRPLBondAmount',
+        value: function getMemberRPLBondAmount(address) {
+            return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
+                return rocketDAONodeTrusted.methods.getMemberRPLBondAmount(address).call();
+            });
+        }
+        // Get member is challenger
+
+    }, {
+        key: 'getMemberIsChallenged',
+        value: function getMemberIsChallenged(address) {
+            return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
+                return rocketDAONodeTrusted.methods.getMemberIsChallenged(address).call();
+            });
+        }
         /**
          * Mutators - Public
          */
@@ -61,9 +97,9 @@ var DAONodeTrusted = function () {
 
     }, {
         key: 'bootstrapMember',
-        value: function bootstrapMember(id, email, nodeAddress, options, onConfirmation) {
+        value: function bootstrapMember(id, url, nodeAddress, options, onConfirmation) {
             return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
-                return (0, _transaction.handleConfirmations)(rocketDAONodeTrusted.methods.bootstrapMember(id, email, nodeAddress).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketDAONodeTrusted.methods.bootstrapMember(id, url, nodeAddress).send(options), onConfirmation);
             });
         }
         // Bootstrap a Boolean Setting
@@ -88,9 +124,9 @@ var DAONodeTrusted = function () {
 
     }, {
         key: 'memberJoinRequired',
-        value: function memberJoinRequired(id, email, options, onConfirmation) {
+        value: function memberJoinRequired(id, url, options, onConfirmation) {
             return this.rocketDAONodeTrusted.then(function (rocketDAONodeTrusted) {
-                return (0, _transaction.handleConfirmations)(rocketDAONodeTrusted.methods.memberJoinRequired(id, email).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketDAONodeTrusted.methods.memberJoinRequired(id, url).send(options), onConfirmation);
             });
         }
     }, {
