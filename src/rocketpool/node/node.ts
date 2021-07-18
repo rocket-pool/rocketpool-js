@@ -39,6 +39,10 @@ class Node {
         return this.contracts.get('rocketNodeStaking');
     }
 
+    private get rocketStorage(): Promise<Contract> {
+        return this.contracts.get("rocketStorage");
+    }
+
 
     /**
      * Getters
@@ -109,8 +113,8 @@ class Node {
 
     // Check whether a node exists
     public getNodeWithdrawalAddress(address: string): Promise<string> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getNodeWithdrawalAddress(address).call();
+        return this.rocketStorage.then((rocketStorage: Contract): Promise<string> => {
+            return rocketStorage.methods.getNodeWithdrawalAddress(address).call();
         });
     }
 
@@ -149,8 +153,8 @@ class Node {
 
     // Get Node Pending Withdrawal Address
     public getNodePendingWithdrawalAddress(address: string): Promise<string> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
-            return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
+        return this.rocketStorage.then((rocketStorage: Contract): Promise<string> => {
+            return rocketStorage.methods.getNodePendingWithdrawalAddress(address).call();
         });
     }
 
@@ -188,9 +192,9 @@ class Node {
 
 
     public setWithdrawalAddress(nodeAddress: string, withdrawalAddress:string, confirm: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+        return this.rocketStorage.then((rocketStorage: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options),
+                rocketStorage.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options),
                 onConfirmation
             );
         });
@@ -208,9 +212,9 @@ class Node {
 
 
     public confirmWithdrawalAddress(nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+        return this.rocketStorage.then((rocketStorage: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options),
+                rocketStorage.methods.confirmWithdrawalAddress(nodeAddress).send(options),
                 onConfirmation
             );
         });
