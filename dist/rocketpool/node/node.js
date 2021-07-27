@@ -113,8 +113,8 @@ var Node = function () {
     }, {
         key: 'getNodeWithdrawalAddress',
         value: function getNodeWithdrawalAddress(address) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return rocketNodeManager.methods.getNodeWithdrawalAddress(address).call();
+            return this.rocketStorage.then(function (rocketStorage) {
+                return rocketStorage.methods.getNodeWithdrawalAddress(address).call();
             });
         }
         // Get Node RPL Stake
@@ -158,8 +158,8 @@ var Node = function () {
     }, {
         key: 'getNodePendingWithdrawalAddress',
         value: function getNodePendingWithdrawalAddress(address) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return rocketNodeManager.methods.getNodePendingWithdrawalAddress(address).call();
+            return this.rocketStorage.then(function (rocketStorage) {
+                return rocketStorage.methods.getNodePendingWithdrawalAddress(address).call();
             });
         }
         // Get Total Effective RPL Stake
@@ -195,8 +195,8 @@ var Node = function () {
     }, {
         key: 'setWithdrawalAddress',
         value: function setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm, options, onConfirmation) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options), onConfirmation);
+            return this.rocketStorage.then(function (rocketStorage) {
+                return (0, _transaction.handleConfirmations)(rocketStorage.methods.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm).send(options), onConfirmation);
             });
         }
     }, {
@@ -209,8 +209,8 @@ var Node = function () {
     }, {
         key: 'confirmWithdrawalAddress',
         value: function confirmWithdrawalAddress(nodeAddress, options, onConfirmation) {
-            return this.rocketNodeManager.then(function (rocketNodeManager) {
-                return (0, _transaction.handleConfirmations)(rocketNodeManager.methods.confirmWithdrawalAddress(nodeAddress).send(options), onConfirmation);
+            return this.rocketStorage.then(function (rocketStorage) {
+                return (0, _transaction.handleConfirmations)(rocketStorage.methods.confirmWithdrawalAddress(nodeAddress).send(options), onConfirmation);
             });
         }
         /**
@@ -248,6 +248,11 @@ var Node = function () {
         key: 'rocketNodeStaking',
         get: function get() {
             return this.contracts.get('rocketNodeStaking');
+        }
+    }, {
+        key: 'rocketStorage',
+        get: function get() {
+            return this.contracts.get("rocketStorage");
         }
     }]);
 
