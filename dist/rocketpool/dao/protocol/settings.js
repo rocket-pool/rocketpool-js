@@ -23,9 +23,26 @@ var DAOProtocolSettings = function () {
 
 
     _createClass(DAOProtocolSettings, [{
+        key: 'getRethDepositDelay',
+
+        /**
+         * Getters
+         */
+        // Get member id given an address
+        value: function getRethDepositDelay() {
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
+            });
+        }
+    }, {
         key: 'rocketDAOProtocolSettings',
         get: function get() {
             return this.contracts.get('rocketDAOProtocolSettings');
+        }
+    }, {
+        key: 'rocketDAOProtocolSettingsNetwork',
+        get: function get() {
+            return this.contracts.get('rocketDAOProtocolSettingsNetwork');
         }
     }]);
 

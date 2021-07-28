@@ -21,10 +21,20 @@ class DAOProtocolSettings {
         return this.contracts.get('rocketDAOProtocolSettings');
     }
 
+    private get rocketDAOProtocolSettingsNetwork(): Promise<Contract> {
+        return this.contracts.get('rocketDAOProtocolSettingsNetwork');
+    }
+
 
     /**
      * Getters
      */
+    // Get member id given an address
+    public getRethDepositDelay(): Promise<number> {
+        return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<number> => {
+            return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
+        });
+    }
 
 
 
