@@ -43,8 +43,8 @@ class Deposit {
     }
 
     // Get the users last deposit block
-    public getUserLastDepositBlock(address): Promise<number> {
-        return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
+    public getUserLastDepositBlock(address: string): Promise<number> {
+        return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<number> => {
             return rocketDepositPool.methods.getUserLastDepositBlock(address).call();
         });
     }

@@ -45,6 +45,15 @@ var Deposit = function () {
                 return rocketDepositPool.methods.getExcessBalance().call();
             });
         }
+        // Get the users last deposit block
+
+    }, {
+        key: 'getUserLastDepositBlock',
+        value: function getUserLastDepositBlock(address) {
+            return this.rocketDepositPool.then(function (rocketDepositPool) {
+                return rocketDepositPool.methods.getUserLastDepositBlock(address).call();
+            });
+        }
         /**
          * Mutators - Public
          */
