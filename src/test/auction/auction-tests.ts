@@ -17,6 +17,7 @@ import {auctionCreateLot, auctionPlaceBid, getLotPriceAtBlock, getLotStartBlock}
 import {placeBid} from './scenario-place-bid';
 import {claimBid} from "./scenario-claim-bid";
 import {recoverUnclaimedRPL} from './scenario-recover-rpl';
+import {withdrawValidatorBalance} from '../minipool/scenario-withdraw-validator-balance';
 
 // Tests
 export default function runAuctionTests(web3: Web3, rp: RocketPool) {
@@ -67,16 +68,17 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('random address', 'can create a lot'), async () => {
             // Slash RPL assigned to minipool to fill auction contract
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
 
             // Create first lot
             await createLot(web3, rp,{
-                from: random1,
+                from: random1
             });
 
             // Create second lot
             await createLot(web3, rp,{
-                from: random1,
+                from: random1
             });
 
         });
@@ -85,7 +87,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot create a lot while lot creation is disabled'), async () => {
 
             // Slash RPL assigned to minipool to fill auction contract
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
 
             // Disable lot creation
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.create.enabled', false, {from: owner, gas: gasLimit});
@@ -120,7 +123,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0',{from: trustedNode, gas: gasLimit});
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Get lot start block
@@ -152,7 +156,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'can place a bid on a lot'), async () => {
 
             // Create lots
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
 
@@ -204,7 +209,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot bid on a lot which doesn\'t exist'), async () => {
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
 
             // Attempt to place bid
@@ -219,7 +225,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot bid on a lot while bidding is disabled'), async () => {
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Disable bidding
@@ -237,7 +244,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot bid an invalid amount on a lot'), async () => {
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
 
             // Attempt to place bid
@@ -255,7 +263,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
 
             // Attempt to place bid
@@ -270,7 +279,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot bid on a lot after the RPL allocation has been exhausted'), async () => {
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Place bid & claim all RPL
@@ -293,7 +303,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'can claim RPL from a lot'), async () => {
 
             // Create lots & place bids to clear
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
             await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('5', 'ether'), gas: gasLimit});
@@ -331,7 +342,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot claim RPL from a lot which doesn\'t exist'), async () => {
 
             // Create lot & place bid to clear
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
             await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('1000', 'ether'), gas: gasLimit});
 
@@ -346,7 +358,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot claim RPL from a lot before it has cleared'), async () => {
 
             // Create lot & place bid
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
             await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('4', 'ether'), gas: gasLimit});
 
@@ -361,7 +374,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot claim RPL from a lot it has not bid on'), async () => {
 
             // Create lot & place bid to clear
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
             await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('4', 'ether'), gas: gasLimit});
 
@@ -377,7 +391,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
             // Create closed lots
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
@@ -400,7 +415,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
             // Create closed lot
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Attempt to recover RPL
@@ -415,7 +431,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random address', 'cannot recover unclaimed RPL from a lot before the lot bidding period has concluded'), async () => {
 
             // Create lot
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Attempt to recover RPL
@@ -431,7 +448,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
             // Create closed lot
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 0, {from: owner, gas: gasLimit});
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp, {from: random1, gas: gasLimit});
 
             // Recover RPL
@@ -452,7 +470,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsAuction', 'auction.lot.duration', 10, {from: owner, gas: gasLimit});
 
             // Create lot & place bid to clear
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), web3.utils.toWei('0', 'ether'), {from: trustedNode, gas: gasLimit});
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            await withdrawValidatorBalance(web3, rp, minipool, '0', node, true);
             await auctionCreateLot(web3, rp,{from: random1, gas: gasLimit});
             await auctionPlaceBid(web3, rp, 0, {from: random1, value: web3.utils.toWei('1000', 'ether'), gas: gasLimit});
 

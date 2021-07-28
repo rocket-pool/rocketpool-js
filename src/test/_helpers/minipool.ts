@@ -7,17 +7,14 @@ import {getValidatorPubkey, getValidatorSignature, getDepositDataRoot} from '../
 import {getTxContractEvents} from '../_utils/contract';
 
 
-// Get a minipool's node balance at withdrawal
-export async function getMinipoolWithdrawalNodeBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
-    await rp.minipool.getMinipoolWithdrawalNodeBalance(minipoolAddress);
+// Get the number of minipools a node has
+export async function getNodeMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    return await rp.minipool.getNodeMinipoolCount(nodeAddress);
 }
 
-
-// Get a minipool's user balance at withdrawal
-export async function getMinipoolWithdrawalUserBalance(web3: Web3, rp: RocketPool, minipoolAddress: string) {
-    let totalBalance = await rp.minipool.getMinipoolWithdrawalTotalBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
-    let nodeBalance = await rp.minipool.getMinipoolWithdrawalNodeBalance(minipoolAddress).then((value: any) => web3.utils.toBN(value));
-    return totalBalance.sub(nodeBalance);
+// Get the number of minipools a node has in Staking status
+export async function getNodeStakingMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    return await rp.minipool.getNodeStakingMinipoolCount(nodeAddress);
 }
 
 
@@ -88,8 +85,8 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 
 
 // Submit a minipool withdrawable event
-export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
-    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
+export async function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, options: SendOptions) {
+    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, options);
 }
 
 

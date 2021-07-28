@@ -52,9 +52,9 @@ export default function runContractsTests(web3: Web3, rp: RocketPool) {
 
 
             it(printTitle('User', 'Can load multiple contracts'), async () => {
-                let [rocketNetworkFees, rocketNetworkWithdrawal] = await rp.contracts.get(['rocketNetworkFees', 'rocketNetworkWithdrawal']);
+                let [rocketNetworkFees, rocketNetworkPrices] = await rp.contracts.get(['rocketNetworkFees', 'rocketNetworkPrices']);
                 assert.property(rocketNetworkFees, 'methods', 'Loaded contract is invalid');
-                assert.property(rocketNetworkWithdrawal, 'methods', 'Loaded contract is invalid');
+                assert.property(rocketNetworkPrices, 'methods', 'Loaded contract is invalid');
             });
 
 

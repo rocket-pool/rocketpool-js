@@ -135,6 +135,14 @@ class Node {
     }
 
 
+    // Get Node Minipool Limit
+    public getNodeMinipoolLimit(address: string): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getNodeMinipoolLimit(address).call();
+        });
+    }
+
+
     // Get Node Total Effective RPL Stake
     public getNodeTotalEffectiveRPLStake(): Promise<string> {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
@@ -163,6 +171,14 @@ class Node {
     public getTotalEffectiveRPLStake(): Promise<string> {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
             return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+        });
+    }
+
+
+    // Get Total RPL Stake
+    public getTotalRPLStake(): Promise<string> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
+            return rocketNodeStaking.methods.getTotalRPLStake().call();
         });
     }
 

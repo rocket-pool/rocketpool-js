@@ -5,6 +5,7 @@ import { Contract, SendOptions } from 'web3-eth-contract';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
 import MinipoolContract from './minipool-contract';
+import {getNodeStakingMinipoolCount} from "../../test/_helpers/minipool";
 
 
 // Minipool details
@@ -12,10 +13,6 @@ export interface MinipoolDetails {
     address: string;
     exists: boolean;
     pubkey: string;
-    withdrawalTotalBalance: string;
-    withdrawalNodeBalance: string;
-    withdrawable: boolean;
-    withdrawalProcessed: boolean;
 }
 
 
@@ -93,13 +90,9 @@ class Minipool {
         return Promise.all([
             this.getMinipoolExists(address),
             this.getMinipoolPubkey(address),
-            this.getMinipoolWithdrawalTotalBalance(address),
-            this.getMinipoolWithdrawalNodeBalance(address),
-            this.getMinipoolWithdrawable(address),
-            this.getMinipoolWithdrawalProcessed(address),
         ]).then(
-            ([exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed]: [boolean, string, string, string, boolean, boolean]): MinipoolDetails =>
-            ({address, exists, pubkey, withdrawalTotalBalance, withdrawalNodeBalance, withdrawable, withdrawalProcessed})
+            ([exists, pubkey]: [boolean, string, ]): MinipoolDetails =>
+            ({address, exists, pubkey})
         );
     }
 
@@ -125,6 +118,22 @@ class Minipool {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
             return rocketMinipoolManager.methods.getNodeMinipoolCount(nodeAddress).call();
         }).then((value: string): number => parseInt(value));
+    }
+
+
+    // Get the staking minipool count
+    public getStakingMinipoolCount(): Promise<string> {
+        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
+            return rocketMinipoolManager.methods.getStakingMinipoolCount().call();
+        });
+    }
+
+
+    // Get the total staking minipool count
+    public getNodeStakingMinipoolCount(nodeAddress: string): Promise<string> {
+        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
+            return rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call();
+        });
     }
 
 
@@ -160,43 +169,13 @@ class Minipool {
     }
 
 
-    // Get a minipool's total balance at withdrawal in wei
-    public getMinipoolWithdrawalTotalBalance(address: string): Promise<string> {
-        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(address).call();
-        });
-    }
-
-
-    // Get a minipool's node balance at withdrawal in wei
-    public getMinipoolWithdrawalNodeBalance(address: string): Promise<string> {
-        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(address).call();
-        });
-    }
-
-
-    // Check whether a minipool is withdrawable
-    public getMinipoolWithdrawable(address: string): Promise<boolean> {
-        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<boolean> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawable(address).call();
-        });
-    }
-
-
-    // Check whether a minipool's validator withdrawal has been processed
-    public getMinipoolWithdrawalProcessed(address: string): Promise<boolean> {
-        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<boolean> => {
-            return rocketMinipoolManager.methods.getMinipoolWithdrawalProcessed(address).call();
-        });
-    }
-
     // Get the minipool queue length
     public getQueueLength(depositType: number): Promise<number> {
         return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<number> => {
             return rocketMinipoolQueue.methods.getLength(depositType).call();
         });
     }
+
 
     // Get the total minipool queue length
     public getQueueTotalLength(): Promise<number> {
@@ -251,10 +230,10 @@ class Minipool {
      * Mutators - Restricted to trusted nodes
      */
     // Submit a minipool withdrawable event
-    public submitMinipoolWithdrawable(minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public submitMinipoolWithdrawable(minipoolAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {
             return handleConfirmations(
-                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options),
+                rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress).send(options),
                 onConfirmation
             );
         });

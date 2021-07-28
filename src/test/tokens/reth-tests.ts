@@ -7,7 +7,7 @@ import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helper
 import {getRethBalance, getRethExchangeRate, getRethTotalSupply, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
-import {createMinipool, getMinipoolMinimumRPLStake, getMinipoolWithdrawalUserBalance, payoutMinipool, stakeMinipool, submitMinipoolWithdrawable} from '../_helpers/minipool';
+import {createMinipool, getMinipoolMinimumRPLStake, payoutMinipool, stakeMinipool, submitMinipoolWithdrawable} from '../_helpers/minipool';
 import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-bootstrap';
 import {submitBalances} from '../_helpers/network';
 import {getValidatorPubkey} from '../_utils/beacon';
@@ -82,12 +82,18 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
             // Create and withdraw from withdrawable minipool
             minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
             await stakeMinipool(web3, rp, minipool, validatorPubkey, { from: node, gas: gasLimit });
-            await submitMinipoolWithdrawable(web3, rp, minipool.address, web3.utils.toWei('32', 'ether'), withdrawalBalance, { from: trustedNode, gas: gasLimit });
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, { from: trustedNode, gas: gasLimit });
 
             // Update network ETH total to alter rETH exchange rate
-            let minipoolUserBalance = await getMinipoolWithdrawalUserBalance(web3, rp, minipool.address);
             let rethSupply = await getRethTotalSupply(web3, rp);
-            await submitBalances(web3, rp, 1, minipoolUserBalance.toString(), '0', rethSupply, { from: trustedNode, gas: gasLimit });
+            let nodeFee = web3.utils.toBN(await minipool.getNodeFee());
+            let depositBalance = web3.utils.toBN(web3.utils.toWei('32'));
+            let userAmount = web3.utils.toBN(web3.utils.toWei('16'));
+            let rewards = web3.utils.toBN(withdrawalBalance).sub(depositBalance);
+            let halfRewards = rewards.divn(2);
+            let nodeCommissionFee = halfRewards.mul(nodeFee).div(web3.utils.toBN(web3.utils.toWei('1')));
+            let ethBalance = userAmount.add(halfRewards.sub(nodeCommissionFee)).toString();
+            await submitBalances(web3, rp, 1, ethBalance, '0', rethSupply, { from: trustedNode, gas: gasLimit });
 
             // Get & check staker rETH balance
             rethBalance = await getRethBalance(web3, rp, staker1).then((value: any) => web3.utils.toBN(value));

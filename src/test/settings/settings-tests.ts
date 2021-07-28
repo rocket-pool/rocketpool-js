@@ -43,7 +43,6 @@ export default function runSettingsTests(web3: Web3, rp: RocketPool) {
                     rp.settings.network.getNodeConsensusThreshold(),
                     rp.settings.network.getSubmitBalancesEnabled(),
                     rp.settings.network.getSubmitBalancesFrequency(),
-                    rp.settings.network.getProcessWithdrawalsEnabled(),
                     rp.settings.network.getMinimumNodeFee(),
                     rp.settings.network.getTargetNodeFee(),
                     rp.settings.network.getMaximumNodeFee(),

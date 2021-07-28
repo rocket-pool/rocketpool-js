@@ -63,9 +63,11 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
         return Promise.all([
             rocketMinipoolManager.methods.getMinipoolCount().call().then((value: any) => web3.utils.toBN(value)),
             rocketMinipoolManager.methods.getNodeMinipoolCount(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
+            rocketMinipoolManager.methods.getStakingMinipoolCount().call().then((value: any) => web3.utils.toBN(value)),
+            rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
         ]).then(
-            ([total, node]) =>
-                ({total, node})
+            ([total, node, totalStaking, nodeStaking]) =>
+                ({total, node, totalStaking, nodeStaking})
         );
     }
 
@@ -91,6 +93,9 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     const maxNodeEffectiveStake = depositUserAmount.mul(maxPerMinipoolStake).mul(minipoolCounts.node).div(rplPrice);
     const expectedNodeEffectiveStake = (details2.nodeStake.lt(maxNodeEffectiveStake)? details2.nodeStake : maxNodeEffectiveStake);
     const expectedNodeMinipoolLimit = details2.nodeStake.mul(rplPrice).div(depositUserAmount.mul(minPerMinipoolStake));
+
+    console.log(details2.totalEffectiveStake.toString());
+    console.log(expectedTotalEffectiveStake.toString());
 
     // Check token balances
     assert(balances2.nodeRpl.eq(balances1.nodeRpl.sub(web3.utils.toBN(amount))), 'Incorrect updated node RPL balance');

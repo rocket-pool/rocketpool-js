@@ -7,7 +7,7 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 
 
 // Submit a minipool withdrawable event
-export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
+export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, options: SendOptions) {
 
     // Load contracts
     const rocketDAONodeTrusted = await rp.contracts.get('rocketDAONodeTrusted');
@@ -19,8 +19,8 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     let trustedNodeCount = await rocketDAONodeTrusted.methods.getMemberCount().call().then((value: any) => web3.utils.toBN(value));
 
     // Get submission keys
-    let nodeSubmissionKey = web3.utils.soliditySha3('minipool.withdrawable.submitted.node', options.from, minipoolAddress, stakingStartBalance, stakingEndBalance);
-    let submissionCountKey = web3.utils.soliditySha3('minipool.withdrawable.submitted.count', minipoolAddress, stakingStartBalance, stakingEndBalance);
+    let nodeSubmissionKey = web3.utils.soliditySha3('minipool.withdrawable.submitted.node', options.from, minipoolAddress);
+    let submissionCountKey = web3.utils.soliditySha3('minipool.withdrawable.submitted.count', minipoolAddress);
 
     // Get submission details
     function getSubmissionDetails() {
@@ -38,12 +38,10 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     function getMinipoolDetails() {
         return rp.minipool.getMinipoolContract(minipoolAddress).then((minipool: MinipoolContract) => Promise.all([
             minipool.getStatus().then((value: any) => web3.utils.toBN(value)),
-            minipool.getStakingStartBalance().then((value: any) => web3.utils.toBN(value)),
-            minipool.getStakingEndBalance().then((value: any) => web3.utils.toBN(value)),
             minipool.getUserDepositBalance().then((value: any) => web3.utils.toBN(value)),
         ])).then(
-            ([status, startBalance, endBalance, userDepositBalance]) =>
-                ({status, startBalance, endBalance, userDepositBalance})
+            ([status, userDepositBalance]) =>
+                ({status, userDepositBalance})
         );
     }
 
@@ -67,7 +65,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
     options.gasPrice = gasPrice.toString();
 
     // Submit
-    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options);
+    await rp.minipool.submitMinipoolWithdrawable(minipoolAddress, options);
 
     // Get updated details
     let [submission2, node2RplStake, minipoolDetails] = await Promise.all([
@@ -86,14 +84,8 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
 
     // Check minipool details
     const withdrawable = web3.utils.toBN(3);
-
     if (expectWithdrawable) {
         assert(minipoolDetails.status.eq(withdrawable), 'Incorrect updated minipool status');
-        assert(minipoolDetails.startBalance.eq(web3.utils.toBN(stakingStartBalance)), 'Incorrect updated minipool end balance');
-        assert(minipoolDetails.endBalance.eq(web3.utils.toBN(stakingEndBalance)), 'Incorrect updated minipool end balance');
-        if (web3.utils.toBN(stakingEndBalance).lt(minipoolDetails.userDepositBalance)) {
-            assert(node2RplStake.lt(node1RplStake), 'Incorrect updated node RPL stake amount');
-        }
     } else {
         assert(!minipoolDetails.status.eq(withdrawable), 'Incorrect updated minipool status');
     }

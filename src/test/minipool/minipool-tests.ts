@@ -102,7 +102,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             await stakeMinipool(web3, rp, withdrawableMinipool, withdrawableMinipoolPubkey, {from: node, gas: gasLimit});
 
             // Set minipool to withdrawable
-            await rp.minipool.submitMinipoolWithdrawable(withdrawableMinipool.address, withdrawableMinipoolStartBalance, withdrawableMinipoolEndBalance, {from: trustedNode, gas: gasLimit});
+            await rp.minipool.submitMinipoolWithdrawable(withdrawableMinipool.address, {from: trustedNode, gas: gasLimit});
 
             // Dissolve minipool
             await dissolvedMinipool.dissolve({from: node, gas: gasLimit});

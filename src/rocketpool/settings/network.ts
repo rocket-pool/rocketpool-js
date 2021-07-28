@@ -49,14 +49,6 @@ class NetworkSettings {
     }
 
 
-    // Processing withdrawals is currently enabled
-    public getProcessWithdrawalsEnabled(): Promise<boolean> {
-        return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<boolean> => {
-            return rocketDAOProtocolSettingsNetwork.methods.getProcessWithdrawalsEnabled().call();
-        });
-    }
-
-
     // Node commission rate parameters
     public getMinimumNodeFee(): Promise<number> {
         return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<string> => {
