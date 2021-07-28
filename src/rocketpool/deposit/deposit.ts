@@ -42,6 +42,13 @@ class Deposit {
         });
     }
 
+    // Get the users last deposit block
+    public getUserLastDepositBlock(address): Promise<number> {
+        return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
+            return rocketDepositPool.methods.getUserLastDepositBlock(address).call();
+        });
+    }
+
 
     /**
      * Mutators - Public
