@@ -92,7 +92,11 @@ var MinipoolContract = function () {
     }, {
         key: 'getNodeFee',
         value: function getNodeFee() {
-            return this.contract.methods.getNodeFee().call();
+            var _this = this;
+
+            return this.contract.methods.getNodeFee().call().then(function (value) {
+                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
+            });
         }
     }, {
         key: 'getNodeDepositBalance',
