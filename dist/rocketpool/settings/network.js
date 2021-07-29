@@ -58,15 +58,6 @@ var NetworkSettings = function () {
                 return parseInt(value);
             });
         }
-        // Processing withdrawals is currently enabled
-
-    }, {
-        key: 'getProcessWithdrawalsEnabled',
-        value: function getProcessWithdrawalsEnabled() {
-            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
-                return rocketDAOProtocolSettingsNetwork.methods.getProcessWithdrawalsEnabled().call();
-            });
-        }
         // Node commission rate parameters
 
     }, {

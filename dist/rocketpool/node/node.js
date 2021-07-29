@@ -135,6 +135,15 @@ var Node = function () {
                 return rocketNodeStaking.methods.getNodeEffectiveRPLStake(address).call();
             });
         }
+        // Get Node Minipool Limit
+
+    }, {
+        key: 'getNodeMinipoolLimit',
+        value: function getNodeMinipoolLimit(address) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getNodeMinipoolLimit(address).call();
+            });
+        }
         // Get Node Total Effective RPL Stake
 
     }, {
@@ -169,6 +178,15 @@ var Node = function () {
         value: function getTotalEffectiveRPLStake() {
             return this.rocketNodeStaking.then(function (rocketNodeStaking) {
                 return rocketNodeStaking.methods.getTotalEffectiveRPLStake().call();
+            });
+        }
+        // Get Total RPL Stake
+
+    }, {
+        key: 'getTotalRPLStake',
+        value: function getTotalRPLStake() {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return rocketNodeStaking.methods.getTotalRPLStake().call();
             });
         }
         // Get Total Effective RPL Stake
@@ -211,6 +229,13 @@ var Node = function () {
         value: function confirmWithdrawalAddress(nodeAddress, options, onConfirmation) {
             return this.rocketStorage.then(function (rocketStorage) {
                 return (0, _transaction.handleConfirmations)(rocketStorage.methods.confirmWithdrawalAddress(nodeAddress).send(options), onConfirmation);
+            });
+        }
+    }, {
+        key: 'withdrawRPL',
+        value: function withdrawRPL(amount, options, onConfirmation) {
+            return this.rocketNodeStaking.then(function (rocketNodeStaking) {
+                return (0, _transaction.handleConfirmations)(rocketNodeStaking.methods.withdrawRPL(amount).send(options), onConfirmation);
             });
         }
         /**

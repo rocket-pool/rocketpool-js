@@ -92,11 +92,7 @@ var MinipoolContract = function () {
     }, {
         key: 'getNodeFee',
         value: function getNodeFee() {
-            var _this = this;
-
-            return this.contract.methods.getNodeFee().call().then(function (value) {
-                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
-            });
+            return this.contract.methods.getNodeFee().call();
         }
     }, {
         key: 'getNodeDepositBalance',
@@ -210,6 +206,20 @@ var MinipoolContract = function () {
         key: 'withdraw',
         value: function withdraw(options, onConfirmation) {
             return (0, _transaction.handleConfirmations)(this.contract.methods.withdraw().send(options), onConfirmation);
+        }
+        // Processes a withdrawal and then destroys in a single transaction
+
+    }, {
+        key: 'distributeBalanceAndDestroy',
+        value: function distributeBalanceAndDestroy(options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.distributeBalanceAndDestroy().send(options), onConfirmation);
+        }
+        // Processes a withdrawal
+
+    }, {
+        key: 'distributeBalance',
+        value: function distributeBalance(options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.distributeBalance().send(options), onConfirmation);
         }
         // Withdraw node balances from the minipool and close it
 

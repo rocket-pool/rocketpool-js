@@ -94,16 +94,12 @@ var Minipool = function () {
     }, {
         key: 'getMinipoolDetails',
         value: function getMinipoolDetails(address) {
-            return Promise.all([this.getMinipoolExists(address), this.getMinipoolPubkey(address), this.getMinipoolWithdrawalTotalBalance(address), this.getMinipoolWithdrawalNodeBalance(address), this.getMinipoolWithdrawable(address), this.getMinipoolWithdrawalProcessed(address)]).then(function (_ref) {
-                var _ref2 = _slicedToArray(_ref, 6),
+            return Promise.all([this.getMinipoolExists(address), this.getMinipoolPubkey(address)]).then(function (_ref) {
+                var _ref2 = _slicedToArray(_ref, 2),
                     exists = _ref2[0],
-                    pubkey = _ref2[1],
-                    withdrawalTotalBalance = _ref2[2],
-                    withdrawalNodeBalance = _ref2[3],
-                    withdrawable = _ref2[4],
-                    withdrawalProcessed = _ref2[5];
+                    pubkey = _ref2[1];
 
-                return { address: address, exists: exists, pubkey: pubkey, withdrawalTotalBalance: withdrawalTotalBalance, withdrawalNodeBalance: withdrawalNodeBalance, withdrawable: withdrawable, withdrawalProcessed: withdrawalProcessed };
+                return { address: address, exists: exists, pubkey: pubkey };
             });
         }
         // Get the total minipool count
@@ -135,6 +131,24 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getNodeMinipoolCount(nodeAddress).call();
             }).then(function (value) {
                 return parseInt(value);
+            });
+        }
+        // Get the staking minipool count
+
+    }, {
+        key: 'getStakingMinipoolCount',
+        value: function getStakingMinipoolCount() {
+            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
+                return rocketMinipoolManager.methods.getStakingMinipoolCount().call();
+            });
+        }
+        // Get the total staking minipool count
+
+    }, {
+        key: 'getNodeStakingMinipoolCount',
+        value: function getNodeStakingMinipoolCount(nodeAddress) {
+            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
+                return rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call();
             });
         }
         // Get a node's minipool address by index
@@ -171,42 +185,6 @@ var Minipool = function () {
         value: function getMinipoolPubkey(address) {
             return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
                 return rocketMinipoolManager.methods.getMinipoolPubkey(address).call();
-            });
-        }
-        // Get a minipool's total balance at withdrawal in wei
-
-    }, {
-        key: 'getMinipoolWithdrawalTotalBalance',
-        value: function getMinipoolWithdrawalTotalBalance(address) {
-            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
-                return rocketMinipoolManager.methods.getMinipoolWithdrawalTotalBalance(address).call();
-            });
-        }
-        // Get a minipool's node balance at withdrawal in wei
-
-    }, {
-        key: 'getMinipoolWithdrawalNodeBalance',
-        value: function getMinipoolWithdrawalNodeBalance(address) {
-            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
-                return rocketMinipoolManager.methods.getMinipoolWithdrawalNodeBalance(address).call();
-            });
-        }
-        // Check whether a minipool is withdrawable
-
-    }, {
-        key: 'getMinipoolWithdrawable',
-        value: function getMinipoolWithdrawable(address) {
-            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
-                return rocketMinipoolManager.methods.getMinipoolWithdrawable(address).call();
-            });
-        }
-        // Check whether a minipool's validator withdrawal has been processed
-
-    }, {
-        key: 'getMinipoolWithdrawalProcessed',
-        value: function getMinipoolWithdrawalProcessed(address) {
-            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
-                return rocketMinipoolManager.methods.getMinipoolWithdrawalProcessed(address).call();
             });
         }
         // Get the minipool queue length
@@ -285,9 +263,9 @@ var Minipool = function () {
 
     }, {
         key: 'submitMinipoolWithdrawable',
-        value: function submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance, options, onConfirmation) {
+        value: function submitMinipoolWithdrawable(minipoolAddress, options, onConfirmation) {
             return this.rocketMinipoolStatus.then(function (rocketMinipoolStatus) {
-                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options), onConfirmation);
+                return (0, _transaction.handleConfirmations)(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress).send(options), onConfirmation);
             });
         }
     }, {
