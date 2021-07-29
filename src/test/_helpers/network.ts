@@ -33,6 +33,12 @@ export async function submitPrices(web3: Web3, rp: RocketPool, block: number, rp
 }
 
 
+// Get network RPL price
+export async function getRPLPrice(web3: Web3, rp: RocketPool) {
+    return await rp.network.getRPLPrice();
+}
+
+
 // Get the network node demand
 export async function getNodeDemand(web3: Web3, rp: RocketPool) {
     await rp.network.getNodeDemand();

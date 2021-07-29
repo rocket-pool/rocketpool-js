@@ -23,6 +23,10 @@ import {rewardsClaimersPercTotalGet} from "./scenario-rewards-claim";
 import {rewardsClaimNode} from "./scenario-rewards-claim-node";
 import {rewardsClaimTrustedNode} from "./scenario-rewards-claim-trusted-node";
 import {getRewardsDAOTreasuryBalance, rewardsClaimDAO} from "./scenario-rewards-claim-dao";
+import Minipool from "../../rocketpool/minipool/minipool";
+import {createMinipool, stakeMinipool} from "../_helpers/minipool";
+import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
+import {userDeposit} from "../_helpers/deposit";
 
 
 // Tests
@@ -56,7 +60,6 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
         // The testing config
         let claimIntervalBlocks: number = 16;
         // Interval for calculating inflation
-        let rewardIntervalBlocks: number = 5;
         const claimIntervalTime = ONE_DAY * 28;
 
         // Set some RPL inflation scenes
@@ -121,14 +124,24 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
             await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0', { from: registeredNodeTrusted1, gas: gasLimit });
             await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0', { from: registeredNodeTrusted2, gas: gasLimit });
 
-            // Stake RPL against nodes and create minipools to set effective stakes
+            // Mint and stake RPL
             await mintRPL(web3, rp, owner, registeredNode1, web3.utils.toWei('32', 'ether'));
             await mintRPL(web3, rp, owner, registeredNode2, web3.utils.toWei('32', 'ether'));
             await nodeStakeRPL(web3, rp, web3.utils.toWei('32', 'ether'), {from: registeredNode1, gas: gasLimit});
             await nodeStakeRPL(web3, rp, web3.utils.toWei('32', 'ether'), {from: registeredNode2, gas: gasLimit});
-            await nodeDeposit(web3, rp, {from: registeredNode1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
-            await nodeDeposit(web3, rp, {from: registeredNode2, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
-            await nodeDeposit(web3, rp, {from: registeredNode2, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+
+            // User deposits
+            await userDeposit(web3, rp, {from: userOne, value: web3.utils.toWei('48', 'ether'), gas: gasLimit});
+
+            // Create minipools
+            let minipool1 = (await createMinipool(web3, rp, {from: registeredNode1, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
+            let minipool2 = (await createMinipool(web3, rp, {from: registeredNode2, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
+            let minipool3 = (await createMinipool(web3, rp, {from: registeredNode2, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
+
+            // Stake minipools
+            await stakeMinipool(web3, rp, minipool1, null, {from: registeredNode1, gas: gasLimit});
+            await stakeMinipool(web3, rp, minipool2, null, {from: registeredNode2, gas: gasLimit});
+            await stakeMinipool(web3, rp, minipool3, null, {from: registeredNode2, gas: gasLimit});
 
             // Check node effective stakes
             let node1EffectiveStake = await getNodeEffectiveRPLStake(web3, rp, registeredNode1).then((value: any) => web3.utils.toBN(value));

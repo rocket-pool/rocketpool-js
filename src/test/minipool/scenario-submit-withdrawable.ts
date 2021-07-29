@@ -92,7 +92,7 @@ export async function submitWithdrawable(web3: Web3, rp: RocketPool, minipoolAdd
 }
 
 // Execute a minipool withdrawable update event
-export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, stakingStartBalance: string, stakingEndBalance: string, options: SendOptions) {
+export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, options: SendOptions) {
 
     // Load contracts
     const rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
@@ -102,12 +102,10 @@ export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoo
     function getMinipoolDetails() {
         return rp.minipool.getMinipoolContract(minipoolAddress).then((minipool: MinipoolContract) => Promise.all([
             minipool.getStatus().then((value: any) => web3.utils.toBN(value)),
-            minipool.getStakingStartBalance().then((value: any) => web3.utils.toBN(value)),
-            minipool.getStakingEndBalance().then((value: any) => web3.utils.toBN(value)),
             minipool.getUserDepositBalance().then((value: any) => web3.utils.toBN(value)),
         ])).then(
-            ([status, startBalance, endBalance, userDepositBalance]) =>
-                ({status, startBalance, endBalance, userDepositBalance})
+            ([status, userDepositBalance]) =>
+                ({status, userDepositBalance})
         );
     }
 
@@ -124,7 +122,7 @@ export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoo
     let node1RplStake = await getNodeDetails().catch((e: any) => (web3.utils.toBN(0)));
 
     // Submit
-    await rocketMinipoolStatus.methods.executeMinipoolWithdrawable(minipoolAddress, stakingStartBalance, stakingEndBalance).send(options);
+    await rocketMinipoolStatus.methods.executeMinipoolWithdrawable(minipoolAddress).send(options);
 
     // Get updated details
     let [node2RplStake, minipoolDetails] = await Promise.all([
@@ -135,10 +133,5 @@ export async function executeSetWithdrawable(web3: Web3, rp: RocketPool, minipoo
     // Check minipool details
     const withdrawable = web3.utils.toBN(3);
     assert(minipoolDetails.status.eq(withdrawable), 'Incorrect updated minipool status');
-    assert(minipoolDetails.startBalance.eq(web3.utils.toBN(stakingStartBalance)), 'Incorrect updated minipool end balance');
-    assert(minipoolDetails.endBalance.eq(web3.utils.toBN(stakingEndBalance)), 'Incorrect updated minipool end balance');
-    if (web3.utils.toBN(stakingEndBalance).lt(minipoolDetails.userDepositBalance)) {
-        assert(node2RplStake.lt(node1RplStake), 'Incorrect updated node RPL stake amount');
-    }
 
 }

@@ -151,30 +151,6 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
         //
         it(printTitle('trusted nodes', 'can submit a withdrawable event for a staking minipool'), async () => {
 
-            // Set parameters
-            let startBalance1 = web3.utils.toWei('32', 'ether');
-            let endBalance1 = web3.utils.toWei('36', 'ether');
-            let startBalance2 = web3.utils.toWei('32', 'ether');
-            let endBalance2 = web3.utils.toWei('28', 'ether');
-            let startBalance3 = web3.utils.toWei('32', 'ether');
-            let endBalance3 = web3.utils.toWei('14', 'ether');
-
-            // Submit different withdrawable events
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, {
-                from: trustedNode1,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, {
-                from: trustedNode2,
-                gas: gasLimit
-            });
-            await submitWithdrawable(web3, rp, stakingMinipool1.address, {
-                from: trustedNode3,
-                gas: gasLimit
-            });
-
-            // Submit identical withdrawable events to trigger update:
-
             // Minipool 1 - rewards earned
             await submitWithdrawable(web3, rp, stakingMinipool1.address, {
                 from: trustedNode1,
@@ -320,7 +296,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
             // trustedNode4 leaves the DAO
             await trustedNode4LeaveDao();
             // There is now consensus with the remaining 3 trusted nodes about the status, try to execute the update
-            await executeSetWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+            await executeSetWithdrawable(web3, rp, stakingMinipool1.address, {
                 from: random,
                 gas: gasLimit
             });
@@ -330,9 +306,6 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
         it(printTitle('random', 'cannot execute status update without consensus'), async () => {
             // Setup
             await trustedNode4JoinDao();
-            // Set parameters
-            let startBalance = web3.utils.toWei('32', 'ether');
-            let endBalance = web3.utils.toWei('36', 'ether');
             // Submit same price from 2 nodes (not enough for 4 member consensus)
             await submitWithdrawable(web3, rp, stakingMinipool1.address, {
                 from: trustedNode1,
@@ -343,7 +316,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             });
             // There is no consensus so execute should fail
-            await shouldRevert(executeSetWithdrawable(web3, rp, stakingMinipool1.address, startBalance, endBalance, {
+            await shouldRevert(executeSetWithdrawable(web3, rp, stakingMinipool1.address, {
                 from: random,
                 gas: gasLimit
             }), 'Random account could execute update status without consensus', 'Consensus has not been reached');

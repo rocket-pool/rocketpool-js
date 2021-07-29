@@ -2,7 +2,7 @@
 import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot, mineBlocks} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, mineBlocks, increaseTime} from '../_utils/evm';
 import {nodeStakeRPL, setNodeTrusted, setNodeWithdrawalAddress} from '../_helpers/node';
 import {getRethBalance, getRethExchangeRate, getRethTotalSupply, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
@@ -15,6 +15,7 @@ import MinipoolContract from '../../rocketpool/minipool/minipool-contract';
 import {getDepositExcessBalance, userDeposit} from '../_helpers/deposit';
 import {burnReth} from './scenario-burn-reth';
 import {transferReth} from './scenario-transfer-reth';
+import {withdrawValidatorBalance} from "../minipool/scenario-withdraw-validator-balance";
 
 
 // Tests
@@ -194,11 +195,10 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
                 value: withdrawalBalance
             });
 
+            // Wait 14 days
+            await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
             // Run the payout function now
-            await payoutMinipool(minipool, true, {
-                from: node,
-                gas: gasLimit
-            });
+            await withdrawValidatorBalance(web3, rp, minipool, '0', random, false);
 
             // Burn rETH
             await burnReth(web3, rp, rethBalance, {
@@ -243,11 +243,10 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
                 value: withdrawalBalance
             });
 
+            // Wait 14 days
+            await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
             // Run the payout function now
-            await payoutMinipool(minipool, true, {
-                from: node,
-                gas: gasLimit
-            });
+            await withdrawValidatorBalance(web3, rp, minipool, '0', random, false);
 
             // Get burn amounts
             let burnZero = web3.utils.toWei('0', 'ether');

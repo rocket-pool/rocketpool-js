@@ -9,11 +9,7 @@ import RocketPool from '../../rocketpool/rocketpool';
 export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
 
     // Load contracts
-    const rocketMinipoolManager = await rp.contracts.get('rocketMinipoolManager');
-    const rocketDAOProtocolSettingsMinipool = await rp.contracts.get('rocketDAOProtocolSettingsMinipool');
-    const rocketNetworkPrices = await rp.contracts.get('rocketNetworkPrices');
     const rocketDAOProtocolSettingsNode = await rp.contracts.get('rocketDAOProtocolSettingsNode');
-    const rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
     const rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
     const rocketVault = await rp.contracts.get('rocketVault');
 
@@ -24,7 +20,7 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
         maxPerMinipoolStake,
         rplPrice,
     ] = await Promise.all([
-        rocketDAOProtocolSettingsMinipool.methods.getHalfDepositUserAmount().call().then((value: any) => web3.utils.toBN(value)),
+        rp.settings.minipool.getHalfDepositUserAmount().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
         rocketDAOProtocolSettingsNode.methods.getMaximumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value)),
         rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value)),
@@ -46,11 +42,11 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     // Get staking details
     function getStakingDetails(nodeAddress: string) {
         return Promise.all([
-            rocketNodeStaking.methods.getTotalRPLStake().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getTotalEffectiveRPLStake().call().then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getNodeRPLStake(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getNodeEffectiveRPLStake(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketNodeStaking.methods.getNodeMinipoolLimit(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
+            rp.node.getTotalRPLStake().then((value: any) => web3.utils.toBN(value)),
+            rp.node.getTotalEffectiveRPLStake().then((value: any) => web3.utils.toBN(value)),
+            rp.node.getNodeRPLStake(nodeAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.node.getNodeEffectiveRPLStake(nodeAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.node.getNodeMinipoolLimit(nodeAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([totalStake, totalEffectiveStake, nodeStake, nodeEffectiveStake, nodeMinipoolLimit]) =>
                 ({totalStake, totalEffectiveStake, nodeStake, nodeEffectiveStake, nodeMinipoolLimit})
@@ -61,10 +57,10 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     // Get minipool counts
     function getMinipoolCounts(nodeAddress: string) {
         return Promise.all([
-            rocketMinipoolManager.methods.getMinipoolCount().call().then((value: any) => web3.utils.toBN(value)),
-            rocketMinipoolManager.methods.getNodeMinipoolCount(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
-            rocketMinipoolManager.methods.getStakingMinipoolCount().call().then((value: any) => web3.utils.toBN(value)),
-            rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getMinipoolCount().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getNodeMinipoolCount(nodeAddress).then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getStakingMinipoolCount().then((value: any) => web3.utils.toBN(value)),
+            rp.minipool.getNodeStakingMinipoolCount(nodeAddress).then((value: any) => web3.utils.toBN(value)),
         ]).then(
             ([total, node, totalStaking, nodeStaking]) =>
                 ({total, node, totalStaking, nodeStaking})
@@ -78,7 +74,7 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     ]);
 
     // Stake RPL
-    await rocketNodeStaking.methods.stakeRPL(amount).send(options);
+    await rp.node.stakeRPL(amount, options);
 
     // Get updated token balances, staking details & minipool counts
     let [balances2, details2, minipoolCounts] = await Promise.all([
@@ -94,8 +90,15 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     const expectedNodeEffectiveStake = (details2.nodeStake.lt(maxNodeEffectiveStake)? details2.nodeStake : maxNodeEffectiveStake);
     const expectedNodeMinipoolLimit = details2.nodeStake.mul(rplPrice).div(depositUserAmount.mul(minPerMinipoolStake));
 
-    console.log(details2.totalEffectiveStake.toString());
-    console.log(expectedTotalEffectiveStake.toString());
+
+    console.log("#####");
+    console.log("totalStake: " + details2.totalStake.toString());
+    console.log("totalEffectiveStake: " + details2.totalEffectiveStake.toString());
+    console.log("nodeStake: " + details2.nodeStake.toString());
+    console.log("nodeEffectiveStake: " + details2.nodeEffectiveStake.toString());
+    console.log("nodeMinipoolLimit: " + details2.nodeMinipoolLimit.toString());
+    console.log("Expected: " + expectedTotalEffectiveStake.toString());
+    console.log("##### \r\n");
 
     // Check token balances
     assert(balances2.nodeRpl.eq(balances1.nodeRpl.sub(web3.utils.toBN(amount))), 'Incorrect updated node RPL balance');

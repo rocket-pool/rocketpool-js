@@ -236,6 +236,15 @@ class Node {
         });
     }
 
+    public withdrawRPL(amount: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
+            return handleConfirmations(
+                rocketNodeStaking.methods.withdrawRPL(amount).send(options),
+                onConfirmation
+            );
+        });
+    }
+
 
     /**
      * Mutators - Restricted to registered nodes

@@ -124,7 +124,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
     // console.log('rETH Contract Amount:', web3.utils.fromWei(balances1.rethContractEth), web3.utils.fromWei(balances2.rethContractEth), web3.utils.fromWei(balances2.rethContractEth.sub(balances1.rethContractEth)));
 
     // Get penalty rate for this minipool
-    const penaltyRate = await rocketMinipoolPenalty.methods.getPenaltyRate(minipool.address).call();
+    const penaltyRate = web3.utils.toBN(await rocketMinipoolPenalty.methods.getPenaltyRate(minipool.address).call());
 
     // Calculate rewards
     let depositBalance = web3.utils.toBN(web3.utils.toWei('32'));
@@ -137,7 +137,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
         let nodeAmount = _withdrawalBalance.sub(userAmount);
 
         // Adjust amounts according to penalty rate
-        if (penaltyRate.gt(0)) {
+        if (penaltyRate.gt(web3.utils.toBN('0'))) {
             let penaltyAmount = nodeAmount.mul(penaltyRate).div(web3.utils.toBN(web3.utils.toWei('1')));
             if (penaltyRate.gt(nodeAmount)) {
                 penaltyAmount = nodeAmount;

@@ -105,7 +105,7 @@ class MinipoolContract {
 
 
     public getNodeFee(): Promise<number> {
-        return this.contract.methods.getNodeFee().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
+        return this.contract.methods.getNodeFee().call();
     }
 
 

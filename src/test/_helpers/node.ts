@@ -45,15 +45,13 @@ export async function getNodeMinimumRPLStake(web3: Web3, rp: RocketPool, nodeAdd
 
 // Get total effective RPL stake
 export async function getTotalEffectiveRPLStake(web3: Web3, rp: RocketPool) {
-    let totalStake = await rp.node.getTotalEffectiveRPLStake();
-    return totalStake;
+    return await rp.node.getTotalEffectiveRPLStake();
 }
 
 
 // Get calculated effective RPL stake
 export async function getCalculatedTotalEffectiveRPLStake(web3: Web3, rp: RocketPool, price: string) {
-    let totalStake = await rp.node.calculateTotalEffectiveRPLStake(0, 0, price);
-    return totalStake;
+    return await rp.node.calculateTotalEffectiveRPLStake(0, 0, price);
 }
 
 
@@ -79,6 +77,10 @@ export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, o
     await rp.node.stakeRPL(amount, options);
 }
 
+// Withdraw a node RPL stake
+export async function nodeWithdrawRPL(web3: Web3, rp: RocketPool, amount: string, txOptions: SendOptions) {
+    await rp.node.withdrawRPL(amount, txOptions);
+}
 
 // Make a node deposit
 export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptions) {
