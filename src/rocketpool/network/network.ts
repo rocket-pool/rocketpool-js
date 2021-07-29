@@ -84,7 +84,7 @@ class Network {
     // Get the current network node commission rate
     public getNodeFee(): Promise<number> {
         return this.rocketNetworkFees.then((rocketNetworkFees: Contract): Promise<number> => {
-            return rocketNetworkFees.methods.getNodeFee().call();
+            return rocketNetworkFees.methods.getNodeFee().call().then((value: string): number => parseFloat(this.web3.utils.fromWei(value, 'ether')));
         });
     }
 
