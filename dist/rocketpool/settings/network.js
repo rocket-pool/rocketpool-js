@@ -115,6 +115,17 @@ var NetworkSettings = function () {
                 return parseFloat(_this5.web3.utils.fromWei(value, 'ether'));
             });
         }
+        // The rETH deposit delay setting
+
+    }, {
+        key: 'getRethDespositDelay',
+        value: function getRethDespositDelay() {
+            return this.rocketDAOProtocolSettingsNetwork.then(function (rocketDAOProtocolSettingsNetwork) {
+                return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
+            }).then(function (value) {
+                return parseFloat(value);
+            });
+        }
     }, {
         key: 'rocketDAOProtocolSettingsNetwork',
         get: function get() {

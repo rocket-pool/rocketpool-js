@@ -87,6 +87,14 @@ class NetworkSettings {
     }
 
 
+    // The rETH deposit delay setting
+    public getRethDespositDelay(): Promise<number> {
+        return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<string> => {
+            return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
+        }).then((value: string): number => parseFloat(value));
+    }
+
+
 }
 
 
