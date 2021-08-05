@@ -86,7 +86,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
     let txReceipt;
 
     if (destroy) {
-        txReceipt = await minipool.distributeBalanceAndDestroy({
+        txReceipt = await minipool.distributeBalanceAndFinalise({
             from: from,
             gasPrice: gasPrice.toString(),
             gas: 8000000

@@ -120,7 +120,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 
             // Set RPL price
             let block = await web3.eth.getBlockNumber();
-            await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), '0',{from: trustedNode, gas: gasLimit});
+            let effectiveRPLStake = await rp.node.calculateTotalEffectiveRPLStake(0, 0, web3.utils.toWei('1', 'ether'));
+            await submitPrices(web3, rp, block, web3.utils.toWei('1', 'ether'), effectiveRPLStake,{from: trustedNode, gas: gasLimit});
 
             // Create lot
             await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});

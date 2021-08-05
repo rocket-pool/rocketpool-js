@@ -227,9 +227,9 @@ class MinipoolContract {
 
 
     // Processes a withdrawal and then destroys in a single transaction
-    public distributeBalanceAndDestroy(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+    public distributeBalanceAndFinalise(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(
-            this.contract.methods.distributeBalanceAndDestroy().send(options),
+            this.contract.methods.distributeBalanceAndFinalise().send(options),
             onConfirmation
         );
     }
