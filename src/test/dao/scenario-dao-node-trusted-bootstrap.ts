@@ -119,20 +119,23 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
     ]);
 
     // Add test method to ABI
-    let testAbi = _abi.slice();
-    testAbi.push({
-        "constant": true,
-        "inputs": [],
-        "name": "testMethod",
-        "outputs": [{
-            "name": "",
-            "type": "uint8"
-        }],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function",
-    });
-    let compressedAbi = compressABI(testAbi);
+    let compressedAbi = '';
+    if (Array.isArray(_abi) && _abi.length !== 0){
+        let testAbi = _abi.slice();
+        testAbi.push({
+            "constant": true,
+            "inputs": [],
+            "name": "testMethod",
+            "outputs": [{
+                "name": "",
+                "type": "uint8"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function",
+        });
+        compressedAbi = compressABI(testAbi);
+    }
 
     // Get contract data
     function getContractData() {
@@ -164,7 +167,6 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
     // Set gas price
     let gasPrice = web3.utils.toBN(web3.utils.toWei('20', 'gwei'));
     options.gasPrice = gasPrice.toString();
-    options.gas = 1000000;
 
     // Upgrade contract
     await rocketDAONodeTrusted.methods.bootstrapUpgrade(_type, _name, compressedAbi, _contractAddress).send(options);

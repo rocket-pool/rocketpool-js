@@ -50,7 +50,7 @@ runDOAProtocolTests(web3, rp);
 runDAONodeTrustedTests(web3, rp);
 runAuctionTests(web3, rp);
 runDepositTests(web3, rp);
-runMinipoolTests(web3, rp);
+runMinipoolTests(web3, rp); // To do
 runMinipoolStatusTests(web3, rp);
 runMinipoolWithdrawalTests(web3, rp);
 runNetworkBalancesTests(web3, rp);

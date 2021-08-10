@@ -761,6 +761,14 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         });
 
 
+        it(printTitle('guardian', 'cannot upgrade a contract with an empty ABI'), async () => {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketDAONodeTrustedUpgrade', [], rocketDAONodeTrustedUpgradeNew.options.address, {
+                from: guardian,
+                gas: gasLimit
+            }), 'Guardian upgraded a contract with an empty ABI', 'Empty ABI is invalid');
+        });
+
+
         it(printTitle('guardian', 'cannot upgrade a protected contract'), async () => {
             let abi = await rp.contracts.abi('rocketMinipoolManager');
             await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'upgradeContract', 'rocketVault', abi, rocketMinipoolManagerNew.options.address, {
@@ -803,6 +811,14 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         });
 
 
+        it(printTitle('guardian', 'cannot add a new contract with an empty ABI'), async () => {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addContract', 'rocketNewContract', [], rocketMinipoolManagerNew.options.address, {
+                from: guardian,
+                gas: gasLimit
+            }), 'Added a new contract with an empty ABI', 'Empty ABI is invalid');
+        });
+
+
         it(printTitle('registeredNodeTrusted1', 'creates a proposal to upgrade a network contract, it passes and is executed'), async () => {
             // Load contracts
             let rocketStorage = await rp.contracts.get('rocketStorage');
@@ -834,12 +850,97 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
         });
 
 
+        it(printTitle('registeredNodeTrusted1', 'creates a proposal for registeredNode1 to join as a new member, member joins, is kicked, then cannot rejoin'), async () => {
+            // Get the DAO settings
+            let daoNodesettings = await rp.contracts.get('rocketDAONodeTrustedSettingsMembers');
+            // How much RPL is required for a trusted node bond?
+            let rplBondAmount = web3.utils.fromWei(await daoNodesettings.methods.getRPLBond().call());
+            // Add our 3rd member so proposals can pass
+            await setNodeTrusted(web3, rp, registeredNodeTrusted3, 'rocketpool_3', 'node3@home.com', guardian);
+            // New Member
+            // Encode the calldata for the proposal
+            let proposalCalldata1 = web3.eth.abi.encodeFunctionCall(
+                {name: 'proposalInvite', type: 'function', inputs: [{type: 'string', name: '_id'},{type: 'string', name: '_url'}, {type: 'address', name: '_nodeAddress'}]},
+                ['SaaS_Provider1', 'test@sass.com', registeredNode1]
+            );
+            // Add the proposal
+            let proposalId1 = await daoNodeTrustedPropose(web3, rp, 'hey guys, can we add this cool SaaS member please?', proposalCalldata1, {
+                from: registeredNodeTrusted1,
+                gas: gasLimit
+            });
+            // Current time
+            let timeCurrent = await getCurrentTime(web3);
+            // Now increase time until the proposal is 'active' and can be voted on
+            await increaseTime(web3, (await getDAOProposalStartTime(web3, rp, proposalId1)-timeCurrent)+2);
+            // Now lets vote for the new members
+            await daoNodeTrustedVote(web3, rp, proposalId1, true, { from: registeredNodeTrusted1, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId1, true, { from: registeredNodeTrusted2, gas: gasLimit });
+            // Current time
+            timeCurrent = await getCurrentTime(web3);
+            // Fast forward to voting periods finishing
+            await increaseTime(web3, (await getDAOProposalEndTime(web3, rp, proposalId1)-timeCurrent)+2);
+            // Proposal should be successful, lets execute it
+            await daoNodeTrustedExecute(web3, rp, proposalId1, { from: registeredNodeTrusted1, gas: gasLimit });
+            // Member has now been invited to join, so lets do that
+            // We'll allow the DAO to transfer our RPL bond before joining
+            let rocketTokenRPL = await rp.contracts.get('rocketTokenRPL');
+            let rocketDAONodeTrustedActions = await rp.contracts.get('rocketDAONodeTrustedActions');
+            let _amount = web3.utils.toWei(rplBondAmount.toString(), 'ether');
+            await mintRPL(web3, rp, registeredNode1, rplBondAmount, guardian);
+            await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode1, gas: gasLimit });
+            // Join now
+            await daoNodeTrustedMemberJoin(web3, rp, {from: registeredNode1, gas: gasLimit});
+            // Add a small wait
+            await increaseTime(web3, 2);
+            // Check the member is now valid
+            assert(await getDAOMemberIsValid(web3, rp, registeredNode1), "registeredNode1 is not a member of the DAO");
+            // Now we kick the member
+            let proposalCalldata2 = web3.eth.abi.encodeFunctionCall(
+                {name: 'proposalKick', type: 'function', inputs: [{type: 'address', name: '_nodeAddress'}, {type: 'uint256', name: '_rplFine'}]},
+                [registeredNode1, '0']
+            );
+            // Add the proposal
+            let proposalId2 = await daoNodeTrustedPropose(web3, rp, 'hey guys, this member hasn\'t logged on for weeks, lets boot them with a 33% fine!', proposalCalldata2, {
+                from: registeredNodeTrusted1,
+                gas: gasLimit
+            });
+            // Current time
+            timeCurrent = await getCurrentTime(web3);
+            // Now increase time until the proposal is 'active' and can be voted on
+            await increaseTime(web3, (await getDAOProposalStartTime(web3, rp, proposalId2)-timeCurrent)+2);
+            // Now lets vote
+            await daoNodeTrustedVote(web3, rp, proposalId2, true, { from: registeredNodeTrusted1, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId2, true, { from: registeredNodeTrusted2, gas: gasLimit });
+            await daoNodeTrustedVote(web3, rp, proposalId2, true, { from: registeredNodeTrusted3, gas: gasLimit });
+            // Proposal has passed, lets execute it now
+            await daoNodeTrustedExecute(web3, rp, proposalId2, { from: registeredNodeTrusted1, gas: gasLimit });
+            // The new member has now been kicked
+            assert(await getDAOMemberIsValid(web3, rp, registeredNode1) === false, "registeredNode1 is still a member of the DAO");
+            // They should not be able to rejoin
+            await rocketTokenRPL.methods.approve(rocketDAONodeTrustedActions.options.address, _amount).send({ from: registeredNode1, gas: gasLimit });
+            await shouldRevert(daoNodeTrustedMemberJoin(web3, rp, {from: registeredNode1, gas: gasLimit}), "Member was able to join after being kicked", "This node has not been invited to join");
+        });
+
+
         // ABIs - contract address field is ignored
         it(printTitle('guardian', 'can upgrade a contract ABI in bootstrap mode'), async () => {
             let abi = await rp.contracts.abi('rocketMinipoolManager');
             await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'upgradeABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
                 from: guardian, gas: gasLimit
             });
+        });
+
+
+        it(printTitle('guardian', 'cannot upgrade a contract ABI to an identical one in bootstrap mode'), async () => {
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', rocketMinipoolManagerNew.methods.abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+                gas: gasLimit
+            });
+
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', rocketMinipoolManagerNew.methods.abi, '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+                gas: gasLimit
+            }), 'Upgraded a contract ABI to an identical one', 'ABIs are identical');
         });
 
 
@@ -872,6 +973,14 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
             await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addABI', '', abi, '0x0000000000000000000000000000000000000000', {
                 from: guardian, gas: gasLimit
             }), 'Added a new contract ABI with an invalid name', 'Invalid ABI name');
+        });
+
+
+        it(printTitle('guardian', 'cannot add a new contract ABI with an empty ABI'), async () => {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addABI', 'rocketNewFeatures', [], '0x0000000000000000000000000000000000000000', {
+                from: guardian,
+                gas: gasLimit
+            }), 'Added a new contract ABI with an empty ABI', 'Empty ABI is invalid');
         });
 
 
