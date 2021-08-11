@@ -157,6 +157,24 @@ export default function runNetworkPricesTests(web3: Web3, rp: RocketPool) {
         });
 
 
+        it(printTitle('trusted nodes', 'cannot submit network prices for a future block'), async () => {
+
+            // Get current block
+            let blockCurrent = await web3.eth.getBlockNumber();
+
+            // Set parameters
+            let block = blockCurrent + 1;
+            let rplPrice = web3.utils.toWei('0.02', 'ether');
+
+            // Attempt to submit prices for future block
+            await shouldRevert(submitPrices(web3, rp, block, rplPrice, {
+                from: trustedNode1,
+                gas: gasLimit,
+            }), 'Submitted prices for a future block', 'Prices can not be submitted for a future block');
+
+        });
+
+
         it(printTitle('trusted nodes', 'cannot submit network prices for the current block or lower'), async () => {
 
             // Set parameters

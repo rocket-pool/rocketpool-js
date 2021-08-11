@@ -1,7 +1,7 @@
 // Imports
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
-import {takeSnapshot, revertSnapshot} from '../_utils/evm';
+import {takeSnapshot, revertSnapshot, increaseTime} from '../_utils/evm';
 import {nodeDeposit, nodeStakeRPL} from '../_helpers/node';
 import {approveRPL, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
@@ -11,6 +11,11 @@ import {Contract} from 'web3-eth-contract';
 import {stakeRpl} from './scenario-stake-rpl';
 import {withdrawRpl} from './scenario-withdraw-rpl';
 import {setDAONodeTrustedBootstrapSetting} from "../dao/scenario-dao-node-trusted-bootstrap";
+import {userDeposit} from "../_helpers/deposit";
+import {createMinipool, stakeMinipool} from "../_helpers/minipool";
+import {submitWithdrawable} from "../minipool/scenario-submit-withdrawable";
+import {withdrawValidatorBalance} from "../minipool/scenario-withdraw-validator-balance";
+import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
 
 
 // Tests
@@ -24,6 +29,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
         let owner: string;
         let node: string;
         let random: string;
+        let trustedNode: string;
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -38,7 +44,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, node, random] = await web3.eth.getAccounts();
+            [owner, node, random, trustedNode] = await web3.eth.getAccounts();
 
             // Register node
             await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
@@ -49,7 +55,6 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             await mintRPL(web3, rp, owner, random, rplAmount);
 
             rocketNodeStaking = await rp.contracts.get('rocketNodeStaking');
-
         });
 
 
@@ -67,7 +72,6 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 
             // Make node deposit / create minipool
             await nodeDeposit(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
-
             // Approve transfer & stake RPL twice
             await approveRPL(web3, rp, rocketNodeStaking.options.address, rplAmount, {from: node, gas: gasLimit});
             await stakeRpl(web3, rp, rplAmount, {
@@ -169,6 +173,98 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
                 from: node,
                 gas: gasLimit
             }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
+
+        });
+
+
+        it(printTitle('node operator', 'can withdraw RPL after finalising their minipool'), async () => {
+
+            // Set parameters
+            const rplAmount = web3.utils.toWei('10000', 'ether');
+
+            // Remove withdrawal cooldown period
+            await setRewardsClaimIntervalTime(web3, rp, 0, {from: owner, gas: gasLimit});
+
+            // Stake RPL
+            await nodeStakeRPL(web3, rp, rplAmount, {from: node, gas: gasLimit});
+
+            // Create a staking minipool
+            await userDeposit(web3, rp, {from: random, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+            const minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
+            await stakeMinipool(web3, rp, minipool, null, {from: node, gas: gasLimit});
+
+            // Cannot withdraw RPL yet
+            await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew RPL leaving the node undercollateralized', 'jimmy');
+
+            // Mark pool as withdrawable
+            await submitWithdrawable(web3, rp, minipool.address, {
+                from: trustedNode,
+                gas: gasLimit
+            });
+
+            // Still cannot withdraw RPL yet
+            await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
+
+            // Withdraw and finalise
+            await withdrawValidatorBalance(web3, rp, minipool, web3.utils.toWei('32', 'ether'), node, true);
+
+            // Should be able to withdraw now
+            await withdrawRpl(web3, rp, rplAmount, {
+                from: node,
+                gas: gasLimit
+            });
+
+        });
+
+
+        it(printTitle('node operator', 'cannot withdraw RPL if random distributes balance on their minipool until they finalise'), async () => {
+
+            // Set parameters
+            const rplAmount = web3.utils.toWei('10000', 'ether');
+
+            // Remove withdrawal cooldown period
+            await setRewardsClaimIntervalTime(web3, rp, 0, {from: owner, gas: gasLimit});
+
+            // Stake RPL
+            await nodeStakeRPL(web3, rp, rplAmount, {from: node, gas: gasLimit});
+
+            // Create a staking minipool
+            await userDeposit(web3, rp, {from: random, value: web3.utils.toWei('16', 'ether'), gas: gasLimit});
+            const minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
+            await stakeMinipool(web3, rp, minipool, null, {from: node, gas: gasLimit});
+
+            // Mark pool as withdrawable
+            await submitWithdrawable(web3, rp, minipool.address, {
+                from: trustedNode,
+                gas: gasLimit
+            });
+
+            // Wait 14 days
+            await increaseTime(web3, 60 * (60 * 24 * 14) + 1);
+
+            // Withdraw and finalise
+            await withdrawValidatorBalance(web3, rp, minipool, web3.utils.toWei('32', 'ether'), random, false);
+
+            // Cannot withdraw RPL yet
+            await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
+                from: node,
+                gas: gasLimit
+            }), 'Withdrew RPL leaving the node undercollateralized', 'jimmy');
+
+            // Finalise the pool
+            await minipool.finalise({from: node, gas: gasLimit});
+
+            // Should be able to withdraw now
+            await withdrawRpl(web3, rp, rplAmount, {
+                from: node,
+                gas: gasLimit
+            });
 
         });
 

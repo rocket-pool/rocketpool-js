@@ -13,6 +13,11 @@ export interface NodeDetails {
     timezoneLocation: string;
 }
 
+export interface TimezoneCount {
+    timezone: string;
+    count: number;
+}
+
 
 /**
  * Rocket Pool node manager
@@ -187,6 +192,13 @@ class Node {
     public calculateTotalEffectiveRPLStake(offset: Number, limit: Number, rplPrice: string): Promise<string> {
         return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<string> => {
             return rocketNodeStaking.methods.calculateTotalEffectiveRPLStake(offset, limit, rplPrice).call();
+        });
+    }
+
+    // Get a breakdown of the number of nodes per timezone
+    public getNodeCountPerTimezone(offset: number, limit: number): Promise<TimezoneCount[]> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TimezoneCount[]> => {
+            return rocketNodeManager.methods.getNodeCountPerTimezone(offset, limit).call();
         });
     }
 

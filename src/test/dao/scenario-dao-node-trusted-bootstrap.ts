@@ -107,7 +107,7 @@ export async function setDaoNodeTrustedBootstrapModeDisabled(web3: Web3, rp: Roc
 
 
 // The trusted node DAO can also upgrade contracts + abi if consensus is reached
-export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPool, _type:string, _name:string, _abi:AbiItem[], _contractAddress: string, options: SendOptions) {
+export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPool, _type:string, _name:string, _abi:AbiItem[]|string, _contractAddress: string, options: SendOptions) {
 
     // Load contracts
     const [
@@ -120,7 +120,7 @@ export async function setDaoNodeTrustedBootstrapUpgrade(web3: Web3, rp: RocketPo
 
     // Add test method to ABI
     let compressedAbi = '';
-    if (Array.isArray(_abi) && _abi.length !== 0){
+    if (Array.isArray(_abi)){
         let testAbi = _abi.slice();
         testAbi.push({
             "constant": true,

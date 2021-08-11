@@ -139,9 +139,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
             // Total should match sum
             assert(totalLength.eq(fullLength.add(halfLength).add(emptyLength)));
-            assert(fullLength.toNumber() === 2, 'Incorrect number of minipools in full queue')
-            assert(halfLength.toNumber() === 1, 'Incorrect number of minipools in half queue')
-            assert(emptyLength.toNumber() === 0, 'Incorrect number of minipools in empty queue')
+            assert(fullLength.toNumber() === 2, 'Incorrect number of minipools in full queue');
+            assert(halfLength.toNumber() === 1, 'Incorrect number of minipools in half queue');
+            assert(emptyLength.toNumber() === 0, 'Incorrect number of minipools in empty queue');
 
             // Upgrade the delegate contract
             await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketMinipoolDelegate', [], newDelegateAddress, {
@@ -150,10 +150,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
             // Check effective delegate is still the original
-            const minipoolContract = await rp.contracts.get('rocketMinipool');
-            const minipool = await minipoolContract.methods.at(stakingMinipool.address).call();
-            const effectiveDelegate = await minipoolContract.methods.getEffectiveDelegate().call()
-            assert(effectiveDelegate !== newDelegateAddress, "Effective delegate was updated")
+            const minipool = await rp.contracts.get('rocketMinipool');
+            const effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            assert(effectiveDelegate !== newDelegateAddress, "Effective delegate was updated");
         });
 
 

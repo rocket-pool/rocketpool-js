@@ -1,4 +1,5 @@
 // Imports
+import {assert} from 'chai';
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot} from '../_utils/evm';
@@ -8,6 +9,7 @@ import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-boots
 import {register} from './scenario-register';
 import {confirmWithdrawalAddress, setWithdrawalAddress} from './scenario-set-withdrawal-address';
 import {setTimezoneLocation} from './scenario-set-timezone';
+import {TimezoneCount} from "../../rocketpool/node/node";
 
 
 // Tests
@@ -25,6 +27,8 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         let withdrawalAddress1: string;
         let withdrawalAddress2: string;
         let random: string;
+        let random2: string;
+        let random3: string;
 
         // State snapshotting
         let suiteSnapshotId: string, testSnapshotId: string;
@@ -38,7 +42,7 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
         before(async () => {
 
             // Get accounts
-            [owner, node, registeredNode1, registeredNode2, withdrawalAddress1, withdrawalAddress2, random] = await web3.eth.getAccounts();
+            [owner, node, registeredNode1, registeredNode2, withdrawalAddress1, withdrawalAddress2, random, random2, random3] = await web3.eth.getAccounts();
 
             // Register node
             await rp.node.registerNode('Australia/Brisbane', {from: registeredNode1, gas: gasLimit});
@@ -237,6 +241,26 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
                 gas: gasLimit
             }), 'Random address set a timezone location', 'Invalid node');
 
+        });
+
+
+        it(printTitle('random', 'can query timezone counts'), async () => {
+
+            await rp.node.registerNode('Australia/Sydney', {from: random2, gas: gasLimit});
+            await rp.node.registerNode('Australia/Perth', {from: random3, gas: gasLimit});
+
+            const timezones = await rp.node.getNodeCountPerTimezone(0, 0);
+
+            const expects: TimezoneCount = {
+                'Australia/Brisbane': 2,
+                'Australia/Sydney': 1,
+                'Australia/Perth': 1,
+            };
+
+            for (const expectTimezone in expects) {
+                const actual = timezones.find(tz => tz.timezone === expectTimezone)
+                assert(actual && Number(actual.count) === expects[expectTimezone], "Timezone count was incorrect for " + expectTimezone + ", expected " + expects[expectTimezone] + " but got " + actual);
+            }
         });
 
 

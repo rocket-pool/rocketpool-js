@@ -121,7 +121,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
             await nodeStakeRPL(web3, rp, rplStake, {from: node, gas: gasLimit});
 
             // Settings
-            let nodeFee = await getNodeFee(web3, rp).then((value: any) => web3.utils.toBN(value));
+            let nodeFee = await getNodeFee(web3, rp).then((value: any) => web3.utils.toBN(value.toString()));
             let minimumNodeFee = nodeFee.add(web3.utils.toBN(web3.utils.toWei('0.01', 'ether')));
 
             // Attempt deposit

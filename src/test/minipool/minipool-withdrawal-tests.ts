@@ -58,6 +58,8 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         let minipool: MinipoolContract;
         let penaltyTestContract: Contract;
         let maxPenaltyRate = web3.utils.toWei('0.5', 'ether');
+
+
         before(async () => {
 
             // Get accounts
@@ -79,15 +81,16 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('50', 'ether'), {from: owner, gas: gasLimit});
 
             // Add penalty helper contract
-            const penaltyTest = await rp.contracts.get('penaltyTest');
-            console.log(penaltyTest);
-            const penaltyTestAbi = await rp.contracts.abi('penaltyTest');
-            await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTestAbi, penaltyTest.options.address, {
+            const rocketStorage = await rp.contracts.get('rocketStorage');
+            const penaltyTestAbi = require('../../contracts/PenaltyTest.json');
+            const penaltyTest = new web3.eth.Contract(penaltyTestAbi.abi, rocketStorage.options.address, {from: owner, gas: gasLimit});
+
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTestAbi.abi, penaltyTest.options.address, {
                 from: owner,
                 gas: gasLimit
             });
 
-            // Enable penalties
+            // // Enable penalties
             const rocketMinipoolPenalty = await rp.contracts.get('rocketMinipoolPenalty');
             await rocketMinipoolPenalty.methods.setMaxPenaltyRate(maxPenaltyRate).send({from: owner, gas: gasLimit});
 
@@ -110,7 +113,6 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             // Create minipools
             minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
             await stakeMinipool(web3, rp, minipool, null, {from: node, gas: gasLimit});
-
 
         });
 

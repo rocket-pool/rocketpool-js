@@ -217,6 +217,15 @@ class MinipoolContract {
     }
 
 
+    // Finalise and unlock their RPL stake
+    public finalise(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.finalise().send(options),
+            onConfirmation
+        );
+    }
+
+
     // Withdraw node balances & rewards from the minipool and close it
     public withdraw(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
         return handleConfirmations(

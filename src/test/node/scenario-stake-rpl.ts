@@ -74,6 +74,7 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     ]);
 
     // Stake RPL
+    console.log("Amount: " + amount);
     await rp.node.stakeRPL(amount, options);
 
     // Get updated token balances, staking details & minipool counts
@@ -93,11 +94,11 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
 
     console.log("#####");
     console.log("totalStake: " + details2.totalStake.toString());
-    console.log("totalEffectiveStake: " + details2.totalEffectiveStake.toString());
     console.log("nodeStake: " + details2.nodeStake.toString());
     console.log("nodeEffectiveStake: " + details2.nodeEffectiveStake.toString());
     console.log("nodeMinipoolLimit: " + details2.nodeMinipoolLimit.toString());
-    console.log("Expected: " + expectedTotalEffectiveStake.toString());
+    console.log("totalEffectiveStake: " + details2.totalEffectiveStake.toString());
+    console.log("Expected updatedTotalEffectiveStake: " + expectedTotalEffectiveStake.toString());
     console.log("##### \r\n");
 
     // Check token balances

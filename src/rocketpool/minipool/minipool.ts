@@ -42,6 +42,11 @@ class Minipool {
     }
 
 
+    private get rocketMinipool(): Promise<Contract> {
+        return this.contracts.get('rocketMinipool');
+    }
+
+
     /**
      * Getters
      */
@@ -221,6 +226,14 @@ class Minipool {
     public getMinipoolContract(address: string): Promise<MinipoolContract> {
         return this.contracts.make('rocketMinipoolDelegate', address).then((rocketMinipool: Contract): MinipoolContract => {
             return new MinipoolContract(this.web3, address, rocketMinipool);
+        });
+    }
+
+
+    // Get Effective Delegate
+    public getEffectiveDelegate(address: string): Promise<string> {
+        return this.rocketMinipool.then((rocketMinipool: Contract): Promise<string> => {
+            return rocketMinipool.methods.getEffectiveDelegate(address).call();
         });
     }
 

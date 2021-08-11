@@ -762,7 +762,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('guardian', 'cannot upgrade a contract with an empty ABI'), async () => {
-            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketDAONodeTrustedUpgrade', [], rocketDAONodeTrustedUpgradeNew.options.address, {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketDAONodeTrustedUpgrade', '', rocketDAONodeTrustedUpgradeNew.options.address, {
                 from: guardian,
                 gas: gasLimit
             }), 'Guardian upgraded a contract with an empty ABI', 'Empty ABI is invalid');
@@ -812,7 +812,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('guardian', 'cannot add a new contract with an empty ABI'), async () => {
-            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addContract', 'rocketNewContract', [], rocketMinipoolManagerNew.options.address, {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addContract', 'rocketNewContract', '', rocketMinipoolManagerNew.options.address, {
                 from: guardian,
                 gas: gasLimit
             }), 'Added a new contract with an empty ABI', 'Empty ABI is invalid');
@@ -932,12 +932,13 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('guardian', 'cannot upgrade a contract ABI to an identical one in bootstrap mode'), async () => {
-            await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', rocketMinipoolManagerNew.methods.abi, '0x0000000000000000000000000000000000000000', {
+            let abi = await rp.contracts.abi('rocketMinipoolManager');
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
                 from: guardian,
                 gas: gasLimit
             });
 
-            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', rocketMinipoolManagerNew.methods.abi, '0x0000000000000000000000000000000000000000', {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeABI', 'rocketNodeManager', abi, '0x0000000000000000000000000000000000000000', {
                 from: guardian,
                 gas: gasLimit
             }), 'Upgraded a contract ABI to an identical one', 'ABIs are identical');
@@ -977,7 +978,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 
 
         it(printTitle('guardian', 'cannot add a new contract ABI with an empty ABI'), async () => {
-            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addABI', 'rocketNewFeatures', [], '0x0000000000000000000000000000000000000000', {
+            await shouldRevert(setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'addABI', 'rocketNewFeatures', '', '0x0000000000000000000000000000000000000000', {
                 from: guardian,
                 gas: gasLimit
             }), 'Added a new contract ABI with an empty ABI', 'Empty ABI is invalid');
