@@ -60,7 +60,7 @@ runNetworkStakingTests(web3, rp);
 runNodeDepositTests(web3, rp);
 runNodeManagerTests(web3, rp);
 runNodeStakingTests(web3, rp);
-runRethTests(web3, rp); // To do
+runRethTests(web3, rp);
 runRPLTests(web3, rp);
 runSettingsTests(web3, rp);
 runRewardsTests(web3, rp);
