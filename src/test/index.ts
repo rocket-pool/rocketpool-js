@@ -58,8 +58,8 @@ runNetworkFeesTests(web3, rp);
 runNetworkPricesTests(web3, rp);
 runNetworkStakingTests(web3, rp);
 runNodeDepositTests(web3, rp);
-runNodeManagerTests(web3, rp); // To do
-runNodeStakingTests(web3, rp); // To do
+runNodeManagerTests(web3, rp);
+runNodeStakingTests(web3, rp);
 runRethTests(web3, rp); // To do
 runRPLTests(web3, rp);
 runSettingsTests(web3, rp);

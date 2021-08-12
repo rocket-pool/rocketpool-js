@@ -9,7 +9,6 @@ import {setDAOProtocolBootstrapSetting} from '../dao/scenario-dao-protocol-boots
 import {register} from './scenario-register';
 import {confirmWithdrawalAddress, setWithdrawalAddress} from './scenario-set-withdrawal-address';
 import {setTimezoneLocation} from './scenario-set-timezone';
-import {TimezoneCount} from "../../rocketpool/node/node";
 
 
 // Tests
@@ -251,14 +250,15 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
 
             const timezones = await rp.node.getNodeCountPerTimezone(0, 0);
 
-            const expects: TimezoneCount = {
+            const expects = {
                 'Australia/Brisbane': 2,
                 'Australia/Sydney': 1,
                 'Australia/Perth': 1,
             };
-
             for (const expectTimezone in expects) {
-                const actual = timezones.find(tz => tz.timezone === expectTimezone)
+                // @ts-ignore (suppressed cause find is es6)
+                const actual = timezones.find(tz => tz.timezone === expectTimezone);
+                // @ts-ignore (suppressed cause TS wants a clean obj
                 assert(actual && Number(actual.count) === expects[expectTimezone], "Timezone count was incorrect for " + expectTimezone + ", expected " + expects[expectTimezone] + " but got " + actual);
             }
         });

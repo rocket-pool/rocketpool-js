@@ -13,11 +13,6 @@ export interface NodeDetails {
     timezoneLocation: string;
 }
 
-export interface TimezoneCount {
-    timezone: string;
-    count: number;
-}
-
 
 /**
  * Rocket Pool node manager
@@ -196,8 +191,8 @@ class Node {
     }
 
     // Get a breakdown of the number of nodes per timezone
-    public getNodeCountPerTimezone(offset: number, limit: number): Promise<TimezoneCount[]> {
-        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TimezoneCount[]> => {
+    public getNodeCountPerTimezone(offset: number, limit: number): Promise<object> {
+        return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<object> => {
             return rocketNodeManager.methods.getNodeCountPerTimezone(offset, limit).call();
         });
     }

@@ -17,6 +17,10 @@ export async function getNodeStakingMinipoolCount(web3: Web3, rp: RocketPool, no
     return await rp.minipool.getNodeStakingMinipoolCount(nodeAddress);
 }
 
+// Get the number of minipools a node has in that are active
+export async function getNodeActiveMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string) {
+    return await rp.minipool.getNodeActiveMinipoolCount(nodeAddress);
+}
 
 // Get the minimum required RPL stake for a minipool
 export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {

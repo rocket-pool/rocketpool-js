@@ -196,6 +196,15 @@ class MinipoolContract {
     }
 
 
+    // Slash the minipool
+    public slash(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+        return handleConfirmations(
+            this.contract.methods.slash().send(options),
+            onConfirmation
+        );
+    }
+
+
     /**
      * Mutators - Restricted to minipool owner
      */

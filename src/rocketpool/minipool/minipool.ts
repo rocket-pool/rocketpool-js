@@ -5,7 +5,7 @@ import { Contract, SendOptions } from 'web3-eth-contract';
 import Contracts from '../contracts/contracts';
 import { ConfirmationHandler, handleConfirmations } from '../../utils/transaction';
 import MinipoolContract from './minipool-contract';
-import {getNodeStakingMinipoolCount} from "../../test/_helpers/minipool";
+import {getNodeActiveMinipoolCount, getNodeStakingMinipoolCount} from "../../test/_helpers/minipool";
 
 
 // Minipool details
@@ -138,6 +138,14 @@ class Minipool {
     public getNodeStakingMinipoolCount(nodeAddress: string): Promise<string> {
         return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
             return rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call();
+        });
+    }
+
+
+    // Get the node active minipool count
+    public getNodeActiveMinipoolCount(nodeAddress: string): Promise<string> {
+        return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
+            return rocketMinipoolManager.methods.getNodeActiveMinipoolCount(nodeAddress).call();
         });
     }
 

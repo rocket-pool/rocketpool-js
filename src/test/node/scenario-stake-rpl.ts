@@ -74,7 +74,6 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     ]);
 
     // Stake RPL
-    console.log("Amount: " + amount);
     await rp.node.stakeRPL(amount, options);
 
     // Get updated token balances, staking details & minipool counts
@@ -85,21 +84,25 @@ export async function stakeRpl(web3: Web3, rp: RocketPool, amount: string, optio
     ]);
 
     // Calculate expected effective stakes & node minipool limit
-    const maxTotalEffectiveStake = depositUserAmount.mul(maxPerMinipoolStake).mul(minipoolCounts.total).div(rplPrice);
-    const expectedTotalEffectiveStake = (details2.totalStake.lt(maxTotalEffectiveStake)? details2.totalStake : maxTotalEffectiveStake);
-    const maxNodeEffectiveStake = depositUserAmount.mul(maxPerMinipoolStake).mul(minipoolCounts.node).div(rplPrice);
-    const expectedNodeEffectiveStake = (details2.nodeStake.lt(maxNodeEffectiveStake)? details2.nodeStake : maxNodeEffectiveStake);
+    const maxTotalEffectiveStake = depositUserAmount.mul(maxPerMinipoolStake).mul(minipoolCounts.totalStaking).div(rplPrice);
+    const expectedTotalEffectiveStake = (details2.totalStake.lt(maxTotalEffectiveStake) ? details2.totalStake : maxTotalEffectiveStake);
+    const maxNodeEffectiveStake = depositUserAmount.mul(maxPerMinipoolStake).mul(minipoolCounts.nodeStaking).div(rplPrice);
+    const expectedNodeEffectiveStake = (details2.nodeStake.lt(maxNodeEffectiveStake) ? details2.nodeStake : maxNodeEffectiveStake);
     const expectedNodeMinipoolLimit = details2.nodeStake.mul(rplPrice).div(depositUserAmount.mul(minPerMinipoolStake));
 
 
-    console.log("#####");
-    console.log("totalStake: " + details2.totalStake.toString());
-    console.log("nodeStake: " + details2.nodeStake.toString());
-    console.log("nodeEffectiveStake: " + details2.nodeEffectiveStake.toString());
-    console.log("nodeMinipoolLimit: " + details2.nodeMinipoolLimit.toString());
-    console.log("totalEffectiveStake: " + details2.totalEffectiveStake.toString());
-    console.log("Expected updatedTotalEffectiveStake: " + expectedTotalEffectiveStake.toString());
-    console.log("##### \r\n");
+    // console.log("#####");
+    // console.log("totalStake: " + details2.totalStake.toString());
+    // console.log("nodeStake: " + details2.nodeStake.toString());
+    // console.log("maxTotalEffectiveStake: " + maxTotalEffectiveStake.toString());
+    // console.log("maxPerMinipoolStake: " + maxPerMinipoolStake.toString());
+    // console.log("minipoolCounts.total: " + minipoolCounts.total);
+    // console.log("rplPrice: " + rplPrice);
+    // console.log("nodeEffectiveStake: " + details2.nodeEffectiveStake.toString());
+    // console.log("nodeMinipoolLimit: " + details2.nodeMinipoolLimit.toString());
+    // console.log("totalEffectiveStake: " + details2.totalEffectiveStake.toString());
+    // console.log("Expected updatedTotalEffectiveStake: " + expectedTotalEffectiveStake.toString());
+    // console.log("##### \r\n");
 
     // Check token balances
     assert(balances2.nodeRpl.eq(balances1.nodeRpl.sub(web3.utils.toBN(amount))), 'Incorrect updated node RPL balance');

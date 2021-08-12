@@ -2,7 +2,7 @@
 import Web3 from 'web3';
 import RocketPool from '../../rocketpool/rocketpool';
 import {takeSnapshot, revertSnapshot, increaseTime} from '../_utils/evm';
-import {nodeDeposit, nodeStakeRPL} from '../_helpers/node';
+import {nodeDeposit, nodeStakeRPL, setNodeTrusted} from '../_helpers/node';
 import {approveRPL, mintRPL} from '../_helpers/tokens';
 import {printTitle} from '../_utils/formatting';
 import {shouldRevert} from '../_utils/testing';
@@ -48,6 +48,9 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 
             // Register node
             await rp.node.registerNode('Australia/Brisbane', {from: node, gas: gasLimit});
+            await rp.node.registerNode('Australia/Brisbane', {from: trustedNode, gas: gasLimit});
+
+            await setNodeTrusted(web3, rp, trustedNode, 'rocketpool_1', 'node@home.com', owner);
 
             // Mint RPL to accounts
             const rplAmount = web3.utils.toWei('10000', 'ether');
@@ -197,7 +200,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
                 from: node,
                 gas: gasLimit
-            }), 'Withdrew RPL leaving the node undercollateralized', 'jimmy');
+            }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
 
             // Mark pool as withdrawable
             await submitWithdrawable(web3, rp, minipool.address, {
@@ -255,7 +258,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
             await shouldRevert(withdrawRpl(web3, rp, rplAmount, {
                 from: node,
                 gas: gasLimit
-            }), 'Withdrew RPL leaving the node undercollateralized', 'jimmy');
+            }), 'Withdrew RPL leaving the node undercollateralized', 'Node\'s staked RPL balance after withdrawal is less than required balance');
 
             // Finalise the pool
             await minipool.finalise({from: node, gas: gasLimit});
