@@ -81,14 +81,14 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('50', 'ether'), {from: owner, gas: gasLimit});
 
             // Add penalty helper contract
-            const rocketStorage = await rp.contracts.get('rocketStorage');
-            const penaltyTestAbi = require('../../contracts/PenaltyTest.json');
-            const penaltyTest = new web3.eth.Contract(penaltyTestAbi.abi, rocketStorage.options.address, {from: owner, gas: gasLimit});
+            // const rocketStorage = await rp.contracts.get('rocketStorage');
+            // const penaltyTestAbi = require('../../contracts/PenaltyTest.json');
+            // const penaltyTest = new web3.eth.Contract(penaltyTestAbi.abi, rocketStorage.options.address, {from: owner, gas: gasLimit});
 
-            await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTestAbi.abi, penaltyTest.options.address, {
-                from: owner,
-                gas: gasLimit
-            });
+            // await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTestAbi.abi, penaltyTest.options.address, {
+            //     from: owner,
+            //     gas: gasLimit
+            // });
 
             // // Enable penalties
             const rocketMinipoolPenalty = await rp.contracts.get('rocketMinipoolPenalty');

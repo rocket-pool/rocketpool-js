@@ -531,17 +531,17 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        it(printTitle('malicious node operator', 'can not prevent a payout by using a reverting contract as withdraw address'), async () => {
-
-            // Set the node's withdraw address to a reverting contract
-            const revertOnTransfer = await rp.contracts.get('revertOnTransfer');
-            await setNodeWithdrawalAddress(web3, rp, node, revertOnTransfer.options.address, {from: nodeWithdrawalAddress, gas: gasLimit});
-            // Wait 14 days
-            await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
-            // Send validator balance and withdraw and should not revert
-            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, withdrawalBalance, random, false);
-
-        });
+        // it(printTitle('malicious node operator', 'can not prevent a payout by using a reverting contract as withdraw address'), async () => {
+        //
+        //     // Set the node's withdraw address to a reverting contract
+        //     const revertOnTransfer = await rp.contracts.get('revertOnTransfer');
+        //     await setNodeWithdrawalAddress(web3, rp, node, revertOnTransfer.options.address, {from: nodeWithdrawalAddress, gas: gasLimit});
+        //     // Wait 14 days
+        //     await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
+        //     // Send validator balance and withdraw and should not revert
+        //     await withdrawValidatorBalance(web3, rp, withdrawableMinipool, withdrawalBalance, random, false);
+        //
+        // });
 
 
         it(printTitle('random address', 'can send validator balance to a withdrawable minipool in one transaction'), async () => {
