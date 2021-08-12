@@ -198,6 +198,15 @@ var Node = function () {
                 return rocketNodeStaking.methods.calculateTotalEffectiveRPLStake(offset, limit, rplPrice).call();
             });
         }
+        // Get a breakdown of the number of nodes per timezone
+
+    }, {
+        key: 'getNodeCountPerTimezone',
+        value: function getNodeCountPerTimezone(offset, limit) {
+            return this.rocketNodeManager.then(function (rocketNodeManager) {
+                return rocketNodeManager.methods.getNodeCountPerTimezone(offset, limit).call();
+            });
+        }
         /**
          * Mutators - Public
          */

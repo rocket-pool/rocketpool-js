@@ -151,6 +151,15 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call();
             });
         }
+        // Get the node active minipool count
+
+    }, {
+        key: 'getNodeActiveMinipoolCount',
+        value: function getNodeActiveMinipoolCount(nodeAddress) {
+            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
+                return rocketMinipoolManager.methods.getNodeActiveMinipoolCount(nodeAddress).call();
+            });
+        }
         // Get a node's minipool address by index
 
     }, {
@@ -256,6 +265,15 @@ var Minipool = function () {
                 return new _minipoolContract2.default(_this6.web3, address, rocketMinipool);
             });
         }
+        // Get Effective Delegate
+
+    }, {
+        key: 'getEffectiveDelegate',
+        value: function getEffectiveDelegate(address) {
+            return this.rocketMinipool.then(function (rocketMinipool) {
+                return rocketMinipool.methods.getEffectiveDelegate(address).call();
+            });
+        }
         /**
          * Mutators - Restricted to trusted nodes
          */
@@ -282,6 +300,11 @@ var Minipool = function () {
         key: 'rocketMinipoolStatus',
         get: function get() {
             return this.contracts.get('rocketMinipoolStatus');
+        }
+    }, {
+        key: 'rocketMinipool',
+        get: function get() {
+            return this.contracts.get('rocketMinipool');
         }
     }]);
 

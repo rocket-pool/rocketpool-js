@@ -92,12 +92,8 @@ var Network = function () {
     }, {
         key: 'getNodeFee',
         value: function getNodeFee() {
-            var _this2 = this;
-
             return this.rocketNetworkFees.then(function (rocketNetworkFees) {
-                return rocketNetworkFees.methods.getNodeFee().call().then(function (value) {
-                    return parseFloat(_this2.web3.utils.fromWei(value, 'ether'));
-                });
+                return rocketNetworkFees.methods.getNodeFee().call();
             });
         }
         // Get the network node commission rate by demand value

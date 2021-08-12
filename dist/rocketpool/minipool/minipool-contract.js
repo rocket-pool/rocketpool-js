@@ -92,11 +92,7 @@ var MinipoolContract = function () {
     }, {
         key: 'getNodeFee',
         value: function getNodeFee() {
-            var _this = this;
-
-            return this.contract.methods.getNodeFee().call().then(function (value) {
-                return parseFloat(_this.web3.utils.fromWei(value, 'ether'));
-            });
+            return this.contract.methods.getNodeFee().call();
         }
     }, {
         key: 'getNodeDepositBalance',
@@ -187,6 +183,13 @@ var MinipoolContract = function () {
         value: function dissolve(options, onConfirmation) {
             return (0, _transaction.handleConfirmations)(this.contract.methods.dissolve().send(options), onConfirmation);
         }
+        // Slash the minipool
+
+    }, {
+        key: 'slash',
+        value: function slash(options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.slash().send(options), onConfirmation);
+        }
         /**
          * Mutators - Restricted to minipool owner
          */
@@ -204,6 +207,13 @@ var MinipoolContract = function () {
         value: function stake(validatorPubkey, validatorSignature, depositDataRoot, options, onConfirmation) {
             return (0, _transaction.handleConfirmations)(this.contract.methods.stake(validatorPubkey, validatorSignature, depositDataRoot).send(options), onConfirmation);
         }
+        // Finalise and unlock their RPL stake
+
+    }, {
+        key: 'finalise',
+        value: function finalise(options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.finalise().send(options), onConfirmation);
+        }
         // Withdraw node balances & rewards from the minipool and close it
 
     }, {
@@ -214,9 +224,9 @@ var MinipoolContract = function () {
         // Processes a withdrawal and then destroys in a single transaction
 
     }, {
-        key: 'distributeBalanceAndDestroy',
-        value: function distributeBalanceAndDestroy(options, onConfirmation) {
-            return (0, _transaction.handleConfirmations)(this.contract.methods.distributeBalanceAndDestroy().send(options), onConfirmation);
+        key: 'distributeBalanceAndFinalise',
+        value: function distributeBalanceAndFinalise(options, onConfirmation) {
+            return (0, _transaction.handleConfirmations)(this.contract.methods.distributeBalanceAndFinalise().send(options), onConfirmation);
         }
         // Processes a withdrawal
 
