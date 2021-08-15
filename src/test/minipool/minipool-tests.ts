@@ -155,8 +155,10 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
             });
 
             // Check effective delegate is still the original
-            // const effectiveDelegate = await stakingMinipool.contract.methods.getEffectiveDelegate().call();
-            // assert(effectiveDelegate !== newDelegateAddress, "Effective delegate was updated");
+            const minipoolABI = await rp.contracts.abi('rocketMinipool');
+            const minipool = new web3.eth.Contract(minipoolABI,stakingMinipool.address);
+            const effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            assert(effectiveDelegate !== newDelegateAddress, "Effective delegate was updated");
         });
 
 
@@ -531,17 +533,18 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         });
 
 
-        // it(printTitle('malicious node operator', 'can not prevent a payout by using a reverting contract as withdraw address'), async () => {
-        //
-        //     // Set the node's withdraw address to a reverting contract
-        //     const revertOnTransfer = await rp.contracts.get('revertOnTransfer');
-        //     await setNodeWithdrawalAddress(web3, rp, node, revertOnTransfer.options.address, {from: nodeWithdrawalAddress, gas: gasLimit});
-        //     // Wait 14 days
-        //     await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
-        //     // Send validator balance and withdraw and should not revert
-        //     await withdrawValidatorBalance(web3, rp, withdrawableMinipool, withdrawalBalance, random, false);
-        //
-        // });
+        it(printTitle('malicious node operator', 'can not prevent a payout by using a reverting contract as withdraw address'), async () => {
+
+            // Set the node's withdraw address to a reverting contract
+            const revertOnTransfer = require('../../contracts/RevertOnTransfer.json');
+            const networkId = await web3.eth.net.getId();
+            await setNodeWithdrawalAddress(web3, rp, node, revertOnTransfer.networks[networkId].address, {from: nodeWithdrawalAddress, gas: gasLimit});
+            // Wait 14 days
+            await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
+            // Send validator balance and withdraw and should not revert
+            await withdrawValidatorBalance(web3, rp, withdrawableMinipool, withdrawalBalance, random, false);
+
+        });
 
 
         it(printTitle('random address', 'can send validator balance to a withdrawable minipool in one transaction'), async () => {
@@ -672,64 +675,67 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         //
         // Delegate upgrades
         //
-        // it(printTitle('node operator', 'can upgrade and rollback their delegate contract'), async () => {
-        //     // Get contract
-        //     const minipool = await RocketMinipool.at(stakingMinipool.address);
-        //     // Store original delegate
-        //     let originalDelegate = await minipool.getEffectiveDelegate.call();
-        //     // Call upgrade delegate
-        //     await minipool.delegateUpgrade({from: node, gas: gasLimit});
-        //     // Check delegate settings
-        //     let effectiveDelegate = await minipool.getEffectiveDelegate.call();
-        //     let previousDelegate = await minipool.getPreviousDelegate.call();
-        //     assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated");
-        //     assert(previousDelegate === originalDelegate, "Previous delegate was not updated");
-        //     // Call upgrade rollback
-        //     await minipool.delegateRollback({from: node});
-        //     // Check effective delegate
-        //     effectiveDelegate = await minipool.getEffectiveDelegate.call();
-        //     assert(effectiveDelegate === originalDelegate, "Effective delegate was not rolled back");
-        // });
-        //
-        //
-        // it(printTitle('node operator', 'can use latest delegate contract'), async () => {
-        //     // Get contract
-        //     const minipool = await RocketMinipool.at(stakingMinipool.address);
-        //     // Store original delegate
-        //     let originalDelegate = await minipool.getEffectiveDelegate.call()
-        //     // Call upgrade delegate
-        //     await minipool.setUseLatestDelegate(true, {from: node, gas: gasLimit})
-        //     let useLatest = await minipool.getUseLatestDelegate.call()
-        //     assert(useLatest, "Use latest flag was not set")
-        //     // Check delegate settings
-        //     let effectiveDelegate = await minipool.getEffectiveDelegate.call()
-        //     let currentDelegate = await minipool.getDelegate.call()
-        //     assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated")
-        //     assert(currentDelegate === originalDelegate, "Current delegate was updated")
-        //     // Upgrade the delegate contract again
-        //     newDelegateAddress = '0x0000000000000000000000000000000000000002'
-        //     await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketMinipoolDelegate', [], newDelegateAddress, {
-        //         from: owner,
-        //         gas: gasLimit
-        //     });
-        //     // Check effective delegate
-        //     effectiveDelegate = await minipool.getEffectiveDelegate.call();
-        //     assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated");
-        // });
-        //
-        //
-        // it(printTitle('random', 'cannot upgrade, rollback or set use latest delegate contract'), async () => {
-        //     // Get contract
-        //     const minipool = await RocketMinipool.at(stakingMinipool.address);
-        //     // Call upgrade delegate from random
-        //     await shouldRevert(minipool.delegateUpgrade({from: random}), "Random was able to upgrade delegate", "Only the node operator can access this method");
-        //     // Call upgrade delegate from node
-        //     await minipool.delegateUpgrade({from: node, gas: gasLimit});
-        //     // Call upgrade rollback from random
-        //     await shouldRevert(minipool.delegateRollback({from: random, gas: gasLimit}), "Random was able to rollback delegate", "Only the node operator can access this method") ;
-        //     // Call set use latest from random
-        //     await shouldRevert(minipool.setUseLatestDelegate(true, {from: random, gas: gasLimit}), "Random was able to set use latest delegate", "Only the node operator can access this method") ;
-        // });
+        it(printTitle('node operator', 'can upgrade and rollback their delegate contract'), async () => {
+            // Get contract
+            const minipoolABI = await rp.contracts.abi('rocketMinipool');
+            const minipool = new web3.eth.Contract(minipoolABI,stakingMinipool.address);
+            // Store original delegate
+            let originalDelegate = await minipool.methods.getEffectiveDelegate().call();
+            // Call upgrade delegate
+            await minipool.methods.delegateUpgrade().send({from: node, gas: gasLimit});
+            // Check delegate settings
+            let effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            let previousDelegate = await minipool.methods.getPreviousDelegate().call();
+            assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated");
+            assert(previousDelegate === originalDelegate, "Previous delegate was not updated");
+            // Call upgrade rollback
+            await minipool.methods.delegateRollback().send({from: node});
+            // Check effective delegate
+            effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            assert(effectiveDelegate === originalDelegate, "Effective delegate was not rolled back");
+        });
+
+
+        it(printTitle('node operator', 'can use latest delegate contract'), async () => {
+            // Get contract
+            const minipoolABI = await rp.contracts.abi('rocketMinipool');
+            const minipool = new web3.eth.Contract(minipoolABI,stakingMinipool.address);
+            // Store original delegate
+            let originalDelegate = await minipool.methods.getEffectiveDelegate().call();
+            // Call upgrade delegate
+            await minipool.methods.setUseLatestDelegate(true).send({from: node, gas: gasLimit});
+            let useLatest = await minipool.methods.getUseLatestDelegate().call();
+            assert(useLatest, "Use latest flag was not set");
+            // Check delegate settings
+            let effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            let currentDelegate = await minipool.methods.getDelegate().call();
+            assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated");
+            assert(currentDelegate === originalDelegate, "Current delegate was updated");
+            // Upgrade the delegate contract again
+            newDelegateAddress = '0x0000000000000000000000000000000000000002';
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp, 'upgradeContract', 'rocketMinipoolDelegate', [], newDelegateAddress, {
+                from: owner,
+                gas: gasLimit
+            });
+            // Check effective delegate
+            effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
+            assert(effectiveDelegate === newDelegateAddress, "Effective delegate was not updated");
+        });
+
+
+        it(printTitle('random', 'cannot upgrade, rollback or set use latest delegate contract'), async () => {
+            // Get contract
+            const minipoolABI = await rp.contracts.abi('rocketMinipool');
+            const minipool = new web3.eth.Contract(minipoolABI,stakingMinipool.address);
+            // Call upgrade delegate from random
+            await shouldRevert(minipool.methods.delegateUpgrade().send({from: random, gas: gasLimit}), "Random was able to upgrade delegate", "Only the node operator can access this method");
+            // Call upgrade delegate from node
+            await minipool.methods.delegateUpgrade().send({from: node, gas: gasLimit});
+            // Call upgrade rollback from random
+            await shouldRevert(minipool.methods.delegateRollback().send({from: random, gas: gasLimit}), "Random was able to rollback delegate", "Only the node operator can access this method") ;
+            // Call set use latest from random
+            await shouldRevert(minipool.methods.setUseLatestDelegate(true).send({from: random, gas: gasLimit}), "Random was able to set use latest delegate", "Only the node operator can access this method") ;
+        });
 
 
     });

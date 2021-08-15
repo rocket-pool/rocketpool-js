@@ -81,14 +81,16 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('50', 'ether'), {from: owner, gas: gasLimit});
 
             // Add penalty helper contract
-            // const rocketStorage = await rp.contracts.get('rocketStorage');
-            // const penaltyTestAbi = require('../../contracts/PenaltyTest.json');
-            // const penaltyTest = new web3.eth.Contract(penaltyTestAbi.abi, rocketStorage.options.address, {from: owner, gas: gasLimit});
+            const rocketStorage = await rp.contracts.get('rocketStorage');
+            const penaltyTest = require('../../contracts/PenaltyTest.json');
 
-            // await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTestAbi.abi, penaltyTest.options.address, {
-            //     from: owner,
-            //     gas: gasLimit
-            // });
+            //penaltyTestContract = new web3.eth.Contract(penaltyTest.abi, undefined,{from: owner, gas: gasLimit});
+            penaltyTestContract = new web3.eth.Contract(penaltyTest.abi, owner,{from: owner, gas: gasLimit});
+
+            await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTest.abi, penaltyTestContract.options.address, {
+                from: owner,
+                gas: gasLimit
+            });
 
             // Enable penalties
             const rocketMinipoolPenalty = await rp.contracts.get('rocketMinipoolPenalty');
@@ -238,37 +240,37 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 
 
         // ETH penalty events
-        // it(printTitle('node operator withdrawal address', 'can process withdrawal and destroy pool when penalised by DAO'), async () => {
-        //     // Penalise the minipool 50% of it's ETH
-        //     await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
-        //     // Mark minipool withdrawable
-        //     await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
-        //     // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-        //     await withdrawAndCheck('36', nodeWithdrawalAddress, true, '26.5', '9.5');
-        // });
-        //
-        //
-        // it(printTitle('node operator withdrawal address', 'cannot be penalised greater than the max penalty rate set by DAO'), async () => {
-        //     // Try to penalise the minipool 75% of it's ETH (max is 50%)
-        //     await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.75'));
-        //     // Mark minipool withdrawable
-        //     await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode});
-        //     // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-        //     await withdrawAndCheck('36', nodeWithdrawalAddress, true, '26.5', '9.5');
-        // });
+        it(printTitle('node operator withdrawal address', 'can process withdrawal and destroy pool when penalised by DAO'), async () => {
+            // Penalise the minipool 50% of it's ETH
+            await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
+            // Mark minipool withdrawable
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
+            await withdrawAndCheck('36', nodeWithdrawalAddress, true, '26.5', '9.5');
+        });
 
 
-        // it(printTitle('guardian', 'can disable penalising all together'), async () => {
-        //     // Disable penalising by setting rate to 0
-        //     const rocketMinipoolPenalty = await rp.contracts.get('rocketMinipoolPenalty');
-        //     await rocketMinipoolPenalty.methods.setMaxPenaltyRate('0').send({from: owner});
-        //     // Try to penalise the minipool 50%
-        //     await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.5')).call();
-        //     // Mark minipool withdrawable
-        //     await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
-        //     // Process withdraw
-        //     await withdrawAndCheck('36', nodeWithdrawalAddress, true, '17', '19');
-        // });
+        it(printTitle('node operator withdrawal address', 'cannot be penalised greater than the max penalty rate set by DAO'), async () => {
+            // Try to penalise the minipool 75% of it's ETH (max is 50%)
+            await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.75'));
+            // Mark minipool withdrawable
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
+            await withdrawAndCheck('36', nodeWithdrawalAddress, true, '26.5', '9.5');
+        });
+
+
+        it(printTitle('guardian', 'can disable penalising all together'), async () => {
+            // Disable penalising by setting rate to 0
+            const rocketMinipoolPenalty = await rp.contracts.get('rocketMinipoolPenalty');
+            await rocketMinipoolPenalty.methods.setMaxPenaltyRate('0').send({from: owner, gas: gasLimit});
+            // Try to penalise the minipool 50%
+            await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.5')).call();
+            // Mark minipool withdrawable
+            await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+            // Process withdraw
+            await withdrawAndCheck('36', nodeWithdrawalAddress, true, '17', '19');
+        });
 
 
     });
