@@ -84,8 +84,11 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             const rocketStorage = await rp.contracts.get('rocketStorage');
             const penaltyTest = require('../../contracts/PenaltyTest.json');
 
-            //penaltyTestContract = new web3.eth.Contract(penaltyTest.abi, undefined,{from: owner, gas: gasLimit});
-            penaltyTestContract = new web3.eth.Contract(penaltyTest.abi, owner,{from: owner, gas: gasLimit});
+            const penaltyTestContractInstance = new web3.eth.Contract(penaltyTest.abi);
+            penaltyTestContract = await penaltyTestContractInstance.deploy({
+                data: penaltyTest.bytecode,
+                arguments: [rocketStorage.options.address],
+            }).send({from: owner, gas: gasLimit});
 
             await setDaoNodeTrustedBootstrapUpgrade(web3, rp,'addContract', 'rocketPenaltyTest', penaltyTest.abi, penaltyTestContract.options.address, {
                 from: owner,
@@ -271,7 +274,6 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             // Process withdraw
             await withdrawAndCheck('36', nodeWithdrawalAddress, true, '17', '19');
         });
-
 
     });
 };
