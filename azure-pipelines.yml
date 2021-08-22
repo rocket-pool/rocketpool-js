@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - '*'
+      - "*"
       - refs/tags/*
 
 pool:
@@ -10,9 +10,9 @@ pool:
 steps:
   - task: DownloadSecureFile@1
     name: githubPEM
-    displayName: 'Download Github PEM'
+    displayName: "Download Github PEM"
     inputs:
-      secureFile: 'rp-azure-pipeline-github.pem'
+      secureFile: "rp-azure-pipeline-github.pem"
   - bash: |
       eval $(ruby -e "require 'openssl'; require 'jwt'; private_pem = File.read(ENV['GITHUB_PEM_PATH']); private_key = OpenSSL::PKey::RSA.new(private_pem); payload = { iat: Time.now.to_i - 60, exp: Time.now.to_i + (10 * 60), iss: ENV['GITHUB_APP_ID'] }; jwt = JWT.encode(payload, private_key, 'RS256'); puts 'PUSH_JWT='+jwt;")
       TOKEN=$(curl -s -X POST \
@@ -24,7 +24,7 @@ steps:
        git fetch github
        git push github HEAD:$(Build.SourceBranch) --verbose
        git push github HEAD:$(Build.SourceBranch) --tags --verbose
-    displayName: 'Push to Github'
+    displayName: "Push to Github"
     env:
       GITHUB_PEM_PATH: $(githubPEM.secureFilePath)
       GITHUB_APP_ID: $(GITHUB_APP_ID)
