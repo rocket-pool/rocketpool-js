@@ -8,7 +8,7 @@ import {setNodeWithdrawalAddress} from "../_helpers/node";
 
 
 // Send validator balance to a minipool
-export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minipool: MinipoolContract, withdrawalBalance: string, from: string, destroy: boolean = false) {
+export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minipool: MinipoolContract, withdrawalBalance: string, from: string, finalise: boolean = false) {
 
     // Convert to BN
     let _withdrawalBalance = web3.utils.toBN(withdrawalBalance);
@@ -85,7 +85,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
     // Payout the balances now
     let txReceipt;
 
-    if (destroy) {
+    if (finalise) {
         txReceipt = await minipool.distributeBalanceAndFinalise({
             from: from,
             gasPrice: gasPrice.toString(),
@@ -104,7 +104,7 @@ export async function withdrawValidatorBalance(web3: Web3, rp: RocketPool, minip
     // Get updated balances & withdrawal processed status
     let [balances2, minipoolBalances2] = await Promise.all([
         getBalances(),
-        getMinipoolBalances(destroy)
+        getMinipoolBalances(finalise)
     ]);
 
     // Add the fee back into the balance to make assertions easier

@@ -118,10 +118,9 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
             // Create minipools
             minipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei('16', 'ether'), gas: gasLimit}) as MinipoolContract);
             await stakeMinipool(web3, rp, minipool, null, {from: node, gas: gasLimit});
-
         });
 
-        async function withdrawAndCheck(withdrawalBalance: string, from: string, destroy: boolean, expectedUser: string, expectedNode: string) {
+        async function withdrawAndCheck(withdrawalBalance: string, from: string, finalise: boolean, expectedUser: string, expectedNode: string) {
             const withdrawalBalanceBN = web3.utils.toBN(web3.utils.toWei(withdrawalBalance, 'ether'));
             const expectedUserBN = web3.utils.toBN(web3.utils.toWei(expectedUser, 'ether'));
             const expectedNodeBN = web3.utils.toBN(web3.utils.toWei(expectedNode, 'ether'));
@@ -131,7 +130,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
                 nodeBalanceChange,
                 rethBalanceChange
             }
-                = await withdrawValidatorBalance(web3, rp, minipool, withdrawalBalanceBN.toString(), nodeWithdrawalAddress, destroy);
+                = await withdrawValidatorBalance(web3, rp, minipool, withdrawalBalanceBN.toString(), nodeWithdrawalAddress, finalise);
 
             // Check results
             assert(expectedUserBN.eq(rethBalanceChange), "User balance was incorrect");
@@ -246,6 +245,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         it(printTitle('node operator withdrawal address', 'can process withdrawal and destroy pool when penalised by DAO'), async () => {
             // Penalise the minipool 50% of it's ETH
             await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
+            console.log(await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call());
             // Mark minipool withdrawable
             await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
             // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
@@ -255,7 +255,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 
         it(printTitle('node operator withdrawal address', 'cannot be penalised greater than the max penalty rate set by DAO'), async () => {
             // Try to penalise the minipool 75% of it's ETH (max is 50%)
-            await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.75'));
+            await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei('0.75')).call();
             // Mark minipool withdrawable
             await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
             // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
