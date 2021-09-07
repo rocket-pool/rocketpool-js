@@ -15,11 +15,15 @@ class Contracts {
   private contracts: { [name: string]: Promise<Contract> } = {};
 
   // Constructor
-  public constructor(private web3: Web3, private RocketStorage: ContractArtifact) {
+  public constructor(private web3: Web3, private RocketStorage: ContractArtifact | string) {
     // Initialise rocketStorage contract promise
-    this.rocketStorage = this.web3.eth.net
-      .getId()
-      .then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
+    if (typeof RocketStorage === "string") {
+        this.rocketStorage = Promise.resolve(new this.web3.eth.Contract(RocketStorageAbi, RocketStorage));
+    } else {
+        this.rocketStorage = this.web3.eth.net
+            .getId()
+            .then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
+    }
   }
 
   // Load address/es by name
@@ -84,6 +88,49 @@ class Contracts {
     return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
   }
 }
+
+const RocketStorageAbi = <AbiItem[]>[
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "_key",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "r",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "_key",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getString",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function",
+        "constant": true
+    },
+]
 
 // Exports
 export default Contracts;

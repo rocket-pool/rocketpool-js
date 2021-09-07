@@ -69,7 +69,7 @@ class RocketPool {
   public readonly vault: Vault;
 
   // Constructor
-  public constructor(public readonly web3: Web3, public readonly RocketStorage: ContractArtifact) {
+  public constructor(public readonly web3: Web3, public readonly RocketStorage: ContractArtifact | string) {
     // Initialise services
     this.contracts = new Contracts(web3, RocketStorage);
     this.auction = new Auction(web3, this.contracts);
