@@ -227,7 +227,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
       assert(fullLength.toNumber() === 2, "Incorrect number of minipools in full queue");
       assert(halfLength.toNumber() === 1, "Incorrect number of minipools in half queue");
       assert(emptyLength.toNumber() === 0, "Incorrect number of minipools in empty queue");
+    });
 
+    async function upgradeNetworkDelegateContract() {
       // Upgrade the delegate contract
       await setDaoNodeTrustedBootstrapUpgrade(web3, rp, "upgradeContract", "rocketMinipoolDelegate", [], newDelegateAddress, {
         from: owner,
@@ -239,7 +241,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
       const minipool = new web3.eth.Contract(minipoolABI, stakingMinipool.address);
       const effectiveDelegate = await minipool.methods.getEffectiveDelegate().call();
       assert(effectiveDelegate !== newDelegateAddress, "Effective delegate was updated");
-    });
+    }
 
     //
     // General
@@ -307,6 +309,34 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         value: web3.utils.toWei("32", "ether"),
         gas: gasLimit,
       });
+    });
+
+    it(printTitle("node operator", "cannot create a minipool if delegate address is set to a non-contract"), async () => {
+      // Upgrade network delegate contract to random address
+      await upgradeNetworkDelegateContract();
+      // Creating minipool should fail now
+      await shouldRevert(
+        createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }),
+        "Was able to create a minipool with bad delegate address",
+        "Delegate contract does not exist"
+      );
+    });
+
+    it(printTitle("node operator", "cannot delegatecall to a delgate address that is a non-contract"), async () => {
+      // Creating minipool should fail now
+      let newMinipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit })) as MinipoolContract;
+      const minipoolABI = await rp.contracts.abi("rocketMinipool");
+      const newMinipoolBase = new web3.eth.Contract(minipoolABI, newMinipool.address);
+      // Upgrade network delegate contract to random address
+      await upgradeNetworkDelegateContract();
+      // Call upgrade delegate
+      await newMinipoolBase.methods.setUseLatestDelegate(true, { from: node, gas: gasLimit });
+      // Staking should fail now
+      await shouldRevert(
+        stakeMinipool(web3, rp, newMinipool, null, { from: node, gas: gasLimit }),
+        "Was able to create a minipool with bad delegate address",
+        "Delegate contract does not exist"
+      );
     });
 
     //
@@ -814,6 +844,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
     // Delegate upgrades
     //
     it(printTitle("node operator", "can upgrade and rollback their delegate contract"), async () => {
+      await upgradeNetworkDelegateContract();
       // Get contract
       const minipoolABI = await rp.contracts.abi("rocketMinipool");
       const minipool = new web3.eth.Contract(minipoolABI, stakingMinipool.address);
@@ -834,6 +865,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
     });
 
     it(printTitle("node operator", "can use latest delegate contract"), async () => {
+      await upgradeNetworkDelegateContract();
       // Get contract
       const minipoolABI = await rp.contracts.abi("rocketMinipool");
       const minipool = new web3.eth.Contract(minipoolABI, stakingMinipool.address);
@@ -860,6 +892,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
     });
 
     it(printTitle("random", "cannot upgrade, rollback or set use latest delegate contract"), async () => {
+      await upgradeNetworkDelegateContract();
       // Get contract
       const minipoolABI = await rp.contracts.abi("rocketMinipool");
       const minipool = new web3.eth.Contract(minipoolABI, stakingMinipool.address);

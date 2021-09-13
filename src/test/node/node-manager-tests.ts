@@ -268,10 +268,10 @@ export default function runNodeManagerTests(web3: Web3, rp: RocketPool) {
       for (const expectTimezone in expects) {
         // @ts-ignore (suppressed cause find is es6)
         const actual = timezones.find((tz) => tz.timezone === expectTimezone);
-        // @ts-ignore (suppressed cause TS wants a clean obj
-        // @ts-ignore
         assert(
+          // @ts-ignore (suppressed cause TS wants a clean obj
           actual && Number(actual.count) === expects[expectTimezone],
+          // @ts-ignore
           "Timezone count was incorrect for " + expectTimezone + ", expected " + expects[expectTimezone] + " but got " + actual
         );
       }

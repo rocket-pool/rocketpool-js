@@ -19,7 +19,7 @@ import { printTitle } from "../_utils/formatting";
 import { shouldRevert } from "../_utils/testing";
 import { getValidatorPubkey } from "../_utils/beacon";
 import { getNetworkSetting } from "../_helpers/settings";
-import { getNodeFee } from "../_helpers/network";
+import { getNodeFee, submitPrices } from "../_helpers/network";
 import { setDaoNodeTrustedBootstrapUpgrade } from "../dao/scenario-dao-node-trusted-bootstrap";
 import { Contract } from "web3-eth-contract";
 
@@ -55,6 +55,8 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
     let launchTimeout = 20;
     let withdrawalDelay = 20;
     let minipool: MinipoolContract;
+    let unbondedMinipool: MinipoolContract;
+    let fullDepositMinipool: MinipoolContract;
     let penaltyTestContract: Contract;
     let maxPenaltyRate = web3.utils.toWei("0.5", "ether");
 
@@ -95,6 +97,10 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
 
+      // Set RPL price
+      let block = await web3.eth.getBlockNumber();
+      await submitPrices(web3, rp, block, web3.utils.toWei("1", "ether"), "0", { from: trustedNode, gas: gasLimit });
+
       // Add penalty helper contract
       const rocketStorage = await rp.contracts.get("rocketStorage");
       const penaltyTest = require("../../contracts/PenaltyTest.json");
@@ -132,7 +138,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       });
 
       // Deposit some user funds to assign to pool
-      let userDepositAmount = web3.utils.toWei("16", "ether");
+      let userDepositAmount = web3.utils.toWei("48", "ether");
       await userDeposit(web3, rp, {
         from: random,
         value: userDepositAmount,
@@ -141,9 +147,11 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 
       // Stake RPL to cover minipools
       let minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
-      let rplStake = minipoolRplStake.mul(web3.utils.toBN(8));
+      let rplStake = minipoolRplStake.mul(web3.utils.toBN(3));
       await mintRPL(web3, rp, owner, node, rplStake);
       await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
+      await mintRPL(web3, rp, owner, trustedNode, rplStake);
+      await nodeStakeRPL(web3, rp, rplStake, { from: trustedNode, gas: gasLimit });
 
       // Create minipools
       minipool = (await createMinipool(web3, rp, {
@@ -155,9 +163,35 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         from: node,
         gas: gasLimit,
       });
+
+      unbondedMinipool = (await createMinipool(web3, rp, {
+        from: trustedNode,
+        gas: gasLimit,
+      })) as MinipoolContract;
+      await stakeMinipool(web3, rp, unbondedMinipool, null, {
+        from: trustedNode,
+        gas: gasLimit,
+      });
+
+      fullDepositMinipool = (await createMinipool(web3, rp, {
+        from: node,
+        value: web3.utils.toWei("32", "ether"),
+        gas: gasLimit,
+      })) as MinipoolContract;
+      await stakeMinipool(web3, rp, fullDepositMinipool, null, {
+        from: node,
+        gas: gasLimit,
+      });
     });
 
-    async function withdrawAndCheck(withdrawalBalance: string, from: string, finalise: boolean, expectedUser: string, expectedNode: string) {
+    async function withdrawAndCheck(
+      minipool: MinipoolContract,
+      withdrawalBalance: string,
+      from: string,
+      finalise: boolean,
+      expectedUser: string,
+      expectedNode: string
+    ) {
       const withdrawalBalanceBN = web3.utils.toBN(web3.utils.toWei(withdrawalBalance, "ether"));
       const expectedUserBN = web3.utils.toBN(web3.utils.toWei(expectedUser, "ether"));
       const expectedNodeBN = web3.utils.toBN(web3.utils.toWei(expectedNode, "ether"));
@@ -177,6 +211,17 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       assert(expectedNodeBN.eq(nodeBalanceChange), "Node balance was incorrect");
     }
 
+    async function slashAndCheck(from: string, expectedSlash: string) {
+      const expectedSlashBN = web3.utils.toBN(expectedSlash);
+      // Get contracts
+      const rocketNodeStaking = await RocketNodeStaking.deployed();
+      const rplStake1 = await rocketNodeStaking.getNodeRPLStake(node).then((value: any) => web3.utils.toBN(value));
+      await minipool.slash({from: from, gas: gasLimit});
+      const rplStake2 = await rocketNodeStaking.getNodeRPLStake(node).then((value: any) => web3.utils.toBN(value));
+      const slashedAmount = rplStake1.sub(rplStake2);
+      assert(expectedSlashBN.eq(slashedAmount), 'Slashed amount was incorrect');
+    }
+
     it(printTitle("node operator withdrawal address", "can process withdrawal when balance is greater than 32 ETH and marked as withdrawable"), async () => {
       // Mark minipool withdrawable
       await submitMinipoolWithdrawable(web3, rp, minipool.address, {
@@ -184,7 +229,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
       // Process withdraw
-      await withdrawAndCheck("36", nodeWithdrawalAddress, true, "17", "19");
+      await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "17", "19");
     });
 
     it(printTitle("random user", "can process withdrawal when balance is greater than 32 ETH and marked as withdrawable"), async () => {
@@ -193,21 +238,23 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         from: trustedNode,
         gas: gasLimit,
       });
+      // Wait 14 days
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
       // Process withdraw
-      await withdrawAndCheck("36", random, false, "17", "19");
+      await withdrawAndCheck(minipool, "36", random, false, "17", "19");
     });
 
     it(
       printTitle("node operator withdrawal address", "can process withdrawal when balance is greater than 32 ETH and not marked as withdrawable"),
       async () => {
         // Process withdraw
-        await withdrawAndCheck("36", nodeWithdrawalAddress, false, "17", "19");
+        await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, false, "17", "19");
       }
     );
 
     it(printTitle("random user", "can process withdrawal when balance is greater than 32 ETH and not marked as withdrawable"), async () => {
       // Process withdraw
-      await withdrawAndCheck("36", random, false, "17", "19");
+      await withdrawAndCheck(minipool, "36", random, false, "17", "19");
     });
 
     it(
@@ -219,7 +266,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
           gas: gasLimit,
         });
         // Process withdraw
-        await withdrawAndCheck("28", nodeWithdrawalAddress, true, "16", "12");
+        await withdrawAndCheck(minipool, "28", nodeWithdrawalAddress, true, "16", "12");
       }
     );
 
@@ -229,8 +276,10 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         from: trustedNode,
         gas: gasLimit,
       });
+      // Wait 14 days
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
       // Process withdraw
-      await withdrawAndCheck("28", random, false, "16", "12");
+      await withdrawAndCheck(minipool, "28", random, false, "16", "12");
     });
 
     it(
@@ -240,13 +289,13 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       ),
       async () => {
         // Process withdraw
-        await withdrawAndCheck("28", nodeWithdrawalAddress, false, "16", "12");
+        await withdrawAndCheck(minipool, "28", nodeWithdrawalAddress, false, "16", "12");
       }
     );
 
     it(printTitle("random user", "can process withdrawal when balance is greater than 16 ETH, less than 32 ETH and not marked as withdrawable"), async () => {
       // Process withdraw
-      await withdrawAndCheck("28", random, false, "16", "12");
+      await withdrawAndCheck(minipool, "28", random, false, "16", "12");
     });
 
     it(printTitle("node operator withdrawal address", "can process withdrawal when balance is less than 16 ETH and marked as withdrawable"), async () => {
@@ -255,8 +304,24 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         from: trustedNode,
         gas: gasLimit,
       });
+      // Wait 14 days
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
       // Process withdraw
-      await withdrawAndCheck("15", nodeWithdrawalAddress, true, "15", "0");
+      await withdrawAndCheck(minipool, "15", nodeWithdrawalAddress, true, "15", "0");
+      await slashAndCheck(random, web3.utils.toBN(web3.utils.toWei('1')))
+    });
+
+    it(printTitle('random address', 'cannot slash a node operator by sending 4 ETH and distribute after 14 days'), async () => {
+      // Mark minipool withdrawable
+      await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
+      // Process withdraw
+      await withdrawAndCheck(minipool,'28', trustedNode, true, '16', '12');
+      // Wait 14 days and mine enough blocks to pass cooldown
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
+      await mineBlocks(web3, 101)
+      // Process withdraw and attempt to slash
+      await withdrawAndCheck(minipool,'4', random, false, '4', '0');
+      await shouldRevert(minipool.slash(), 'Was able to slash minipool', 'No balance to slash')
     });
 
     it(printTitle("random address", "can process withdrawal when balance is less than 16 ETH and marked as withdrawable after 14 days"), async () => {
@@ -268,7 +333,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       // Wait 14 days
       await increaseTime(web3, 60 * 60 * 24 * 14 + 1);
       // Process withdraw
-      await withdrawAndCheck("15", random, false, "15", "0");
+      await withdrawAndCheck(minipool, "15", random, false, "15", "0");
     });
 
     it(printTitle("random address", "cannot process withdrawal when balance is less than 16 ETH and marked as withdrawable before 14 days"), async () => {
@@ -286,25 +351,25 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       );
     });
 
-    it(printTitle("node operator withdrawal address", "cannot process withdrawal and destroy minipool while not marked as withdrawable"), async () => {
+    it(printTitle("node operator withdrawal address", "cannot process withdrawal and finalise minipool while not marked as withdrawable"), async () => {
       // Process withdraw
       const withdrawalBalance = web3.utils.toWei("32", "ether");
       await shouldRevert(
         withdrawValidatorBalance(web3, rp, minipool, withdrawalBalance, nodeWithdrawalAddress, true),
-        "Processed withdrawal and destroyed pool while status was not withdrawable",
+        "Processed withdrawal and finalise pool while status was not withdrawable",
         "Minipool must be withdrawable"
       );
     });
 
     it(printTitle("node operator withdrawal address", "can process withdrawal when balance is less than 16 ETH and not marked as withdrawable"), async () => {
       // Process withdraw
-      await withdrawAndCheck("15", nodeWithdrawalAddress, false, "15", "0");
+      await withdrawAndCheck(minipool, "15", nodeWithdrawalAddress, false, "15", "0");
     });
 
     it(
       printTitle(
         "node operator withdrawal address",
-        "cannot process withdrawal and destroy pool when balance is less than 16 ETH and not marked as withdrawable"
+        "cannot process withdrawal and finalise pool when balance is less than 16 ETH and not marked as withdrawable"
       ),
       async () => {
         // Process withdraw
@@ -317,18 +382,51 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       }
     );
 
+    // Unbonded pools
+    it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is greater than 32 ETH and marked as withdrawable"), async () => {
+      // Mark minipool withdrawable
+      await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
+      // Process withdraw
+      await withdrawAndCheck(unbondedMinipool, "36", trustedNode, true, "35", "1");
+    });
+
+    it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is less than 32 ETH and marked as withdrawable"), async () => {
+      // Mark minipool withdrawable
+      await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
+      // Process withdraw
+      await withdrawAndCheck(unbondedMinipool, "30", trustedNode, true, "30", "0");
+    });
+
+    // Full deposit minipools
+    it(
+      printTitle("trusted node", "can process withdrawal on full deposit minipool when balance is greater than 32 ETH and marked as withdrawable"),
+      async () => {
+        // Mark minipool withdrawable
+        await submitMinipoolWithdrawable(web3, rp, fullDepositMinipool.address, { from: trustedNode, gas: gasLimit });
+        // Process withdraw
+        await withdrawAndCheck(fullDepositMinipool, "36", node, true, "1", "35");
+      }
+    );
+
+    it(printTitle("trusted node", "can process withdrawal on full deposit minipool when balance is less than 32 ETH and marked as withdrawable"), async () => {
+      // Mark minipool withdrawable
+      await submitMinipoolWithdrawable(web3, rp, fullDepositMinipool.address, { from: trustedNode, gas: gasLimit });
+      // Process withdraw
+      await withdrawAndCheck(fullDepositMinipool, "30", node, true, "0", "30");
+    });
+
     // ETH penalty events
-    it(printTitle("node operator withdrawal address", "can process withdrawal and destroy pool when penalised by DAO"), async () => {
+    it(printTitle("node operator withdrawal address", "can process withdrawal and finalise pool when penalised by DAO"), async () => {
       // Penalise the minipool 50% of it's ETH
       await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
-      console.log(await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call());
+      //console.log(await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call());
       // Mark minipool withdrawable
       await submitMinipoolWithdrawable(web3, rp, minipool.address, {
         from: trustedNode,
         gas: gasLimit,
       });
       // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-      await withdrawAndCheck("36", nodeWithdrawalAddress, true, "26.5", "9.5");
+      await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
     });
 
     it(printTitle("node operator withdrawal address", "cannot be penalised greater than the max penalty rate set by DAO"), async () => {
@@ -340,7 +438,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
       // Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-      await withdrawAndCheck("36", nodeWithdrawalAddress, true, "26.5", "9.5");
+      await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
     });
 
     it(printTitle("guardian", "can disable penalising all together"), async () => {
@@ -355,7 +453,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
       // Process withdraw
-      await withdrawAndCheck("36", nodeWithdrawalAddress, true, "17", "19");
+      await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "17", "19");
     });
   });
 }

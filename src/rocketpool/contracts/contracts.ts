@@ -18,11 +18,11 @@ class Contracts {
   public constructor(private web3: Web3, private RocketStorage: ContractArtifact | string) {
     // Initialise rocketStorage contract promise
     if (typeof RocketStorage === "string") {
-        this.rocketStorage = Promise.resolve(new this.web3.eth.Contract(RocketStorageAbi, RocketStorage));
+      this.rocketStorage = Promise.resolve(new this.web3.eth.Contract(RocketStorageAbi, RocketStorage));
     } else {
-        this.rocketStorage = this.web3.eth.net
-            .getId()
-            .then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
+      this.rocketStorage = this.web3.eth.net
+        .getId()
+        .then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
     }
   }
 
@@ -90,47 +90,47 @@ class Contracts {
 }
 
 const RocketStorageAbi = <AbiItem[]>[
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "_key",
-                "type": "bytes32"
-            }
-        ],
-        "name": "getAddress",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "r",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "_key",
-                "type": "bytes32"
-            }
-        ],
-        "name": "getString",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function",
-        "constant": true
-    },
-]
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_key",
+        type: "bytes32",
+      },
+    ],
+    name: "getAddress",
+    outputs: [
+      {
+        internalType: "address",
+        name: "r",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+    constant: true,
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_key",
+        type: "bytes32",
+      },
+    ],
+    name: "getString",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+    constant: true,
+  },
+];
 
 // Exports
 export default Contracts;
