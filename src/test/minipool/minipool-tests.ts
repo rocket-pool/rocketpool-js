@@ -98,6 +98,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
 
+      // Set rETH collateralisation target to a value high enough it won't cause excess ETH to be funneled back into deposit pool and mess with our calcs
+      await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('50', 'ether'), {from: owner, gas: gasLimit});
+
       // Make user deposit to refund first prelaunch minipool
       let refundAmount = web3.utils.toWei("16", "ether");
       await userDeposit(web3, rp, {
@@ -108,7 +111,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
       // Stake RPL to cover minipools
       let minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
-      let rplStake = minipoolRplStake.mul(web3.utils.toBN(6));
+      let rplStake = minipoolRplStake.mul(web3.utils.toBN(7));
       await mintRPL(web3, rp, owner, node, rplStake);
       await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
 
@@ -299,7 +302,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
           gas: gasLimit,
         }),
         "Was able to create a minipool when capacity is reached",
-        "Minipool count after deposit exceeds limit based on node RPL stake"
+        "Global minipool limit reached"
       );
       // Destroy a pool
       await withdrawValidatorBalance(web3, rp, withdrawableMinipool, withdrawalBalance, nodeWithdrawalAddress, true);
@@ -330,7 +333,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
       // Upgrade network delegate contract to random address
       await upgradeNetworkDelegateContract();
       // Call upgrade delegate
-      await newMinipoolBase.methods.setUseLatestDelegate(true, { from: node, gas: gasLimit });
+      await newMinipoolBase.methods.setUseLatestDelegate(true).send({ from: node, gas: gasLimit });
       // Staking should fail now
       await shouldRevert(
         stakeMinipool(web3, rp, newMinipool, null, { from: node, gas: gasLimit }),
@@ -528,7 +531,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
           gas: gasLimit,
         }),
         "Dissolved a staking minipool",
-        "The minipool can only be dissolved while initialized or in prelaunch"
+        "The minipool can only be dissolved while initialised or in prelaunch"
       );
     });
 

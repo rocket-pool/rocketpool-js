@@ -135,11 +135,17 @@ export async function withdrawValidatorBalance(
   // Calculate rewards
   let depositBalance = web3.utils.toBN(web3.utils.toWei("32"));
   if (_withdrawalBalance.gte(depositBalance)) {
+    let depositType = await minipool.getDepositType();
     let userAmount = minipoolBalances1.userDepositBalance;
     let rewards = _withdrawalBalance.sub(depositBalance);
     let halfRewards = rewards.divn(2);
     let nodeCommissionFee = halfRewards.mul(web3.utils.toBN(nodeFee)).div(web3.utils.toBN(web3.utils.toWei("1")));
-    userAmount = userAmount.add(halfRewards.sub(nodeCommissionFee));
+    if (depositType.toString() === '3'){
+      // Unbonded
+      userAmount = userAmount.add(rewards.sub(nodeCommissionFee));
+    } else {
+      userAmount = userAmount.add(halfRewards.sub(nodeCommissionFee));
+    }
     let nodeAmount = _withdrawalBalance.sub(userAmount);
 
     // Adjust amounts according to penalty rate

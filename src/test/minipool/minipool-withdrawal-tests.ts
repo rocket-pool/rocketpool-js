@@ -202,7 +202,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         rp,
         minipool,
         withdrawalBalanceBN.toString(),
-        nodeWithdrawalAddress,
+        from,
         finalise
       );
 
@@ -213,13 +213,18 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 
     async function slashAndCheck(from: string, expectedSlash: string) {
       const expectedSlashBN = web3.utils.toBN(expectedSlash);
-      // Get contracts
-      const rocketNodeStaking = await RocketNodeStaking.deployed();
-      const rplStake1 = await rocketNodeStaking.getNodeRPLStake(node).then((value: any) => web3.utils.toBN(value));
-      await minipool.slash({from: from, gas: gasLimit});
-      const rplStake2 = await rocketNodeStaking.getNodeRPLStake(node).then((value: any) => web3.utils.toBN(value));
+      const rocketNodeStaking = await rp.contracts.get("rocketNodeStaking");
+      const rplStake1 = await rocketNodeStaking.methods
+        .getNodeRPLStake(node)
+        .call()
+        .then((value: any) => web3.utils.toBN(value));
+      await minipool.slash({ from: from, gas: gasLimit });
+      const rplStake2 = await rocketNodeStaking.methods
+        .getNodeRPLStake(node)
+        .call()
+        .then((value: any) => web3.utils.toBN(value));
       const slashedAmount = rplStake1.sub(rplStake2);
-      assert(expectedSlashBN.eq(slashedAmount), 'Slashed amount was incorrect');
+      assert(expectedSlashBN.eq(slashedAmount), "Slashed amount was incorrect");
     }
 
     it(printTitle("node operator withdrawal address", "can process withdrawal when balance is greater than 32 ETH and marked as withdrawable"), async () => {
@@ -239,7 +244,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
       // Wait 14 days
-      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1);
       // Process withdraw
       await withdrawAndCheck(minipool, "36", random, false, "17", "19");
     });
@@ -277,7 +282,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         gas: gasLimit,
       });
       // Wait 14 days
-      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1);
       // Process withdraw
       await withdrawAndCheck(minipool, "28", random, false, "16", "12");
     });
@@ -304,24 +309,8 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
         from: trustedNode,
         gas: gasLimit,
       });
-      // Wait 14 days
-      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
       // Process withdraw
       await withdrawAndCheck(minipool, "15", nodeWithdrawalAddress, true, "15", "0");
-      await slashAndCheck(random, web3.utils.toBN(web3.utils.toWei('1')))
-    });
-
-    it(printTitle('random address', 'cannot slash a node operator by sending 4 ETH and distribute after 14 days'), async () => {
-      // Mark minipool withdrawable
-      await submitMinipoolWithdrawable(web3, rp, minipool.address, {from: trustedNode, gas: gasLimit});
-      // Process withdraw
-      await withdrawAndCheck(minipool,'28', trustedNode, true, '16', '12');
-      // Wait 14 days and mine enough blocks to pass cooldown
-      await increaseTime(web3, 60 * 60 * 24 * 14 + 1)
-      await mineBlocks(web3, 101)
-      // Process withdraw and attempt to slash
-      await withdrawAndCheck(minipool,'4', random, false, '4', '0');
-      await shouldRevert(minipool.slash(), 'Was able to slash minipool', 'No balance to slash')
     });
 
     it(printTitle("random address", "can process withdrawal when balance is less than 16 ETH and marked as withdrawable after 14 days"), async () => {
@@ -334,6 +323,20 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       await increaseTime(web3, 60 * 60 * 24 * 14 + 1);
       // Process withdraw
       await withdrawAndCheck(minipool, "15", random, false, "15", "0");
+      await slashAndCheck(random, web3.utils.toBN(web3.utils.toWei("1")).toString());
+    });
+
+    it(printTitle("random address", "cannot slash a node operator by sending 4 ETH and distribute after 14 days"), async () => {
+      // Mark minipool withdrawable
+      await submitMinipoolWithdrawable(web3, rp, minipool.address, { from: trustedNode, gas: gasLimit });
+      // Process withdraw
+      await withdrawAndCheck(minipool, "28", nodeWithdrawalAddress, true, "16", "12");
+      // Wait 14 days and mine enough blocks to pass cooldown
+      await increaseTime(web3, 60 * 60 * 24 * 14 + 1);
+      await mineBlocks(web3, 101);
+      // Process withdraw and attempt to slash
+      await withdrawAndCheck(minipool, "4", random, false, "4", "0");
+      await shouldRevert(minipool.slash({ from: random, gas: gasLimit }), "Was able to slash minipool", "No balance to slash");
     });
 
     it(printTitle("random address", "cannot process withdrawal when balance is less than 16 ETH and marked as withdrawable before 14 days"), async () => {
