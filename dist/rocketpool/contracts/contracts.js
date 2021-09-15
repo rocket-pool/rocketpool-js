@@ -118,35 +118,35 @@ var Contracts = function () {
 }();
 
 var RocketStorageAbi = [{
-    "inputs": [{
-        "internalType": "bytes32",
-        "name": "_key",
-        "type": "bytes32"
+    inputs: [{
+        internalType: "bytes32",
+        name: "_key",
+        type: "bytes32"
     }],
-    "name": "getAddress",
-    "outputs": [{
-        "internalType": "address",
-        "name": "r",
-        "type": "address"
+    name: "getAddress",
+    outputs: [{
+        internalType: "address",
+        name: "r",
+        type: "address"
     }],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    stateMutability: "view",
+    type: "function",
+    constant: true
 }, {
-    "inputs": [{
-        "internalType": "bytes32",
-        "name": "_key",
-        "type": "bytes32"
+    inputs: [{
+        internalType: "bytes32",
+        name: "_key",
+        type: "bytes32"
     }],
-    "name": "getString",
-    "outputs": [{
-        "internalType": "string",
-        "name": "",
-        "type": "string"
+    name: "getString",
+    outputs: [{
+        internalType: "string",
+        name: "",
+        type: "string"
     }],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    stateMutability: "view",
+    type: "function",
+    constant: true
 }];
 // Exports
 exports.default = Contracts;

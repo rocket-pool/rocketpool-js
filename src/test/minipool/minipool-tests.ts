@@ -99,7 +99,10 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
       });
 
       // Set rETH collateralisation target to a value high enough it won't cause excess ETH to be funneled back into deposit pool and mess with our calcs
-      await setDAOProtocolBootstrapSetting(web3, rp, 'rocketDAOProtocolSettingsNetwork', 'network.reth.collateral.target', web3.utils.toWei('50', 'ether'), {from: owner, gas: gasLimit});
+      await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.reth.collateral.target", web3.utils.toWei("50", "ether"), {
+        from: owner,
+        gas: gasLimit,
+      });
 
       // Make user deposit to refund first prelaunch minipool
       let refundAmount = web3.utils.toWei("16", "ether");

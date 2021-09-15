@@ -197,14 +197,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
       const expectedNodeBN = web3.utils.toBN(web3.utils.toWei(expectedNode, "ether"));
 
       // Process withdrawal
-      const { nodeBalanceChange, rethBalanceChange } = await withdrawValidatorBalance(
-        web3,
-        rp,
-        minipool,
-        withdrawalBalanceBN.toString(),
-        from,
-        finalise
-      );
+      const { nodeBalanceChange, rethBalanceChange } = await withdrawValidatorBalance(web3, rp, minipool, withdrawalBalanceBN.toString(), from, finalise);
 
       // Check results
       assert(expectedUserBN.eq(rethBalanceChange), "User balance was incorrect");

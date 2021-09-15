@@ -140,7 +140,7 @@ export async function withdrawValidatorBalance(
     let rewards = _withdrawalBalance.sub(depositBalance);
     let halfRewards = rewards.divn(2);
     let nodeCommissionFee = halfRewards.mul(web3.utils.toBN(nodeFee)).div(web3.utils.toBN(web3.utils.toWei("1")));
-    if (depositType.toString() === '3'){
+    if (depositType.toString() === "3") {
       // Unbonded
       userAmount = userAmount.add(rewards.sub(nodeCommissionFee));
     } else {
