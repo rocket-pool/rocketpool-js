@@ -9,74 +9,74 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
  * Rocket Pool DAO Proposals
  */
 class DAOProposal {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketDAOProposal(): Promise<Contract> {
-    return this.contracts.get("rocketDAOProposal");
-  }
+	// Contract accessors
+	private get rocketDAOProposal(): Promise<Contract> {
+		return this.contracts.get("rocketDAOProposal");
+	}
 
-  /**
+	/**
    * Getters
    */
-  // Get the total of DAO Proposals
-  public getTotal(): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getTotal().call();
-    });
-  }
+	// Get the total of DAO Proposals
+	public getTotal(): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getTotal().call();
+		});
+	}
 
-  // Get the state of a DAO Proposal
-  public getState(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getState(proposalID).call();
-    });
-  }
+	// Get the state of a DAO Proposal
+	public getState(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getState(proposalID).call();
+		});
+	}
 
-  // Get the number of votes for DAO Proposal
-  public getVotesFor(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getVotesFor(proposalID).call();
-    });
-  }
+	// Get the number of votes for DAO Proposal
+	public getVotesFor(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getVotesFor(proposalID).call();
+		});
+	}
 
-  // Get the number of required votes for DAO Proposal
-  public getVotesRequired(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getVotesRequired(proposalID).call();
-    });
-  }
+	// Get the number of required votes for DAO Proposal
+	public getVotesRequired(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getVotesRequired(proposalID).call();
+		});
+	}
 
-  // Get start given a proposal id
-  public getStart(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getStart(proposalID).call();
-    });
-  }
+	// Get start given a proposal id
+	public getStart(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getStart(proposalID).call();
+		});
+	}
 
-  // Get end given a proposal id
-  public getEnd(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getEnd(proposalID).call();
-    });
-  }
+	// Get end given a proposal id
+	public getEnd(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getEnd(proposalID).call();
+		});
+	}
 
-  // Get votes against
-  public getVotesAgainst(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getVotesAgainst(proposalID).call();
-    });
-  }
+	// Get votes against
+	public getVotesAgainst(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getVotesAgainst(proposalID).call();
+		});
+	}
 
-  // Get the block a proposal expires
-  public getExpires(proposalID: number): Promise<number> {
-    return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
-      return rocketDAOProposal.methods.getExpires(proposalID).call();
-    });
-  }
+	// Get the block a proposal expires
+	public getExpires(proposalID: number): Promise<number> {
+		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
+			return rocketDAOProposal.methods.getExpires(proposalID).call();
+		});
+	}
 
-  /**
+	/**
    * Mutators - Public
    */
 }

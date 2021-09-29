@@ -10,33 +10,33 @@ import { NodeDetails } from "../node/node";
  * Rocket Pool Rewards
  */
 class Rewards {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketClaimTrustedNode(): Promise<Contract> {
-    return this.contracts.get("rocketClaimTrustedNode");
-  }
+	// Contract accessors
+	private get rocketClaimTrustedNode(): Promise<Contract> {
+		return this.contracts.get("rocketClaimTrustedNode");
+	}
 
-  /**
+	/**
    * Getters
    */
-  // Get claim rewards amount
-  public getClaimRewardsAmount(address: string): Promise<string> {
-    return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<string> => {
-      return rocketClaimTrustedNode.methods.getClaimRewardsAmount(address).call();
-    });
-  }
+	// Get claim rewards amount
+	public getClaimRewardsAmount(address: string): Promise<string> {
+		return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<string> => {
+			return rocketClaimTrustedNode.methods.getClaimRewardsAmount(address).call();
+		});
+	}
 
-  /**
+	/**
    * Mutators - Public
    */
-  // Claim from a trusted node
-  public claim(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketClaimTrustedNode.methods.claim().send(options), onConfirmation);
-    });
-  }
+	// Claim from a trusted node
+	public claim(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketClaimTrustedNode.then((rocketClaimTrustedNode: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketClaimTrustedNode.methods.claim().send(options), onConfirmation);
+		});
+	}
 }
 
 // Exports

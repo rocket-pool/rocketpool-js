@@ -7,30 +7,30 @@ import Contracts from "../contracts/contracts";
  * Rocket Pool node settings manager
  */
 class NodeSettings {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketDAOProtocolSettingsNode(): Promise<Contract> {
-    return this.contracts.get("rocketDAOProtocolSettingsNode");
-  }
+	// Contract accessors
+	private get rocketDAOProtocolSettingsNode(): Promise<Contract> {
+		return this.contracts.get("rocketDAOProtocolSettingsNode");
+	}
 
-  /**
+	/**
    * Getters
    */
-  // Node registrations are currently enabled
-  public getRegistrationEnabled(): Promise<boolean> {
-    return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
-      return rocketDAOProtocolSettingsNode.methods.getRegistrationEnabled().call();
-    });
-  }
+	// Node registrations are currently enabled
+	public getRegistrationEnabled(): Promise<boolean> {
+		return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
+			return rocketDAOProtocolSettingsNode.methods.getRegistrationEnabled().call();
+		});
+	}
 
-  // Node deposits are currently enabled
-  public getDepositEnabled(): Promise<boolean> {
-    return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
-      return rocketDAOProtocolSettingsNode.methods.getDepositEnabled().call();
-    });
-  }
+	// Node deposits are currently enabled
+	public getDepositEnabled(): Promise<boolean> {
+		return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {
+			return rocketDAOProtocolSettingsNode.methods.getDepositEnabled().call();
+		});
+	}
 }
 
 // Exports

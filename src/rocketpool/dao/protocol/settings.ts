@@ -9,29 +9,29 @@ import { ConfirmationHandler, handleConfirmations } from "../../../utils/transac
  * Rocket Pool DAO Protocol Settings
  */
 class DAOProtocolSettings {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketDAOProtocolSettings(): Promise<Contract> {
-    return this.contracts.get("rocketDAOProtocolSettings");
-  }
+	// Contract accessors
+	private get rocketDAOProtocolSettings(): Promise<Contract> {
+		return this.contracts.get("rocketDAOProtocolSettings");
+	}
 
-  private get rocketDAOProtocolSettingsNetwork(): Promise<Contract> {
-    return this.contracts.get("rocketDAOProtocolSettingsNetwork");
-  }
+	private get rocketDAOProtocolSettingsNetwork(): Promise<Contract> {
+		return this.contracts.get("rocketDAOProtocolSettingsNetwork");
+	}
 
-  /**
+	/**
    * Getters
    */
-  // Get member id given an address
-  public getRethDepositDelay(): Promise<number> {
-    return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<number> => {
-      return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
-    });
-  }
+	// Get member id given an address
+	public getRethDepositDelay(): Promise<number> {
+		return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<number> => {
+			return rocketDAOProtocolSettingsNetwork.methods.getRethDepositDelay().call();
+		});
+	}
 
-  /**
+	/**
    * Mutators - Public
    */
 }

@@ -10,20 +10,20 @@ import ERC20 from "./erc20";
  * Rocket Pool Legacy RPL token manager
  */
 class LegacyRPL extends ERC20 {
-  // Constructor
-  public constructor(web3: Web3, contracts: Contracts) {
-    super(web3, contracts, "rocketTokenRPLFixedSupply");
-  }
+	// Constructor
+	public constructor(web3: Web3, contracts: Contracts) {
+		super(web3, contracts, "rocketTokenRPLFixedSupply");
+	}
 
-  /**
+	/**
    * Getters
    */
-  // Get contract address
-  public getAddress(): Promise<string> {
-    return this.tokenContract.then((tokenContract: Contract): string => {
-      return tokenContract.options.address;
-    });
-  }
+	// Get contract address
+	public getAddress(): Promise<string> {
+		return this.tokenContract.then((tokenContract: Contract): string => {
+			return tokenContract.options.address;
+		});
+	}
 }
 
 // Exports

@@ -9,55 +9,55 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
  * Rocket Pool deposit pool manager
  */
 class Deposit {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketDepositPool(): Promise<Contract> {
-    return this.contracts.get("rocketDepositPool");
-  }
+	// Contract accessors
+	private get rocketDepositPool(): Promise<Contract> {
+		return this.contracts.get("rocketDepositPool");
+	}
 
-  /**
+	/**
    * Getters
    */
 
-  // Get the current deposit pool balance in wei
-  public getBalance(): Promise<string> {
-    return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
-      return rocketDepositPool.methods.getBalance().call();
-    });
-  }
+	// Get the current deposit pool balance in wei
+	public getBalance(): Promise<string> {
+		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
+			return rocketDepositPool.methods.getBalance().call();
+		});
+	}
 
-  // Get the excess balance
-  public getExcessBalance(): Promise<string> {
-    return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
-      return rocketDepositPool.methods.getExcessBalance().call();
-    });
-  }
+	// Get the excess balance
+	public getExcessBalance(): Promise<string> {
+		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<string> => {
+			return rocketDepositPool.methods.getExcessBalance().call();
+		});
+	}
 
-  // Get the users last deposit block
-  public getUserLastDepositBlock(address: string): Promise<number> {
-    return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<number> => {
-      return rocketDepositPool.methods.getUserLastDepositBlock(address).call();
-    });
-  }
+	// Get the users last deposit block
+	public getUserLastDepositBlock(address: string): Promise<number> {
+		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<number> => {
+			return rocketDepositPool.methods.getUserLastDepositBlock(address).call();
+		});
+	}
 
-  /**
+	/**
    * Mutators - Public
    */
-  // Make a deposit
-  public deposit(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDepositPool.methods.deposit().send(options), onConfirmation);
-    });
-  }
+	// Make a deposit
+	public deposit(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDepositPool.methods.deposit().send(options), onConfirmation);
+		});
+	}
 
-  // Assign deposits
-  public assignDeposits(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDepositPool.methods.assignDeposits().send(options), onConfirmation);
-    });
-  }
+	// Assign deposits
+	public assignDeposits(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDepositPool.methods.assignDeposits().send(options), onConfirmation);
+		});
+	}
 }
 
 // Exports

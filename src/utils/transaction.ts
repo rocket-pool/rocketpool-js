@@ -8,6 +8,6 @@ export interface ConfirmationHandler {
 
 // Handle transaction confirmations
 export function handleConfirmations(pe: PromiEvent<TransactionReceipt>, onConfirmation?: ConfirmationHandler): PromiEvent<TransactionReceipt> {
-  if (onConfirmation !== undefined) pe.on("confirmation", onConfirmation);
-  return pe;
+	if (onConfirmation !== undefined) pe.on("confirmation", onConfirmation);
+	return pe;
 }

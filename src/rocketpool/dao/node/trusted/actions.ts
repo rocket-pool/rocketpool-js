@@ -9,49 +9,49 @@ import { ConfirmationHandler, handleConfirmations } from "../../../../utils/tran
  * Rocket Pool DAO Trusted Node Actions
  */
 class DAONodeTrustedActions {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketDAONodeTrustedActions(): Promise<Contract> {
-    return this.contracts.get("rocketDAONodeTrustedActions");
-  }
+	// Contract accessors
+	private get rocketDAONodeTrustedActions(): Promise<Contract> {
+		return this.contracts.get("rocketDAONodeTrustedActions");
+	}
 
-  /**
+	/**
    * Getters
    */
 
-  /**
+	/**
    * Mutators - Public
    */
 
-  // Join the DAO
-  public actionJoin(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDAONodeTrustedActions.methods.actionJoin().send(options), onConfirmation);
-    });
-  }
+	// Join the DAO
+	public actionJoin(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDAONodeTrustedActions.methods.actionJoin().send(options), onConfirmation);
+		});
+	}
 
-  // Leave the DAO
-  public actionLeave(refundAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDAONodeTrustedActions.methods.actionLeave(refundAddress).send(options), onConfirmation);
-    });
-  }
+	// Leave the DAO
+	public actionLeave(refundAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDAONodeTrustedActions.methods.actionLeave(refundAddress).send(options), onConfirmation);
+		});
+	}
 
-  // Challenge Make
-  public actionChallengeMake(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDAONodeTrustedActions.methods.actionChallengeMake(address).send(options), onConfirmation);
-    });
-  }
+	// Challenge Make
+	public actionChallengeMake(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDAONodeTrustedActions.methods.actionChallengeMake(address).send(options), onConfirmation);
+		});
+	}
 
-  // Challenge Decide
-  public actionChallengeDecide(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
-    return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
-      return handleConfirmations(rocketDAONodeTrustedActions.methods.actionChallengeDecide(address).send(options), onConfirmation);
-    });
-  }
+	// Challenge Decide
+	public actionChallengeDecide(address: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketDAONodeTrustedActions.then((rocketDAONodeTrustedActions: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDAONodeTrustedActions.methods.actionChallengeDecide(address).send(options), onConfirmation);
+		});
+	}
 }
 
 // Exports

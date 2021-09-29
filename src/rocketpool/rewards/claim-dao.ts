@@ -10,19 +10,19 @@ import { NodeDetails } from "../node/node";
  * Rocket Pool Rewards
  */
 class Rewards {
-  // Constructor
-  public constructor(private web3: Web3, private contracts: Contracts) {}
+	// Constructor
+	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-  // Contract accessors
-  private get rocketClaimDAO(): Promise<Contract> {
-    return this.contracts.get("rocketClaimDAO");
-  }
+	// Contract accessors
+	private get rocketClaimDAO(): Promise<Contract> {
+		return this.contracts.get("rocketClaimDAO");
+	}
 
-  /**
+	/**
    * Getters
    */
 
-  /**
+	/**
    * Mutators - Public
    */
 }

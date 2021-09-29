@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc && npx babel build -d dist && rm -rf build",
     "test": "mocha --require ts-node/register --timeout 30000 src/test/index.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "docs": "typedoc --out docs ./src/rocketpool/rocketpool.ts --readme none --githubPages false"
   },
   "repository": {
     "type": "git",
@@ -37,8 +38,12 @@
     "chai": "^4.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.1",
+    "prettier-eslint": "^13.0.0",
+    "prettier-eslint-cli": "^5.0.1",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.5"
+    "typedoc": "^0.22.4",
+    "typedoc-plugin-markdown": "^3.11.2",
+    "typescript": "^4.4.3"
   }
 }

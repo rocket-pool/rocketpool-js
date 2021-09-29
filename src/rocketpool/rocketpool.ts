@@ -70,46 +70,46 @@ class RocketPool {
 
   // Constructor
   public constructor(public readonly web3: Web3, public readonly RocketStorage: ContractArtifact | string) {
-    // Initialise services
-    this.contracts = new Contracts(web3, RocketStorage);
-    this.auction = new Auction(web3, this.contracts);
-    this.dao = {
-      node: {
-        trusted: {
-          actions: new DAONodeTrustedActions(web3, this.contracts),
-          node: new DAONodeTrusted(web3, this.contracts),
-          proposals: new DAONodeTrustedProposals(web3, this.contracts),
-          settings: new DAONodeTrustedSettings(web3, this.contracts),
-        },
-      },
-      protocol: {
-        settings: new DAOProtocolSettings(web3, this.contracts),
-      },
-      proposals: new DAOProposal(web3, this.contracts),
-    };
-    this.deposit = new Deposit(web3, this.contracts);
-    this.minipool = new Minipool(web3, this.contracts);
-    this.network = new Network(web3, this.contracts);
-    this.node = new Node(web3, this.contracts);
-    this.settings = {
-      auction: new AuctionSettings(web3, this.contracts),
-      deposit: new DepositSettings(web3, this.contracts),
-      minipool: new MinipoolSettings(web3, this.contracts),
-      network: new NetworkSettings(web3, this.contracts),
-      node: new NodeSettings(web3, this.contracts),
-    };
-    this.tokens = {
-      reth: new RETH(web3, this.contracts),
-      rpl: new RPL(web3, this.contracts),
-      legacyrpl: new LegacyRPL(web3, this.contracts),
-    };
-    this.rewards = {
-      pool: new Pool(web3, this.contracts),
-      claimNode: new ClaimNode(web3, this.contracts),
-      claimDAO: new ClaimDAO(web3, this.contracts),
-      claimTrustedNode: new ClaimTrustedNode(web3, this.contracts),
-    };
-    this.vault = new Vault(web3, this.contracts);
+  	// Initialise services
+  	this.contracts = new Contracts(web3, RocketStorage);
+  	this.auction = new Auction(web3, this.contracts);
+  	this.dao = {
+  		node: {
+  			trusted: {
+  				actions: new DAONodeTrustedActions(web3, this.contracts),
+  				node: new DAONodeTrusted(web3, this.contracts),
+  				proposals: new DAONodeTrustedProposals(web3, this.contracts),
+  				settings: new DAONodeTrustedSettings(web3, this.contracts),
+  			},
+  		},
+  		protocol: {
+  			settings: new DAOProtocolSettings(web3, this.contracts),
+  		},
+  		proposals: new DAOProposal(web3, this.contracts),
+  	};
+  	this.deposit = new Deposit(web3, this.contracts);
+  	this.minipool = new Minipool(web3, this.contracts);
+  	this.network = new Network(web3, this.contracts);
+  	this.node = new Node(web3, this.contracts);
+  	this.settings = {
+  		auction: new AuctionSettings(web3, this.contracts),
+  		deposit: new DepositSettings(web3, this.contracts),
+  		minipool: new MinipoolSettings(web3, this.contracts),
+  		network: new NetworkSettings(web3, this.contracts),
+  		node: new NodeSettings(web3, this.contracts),
+  	};
+  	this.tokens = {
+  		reth: new RETH(web3, this.contracts),
+  		rpl: new RPL(web3, this.contracts),
+  		legacyrpl: new LegacyRPL(web3, this.contracts),
+  	};
+  	this.rewards = {
+  		pool: new Pool(web3, this.contracts),
+  		claimNode: new ClaimNode(web3, this.contracts),
+  		claimDAO: new ClaimDAO(web3, this.contracts),
+  		claimTrustedNode: new ClaimTrustedNode(web3, this.contracts),
+  	};
+  	this.vault = new Vault(web3, this.contracts);
   }
 }
 

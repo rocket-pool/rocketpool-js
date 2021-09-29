@@ -10,5 +10,5 @@ export interface ContractArtifact {
 
 // Decode contract ABI
 export function decodeAbi(encodedAbi: string): AbiItem[] {
-  return JSON.parse(pako.inflate(Buffer.from(encodedAbi, "base64"), { to: "string" })) as AbiItem[];
+	return JSON.parse(pako.inflate(Buffer.from(encodedAbi, "base64"), { to: "string" })) as AbiItem[];
 }
