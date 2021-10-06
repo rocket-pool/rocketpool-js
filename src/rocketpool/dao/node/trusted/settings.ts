@@ -30,8 +30,8 @@ class DAONodeTrustedSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get member id given an address
 	public getMaximumDepositAssignments(): Promise<string> {
 		return this.rocketDAOProtocolSettingsDeposit.then((rocketDAOProtocolSettingsDeposit: Contract): Promise<string> => {
@@ -47,8 +47,8 @@ class DAONodeTrustedSettings {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

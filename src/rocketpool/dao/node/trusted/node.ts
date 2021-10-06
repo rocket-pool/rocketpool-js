@@ -18,8 +18,8 @@ class DAONodeTrusted {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	// Get member id given an address
 	public getMemberID(address: string): Promise<string> {
@@ -71,8 +71,8 @@ class DAONodeTrusted {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Bootstrap a DAO Member
 	public bootstrapMember(
 		id: string,

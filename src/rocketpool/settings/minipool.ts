@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
 
 /**
- * Rocket Pool minipool settings manager
+ * Rocket Pool Minipool Settings Manager
  */
 class MinipoolSettings {
 	// Constructor
@@ -16,8 +16,8 @@ class MinipoolSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Balance required to launch minipool in wei
 	public getLaunchBalance(): Promise<string> {
 		return this.rocketDAOProtocolSettingsMinipool.then((rocketDAOProtocolSettingsMinipool: Contract): Promise<string> => {

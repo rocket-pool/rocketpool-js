@@ -71,7 +71,7 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
 		// How many trusted nodes where in this interval? Their % claimed should be equal to that
 		assert(
 			Number(web3.utils.fromWei(ds1.trustedNodeClaimAmount)).toFixed(4) ==
-        Number(web3.utils.fromWei(ds2.contractClaimAllowance.div(ds2.trustedNodeClaimIntervalTotal))).toFixed(4),
+				Number(web3.utils.fromWei(ds2.contractClaimAllowance.div(ds2.trustedNodeClaimIntervalTotal))).toFixed(4),
 			"Contract claim amount should be equal to their desired equal allocation"
 		);
 		// The contracts claim perc should never change after a claim in the same interval
@@ -83,7 +83,7 @@ export async function rewardsClaimTrustedNode(web3: Web3, rp: RocketPool, truste
 		// How many trusted nodes where in this interval? Their % claimed should be equal to that
 		assert(
 			Number(web3.utils.fromWei(ds2.contractClaimTotal)).toFixed(4) ==
-        Number(web3.utils.fromWei(ds2.contractClaimAllowance.div(ds2.trustedNodeClaimIntervalTotal))).toFixed(4),
+				Number(web3.utils.fromWei(ds2.contractClaimAllowance.div(ds2.trustedNodeClaimIntervalTotal))).toFixed(4),
 			"Contract claim amount should be equal to their desired equal allocation"
 		);
 	}

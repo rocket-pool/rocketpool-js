@@ -19,12 +19,12 @@ class Rewards {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

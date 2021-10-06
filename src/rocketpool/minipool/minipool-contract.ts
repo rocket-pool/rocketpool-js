@@ -6,40 +6,40 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
 
 // Detail types
 export interface StatusDetails {
-  status: number;
-  block: number;
-  time: Date;
+	status: number;
+	block: number;
+	time: Date;
 }
 
 export interface NodeDetails {
-  address: string;
-  fee: number;
-  depositBalance: string;
-  refundBalance: string;
-  depositAssigned: boolean;
+	address: string;
+	fee: number;
+	depositBalance: string;
+	refundBalance: string;
+	depositAssigned: boolean;
 }
 
 export interface UserDetails {
-  depositBalance: string;
-  depositAssigned: boolean;
-  depositAssignedTime: Date;
+	depositBalance: string;
+	depositAssigned: boolean;
+	depositAssignedTime: Date;
 }
 
 export interface StakingDetails {
-  startBalance: string;
-  endBalance: string;
+	startBalance: string;
+	endBalance: string;
 }
 
 /**
- * RocketMinipool contract instance wrapper
+ * Rocket Pool RocketMinipool Contract Instance Wrapper
  */
 class MinipoolContract {
 	// Constructor
 	public constructor(private web3: Web3, public readonly address: string, public readonly contract: Contract) {}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	// Status details
 	public getStatusDetails(): Promise<StatusDetails> {
@@ -167,8 +167,8 @@ class MinipoolContract {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Dissolve the minipool
 	public dissolve(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return handleConfirmations(this.contract.methods.dissolve().send(options), onConfirmation);
@@ -180,8 +180,8 @@ class MinipoolContract {
 	}
 
 	/**
-   * Mutators - Restricted to minipool owner
-   */
+	 * Mutators - Restricted to minipool owner
+	 */
 	// Refund node ETH refinanced from user deposited ETH
 	public refund(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return handleConfirmations(this.contract.methods.refund().send(options), onConfirmation);

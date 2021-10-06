@@ -19,8 +19,8 @@ class Pool {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get the claim intervals that have passed
 	public getClaimIntervalsPassed(): Promise<string> {
 		return this.rocketRewardsPool.then((rocketRewardsPool: Contract): Promise<string> => {
@@ -85,8 +85,8 @@ class Pool {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

@@ -7,7 +7,7 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
 import ERC20 from "./erc20";
 
 /**
- * Rocket Pool Legacy RPL token manager
+ * Rocket Pool Legacy RPL Token Manager
  */
 class LegacyRPL extends ERC20 {
 	// Constructor
@@ -16,8 +16,8 @@ class LegacyRPL extends ERC20 {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get contract address
 	public getAddress(): Promise<string> {
 		return this.tokenContract.then((tokenContract: Contract): string => {

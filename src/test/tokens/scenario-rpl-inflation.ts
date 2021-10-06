@@ -7,10 +7,10 @@ import { getCurrentTime, increaseTime, mineBlocks } from "../_utils/evm";
 import { setRPLInflationIntervalRate, setRPLInflationStartTime } from "../dao/scenario-dao-protocol-bootstrap";
 
 export interface Claim {
-  timeInterval: number;
-  timeStart: number;
-  timeClaim: number;
-  yearlyInflationTarget: number;
+	timeInterval: number;
+	timeStart: number;
+	timeClaim: number;
+	yearlyInflationTarget: number;
 }
 
 // Set inflation config
@@ -93,7 +93,7 @@ export async function rplClaimInflation(web3: Web3, rp: RocketPool, config: Clai
 	// Some expected data results based on the passed parameters
 	const dailyInflation = web3.utils.toBN((1 + config.yearlyInflationTarget) ** (1 / 365) * 1e18);
 	const expectedInflationLastCalcTime =
-    Number(timeIntervalLastCalc) === 0 && config.timeStart < config.timeClaim ? config.timeStart : Number(timeIntervalLastCalc);
+		Number(timeIntervalLastCalc) === 0 && config.timeStart < config.timeClaim ? config.timeStart : Number(timeIntervalLastCalc);
 	const expectedInflationIntervalsPassed = Number(inflationData1.inflationIntervalsPassed);
 
 	// Get updated time after fast forward

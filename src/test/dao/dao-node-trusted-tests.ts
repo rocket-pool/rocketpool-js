@@ -67,7 +67,7 @@ export default function runDAONodeTrusted(web3: Web3, rp: RocketPool) {
 		before(async () => {
 			// Get accounts
 			[guardian, userOne, registeredNode1, registeredNode2, registeredNode3, registeredNodeTrusted1, registeredNodeTrusted2, registeredNodeTrusted3] =
-        await web3.eth.getAccounts();
+				await web3.eth.getAccounts();
 
 			const rocketStorage = await rp.contracts.get("rocketStorage");
 

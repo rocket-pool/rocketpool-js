@@ -69,7 +69,7 @@ export async function rewardsClaimDAO(web3: Web3, rp: RocketPool, options: SendO
 	// Verify the claim allowance is correct
 	assert(
 		Number(web3.utils.fromWei(ds2.daoClaimAllowance)).toFixed(4) ==
-      Number(Number(web3.utils.fromWei(ds2.daoClaimPerc)) * Number(web3.utils.fromWei(ds2.intervalRewardsTotal))).toFixed(4),
+			Number(Number(web3.utils.fromWei(ds2.daoClaimPerc)) * Number(web3.utils.fromWei(ds2.intervalRewardsTotal))).toFixed(4),
 		"Contract claim amount total does not equal the expected claim amount"
 	);
 	// Should be 1 collect per interval

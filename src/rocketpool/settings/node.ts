@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
 
 /**
- * Rocket Pool node settings manager
+ * Rocket Pool Node Settings Manager
  */
 class NodeSettings {
 	// Constructor
@@ -16,8 +16,8 @@ class NodeSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Node registrations are currently enabled
 	public getRegistrationEnabled(): Promise<boolean> {
 		return this.rocketDAOProtocolSettingsNode.then((rocketDAOProtocolSettingsNode: Contract): Promise<boolean> => {

@@ -9,13 +9,13 @@ import { getNodeActiveMinipoolCount, getNodeStakingMinipoolCount } from "../../t
 
 // Minipool details
 export interface MinipoolDetails {
-  address: string;
-  exists: boolean;
-  pubkey: string;
+	address: string;
+	exists: boolean;
+	pubkey: string;
 }
 
 /**
- * Rocket Pool minipool manager
+ * Rocket Pool Minipool Manager
  */
 class Minipool {
 	// Constructor
@@ -39,8 +39,8 @@ class Minipool {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get all minipool details
 	public getMinipools(): Promise<MinipoolDetails[]> {
 		return this.getMinipoolAddresses().then((addresses: string[]): Promise<MinipoolDetails[]> => {
@@ -231,8 +231,8 @@ class Minipool {
 	}
 
 	/**
-   * Mutators - Restricted to trusted nodes
-   */
+	 * Mutators - Restricted to trusted nodes
+	 */
 	// Submit a minipool withdrawable event
 	public submitMinipoolWithdrawable(minipoolAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {

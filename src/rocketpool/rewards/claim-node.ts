@@ -19,8 +19,8 @@ class Rewards {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Determine if the claim is possible
 	public getClaimPossible(address: string): Promise<string> {
 		return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
@@ -29,8 +29,8 @@ class Rewards {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Make a node claim
 	public claim(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<TransactionReceipt> => {

@@ -1,6 +1,7 @@
 {
-  "endOfLine": "lf",
-  "printWidth": 160,
-  "tabWidth": 2,
-  "trailingComma": "es5"
+	"useTabs": true,
+	"endOfLine": "lf",
+	"printWidth": 160,
+	"tabWidth": 2,
+	"trailingComma": "es5"
 }

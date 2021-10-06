@@ -7,7 +7,7 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
 import ERC20 from "./erc20";
 
 /**
- * Rocket Pool RETH token manager
+ * Rocket Pool RETH Token Manager
  */
 class RETH extends ERC20 {
 	// Constructor
@@ -16,8 +16,8 @@ class RETH extends ERC20 {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get the amount of ETH backing an amount of rETH
 	public getEthValue(rethAmountWei: string): Promise<string> {
 		return this.tokenContract.then((tokenContract: Contract): Promise<string> => {
@@ -63,8 +63,8 @@ class RETH extends ERC20 {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Burn rETH for ETH
 	public burn(amountWei: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {

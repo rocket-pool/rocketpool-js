@@ -18,12 +18,12 @@ class DAONodeTrustedProposals {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Make a Proposal to the DAO
 	public propose(message: string, payload: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {

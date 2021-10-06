@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
 
 /**
- * Rocket Pool deposit settings manager
+ * Rocket Pool Deposit Settings Manager
  */
 class DepositSettings {
 	// Constructor
@@ -16,8 +16,8 @@ class DepositSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	// Deposits are currently enabled
 	public getDepositEnabled(): Promise<boolean> {

@@ -22,8 +22,8 @@ class DAOProtocolSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get member id given an address
 	public getRethDepositDelay(): Promise<number> {
 		return this.rocketDAOProtocolSettingsNetwork.then((rocketDAOProtocolSettingsNetwork: Contract): Promise<number> => {
@@ -32,8 +32,8 @@ class DAOProtocolSettings {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

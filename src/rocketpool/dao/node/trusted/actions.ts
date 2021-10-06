@@ -18,12 +18,12 @@ class DAONodeTrustedActions {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 
 	// Join the DAO
 	public actionJoin(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {

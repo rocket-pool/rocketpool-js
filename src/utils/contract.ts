@@ -4,8 +4,8 @@ import { AbiItem } from "web3-utils";
 
 // Contract artifact
 export interface ContractArtifact {
-  abi: AbiItem[];
-  networks: { [id: string]: { address: string } };
+	abi: AbiItem[];
+	networks: { [id: string]: { address: string } };
 }
 
 // Decode contract ABI

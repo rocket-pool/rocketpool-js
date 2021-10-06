@@ -7,13 +7,13 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
 
 // Node details
 export interface NodeDetails {
-  address: string;
-  exists: boolean;
-  timezoneLocation: string;
+	address: string;
+	exists: boolean;
+	timezoneLocation: string;
 }
 
 /**
- * Rocket Pool node manager
+ * Rocket Pool Node Manager
  */
 class Node {
 	// Constructor
@@ -37,8 +37,8 @@ class Node {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get all node details
 	public getNodes(): Promise<NodeDetails[]> {
 		return this.getNodeAddresses().then((addresses: string[]): Promise<NodeDetails[]> => {
@@ -180,8 +180,8 @@ class Node {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 
 	// Register a node
 	public registerNode(timezoneLocation: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
@@ -221,8 +221,8 @@ class Node {
 	}
 
 	/**
-   * Mutators - Restricted to registered nodes
-   */
+	 * Mutators - Restricted to registered nodes
+	 */
 
 	// Set the node's timezone location
 	public setTimezoneLocation(timezoneLocation: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
@@ -239,8 +239,8 @@ class Node {
 	}
 
 	/**
-   * Mutators - Restricted to super users
-   */
+	 * Mutators - Restricted to super users
+	 */
 }
 
 // Exports

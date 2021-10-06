@@ -7,7 +7,7 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
 import ERC20 from "./erc20";
 
 /**
- * Rocket Pool RPL token manager
+ * Rocket Pool RPL Token Manager
  */
 class RPL extends ERC20 {
 	// Constructor
@@ -16,8 +16,8 @@ class RPL extends ERC20 {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get contract address
 	public getAddress(): Promise<string> {
 		return this.tokenContract.then((tokenContract: Contract): string => {
@@ -40,8 +40,8 @@ class RPL extends ERC20 {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Swap current RPL fixed supply tokens for new RPL
 	public swapTokens(amountWei: any, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.tokenContract.then((tokenContract: Contract): Promise<TransactionReceipt> => {

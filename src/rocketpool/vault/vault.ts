@@ -19,8 +19,8 @@ class Vault {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get contract address
 	public getAddress(): Promise<string> {
 		return this.rocketVault.then((rocketVault: Contract): string => {
@@ -36,8 +36,8 @@ class Vault {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

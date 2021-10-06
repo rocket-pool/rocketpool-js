@@ -22,8 +22,8 @@ export function getTxContractEvents(web3: Web3, txReceipt: TransactionReceipt, c
 					if (decodeParam.indexed && (decodeParam.type == "string" || decodeParam.type == "bytes")) decodeParam.type = "bytes32"; // Issues decoding indexed string and bytes parameters
 					return decodeParam;
 				}),
-        log.raw!.data,
-        log.raw!.topics.slice(1)
+				log.raw!.data,
+				log.raw!.topics.slice(1)
 			)
 		);
 }

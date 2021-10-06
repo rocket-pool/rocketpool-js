@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
 
 /**
- * Rocket Pool network settings manager
+ * Rocket Pool Network Settings Manager
  */
 class NetworkSettings {
 	// Constructor
@@ -16,8 +16,8 @@ class NetworkSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	// The threshold of trusted nodes that must reach consensus on oracle data to commit it
 	public getNodeConsensusThreshold(): Promise<number> {

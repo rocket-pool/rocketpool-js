@@ -247,15 +247,15 @@ export async function setDAOProtocolBootstrapSettingMulti(
 		return Promise.all(
 			instances.map((rocketDAOProtocolSettingsContract, index) => {
 				switch (types[index]) {
-				case 0:
-					return rocketDAOProtocolSettingsContract.methods
-						.getSettingUint(_settingPaths[index])
-						.call()
-						.then((value: any) => web3.utils.toBN(value));
-				case 1:
-					return rocketDAOProtocolSettingsContract.methods.getSettingBool(_settingPaths[index]).call();
-				case 2:
-					return rocketDAOProtocolSettingsContract.methods.getSettingAddress(_settingPaths[index]).call();
+					case 0:
+						return rocketDAOProtocolSettingsContract.methods
+							.getSettingUint(_settingPaths[index])
+							.call()
+							.then((value: any) => web3.utils.toBN(value));
+					case 1:
+						return rocketDAOProtocolSettingsContract.methods.getSettingBool(_settingPaths[index]).call();
+					case 2:
+						return rocketDAOProtocolSettingsContract.methods.getSettingAddress(_settingPaths[index]).call();
 				}
 			})
 		);
@@ -270,15 +270,15 @@ export async function setDAOProtocolBootstrapSettingMulti(
 	for (let i = 0; i < _values.length; i++) {
 		const value = _values[i];
 		switch (types[i]) {
-		case 0:
-			assert(data[i].eq(web3.utils.toBN(value)), "DAO protocol uint256 setting not updated in bootstrap mode");
-			break;
-		case 1:
-			assert(data[i] === value, "DAO protocol boolean setting not updated in bootstrap mode");
-			break;
-		case 2:
-			await assert(data[i] === value, "DAO protocol address setting not updated in bootstrap mode");
-			break;
+			case 0:
+				assert(data[i].eq(web3.utils.toBN(value)), "DAO protocol uint256 setting not updated in bootstrap mode");
+				break;
+			case 1:
+				assert(data[i] === value, "DAO protocol boolean setting not updated in bootstrap mode");
+				break;
+			case 2:
+				await assert(data[i] === value, "DAO protocol address setting not updated in bootstrap mode");
+				break;
 		}
 	}
 }

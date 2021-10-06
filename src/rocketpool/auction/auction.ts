@@ -9,18 +9,39 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
  * Rocket Pool Auction
  */
 class Auction {
-	// Constructor
+	/**
+	 * Create a new Auction instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool contract manager instance
+	 *
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-	// Contract accessors
+	/**
+	 * Private accessor use to retrieve the related contract
+	 */
 	private get rocketAuctionManager(): Promise<Contract> {
 		return this.contracts.get("rocketAuctionManager");
 	}
 
 	/**
-   * Getters
-   */
-	// Check that a lot exists given a lotIndex
+	 * Check if the lot exists given a lotIndex
+	 * @param lotIndex A number representing the lotIndex
+	 * @returns a Promise<boolean> as to whether the lot exists or not
+	 *
+	 * @example Using Async/Await
+	 * ```ts
+	 * async function getLotExists(lotIndex: number) {
+	 *   return await rp.auction.getLotExists(lotIndex);
+	 * }
+	 * ```
+	 *
+	 * @example Using Promises
+	 * ```ts
+	 * const exists = rp.auction.getLotExists(lotIndex).then((val: boolean) => { val };
+	 * ```
+	 */
 	public getLotExists(lotIndex: number): Promise<boolean> {
 		return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<boolean> => {
 			return rocketAuctionManager.methods.getLotExists(lotIndex).call();
@@ -154,8 +175,8 @@ class Auction {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Create a lot
 	public createLot(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketAuctionManager.then((rocketAuctionManager: Contract): Promise<TransactionReceipt> => {
@@ -182,12 +203,12 @@ class Auction {
 	}
 
 	/**
-   * Mutators - Restricted to registered nodes
-   */
+	 * Mutators - Restricted to registered nodes
+	 */
 
 	/**
-   * Mutators - Restricted to super users
-   */
+	 * Mutators - Restricted to super users
+	 */
 }
 
 // Exports

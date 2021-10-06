@@ -1,49 +1,52 @@
 {
-  "name": "rocketpool",
-  "version": "1.0.0",
-  "description": "A javascript library for interacting with the Rocket Pool network",
-  "main": "dist/rocketpool/rocketpool.js",
-  "scripts": {
-    "build": "tsc && npx babel build -d dist && rm -rf build",
-    "test": "mocha --require ts-node/register --timeout 30000 src/test/index.ts",
-    "format": "prettier --write .",
-    "docs": "typedoc --out docs ./src/rocketpool/rocketpool.ts --readme none --githubPages false"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rocket-pool/rocketpool-js.git"
-  },
-  "author": "Rocket Pool",
-  "bugs": {
-    "url": "https://github.com/rocket-pool/rocketpool-js/issues"
-  },
-  "homepage": "https://github.com/rocket-pool/rocketpool-js#readme",
-  "dependencies": {
-    "@types/node": "^14.14.37",
-    "pako": "^1.0.11",
-    "web3": "^1.3.6"
-  },
-  "devDependencies": {
-    "@babel/runtime": "^7.10.4",
-    "@chainsafe/lodestar-types": "^0.9.0",
-    "@chainsafe/ssz": "^0.6.7",
-    "@types/chai": "^4.2.11",
-    "@types/mocha": "^5.2.7",
-    "@types/pako": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
-    "@typescript-eslint/parser": "^4.29.2",
-    "babel-cli": "^6.18.0",
-    "babel-preset-env": "^1.7.0",
-    "bn.js": "^4.11.8",
-    "chai": "^4.2.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.4.1",
-    "prettier-eslint": "^13.0.0",
-    "prettier-eslint-cli": "^5.0.1",
-    "ts-node": "^8.10.2",
-    "typedoc": "^0.22.4",
-    "typedoc-plugin-markdown": "^3.11.2",
-    "typescript": "^4.4.3"
-  }
+	"name": "rocketpool",
+	"version": "1.0.0",
+	"description": "A javascript library for interacting with the Rocket Pool network",
+	"main": "dist/rocketpool/rocketpool.js",
+	"scripts": {
+		"build": "tsc && npx babel build -d dist && rm -rf build",
+		"test": "mocha --require ts-node/register --timeout 30000 src/test/index.ts",
+		"format": "prettier --write .",
+		"docs": "typedoc --options typedoc.json --tsconfig tsconfig.json"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rocket-pool/rocketpool-js.git"
+	},
+	"author": "Rocket Pool",
+	"bugs": {
+		"url": "https://github.com/rocket-pool/rocketpool-js/issues"
+	},
+	"homepage": "https://github.com/rocket-pool/rocketpool-js#readme",
+	"dependencies": {
+		"@types/node": "^14.14.37",
+		"pako": "^1.0.11",
+		"web3": "^1.3.6"
+	},
+	"devDependencies": {
+		"@babel/runtime": "^7.10.4",
+		"@chainsafe/lodestar-types": "^0.9.0",
+		"@chainsafe/ssz": "^0.6.7",
+		"@types/chai": "^4.2.11",
+		"@types/mocha": "^5.2.7",
+		"@types/pako": "^1.0.1",
+		"@typescript-eslint/eslint-plugin": "^4.29.2",
+		"@typescript-eslint/parser": "^4.29.2",
+		"babel-cli": "^6.18.0",
+		"babel-preset-env": "^1.7.0",
+		"bn.js": "^4.11.8",
+		"chai": "^4.2.0",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"prettier": "^2.4.1",
+		"prettier-eslint": "^13.0.0",
+		"prettier-eslint-cli": "^5.0.1",
+		"ts-node": "^8.10.2",
+		"typedoc": "^0.22.5",
+		"typedoc-plugin-markdown": "^3.11.3",
+		"typedoc-plugin-merge-modules": "^3.0.2",
+		"typedoc-plugin-missing-exports": "^0.22.3",
+		"typedoc-plugin-rename-defaults": "^0.4.0",
+		"typescript": "^4.4.3"
+	}
 }

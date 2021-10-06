@@ -4,7 +4,7 @@ import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
 
 /**
- * Rocket Pool deposit settings manager
+ * Rocket Pool Auction Settings Manager
  */
 class AuctionSettings {
 	// Constructor
@@ -16,8 +16,8 @@ class AuctionSettings {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Return the Lot Maximum Eth Value Setting
 	public getLotMaximumEthValue(): Promise<number> {
 		return this.rocketDAOProtocolSettingsAuction.then((rocketDAOProtocolSettingsAuction: Contract): Promise<number> => {

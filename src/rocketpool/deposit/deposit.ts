@@ -6,7 +6,7 @@ import Contracts from "../contracts/contracts";
 import { ConfirmationHandler, handleConfirmations } from "../../utils/transaction";
 
 /**
- * Rocket Pool deposit pool manager
+ * Rocket Pool Deposit Pool Manager
  */
 class Deposit {
 	// Constructor
@@ -18,8 +18,8 @@ class Deposit {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 
 	// Get the current deposit pool balance in wei
 	public getBalance(): Promise<string> {
@@ -43,8 +43,8 @@ class Deposit {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 	// Make a deposit
 	public deposit(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDepositPool.then((rocketDepositPool: Contract): Promise<TransactionReceipt> => {

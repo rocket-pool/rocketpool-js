@@ -5,38 +5,38 @@ import { AbiItem } from "web3-utils";
 import { ContractArtifact, decodeAbi } from "../../utils/contract";
 
 /**
- * Rocket Pool contract manager
+ * Rocket Pool Contract Manager
  */
 class Contracts {
-  // Contracts
-  public readonly rocketStorage: Promise<Contract>;
-  private addresses: { [name: string]: Promise<string> } = {};
-  private abis: { [name: string]: Promise<AbiItem[]> } = {};
-  private contracts: { [name: string]: Promise<Contract> } = {};
+	// Contracts
+	public readonly rocketStorage: Promise<Contract>;
+	private addresses: { [name: string]: Promise<string> } = {};
+	private abis: { [name: string]: Promise<AbiItem[]> } = {};
+	private contracts: { [name: string]: Promise<Contract> } = {};
 
-  // Constructor
-  public constructor(private web3: Web3, private RocketStorage: ContractArtifact | string) {
-  	// Initialise rocketStorage contract promise
-  	if (typeof RocketStorage === "string") {
-  		this.rocketStorage = Promise.resolve(new this.web3.eth.Contract(RocketStorageAbi, RocketStorage));
-  	} else {
-  		this.rocketStorage = this.web3.eth.net
-  			.getId()
-  			.then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
-  	}
-  }
+	// Constructor
+	public constructor(private web3: Web3, private RocketStorage: ContractArtifact | string) {
+		// Initialise rocketStorage contract promise
+		if (typeof RocketStorage === "string") {
+			this.rocketStorage = Promise.resolve(new this.web3.eth.Contract(RocketStorageAbi, RocketStorage));
+		} else {
+			this.rocketStorage = this.web3.eth.net
+				.getId()
+				.then((networkId: number): Contract => new this.web3.eth.Contract(RocketStorage.abi, RocketStorage.networks[networkId].address));
+		}
+	}
 
-  // Load address/es by name
-  public address(name: string): Promise<string>;
-  public address(names: string[]): Promise<string[]>;
-  public address(name: any): any {
-  	// Array mode
-  	if (typeof name === "object") return Promise.all(name.map((n: string): Promise<string> => this.address(n)));
+	// Load address/es by name
+	public address(name: string): Promise<string>;
+	public address(names: string[]): Promise<string[]>;
+	public address(name: any): any {
+		// Array mode
+		if (typeof name === "object") return Promise.all(name.map((n: string): Promise<string> => this.address(n)));
 
-  	// Use cached address promise
+		// Use cached address promise
 		if (!this.addresses[name]) {
 			this.addresses[name] = this.rocketStorage.then(
-				(rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3("contract.address", name)).call(),
+				(rocketStorage: Contract): Promise<string> => rocketStorage.methods.getAddress(this.web3.utils.soliditySha3("contract.address", name)).call()
 			);
 			return this.addresses[name];
 		} else {
@@ -46,14 +46,14 @@ class Contracts {
 		// Load address
 	}
 
-  // Load ABI/s by name
-  public abi(name: string): Promise<AbiItem[]>;
-  public abi(names: string[]): Promise<AbiItem[][]>;
-  public abi(name: any): any {
-  	// Array mode
-  	if (typeof name === "object") return Promise.all(name.map((n: string): Promise<AbiItem[]> => this.abi(n)));
+	// Load ABI/s by name
+	public abi(name: string): Promise<AbiItem[]>;
+	public abi(names: string[]): Promise<AbiItem[][]>;
+	public abi(name: any): any {
+		// Array mode
+		if (typeof name === "object") return Promise.all(name.map((n: string): Promise<AbiItem[]> => this.abi(n)));
 
-  	// Use cached ABI promise
+		// Use cached ABI promise
 		if (!this.abis[name]) {
 			this.abis[name] = this.rocketStorage
 				.then((rocketStorage: Contract): Promise<string> => rocketStorage.methods.getString(this.web3.utils.soliditySha3("contract.abi", name)).call())
@@ -66,14 +66,14 @@ class Contracts {
 		// Load and decode ABI
 	}
 
-  // Load contract/s by name
-  public get(name: string): Promise<Contract>;
-  public get(names: string[]): Promise<Contract[]>;
-  public get(name: any): any {
-  	// Array mode
-  	if (typeof name === "object") return Promise.all(name.map((n: string): Promise<Contract> => this.get(n)));
+	// Load contract/s by name
+	public get(name: string): Promise<Contract>;
+	public get(names: string[]): Promise<Contract[]>;
+	public get(name: any): any {
+		// Array mode
+		if (typeof name === "object") return Promise.all(name.map((n: string): Promise<Contract> => this.get(n)));
 
-  	// Use cached contract promise
+		// Use cached contract promise
 		if (!this.contracts[name]) {
 			this.contracts[name] = this.rocketStorage
 				.then((rocketStorage: Contract): Promise<[string, AbiItem[]]> => Promise.all([this.address(name), this.abi(name)]))
@@ -86,10 +86,10 @@ class Contracts {
 		// Load contract data and initialise
 	}
 
-  // Create a new contract instance with the specified ABI name and address
-  public make(name: string, address: string): Promise<Contract> {
-  	return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
-  }
+	// Create a new contract instance with the specified ABI name and address
+	public make(name: string, address: string): Promise<Contract> {
+		return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
+	}
 }
 
 const RocketStorageAbi = <AbiItem[]>[

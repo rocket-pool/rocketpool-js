@@ -18,8 +18,8 @@ class DAOProposal {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get the total of DAO Proposals
 	public getTotal(): Promise<number> {
 		return this.rocketDAOProposal.then((rocketDAOProposal: Contract): Promise<number> => {
@@ -77,8 +77,8 @@ class DAOProposal {
 	}
 
 	/**
-   * Mutators - Public
-   */
+	 * Mutators - Public
+	 */
 }
 
 // Exports

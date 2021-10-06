@@ -6,7 +6,7 @@ import Contracts from "../contracts/contracts";
 import { ConfirmationHandler, handleConfirmations } from "../../utils/transaction";
 
 /**
- * Rocket Pool network manager
+ * Rocket Pool Network Manager
  */
 class Network {
 	// Constructor
@@ -26,8 +26,8 @@ class Network {
 	}
 
 	/**
-   * Getters
-   */
+	 * Getters
+	 */
 	// Get the block that current network balances are set for
 	public getBalancesBlock(): Promise<number> {
 		return this.rocketNetworkBalances
@@ -120,8 +120,8 @@ class Network {
 	}
 
 	/**
-   * Mutators - Restricted to trusted nodes
-   */
+	 * Mutators - Restricted to trusted nodes
+	 */
 	// Submit network balances
 	public submitBalances(
 		block: number,
