@@ -24,7 +24,7 @@ class Rewards {
   // Determine if the claim is possible
   public getClaimPossible(address: string): Promise<string> {
     return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
-      return rocketClaimNode.methods.getNodeClaimPossible(address).call();
+      return rocketClaimNode.methods.getClaimPossible(address).call();
     });
   }
 
