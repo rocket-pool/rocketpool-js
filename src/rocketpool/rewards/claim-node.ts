@@ -18,6 +18,7 @@ class Rewards {
 		return this.contracts.get("rocketClaimNode");
 	}
 
+<<<<<<< HEAD
 	/**
 	 * Getters
 	 */
@@ -27,6 +28,17 @@ class Rewards {
 			return rocketClaimNode.methods.getNodeClaimPossible(address).call();
 		});
 	}
+=======
+  /**
+   * Getters
+   */
+  // Determine if the claim is possible
+  public getClaimPossible(address: string): Promise<string> {
+    return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
+      return rocketClaimNode.methods.getClaimPossible(address).call();
+    });
+  }
+>>>>>>> 56273c7223eb9068dcca21756a4de64f20056f98
 
 	/**
 	 * Mutators - Public

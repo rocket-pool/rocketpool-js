@@ -33,7 +33,7 @@ var Rewards = function () {
         // Determine if the claim is possible
         value: function getClaimPossible(address) {
             return this.rocketClaimNode.then(function (rocketClaimNode) {
-                return rocketClaimNode.methods.getNodeClaimPossible(address).call();
+                return rocketClaimNode.methods.getClaimPossible(address).call();
             });
         }
         /**
