@@ -1,5 +1,5 @@
 {
-  "name": "@rocketpool/js",
+  "name": "@rocketpool/api",
   "version": "0.0.9",
   "description": "A javascript library for interacting with the Rocket Pool network",
   "main": "dist/rocketpool/rocketpool.js",
