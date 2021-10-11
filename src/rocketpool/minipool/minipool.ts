@@ -18,7 +18,12 @@ export interface MinipoolDetails {
  * Rocket Pool Minipool Manager
  */
 class Minipool {
-	// Constructor
+	/**
+	 * Create a new Minipool instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

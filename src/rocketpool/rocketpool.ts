@@ -70,6 +70,9 @@ class RocketPool {
 	/**
 	 * Create a new Rocket Pool instance.
 	 *
+	 * @param web3 A Web3 instance
+	 * @param RocketStorage a RocketStorage address as a string or ContractArtifact (JSON ABI file)
+	 * @returns a RocketPool API object for use in your project
 	 *
 	 * Example using RocketStorage contract address
 	 * ```ts
@@ -78,16 +81,12 @@ class RocketPool {
 	 * const rp = new RocketPool(web3, RocketStorage);
 	 * ```
 	 *
-	 *
 	 * Example using Contract Artifact (ABI JSON file)
 	 * ```ts
 	 * // Using a Contract Artifact (ABI JSON file)
 	 * import RocketStorage from './contracts/RocketStorage.json';
 	 * const rp = new RocketPool(web3, RocketStorage);
 	 * ```
-	 * @param web3 A Web3 instance
-	 * @param RocketStorage a RocketStorage address as a string or ContractArtifact (JSON ABI file)
-	 * @returns a RocketPool API object for use in your project
 	 */
 	public constructor(public readonly web3: Web3, public readonly RocketStorage: ContractArtifact | string) {
 		// Initialise services

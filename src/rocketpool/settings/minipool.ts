@@ -7,7 +7,12 @@ import Contracts from "../contracts/contracts";
  * Rocket Pool Minipool Settings Manager
  */
 class MinipoolSettings {
-	// Constructor
+	/**
+	 * Create a new Minipool Settings instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

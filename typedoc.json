@@ -40,5 +40,6 @@
 	"hideBreadcrumbs": true,
 	"excludeExternals": true,
 	"mergeModulesMergeMode": "project",
-	"filenameSeparator": "/"
+	"filenameSeparator": "/",
+	"sort": "source-order"
 }

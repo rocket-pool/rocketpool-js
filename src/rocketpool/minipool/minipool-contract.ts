@@ -31,10 +31,15 @@ export interface StakingDetails {
 }
 
 /**
- * Rocket Pool RocketMinipool Contract Instance Wrapper
+ * Rocket Pool Minipool Contract Instance Wrapper
  */
 class MinipoolContract {
-	// Constructor
+	/**
+	 * Create a new Minipool Contract instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, public readonly address: string, public readonly contract: Contract) {}
 
 	/**

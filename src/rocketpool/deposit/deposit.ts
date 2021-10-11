@@ -9,7 +9,12 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
  * Rocket Pool Deposit Pool Manager
  */
 class Deposit {
-	// Constructor
+	/**
+	 * Create a new Deposit instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

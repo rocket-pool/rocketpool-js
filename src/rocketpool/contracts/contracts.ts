@@ -14,7 +14,12 @@ class Contracts {
 	private abis: { [name: string]: Promise<AbiItem[]> } = {};
 	private contracts: { [name: string]: Promise<Contract> } = {};
 
-	// Constructor
+	/**
+	 * Create a new Contract instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param RocketStorage a RocketStorage address as a string or ContractArtifact (JSON ABI file)
+	 */
 	public constructor(private web3: Web3, private RocketStorage: ContractArtifact | string) {
 		// Initialise rocketStorage contract promise
 		if (typeof RocketStorage === "string") {
@@ -86,7 +91,17 @@ class Contracts {
 		// Load contract data and initialise
 	}
 
-	// Create a new contract instance with the specified ABI name and address
+	/**
+	 * Create a new contract instance with the specified ABI name and address
+	 * @param name A string representing the name of the contract
+	 * @param address A string representing the address of the specific instance
+	 * @returns a Promise<Contract> resolving to a web3 contract instance
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const minipool = await rp.contracts.make("rocketMinipoolDelegate", "0x1111111111111111111111111111111111111111");
+	 * ```
+	 */
 	public make(name: string, address: string): Promise<Contract> {
 		return this.abi(name).then((abi: AbiItem[]): Contract => new this.web3.eth.Contract(abi, address));
 	}

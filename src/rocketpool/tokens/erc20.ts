@@ -9,7 +9,13 @@ import { ConfirmationHandler, handleConfirmations } from "../../utils/transactio
  * ERC20 Token Contract
  */
 abstract class ERC20 {
-	// Constructor
+	/**
+	 * Create a new ERC20 instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 * @param tokenContractName A string representing the Token Contract Name
+	 */
 	public constructor(protected web3: Web3, protected contracts: Contracts, protected tokenContractName: string) {}
 
 	// Contract accessor

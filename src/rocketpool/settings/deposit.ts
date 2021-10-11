@@ -7,7 +7,12 @@ import Contracts from "../contracts/contracts";
  * Rocket Pool Deposit Settings Manager
  */
 class DepositSettings {
-	// Constructor
+	/**
+	 * Create a new Deposit Settings instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

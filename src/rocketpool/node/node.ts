@@ -16,7 +16,12 @@ export interface NodeDetails {
  * Rocket Pool Node Manager
  */
 class Node {
-	// Constructor
+	/**
+	 * Create a new Node instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

@@ -10,7 +10,12 @@ import ERC20 from "./erc20";
  * Rocket Pool RETH Token Manager
  */
 class RETH extends ERC20 {
-	// Constructor
+	/**
+	 * Create a new rETH instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(web3: Web3, contracts: Contracts) {
 		super(web3, contracts, "rocketTokenRETH");
 	}

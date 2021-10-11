@@ -9,7 +9,12 @@ import { ConfirmationHandler, handleConfirmations } from "../../../../utils/tran
  * Rocket Pool DAO Trusted Node Proposals
  */
 class DAONodeTrustedProposals {
-	// Constructor
+	/**
+	 * Create a new DAONodeTrustedProposals instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

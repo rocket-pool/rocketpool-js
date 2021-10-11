@@ -10,7 +10,12 @@ import { NodeDetails } from "../node/node";
  * Rocket Pool Rewards
  */
 class Pool {
-	// Constructor
+	/**
+	 * Create a new Pool instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

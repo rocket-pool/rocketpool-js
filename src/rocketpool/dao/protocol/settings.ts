@@ -9,7 +9,12 @@ import { ConfirmationHandler, handleConfirmations } from "../../../utils/transac
  * Rocket Pool DAO Protocol Settings
  */
 class DAOProtocolSettings {
-	// Constructor
+	/**
+	 * Create a new DAO Protocol Settings instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors

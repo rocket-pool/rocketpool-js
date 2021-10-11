@@ -10,7 +10,12 @@ import { NodeDetails } from "../node/node";
  * Rocket Pool Rewards
  */
 class Rewards {
-	// Constructor
+	/**
+	 * Create a new Rewards instance.
+	 *
+	 * @param web3 A valid Web3 instance
+	 * @param contracts A Rocket Pool Contract Manager Instance
+	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
 	// Contract accessors
@@ -18,27 +23,15 @@ class Rewards {
 		return this.contracts.get("rocketClaimNode");
 	}
 
-<<<<<<< HEAD
 	/**
 	 * Getters
 	 */
 	// Determine if the claim is possible
 	public getClaimPossible(address: string): Promise<string> {
 		return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
-			return rocketClaimNode.methods.getNodeClaimPossible(address).call();
+			return rocketClaimNode.methods.getClaimPossible(address).call();
 		});
 	}
-=======
-  /**
-   * Getters
-   */
-  // Determine if the claim is possible
-  public getClaimPossible(address: string): Promise<string> {
-    return this.rocketClaimNode.then((rocketClaimNode: Contract): Promise<string> => {
-      return rocketClaimNode.methods.getClaimPossible(address).call();
-    });
-  }
->>>>>>> 56273c7223eb9068dcca21756a4de64f20056f98
 
 	/**
 	 * Mutators - Public
