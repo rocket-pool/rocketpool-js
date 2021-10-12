@@ -26,9 +26,9 @@ class Auction {
 	}
 
 	/**
-	 * Check if the Lot Exists given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<boolean> as to whether the lot exists or not
+	 * Check if the lot exists given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<boolean> that resolves to a boolean representing whether the lot exists or not
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -42,9 +42,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Start Block given a Lot Index
+	 * Return the lot start block given a lot index
 	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Start Block
+	 * @returns a Promise<number> that resolves to a number representing the lot start block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -58,9 +58,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot End Block given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot End Block
+	 * Return the lot end block given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot end block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -74,9 +74,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Start Price given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Start Price
+	 * Return the lot start price given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot start price
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -91,9 +91,9 @@ class Auction {
 
 
 	/**
-	 * Return the Lot Reserve Price given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Reserve Price
+	 * Return the lot reserve price given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the Lot Reserve Price
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -107,9 +107,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Total Bid Amount given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Total Bid Amount
+	 * Return the lot total bid amount given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot total bid amount
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -123,9 +123,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Total RPL Amount given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Total RPL Amount
+	 * Return the lot total RPL amount given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot total RPL amount
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -139,10 +139,10 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Address Bid Amount given a Lot Index and a Bidder Address
-	 * @param lotIndex A number representing the Lot Index
-	 * @param bidderAddress A string representing the Bidder Address
-	 * @returns a Promise<number> containing the Lot Address Bid Amount
+	 * Return the lot address bid amount given a lot index and a bidder address
+	 * @param lotIndex A number representing the lot index
+	 * @param bidderAddress A string representing the bidder address
+	 * @returns a Promise<number> that resolves to a number representing the lot address bid amount
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -156,9 +156,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Current Price by Total Bids given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Price by Total Bids
+	 * Return the lot current orice by total bids given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot price by total bids
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -172,9 +172,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Current Price given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot's Current Price
+	 * Return the current lot price given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot's current price
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -188,9 +188,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Claimed RPL Amount given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot's Claimed RPL Amount
+	 * Return the lot claimed RPL amount given a lot index
+	 * @param lotIndex A number representing the lot Index
+	 * @returns a Promise<number> that resolves to a number representing the lot's claimed RPL amount
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -204,9 +204,9 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Remaining RPL Amount given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot's Remaining RPL Amount
+	 * Return the lot remaining RPL amount given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot's remaining RPL amount
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -220,9 +220,9 @@ class Auction {
 	}
 
 	/**
-	 * Check if a Lot is cleared given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<boolean> as to whether the Lot is cleared
+	 * Check if a lot is cleared given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<boolean> that resolves to a boolean representing whether the lot is cleared
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -237,8 +237,8 @@ class Auction {
 
 	/**
 	 * Return the total RPL balance
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the total RPL balance
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the total RPL balance
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -253,8 +253,8 @@ class Auction {
 
 	/**
 	 * Return the allotted RPL balance
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the allotted RPL balance
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the allotted RPL balance
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -269,8 +269,8 @@ class Auction {
 
 	/**
 	 * Return the remaining RPL balance
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the remaining RPL balance
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the remaining RPL balance
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -285,8 +285,8 @@ class Auction {
 
 	/**
 	 * Return the Lot Count
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot Count
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -300,10 +300,10 @@ class Auction {
 	}
 
 	/**
-	 * Return the Lot Price at a specified Block given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
+	 * Return the lot price at a specified block given a lot index
+	 * @param lotIndex A number representing the lot index
 	 * @param block A number representing the block
-	 * @returns a Promise<number> containing the Lot Price at the specified Block
+	 * @returns a Promise<number> that resolves to a number representing the lot price at the specified block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -318,9 +318,9 @@ class Auction {
 
 	// Return the lot RPL recovered given a lot index
 	/**
-	 * Return the Lot RPL Recovered given a Lot Index
-	 * @param lotIndex A number representing the Lot Index
-	 * @returns a Promise<number> containing the Lot RPL recovered
+	 * Return the Lot RPL Recovered given a lot index
+	 * @param lotIndex A number representing the lot index
+	 * @returns a Promise<number> that resolves to a number representing the lot RPL recovered
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -337,7 +337,7 @@ class Auction {
 	 * Create a lot
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> containing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -356,10 +356,10 @@ class Auction {
 
 	/**
 	 * Create bid
-	 * @param lotIndex A number representing the Lot Index
+	 * @param lotIndex A number representing the lot index
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> containing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -378,10 +378,10 @@ class Auction {
 
 	/**
 	 * Place bid
-	 * @param lotIndex A number representing the Lot Index
+	 * @param lotIndex A number representing the lot ondex
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> containing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -400,10 +400,10 @@ class Auction {
 
 	/**
 	 * Recover Unclaimed RPL
-	 * @param lotIndex A number representing the Lot Index
+	 * @param lotIndex A number representing the lot index
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> containing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

@@ -1,10 +1,7 @@
 // Imports
 import Web3 from "web3";
-import { TransactionReceipt } from "web3-core";
-import { Contract, SendOptions } from "web3-eth-contract";
+import { Contract } from "web3-eth-contract";
 import Contracts from "../contracts/contracts";
-import { ConfirmationHandler, handleConfirmations } from "../../utils/transaction";
-import { NodeDetails } from "../node/node";
 
 /**
  * Rocket Pool Vault

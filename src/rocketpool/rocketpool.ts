@@ -77,7 +77,7 @@ class RocketPool {
 	 * Example using RocketStorage contract address
 	 * ```ts
 	 * // Using a RocketStorage address as a string
-	 * const RocketStorage = "0x00000000000000000000";
+	 * const RocketStorage = "0x1111111111111111111111111111111111111111";
 	 * const rp = new RocketPool(web3, RocketStorage);
 	 * ```
 	 *
