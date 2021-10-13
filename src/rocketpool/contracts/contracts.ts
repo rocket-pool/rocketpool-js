@@ -95,11 +95,11 @@ class Contracts {
 	 * Create a new contract instance with the specified ABI name and address
 	 * @param name A string representing the name of the contract
 	 * @param address A string representing the address of the specific instance
-	 * @returns a Promise<Contract> resolving to a web3 contract instance
+	 * @returns a Promise<Contract> that resolves to a web3.eth.contract instance of the contract
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const minipool = await rp.contracts.make("rocketMinipoolDelegate", "0x1111111111111111111111111111111111111111");
+	 * const minipool = await rp.contracts.make("rocketMinipoolDelegate", "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294");
 	 * ```
 	 */
 	public make(name: string, address: string): Promise<Contract> {

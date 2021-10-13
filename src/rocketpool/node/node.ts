@@ -20,7 +20,7 @@ class Node {
 	 * Create a new Node instance.
 	 *
 	 * @param web3 A valid Web3 instance
-	 * @param contracts A Rocket Pool Contract Manager Instance
+	 * @param contracts A Rocket Pool contract manager instance
 	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
@@ -101,7 +101,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeDetail = rp.node.getNodeDetails("0x1111111111111111111111111111111111111111").then((val: NodeDetails) => { val }
+	 * const nodeDetail = rp.node.getNodeDetails("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: NodeDetails) => { val }
 	 * ```
 	 */
 	public getNodeDetails(address: string): Promise<NodeDetails> {
@@ -154,7 +154,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const exists = rp.node.getNodeExists("0x1111111111111111111111111111111111111111").then((val: boolean) => { val };
+	 * const exists = rp.node.getNodeExists("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: boolean) => { val };
 	 * ```
 	 */
 	public getNodeExists(address: string): Promise<boolean> {
@@ -170,7 +170,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const tz = rp.node.getNodeTimezoneLocation("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const tz = rp.node.getNodeTimezoneLocation("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeTimezoneLocation(address: string): Promise<string> {
@@ -186,7 +186,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const withdrawalAddress = rp.node.getNodeWithdrawalAddress("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const withdrawalAddress = rp.node.getNodeWithdrawalAddress("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeWithdrawalAddress(address: string): Promise<string> {
@@ -202,7 +202,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeRPLStake = rp.node.getNodeRPLStake("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const nodeRPLStake = rp.node.getNodeRPLStake("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeRPLStake(address: string): Promise<string> {
@@ -218,7 +218,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeEffectiveRPLStake = rp.node.getNodeEffectiveRPLStake("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const nodeEffectiveRPLStake = rp.node.getNodeEffectiveRPLStake("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeEffectiveRPLStake(address: string): Promise<string> {
@@ -234,7 +234,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeMinipoolLimit = rp.node.getNodeMinipoolLimit("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const nodeMinipoolLimit = rp.node.getNodeMinipoolLimit("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeMinipoolLimit(address: string): Promise<string> {
@@ -250,7 +250,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeTotalEffectiveRPLStake = rp.node.getNodeTotalEffectiveRPLStake("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const nodeTotalEffectiveRPLStake = rp.node.getNodeTotalEffectiveRPLStake("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeTotalEffectiveRPLStake(): Promise<string> {
@@ -266,7 +266,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const nodeRPLStake = rp.node.getNodeRPLStake("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const nodeRPLStake = rp.node.getNodeRPLStake("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodeMinimumRPLStake(address: string): Promise<string> {
@@ -282,7 +282,7 @@ class Node {
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const pendingWithdrawalAddress = rp.node.getNodePendingWithdrawalAddress("0x1111111111111111111111111111111111111111").then((val: string) => { val };
+	 * const pendingWithdrawalAddress = rp.node.getNodePendingWithdrawalAddress("0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294").then((val: string) => { val };
 	 * ```
 	 */
 	public getNodePendingWithdrawalAddress(address: string): Promise<string> {
@@ -322,7 +322,7 @@ class Node {
 	}
 
 	/**
-	 * calculate the total effective RPL stake provided inputs
+	 * Calculate the total effective RPL stake provided inputs
 	 * @params offset a number representing the offset
 	 * @params limit a number representing the limit
 	 * @params rplPrice a string representing the rplPrice
@@ -339,7 +339,17 @@ class Node {
 		});
 	}
 
-	// Get a breakdown of the number of nodes per timezone
+	/**
+	 * Get a breakdown of the number of nodes per timezone
+	 * @params offset a number representing the offset
+	 * @params limit a number representing the limit
+	 * @returns a Promise<object> that resolves to an object node counts per timezone
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeCountPerTimezone = rp.node.getNodeCountPerTimezone(offset, limit).then((val: object) => { val };
+	 * ```
+	 */
 	public getNodeCountPerTimezone(offset: number, limit: number): Promise<object> {
 		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<object> => {
 			return rocketNodeManager.methods.getNodeCountPerTimezone(offset, limit).call();
@@ -347,16 +357,52 @@ class Node {
 	}
 
 	/**
-	 * Mutators - Public
+	 * Register a node
+	 * @param timezoneLocation A string representing the timezone location
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const timezoneLocation = "Australia/Brisbane";
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.registerNode(timezoneLocation, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
 	 */
-
-	// Register a node
 	public registerNode(timezoneLocation: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketNodeManager.methods.registerNode(timezoneLocation).send(options), onConfirmation);
 		});
 	}
 
+	/**
+	 * Set a node's withdrawal address
+	 * @param nodeAddress A string representing the node's address
+	 * @param withdrawalAddress A string representing the withdrawalAddress
+	 * @param confirm A boolean representing as to whether you which to auto confirm, true will auto confirm (negating the
+	 * need to prove your ownership of the withdrawal address), false will set the withdrawal address to pending and will
+	 * require an additional transaction (see confirmWithdrawalAddress) signed by the withdrawalAddress to prove ownership.
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const withdrawalAddress = "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7";
+	 * const confirm = false; // will set the withdrawalAddress to pending
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.setWithdrawalAddress(nodeAddress, withdrawalAddress, confirm, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public setWithdrawalAddress(
 		nodeAddress: string,
 		withdrawalAddress: string,
@@ -369,18 +415,72 @@ class Node {
 		});
 	}
 
+	/**
+	 * Stake RPL for a node address
+	 * @param amount A string representing the amount in Wei
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const amount = web3.utils.toWei("5000", "ether");
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.stakeRPL(nodeAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public stakeRPL(amount: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketNodeStaking.methods.stakeRPL(amount).send(options), onConfirmation);
 		});
 	}
 
+	/**
+	 * Confirm a  node's withdrawal address
+	 * @param nodeAddress A string representing the node's address
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const withdrawalAddress = "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7";
+	 * const options = {
+	 *		from: withdrawalAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.confirmWithdrawalAddress(nodeAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public confirmWithdrawalAddress(nodeAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketStorage.then((rocketStorage: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketStorage.methods.confirmWithdrawalAddress(nodeAddress).send(options), onConfirmation);
 		});
 	}
 
+	/**
+	 * Withdraw RPL for a node address
+	 * @param amount A string representing the amount in Wei
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const amount = web3.utils.toWei("5000", "ether");
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.withdrawRPL(nodeAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public withdrawRPL(amount: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeStaking.then((rocketNodeStaking: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketNodeStaking.methods.withdrawRPL(amount).send(options), onConfirmation);
@@ -388,26 +488,53 @@ class Node {
 	}
 
 	/**
-	 * Mutators - Restricted to registered nodes
+	 * Set the node's timezone location
+	 * @param timezoneLocation A string representing the timezone location
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const timezoneLocation = "Brisbane/Australia";
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.setTimezoneLocation(nodeAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
 	 */
-
-	// Set the node's timezone location
 	public setTimezoneLocation(timezoneLocation: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketNodeManager.methods.setTimezoneLocation(timezoneLocation).send(options), onConfirmation);
 		});
 	}
 
-	// Make a node deposit
+	/**
+	 * Make a node deposit
+	 * @param minimumNodeFee A string representing the minimumNodeFee in Wei
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const minimumNodeFee = web3.utils.toWei("0", "ether");
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: nodeAddress,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.deposit(minimumNodeFee, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public deposit(minimumNodeFee: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketNodeDeposit.methods.deposit(minimumNodeFee).send(options), onConfirmation);
 		});
 	}
 
-	/**
-	 * Mutators - Restricted to super users
-	 */
 }
 
 // Exports

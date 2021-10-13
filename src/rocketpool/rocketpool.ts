@@ -77,7 +77,7 @@ class RocketPool {
 	 * Example using RocketStorage contract address
 	 * ```ts
 	 * // Using a RocketStorage address as a string
-	 * const RocketStorage = "0x1111111111111111111111111111111111111111";
+	 * const RocketStorage = "0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3"; // Current Testnet Storage Contract
 	 * const rp = new RocketPool(web3, RocketStorage);
 	 * ```
 	 *

@@ -19,7 +19,7 @@ class Auction {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketAuctionManager contract
+	 * @returns a Promise<Contract> that resolves to a web3.eth.contract instance of the rocketAuctionManager contract
 	 */
 	private get rocketAuctionManager(): Promise<Contract> {
 		return this.contracts.get("rocketAuctionManager");
