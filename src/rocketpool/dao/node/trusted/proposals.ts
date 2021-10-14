@@ -13,7 +13,7 @@ class DAONodeTrustedProposals {
 	 * Create a new DAONodeTrustedProposals instance.
 	 *
 	 * @param web3 A valid Web3 instance
-	 * @param contracts A Rocket Pool Contract Manager Instance
+	 * @param contracts A Rocket Pool contract manager instance
 	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 

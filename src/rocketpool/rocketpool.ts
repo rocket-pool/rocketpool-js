@@ -8,7 +8,6 @@ import DAONodeTrusted from "./dao/node/trusted/node";
 import DAONodeTrustedActions from "./dao/node/trusted/actions";
 import DAONodeTrustedProposals from "./dao/node/trusted/proposals";
 import DAONodeTrustedSettings from "./dao/node/trusted/settings";
-import DAOProtocolSettings from "./dao/protocol/settings";
 import Deposit from "./deposit/deposit";
 import Minipool from "./minipool/minipool";
 import Network from "./network/network";
@@ -41,9 +40,6 @@ class RocketPool {
 				proposals: DAONodeTrustedProposals;
 				settings: DAONodeTrustedSettings;
 			};
-		};
-		protocol: {
-			settings: DAOProtocolSettings;
 		};
 		proposals: DAOProposal;
 	};
@@ -100,9 +96,6 @@ class RocketPool {
 					proposals: new DAONodeTrustedProposals(web3, this.contracts),
 					settings: new DAONodeTrustedSettings(web3, this.contracts),
 				},
-			},
-			protocol: {
-				settings: new DAOProtocolSettings(web3, this.contracts),
 			},
 			proposals: new DAOProposal(web3, this.contracts),
 		};

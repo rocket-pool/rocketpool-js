@@ -13,11 +13,14 @@ class DAONodeTrusted {
 	 * Create a new DAONodeTrusted instance.
 	 *
 	 * @param web3 A valid Web3 instance
-	 * @param contracts A Rocket Pool Contract Manager Instance
+	 * @param contracts A Rocket Pool contract manager instance
 	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-	// Contract accessors
+	/**
+	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrusted contract
+	 */
 	private get rocketDAONodeTrusted(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrusted");
 	}
