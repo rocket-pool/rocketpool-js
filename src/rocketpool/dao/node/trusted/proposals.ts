@@ -17,7 +17,10 @@ class DAONodeTrustedProposals {
 	 */
 	public constructor(private web3: Web3, private contracts: Contracts) {}
 
-	// Contract accessors
+	/**
+	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrustedProposals contract
+	 */
 	private get rocketDAONodeTrustedProposals(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrustedProposals");
 	}
@@ -27,9 +30,38 @@ class DAONodeTrustedProposals {
 	 */
 
 	/**
-	 * Mutators - Public
+	 * Create a DAO proposal with calldata
+	 * @param message A string representing the message
+	 * @param payload A string representing the calldata payload
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const proposerDAOMember = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const toBeKickedDAOMember = "0x6f10Fd508321D27D8F19CBCC2F2f3d5527B637eC";
+	 * const fineAmount = "5000000000000000000000";
+	 * const message = "hey guys, this member hasn't logged on for weeks, lets boot them with a 33% fine!";
+	 * const proposalCalldata = web3.eth.abi.encodeFunctionCall(
+	 * {
+	 *				name: "proposalKick",
+	 *				type: "function",
+	 *					inputs: [
+	 *						{ type: "address", name: "_nodeAddress" },
+	 *						{ type: "uint256", name: "_rplFine" },
+	 *					],
+	 * },
+	 * [toBeKickedDAOMember, registeredNodeTrusted2BondAmountFine.toString()]
+	 * );
+	 *
+	 * const options = {
+	 *		from: proposerDAOMember,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.dao.node.trusted.proposals.propose(message, payload, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
 	 */
-	// Make a Proposal to the DAO
 	public propose(message: string, payload: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrustedProposals.methods.propose(message, payload).send(options), onConfirmation);

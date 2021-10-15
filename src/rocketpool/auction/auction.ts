@@ -334,7 +334,7 @@ class Auction {
 	}
 
 	/**
-	 * Create a lot
+	 * Create a new lot for auction
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
 	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
@@ -355,7 +355,7 @@ class Auction {
 	}
 
 	/**
-	 * Create bid
+	 * Create bid on a lot
 	 * @param lotIndex A number representing the lot index
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
@@ -377,7 +377,7 @@ class Auction {
 	}
 
 	/**
-	 * Place bid
+	 * Place bid on a lot
 	 * @param lotIndex A number representing the lot ondex
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object

@@ -14,16 +14,21 @@ class LegacyRPL extends ERC20 {
 	 * Create a new LegacyRPL instance.
 	 *
 	 * @param web3 A valid Web3 instance
-	 * @param contracts A Rocket Pool Contract Manager Instance
+	 * @param contracts A Rocket Pool contract manager instance
 	 */
 	public constructor(web3: Web3, contracts: Contracts) {
 		super(web3, contracts, "rocketTokenRPLFixedSupply");
 	}
 
 	/**
-	 * Getters
+	 * Get the contract address
+	 * @returns a Promise<string> that resolves to a string representing the contract address of the token
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const address = rp.tokens.legacyrpl.getAddress().then((val: string) => { val };
+	 * ```
 	 */
-	// Get contract address
 	public getAddress(): Promise<string> {
 		return this.tokenContract.then((tokenContract: Contract): string => {
 			return tokenContract.options.address;
