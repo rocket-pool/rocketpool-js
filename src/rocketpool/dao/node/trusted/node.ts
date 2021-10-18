@@ -172,7 +172,28 @@ class DAONodeTrusted {
 		});
 	}
 
-	// Bootstrap a Boolean Setting
+	/**
+	 * Bootstrap a Boolean Setting
+	 * @param settingContractInstance A string representing contract instance
+	 * @param settingPath A string representing the path for the setting
+	 * @param value A boolean representing the value of the setting you wish to set
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const settingContractInstance = "kermit";
+	 * const settingPath = "https://kermit.xyz";
+	 * const value = true;
+	 * const guardian = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+	 * const options = {
+	 *		from: guardian, // bootstrap can only be performed by guardian
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.dao.node.trusted.bootstrapSettingBool(settingContractInstance, settingPath, value, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public bootstrapSettingBool(
 		settingContractInstance: string,
 		settingPath: string,
@@ -185,14 +206,86 @@ class DAONodeTrusted {
 		});
 	}
 
-	// Bootstrap disable
+	/**
+	 * Bootstrap a Uint Setting
+	 * @param settingContractInstance A string representing contract instance
+	 * @param settingPath A string representing the path for the setting
+	 * @param value A string, number or object representing the value of the setting you wish to set
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * // Turn off the ability to create auction lots
+	 * const settingContractInstance = "rocketDAOProtocolSettingsAuction";
+	 * const settingPath = "auction.lot.create.enabled";
+	 * const value = false;
+	 * const guardian = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+	 * const options = {
+	 *		from: guardian, // bootstrap can only be performed by guardian
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.dao.node.trusted.bootstrapSettingUint(settingContractInstance, settingPath, value, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
+	public bootstrapSettingUint(
+		settingContractInstance: string,
+		settingPath: string,
+		value: string | number | object,
+		options?: SendOptions,
+		onConfirmation?: ConfirmationHandler
+	): Promise<TransactionReceipt> {
+		return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketDAONodeTrusted.methods.bootstrapSettingUint(settingContractInstance, settingPath, value).send(options), onConfirmation);
+		});
+	}
+
+	/**
+	 * Disable Bootstrap Mode for RP (only RP can call this to hand over full control to the DAO)
+	 * @param value A boolean representing if you are turning bootstrap mode on or off
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const mode = true;
+	 * const guardian = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+	 * const options = {
+	 *		from: guardian, // bootstrap can only be performed by guardian
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.dao.node.trusted.bootstrapDisable(mode, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public bootstrapDisable(value: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrusted.methods.bootstrapDisable(value).send(options), onConfirmation);
 		});
 	}
 
-	// Bootstrap disable
+	/**
+	 * In an explicable black swan scenario where the DAO loses more than the min membership required (3), this method can be used by a regular node operator to join the DAO
+	 * Must have their ID, URL, current RPL bond amount available and must be called by their current registered node account
+	 * @param id A string representing the id for the member
+	 * @param url A string representing the url for the member
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const id = "rocketpool_emergency_node_op";
+	 * const url = "https://rocketpool.net";
+	 * const registeredNode = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+	 * const options = {
+	 *		from: registeredNode,
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.dao.node.trusted.memberJoinRequired(id, url, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public memberJoinRequired(id: string, url: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrusted.then((rocketDAONodeTrusted: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrusted.methods.memberJoinRequired(id, url).send(options), onConfirmation);

@@ -63,7 +63,7 @@ export async function setDAONodeTrustedBootstrapSetting(
 
 	// Set as a bootstrapped setting. detect type first, can be a number, string or bn object
 	if (typeof _value == "number" || typeof _value == "string" || typeof _value == "object")
-		await rocketDAONodeTrusted.methods.bootstrapSettingUint(_settingContractInstance, _settingPath, _value).send(options);
+		await rp.dao.node.trusted.node.bootstrapSettingUint(_settingContractInstance, _settingPath, _value, options);
 	if (typeof _value == "boolean") await rp.dao.node.trusted.node.bootstrapSettingBool(_settingContractInstance, _settingPath, _value, options);
 
 	// Capture data

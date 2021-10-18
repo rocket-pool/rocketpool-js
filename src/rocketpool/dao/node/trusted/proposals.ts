@@ -26,10 +26,6 @@ class DAONodeTrustedProposals {
 	}
 
 	/**
-	 * Getters
-	 */
-
-	/**
 	 * Create a DAO proposal with calldata
 	 * @param message A string representing the message
 	 * @param payload A string representing the calldata payload
@@ -68,21 +64,77 @@ class DAONodeTrustedProposals {
 		});
 	}
 
-	// Vote on an existing DAO Proposal
+	/**
+	 * Vote on an existing proposal
+	 * @param proposalID A number representing the proposalID
+	 * @param vote A boolean representing the vote
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const proposalID = 1;
+	 * const vote = true;
+	 * const daoMember = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 *
+	 * const options = {
+	 *		from: daoMember,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.dao.node.trusted.proposals.vote(proposalID, vote, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public vote(proposalID: number, vote: boolean, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrustedProposals.methods.vote(proposalID, vote).send(options), onConfirmation);
 		});
 	}
 
-	// Execute an existing DAO Proposal
+	/**
+	 * Execute on an existing proposal
+	 * @param proposalID A number representing the proposalID
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const proposalID = 1;
+	 * const daoMember = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 *
+	 * const options = {
+	 *		from: daoMember,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.dao.node.trusted.proposals.execute(proposalID, vote, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public execute(proposalID: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrustedProposals.methods.execute(proposalID).send(options), onConfirmation);
 		});
 	}
 
-	// Cancel an existing DAO Proposal
+	/**
+	 * Cancel an existing proposal
+	 * @param proposalID A number representing the proposalID
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const proposalID = 1;
+	 * const daoMember = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 *
+	 * const options = {
+	 *		from: daoMember,
+	 *		gas: 1000000
+	 * }
+	 * const txReceipt = rp.dao.node.trusted.proposals.cancel(proposalID, vote, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
 	public cancel(proposalID: number, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketDAONodeTrustedProposals.then((rocketDAONodeTrustedProposals: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketDAONodeTrustedProposals.methods.cancel(proposalID).send(options), onConfirmation);
