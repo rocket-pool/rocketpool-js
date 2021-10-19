@@ -56,8 +56,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
-		const launchTimeout = 20;
+		const launchTimeout = (60 * 60 * 72); // 72 hours
 		const withdrawalDelay = 20;
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 		let initializedMinipool: MinipoolContract;
 		let prelaunchMinipool: MinipoolContract;
 		let prelaunchMinipool2: MinipoolContract;
@@ -150,12 +151,12 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			})) as MinipoolContract;
 
-			// Stake minipools
-			await stakeMinipool(web3, rp, stakingMinipool, stakingMinipoolPubkey, {
-				from: node,
-				gas: gasLimit,
-			});
-			await stakeMinipool(web3, rp, withdrawableMinipool, withdrawableMinipoolPubkey, { from: node, gas: gasLimit });
+			// Wait required scrub period
+			await increaseTime(web3, scrubPeriod + 1);
+
+			// Progress minipools into desired statuses
+			await stakeMinipool(web3, rp, stakingMinipool, {from: node, gas: gasLimit });
+			await stakeMinipool(web3, rp, withdrawableMinipool, {from: node, gas: gasLimit });
 
 			// Set minipool to withdrawable
 			await rp.minipool.submitMinipoolWithdrawable(withdrawableMinipool.address, { from: trustedNode, gas: gasLimit });
@@ -282,7 +283,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 			const padding = "0000000000000000000000";
 
 			// Get minipool withdrawal credentials
-			const withdrawalCredentials = await initializedMinipool.contract.methods.getWithdrawalCredentials().call();
+			const withdrawalCredentials = await rp.minipool.getMinipoolWithdrawalCredentials(initializedMinipool.address);
 
 			// Check withdrawal credentials
 			const expectedWithdrawalCredentials = "0x" + withdrawalPrefix + padding + initializedMinipool.address.substr(2);
@@ -324,7 +325,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 			await shouldRevert(
 				createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }),
 				"Was able to create a minipool with bad delegate address",
-				"Delegate contract does not exist"
+				"Contract creation failed"
 			);
 		});
 
@@ -339,7 +340,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 			await newMinipoolBase.methods.setUseLatestDelegate(true).send({ from: node, gas: gasLimit });
 			// Staking should fail now
 			await shouldRevert(
-				stakeMinipool(web3, rp, newMinipool, null, { from: node, gas: gasLimit }),
+				stakeMinipool(web3, rp, newMinipool, { from: node, gas: gasLimit }),
 				"Was able to create a minipool with bad delegate address",
 				"Delegate contract does not exist"
 			);
@@ -463,7 +464,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		//
 		it(printTitle("random address", "can slash node operator if withdrawal balance is less than 16 ETH"), async () => {
 			// Stake the prelaunch minipool (it has 16 ETH user funds)
-			await stakeMinipool(web3, rp, prelaunchMinipool, null, {
+			await stakeMinipool(web3, rp, prelaunchMinipool, {
 				from: node,
 				gas: gasLimit,
 			});
@@ -489,7 +490,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 		it(printTitle("node operator", "is slashed if withdraw is processed when balance is less than 16 ETH"), async () => {
 			// Stake the prelaunch minipool (it has 16 ETH user funds)
-			await stakeMinipool(web3, rp, prelaunchMinipool, null, {
+			await stakeMinipool(web3, rp, prelaunchMinipool, {
 				from: node,
 				gas: gasLimit,
 			});
@@ -540,7 +541,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 		it(printTitle("random address", "can dissolve a timed out minipool at prelaunch"), async () => {
 			// Time prelaunch minipool out
-			await mineBlocks(web3, launchTimeout);
+			await increaseTime(web3, launchTimeout);
 
 			// Dissolve prelaunch minipool
 			await dissolve(web3, rp, prelaunchMinipool, {
@@ -551,7 +552,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 		it(printTitle("random address", "cannot dissolve a minipool which is not at prelaunch"), async () => {
 			// Time prelaunch minipool out
-			await mineBlocks(web3, launchTimeout);
+			await increaseTime(web3, launchTimeout);
 
 			// Attempt to dissolve initialized minipool
 			await shouldRevert(

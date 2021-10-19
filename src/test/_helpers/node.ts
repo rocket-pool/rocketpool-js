@@ -5,6 +5,7 @@ import { mintRPL } from "../tokens/scenario-rpl-mint";
 import { setDAONodeTrustedBootstrapMember } from "../dao/scenario-dao-node-trusted-bootstrap";
 import { daoNodeTrustedMemberJoin } from "../dao/scenario-dao-node-trusted";
 import { SendOptions } from "web3-eth-contract";
+import { getDepositDataRoot, getValidatorPubkey, getValidatorSignature } from "../_utils/beacon";
 
 // Get a node's RPL stake
 export async function getNodeRPLStake(web3: Web3, rp: RocketPool, nodeAddress: string) {
@@ -77,6 +78,58 @@ export async function nodeWithdrawRPL(web3: Web3, rp: RocketPool, amount: string
 }
 
 // Make a node deposit
+let minipoolSalt = 0;
 export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptions) {
-	await rp.node.deposit(web3.utils.toWei("0", "ether"), options);
+	// Get contract addresses
+	const rocketMinipoolManager = await rp.contracts.get("rocketMinipoolManager");
+	const rocketStorage = await rp.contracts.get("rocketStorage");
+
+	// Get artifact and bytecode
+	const rocketMinipool = require("../../contracts/RocketMinipool.json");
+	const contractBytecode = rocketMinipool.bytecode;
+
+	// Get deposit type from tx amount
+	// @ts-ignore
+	const depositType = await rp.node.getDepositType(options.value.toString());
+
+	// Construct creation code for minipool deploy
+	const constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
+	const deployCode = contractBytecode + constructorArgs.substr(2);
+	const salt = minipoolSalt++;
+
+	// Calculate keccak(nodeAddress, salt)
+	const nodeSalt = web3.utils.soliditySha3(
+		{type: "address", value: options.from},
+		{type: "uint256", value: salt.toString()}
+	);
+
+	// Calculate hash of deploy code
+	const bytecodeHash = web3.utils.soliditySha3(
+		{type: "bytes", value: deployCode}
+	);
+
+	// Construct deterministic minipool address
+	const raw = web3.utils.soliditySha3(
+		{type: "bytes1", value: "0xff"},
+		{type: "address", value: rocketMinipoolManager.options.address},
+		{type: "bytes32", value: nodeSalt !== null ? nodeSalt : ""},
+		{type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : ""}
+	);
+
+	// @ts-ignore
+	const minipoolAddress = "0x" + raw.substr(raw.length - 40);
+	const withdrawalCredentials = "0x010000000000000000000000" + minipoolAddress.substr(2);
+
+	// Get validator deposit data
+	const depositData = {
+		pubkey: getValidatorPubkey(),
+		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
+		amount: BigInt(16000000000), // gwei
+		signature: getValidatorSignature(),
+	};
+
+	const depositDataRoot = getDepositDataRoot(depositData);
+	const minimumNodeFee = web3.utils.toWei("0", "ether");
+
+	await rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
 }

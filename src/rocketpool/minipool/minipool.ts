@@ -175,6 +175,13 @@ class Minipool {
 		});
 	}
 
+	// Get a minipools withdrawal credentials
+	public getMinipoolWithdrawalCredentials(address: string): Promise<string> {
+		return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
+			return rocketMinipoolManager.methods.getMinipoolWithdrawalCredentials(address).call();
+		});
+	}
+
 	// Get the minipool queue length
 	public getQueueLength(depositType: number): Promise<number> {
 		return this.rocketMinipoolQueue.then((rocketMinipoolQueue: Contract): Promise<number> => {

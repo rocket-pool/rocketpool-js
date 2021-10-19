@@ -2,7 +2,7 @@
 import { assert } from "chai";
 import Web3 from "web3";
 import RocketPool from "../../rocketpool/rocketpool";
-import { takeSnapshot, revertSnapshot, mineBlocks } from "../_utils/evm";
+import { takeSnapshot, revertSnapshot, mineBlocks, increaseTime } from "../_utils/evm";
 import { shouldRevert } from "../_utils/testing";
 import { printTitle } from "../_utils/formatting";
 import { nodeStakeRPL, setNodeTrusted } from "../_helpers/node";
@@ -47,6 +47,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 			await revertSnapshot(web3, testSnapshotId);
 		});
 
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 		let minipool: MinipoolContract;
 
 		// Setup
@@ -81,7 +82,8 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, minipool, null, {
+			await increaseTime(web3, scrubPeriod + 1);
+			await stakeMinipool(web3, rp, minipool, {
 				from: node,
 				gas: gasLimit,
 			});

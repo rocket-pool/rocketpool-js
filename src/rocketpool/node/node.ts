@@ -357,6 +357,22 @@ class Node {
 	}
 
 	/**
+	 * Get the deposit type
+	 * @params amount a number representing the deposit amount
+	 * @returns a Promise<number> that resolves to a number representing the minipool deposit enum value type
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeCountPerTimezone = rp.node.getNodeCountPerTimezone(offset, limit).then((val: object) => { val };
+	 * ```
+	 */
+	public getDepositType(amount: string): Promise<number> {
+		return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<number> => {
+			return rocketNodeDeposit.methods.getDepositType(amount).call();
+		});
+	}
+
+	/**
 	 * Register a node
 	 * @param timezoneLocation A string representing the timezone location
 	 * @param options An optional object of web3.eth.Contract SendOptions
@@ -514,6 +530,11 @@ class Node {
 	/**
 	 * Make a node deposit
 	 * @param minimumNodeFee A string representing the minimumNodeFee in Wei
+	 * @param validatorPubKey A buffer representing the validator pub key
+	 * @param validatorSignature A buffer representing the validator signature
+	 * @param depositDataRoot A buffer representing the deposit data root
+	 * @param salt A number representing the salt
+	 * @param expectedMinipoolAddress A string representing the expected minipool address
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
 	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
@@ -526,12 +547,12 @@ class Node {
 	 *		from: nodeAddress,
 	 *		gas: 1000000
 	 * }
-	 * const txReceipt = rp.node.deposit(minimumNodeFee, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * const txReceipt = rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
 	 */
-	public deposit(minimumNodeFee: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+	public deposit(minimumNodeFee: string, validatorPubKey: Buffer, validatorSignature: Buffer, depositDataRoot: Buffer, salt: number, expectedMinipoolAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<TransactionReceipt> => {
-			return handleConfirmations(rocketNodeDeposit.methods.deposit(minimumNodeFee).send(options), onConfirmation);
+			return handleConfirmations(rocketNodeDeposit.methods.deposit(minimumNodeFee, validatorPubKey, validatorSignature, depositDataRoot, salt, expectedMinipoolAddress).send(options), onConfirmation);
 		});
 	}
 

@@ -5,11 +5,15 @@ import { SendOptions } from "web3-eth-contract";
 import RocketPool from "../../rocketpool/rocketpool";
 import { getTxContractEvents } from "../_utils/contract";
 import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
+import { getDepositDataRoot, getValidatorPubkey, getValidatorSignature } from "../_utils/beacon";
+
+let minipoolSalt = 0;
 
 // Make a node deposit
 export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string, options: SendOptions) {
 	// Get contract addresses
 	const rocketMinipoolManager = await rp.contracts.get("rocketMinipoolManager");
+	const rocketStorage = await rp.contracts.get("rocketStorage");
 
 	// Get minipool counts
 	function getMinipoolCounts(nodeAddress: string) {
@@ -49,18 +53,61 @@ export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string
 	const minipoolCounts1 = await getMinipoolCounts(options.from);
 
 	// Deposit
-	const txReceipt = await rp.node.deposit(minimumNodeFee, options);
 
-	// Get minipool created events
-	const minipoolCreatedEvents = getTxContractEvents(web3, txReceipt, rocketMinipoolManager.options.address, "MinipoolCreated", [
-		{ type: "address", name: "minipool", indexed: true },
-		{ type: "address", name: "node", indexed: true },
-		{ type: "uint256", name: "created" },
-	]);
+	// Get artifact and bytecode
+	const rocketMinipool = require("../../contracts/RocketMinipool.json");
+	const contractBytecode = rocketMinipool.bytecode;
 
-	// Get created minipool
-	assert(minipoolCreatedEvents.length == 1, "Minipool created event not logged");
-	const minipoolAddress = minipoolCreatedEvents[0].minipool;
+	// Get deposit type from tx amount
+	// @ts-ignore
+	const depositType = await rp.node.getDepositType(options.value.toString());
+
+	// Construct creation code for minipool deploy
+	const constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
+	const deployCode = contractBytecode + constructorArgs.substr(2);
+	const salt = minipoolSalt++;
+
+	// Calculate keccak(nodeAddress, salt)
+	const nodeSalt = web3.utils.soliditySha3(
+		{type: "address", value: options.from},
+		{type: "uint256", value: salt.toString()}
+	);
+
+	// Calculate hash of deploy code
+	const bytecodeHash = web3.utils.soliditySha3(
+		{type: "bytes", value: deployCode}
+	);
+
+	// Construct deterministic minipool address
+	const raw = web3.utils.soliditySha3(
+		{type: "bytes1", value: "0xff"},
+		{type: "address", value: rocketMinipoolManager.options.address},
+		{type: "bytes32", value: nodeSalt !== null ? nodeSalt : ""},
+		{type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : ""}
+	);
+
+	// @ts-ignore
+	const minipoolAddress = "0x" + raw.substr(raw.length - 40);
+	const withdrawalCredentials = "0x010000000000000000000000" + minipoolAddress.substr(2);
+
+	// Get validator deposit data
+	const depositData = {
+		pubkey: getValidatorPubkey(),
+		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
+		amount: BigInt(16000000000), // gwei
+		signature: getValidatorSignature(),
+	};
+
+	const depositDataRoot = getDepositDataRoot(depositData);
+
+	console.log(depositData.pubkey);
+	console.log(depositData.signature);
+	console.log(depositDataRoot);
+	console.log(salt);
+	console.log(minipoolAddress);
+
+	// Make node deposit
+	const txReceipt = await rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
 
 	// Get updated minipool indexes & created minipool details
 	const minipoolCounts2 = await getMinipoolCounts(options.from);

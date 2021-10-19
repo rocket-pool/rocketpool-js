@@ -51,6 +51,7 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 		const proposalCooldown = 10;
 		const proposalVoteBlocks = 10;
 		const proposalVoteDelayBlocks = 4;
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 
 		// Setup
 		let stakingMinipool1: MinipoolContract;
@@ -124,16 +125,19 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			});
 
+			// Wait required scrub period
+			await increaseTime(web3, scrubPeriod + 1);
+
 			// Stake minipools
-			await stakeMinipool(web3, rp, stakingMinipool1, null, {
+			await stakeMinipool(web3, rp, stakingMinipool1,  {
 				from: node,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, stakingMinipool2, null, {
+			await stakeMinipool(web3, rp, stakingMinipool2,  {
 				from: node,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, stakingMinipool3, null, {
+			await stakeMinipool(web3, rp, stakingMinipool3,  {
 				from: node,
 				gas: gasLimit,
 			});
@@ -162,6 +166,10 @@ export default function runMinipoolStatusTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			});
 			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsProposals", "proposal.vote.blocks", proposalVoteBlocks, {
+				from: owner,
+				gas: gasLimit,
+			});
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
 				from: owner,
 				gas: gasLimit,
 			});

@@ -45,12 +45,65 @@ export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
 }
 
 // Create a minipool
+let minipoolSalt = 1;
 export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions): Promise<MinipoolContract | null> {
+	// Get contracts
+	const rocketMinipoolManager = await rp.contracts.get("rocketMinipoolManager");
+	const rocketStorage = await rp.contracts.get("rocketStorage");
+
 	// Get contract addresses
 	const minipoolManagerAddress = await rp.contracts.address("rocketMinipoolManager");
 
+	// Get artifact and bytecode
+	const rocketMinipool = require("../../contracts/RocketMinipool.json");
+	const contractBytecode = rocketMinipool.bytecode;
+
+	// Get deposit type from tx amount
+	// @ts-ignore
+	const depositType = await rp.node.getDepositType(options.value.toString());
+
+	// Construct creation code for minipool deploy
+	const constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
+	const deployCode = contractBytecode + constructorArgs.substr(2);
+	const salt = minipoolSalt++;
+
+	// Calculate keccak(nodeAddress, salt)
+	const nodeSalt = web3.utils.soliditySha3(
+		{type: "address", value: options.from},
+		{type: "uint256", value: salt.toString()}
+	);
+
+	// Calculate hash of deploy code
+	const bytecodeHash = web3.utils.soliditySha3(
+		{type: "bytes", value: deployCode}
+	);
+
+	// Construct deterministic minipool address
+	const raw = web3.utils.soliditySha3(
+		{type: "bytes1", value: "0xff"},
+		{type: "address", value: rocketMinipoolManager.options.address},
+		{type: "bytes32", value: nodeSalt !== null ? nodeSalt : ""},
+		{type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : ""}
+	);
+
+	// @ts-ignore
+	const minipoolAddress = "0x" + raw.substr(raw.length - 40);
+	const withdrawalCredentials = "0x010000000000000000000000" + minipoolAddress.substr(2);
+
+	// Get validator deposit data
+	const depositData = {
+		pubkey: getValidatorPubkey(),
+		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
+		amount: BigInt(16000000000), // gwei
+		signature: getValidatorSignature(),
+	};
+
+	const depositDataRoot = getDepositDataRoot(depositData);
+	const minimumNodeFee = web3.utils.toWei("0", "ether");
+
+
 	// Make node deposit
-	const txReceipt = await rp.node.deposit(web3.utils.toWei("0", "ether"), options);
+	const txReceipt = await rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
 
 	// Get minipool created events
 	const minipoolCreatedEvents = getTxContractEvents(web3, txReceipt, minipoolManagerAddress, "MinipoolCreated", [
@@ -65,18 +118,19 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 }
 
 // Progress a minipool to staking
-export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, validatorPubkey: Buffer | null, options: SendOptions) {
-	// Create validator pubkey
-	if (!validatorPubkey) validatorPubkey = getValidatorPubkey();
+export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
 
-	// Get withdrawal credentials
-	const withdrawalCredentials = await minipool.getWithdrawalCredentials();
+	// Get minipool validator pubkey
+	const validatorPubkey = await rp.minipool.getMinipoolPubkey(minipool.address);
+
+	// Get minipool withdrawal credentials
+	const withdrawalCredentials = await rp.minipool.getMinipoolWithdrawalCredentials(minipool.address);
 
 	// Get validator deposit data
 	const depositData = {
-		pubkey: validatorPubkey,
+		pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(32000000000), // gwei
+		amount: BigInt(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 	const depositDataRoot = getDepositDataRoot(depositData);

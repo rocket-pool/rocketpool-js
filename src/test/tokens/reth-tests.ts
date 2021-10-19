@@ -121,7 +121,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 			});
 
 			// Update network ETH total to alter rETH exchange rate
-			const rethSupply = await getRethTotalSupply(web3, rp);
+			const rethSupply = await getRethTotalSupply(web3, rp).then((value: any) => value.toString());
 			const nodeFee = await minipool.getNodeFee().then((value: string | number) => web3.utils.toBN(value));
 			const depositBalance = web3.utils.toBN(web3.utils.toWei("32"));
 			const userAmount = web3.utils.toBN(web3.utils.toWei("16"));
