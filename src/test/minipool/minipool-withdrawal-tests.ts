@@ -52,8 +52,9 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
-		const launchTimeout = 20;
+		const launchTimeout = (60 * 60 * 72); // 72 hours
 		const withdrawalDelay = 20;
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 		let minipool: MinipoolContract;
 		let unbondedMinipool: MinipoolContract;
 		let fullDepositMinipool: MinipoolContract;
@@ -87,6 +88,10 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			});
 			await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.withdrawal.delay", withdrawalDelay, {
+				from: owner,
+				gas: gasLimit,
+			});
+			await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
 				from: owner,
 				gas: gasLimit,
 			});
@@ -138,7 +143,7 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 			});
 
 			// Deposit some user funds to assign to pool
-			const userDepositAmount = web3.utils.toWei("48", "ether");
+			const userDepositAmount = web3.utils.toWei("16", "ether");
 			await userDeposit(web3, rp, {
 				from: random,
 				value: userDepositAmount,
@@ -159,26 +164,26 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, minipool, null, {
+			await stakeMinipool(web3, rp, minipool, {
 				from: node,
 				gas: gasLimit,
 			});
 
-			unbondedMinipool = (await createMinipool(web3, rp, {
-				from: trustedNode,
-				gas: gasLimit,
-			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, unbondedMinipool, null, {
-				from: trustedNode,
-				gas: gasLimit,
-			});
+			// unbondedMinipool = (await createMinipool(web3, rp, {
+			// 	from: trustedNode,
+			// 	gas: gasLimit,
+			// })) as MinipoolContract;
+			// await stakeMinipool(web3, rp, unbondedMinipool, {
+			// 	from: trustedNode,
+			// 	gas: gasLimit,
+			// });
 
 			fullDepositMinipool = (await createMinipool(web3, rp, {
 				from: node,
 				value: web3.utils.toWei("32", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, fullDepositMinipool, null, {
+			await stakeMinipool(web3, rp, fullDepositMinipool, {
 				from: node,
 				gas: gasLimit,
 			});
@@ -378,20 +383,20 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 			}
 		);
 
-		// Unbonded pools
-		it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is greater than 32 ETH and marked as withdrawable"), async () => {
-			// Mark minipool withdrawable
-			await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
-			// Process withdraw
-			await withdrawAndCheck(unbondedMinipool, "36", trustedNode, true, "35", "1");
-		});
-
-		it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is less than 32 ETH and marked as withdrawable"), async () => {
-			// Mark minipool withdrawable
-			await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
-			// Process withdraw
-			await withdrawAndCheck(unbondedMinipool, "30", trustedNode, true, "30", "0");
-		});
+		// Unbonded pools (temporarily disabled)
+		// it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is greater than 32 ETH and marked as withdrawable"), async () => {
+		// 	// Mark minipool withdrawable
+		// 	await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
+		// 	// Process withdraw
+		// 	await withdrawAndCheck(unbondedMinipool, "36", trustedNode, true, "35", "1");
+		// });
+		//
+		// it(printTitle("trusted node", "can process withdrawal on unbonded minipool when balance is less than 32 ETH and marked as withdrawable"), async () => {
+		// 	// Mark minipool withdrawable
+		// 	await submitMinipoolWithdrawable(web3, rp, unbondedMinipool.address, { from: trustedNode, gas: gasLimit });
+		// 	// Process withdraw
+		// 	await withdrawAndCheck(unbondedMinipool, "30", trustedNode, true, "30", "0");
+		// });
 
 		// Full deposit minipools
 		it(

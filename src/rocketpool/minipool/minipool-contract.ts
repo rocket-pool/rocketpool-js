@@ -119,6 +119,14 @@ class MinipoolContract {
 		return this.contract.methods.getNodeDepositAssigned().call();
 	}
 
+	public getScrubVoted(): Promise<boolean> {
+		return this.contract.methods.getScrubVoted().call();
+	}
+
+	public getTotalScrubVotes(): Promise<number> {
+		return this.contract.methods.getNodeFee().call();
+	}
+
 	// User deposit details
 	public getUserDetails(): Promise<UserDetails> {
 		return Promise.all([this.getUserDepositBalance(), this.getUserDepositAssigned(), this.getUserDepositAssignedTime()]).then(
@@ -221,6 +229,11 @@ class MinipoolContract {
 	// Processes a withdrawal
 	public distributeBalance(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return handleConfirmations(this.contract.methods.distributeBalance().send(options), onConfirmation);
+	}
+
+	// Mark a minipool as scrub, we don't want no scrubs
+	public voteScrub(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return handleConfirmations(this.contract.methods.voteScrub().send(options), onConfirmation);
 	}
 
 	// Withdraw node balances from the minipool and close it

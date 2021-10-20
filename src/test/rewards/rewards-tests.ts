@@ -34,6 +34,7 @@ import Minipool from "../../rocketpool/minipool/minipool";
 import { createMinipool, stakeMinipool } from "../_helpers/minipool";
 import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
 import { userDeposit } from "../_helpers/deposit";
+import { setDAONodeTrustedBootstrapSetting } from "../dao/scenario-dao-node-trusted-bootstrap";
 
 // Tests
 export default function runRewardsTests(web3: Web3, rp: RocketPool) {
@@ -72,6 +73,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 		const claimIntervalBlocks = 16;
 		// Interval for calculating inflation
 		const claimIntervalTime = ONE_DAY * 28;
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 
 		// Set some RPL inflation scenes
 		const rplInflationSetup = async function () {
@@ -133,6 +135,9 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 				from: owner,
 				gas: gasLimit,
 			});
+
+			// Set settings
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
 
 			// Register nodes
 			await registerNode(web3, rp, { from: registeredNode1, gas: gasLimit });
@@ -211,16 +216,19 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			})) as MinipoolContract;
 
+			// Wait required scrub period
+			await increaseTime(web3, scrubPeriod + 1);
+
 			// Stake minipools
-			await stakeMinipool(web3, rp, minipool1, null, {
+			await stakeMinipool(web3, rp, minipool1, {
 				from: registeredNode1,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, minipool2, null, {
+			await stakeMinipool(web3, rp, minipool2,  {
 				from: registeredNode2,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, minipool3, null, {
+			await stakeMinipool(web3, rp, minipool3,  {
 				from: registeredNode2,
 				gas: gasLimit,
 			});

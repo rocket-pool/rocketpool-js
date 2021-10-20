@@ -213,29 +213,30 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 			);
 		});
 
-		it(printTitle("trusted node operator", "can make a deposit to create an empty minipool"), async () => {
-			// Deposit enough unassigned ETH to increase the fee above 80% of max
-			await userDeposit(web3, rp, {
-				from: random,
-				value: web3.utils.toWei("900", "ether"),
-				gas: gasLimit,
-			});
-
-			// Stake RPL to cover minipool
-			const rplStake = await getMinipoolMinimumRPLStake(web3, rp);
-			await mintRPL(web3, rp, owner, trustedNode, rplStake);
-			await nodeStakeRPL(web3, rp, rplStake, {
-				from: trustedNode,
-				gas: gasLimit,
-			});
-
-			// Deposit
-			await deposit(web3, rp, noMinimumNodeFee, {
-				from: trustedNode,
-				value: emptyDepositNodeAmount,
-				gas: gasLimit,
-			});
-		});
+		// Unbonded minipools (temprarily disabled)
+		// it(printTitle("trusted node operator", "can make a deposit to create an empty minipool"), async () => {
+		// 	// Deposit enough unassigned ETH to increase the fee above 80% of max
+		// 	await userDeposit(web3, rp, {
+		// 		from: random,
+		// 		value: web3.utils.toWei("900", "ether"),
+		// 		gas: gasLimit,
+		// 	});
+		//
+		// 	// Stake RPL to cover minipool
+		// 	const rplStake = await getMinipoolMinimumRPLStake(web3, rp);
+		// 	await mintRPL(web3, rp, owner, trustedNode, rplStake);
+		// 	await nodeStakeRPL(web3, rp, rplStake, {
+		// 		from: trustedNode,
+		// 		gas: gasLimit,
+		// 	});
+		//
+		// 	// Deposit
+		// 	await deposit(web3, rp, noMinimumNodeFee, {
+		// 		from: trustedNode,
+		// 		value: emptyDepositNodeAmount,
+		// 		gas: gasLimit,
+		// 	});
+		// });
 
 		it(printTitle("regular node operator", "cannot make a deposit to create an empty minipool"), async () => {
 			// Stake RPL to cover minipool

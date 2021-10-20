@@ -29,6 +29,8 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 		let random: string;
 		let trustedNode: string;
 
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
+
 		// State snapshotting
 		let suiteSnapshotId: string, testSnapshotId: string;
 		before(async () => {
@@ -49,6 +51,9 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 		before(async () => {
 			// Get accounts
 			[owner, node, random, trustedNode] = await web3.eth.getAccounts();
+
+			// Set settings
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
 
 			// Register node
 			await rp.node.registerNode("Australia/Brisbane", {
@@ -241,7 +246,8 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, minipool, null, {
+			await increaseTime(web3, scrubPeriod + 1);
+			await stakeMinipool(web3, rp, minipool,  {
 				from: node,
 				gas: gasLimit,
 			});
@@ -306,7 +312,7 @@ export default function runNodeStakingTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, minipool, null, {
+			await stakeMinipool(web3, rp, minipool, {
 				from: node,
 				gas: gasLimit,
 			});

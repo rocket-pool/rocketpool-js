@@ -16,6 +16,7 @@ import { getDepositExcessBalance, userDeposit } from "../_helpers/deposit";
 import { burnReth } from "./scenario-burn-reth";
 import { transferReth } from "./scenario-transfer-reth";
 import { withdrawValidatorBalance } from "../minipool/scenario-withdraw-validator-balance";
+import { setDAONodeTrustedBootstrapSetting } from "../dao/scenario-dao-node-trusted-bootstrap";
 
 // Tests
 export default function runRethTests(web3: Web3, rp: RocketPool) {
@@ -48,6 +49,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
+		const scrubPeriod = (60 * 60 * 24); // 24 hours
 		let minipool: MinipoolContract;
 		const validatorPubkey = getValidatorPubkey();
 		const withdrawalBalance = web3.utils.toWei("36", "ether");
@@ -99,6 +101,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 				from: owner,
 				gas: gasLimit,
 			});
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
 
 			// Stake RPL to cover minipools
 			const rplStake = await getMinipoolMinimumRPLStake(web3, rp);
@@ -111,7 +114,9 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, minipool, validatorPubkey, {
+
+			await increaseTime(web3, scrubPeriod + 1);
+			await stakeMinipool(web3, rp, minipool,{
 				from: node,
 				gas: gasLimit,
 			});
