@@ -11,7 +11,7 @@ import { getNodeActiveMinipoolCount, getNodeStakingMinipoolCount } from "../../t
 export interface MinipoolDetails {
 	address: string;
 	exists: boolean;
-	pubkey: Buffer;
+	pubkey: string;
 }
 
 /**
@@ -93,7 +93,7 @@ class Minipool {
 	// Get a minipool's details
 	public getMinipoolDetails(address: string): Promise<MinipoolDetails> {
 		return Promise.all([this.getMinipoolExists(address), this.getMinipoolPubkey(address)]).then(
-			([exists, pubkey]: [boolean, Buffer]): MinipoolDetails => ({
+			([exists, pubkey]: [boolean, string]): MinipoolDetails => ({
 				address,
 				exists,
 				pubkey,
@@ -155,7 +155,7 @@ class Minipool {
 	}
 
 	// Get a minipool address by validator pubkey
-	public getMinipoolByPubkey(validatorPubkey: Buffer): Promise<string> {
+	public getMinipoolByPubkey(validatorPubkey: string): Promise<string> {
 		return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
 			return rocketMinipoolManager.methods.getMinipoolByPubkey(validatorPubkey).call();
 		});
@@ -169,8 +169,8 @@ class Minipool {
 	}
 
 	// Get a minipool's validator pubkey
-	public getMinipoolPubkey(address: string): Promise<Buffer> {
-		return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<Buffer> => {
+	public getMinipoolPubkey(address: string): Promise<string> {
+		return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<string> => {
 			return rocketMinipoolManager.methods.getMinipoolPubkey(address).call();
 		});
 	}

@@ -11,7 +11,7 @@ export async function stake(
 	web3: Web3,
 	rp: RocketPool,
 	minipool: MinipoolContract,
-	validatorPubkey: string | Buffer | null,
+	validatorPubkey: string | null,
 	withdrawalCredentials: string,
 	options: SendOptions
 ) {
@@ -31,7 +31,7 @@ export async function stake(
 
 	// Get validator deposit data
 	const depositData = {
-		pubkey: validatorPubkey,
+		pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
 		amount: BigInt(32000000000), // gwei
 		signature: getValidatorSignature(),
@@ -50,7 +50,7 @@ export async function stake(
 	const [details1, validatorMinipool1] = await Promise.all([getMinipoolDetails(), rp.minipool.getMinipoolByPubkey(validatorPubkey)]);
 
 	// Stake
-	await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
+	await minipool.stake(depositData.pubkey.toString(), depositData.signature, depositDataRoot, options);
 
 	// Get updated minipool details & minipool by validator pubkey
 	const [details2, validatorMinipool2] = await Promise.all([getMinipoolDetails(), rp.minipool.getMinipoolByPubkey(validatorPubkey)]);

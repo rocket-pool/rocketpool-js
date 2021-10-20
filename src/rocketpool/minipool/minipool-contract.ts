@@ -202,7 +202,7 @@ class MinipoolContract {
 
 	// Progress the minipool to staking
 	public stake(
-		validatorPubkey: Buffer,
+		validatorPubkey: string,
 		validatorSignature: Buffer,
 		depositDataRoot: Buffer,
 		options?: SendOptions,

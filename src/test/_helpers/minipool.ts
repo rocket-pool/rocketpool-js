@@ -136,7 +136,7 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 	const depositDataRoot = getDepositDataRoot(depositData);
 
 	// Stake
-	await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
+	await minipool.stake(depositData.pubkey.toString(), depositData.signature, depositDataRoot, options);
 }
 
 // Submit a minipool withdrawable event
