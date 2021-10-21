@@ -252,7 +252,7 @@ export default function runNodeDepositTests(web3: Web3, rp: RocketPool) {
 					gas: gasLimit,
 				}),
 				"Regular node created an empty minipool",
-				"Only members of the trusted node DAO may create unbonded minipools"
+				"Invalid node deposit amount"
 			);
 		});
 

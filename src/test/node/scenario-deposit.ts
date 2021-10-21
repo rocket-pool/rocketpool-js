@@ -100,11 +100,11 @@ export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string
 
 	const depositDataRoot = getDepositDataRoot(depositData);
 
-	console.log(depositData.pubkey);
-	console.log(depositData.signature);
-	console.log(depositDataRoot);
-	console.log(salt);
-	console.log(minipoolAddress);
+	// console.log(depositData.pubkey);
+	// console.log(depositData.signature);
+	// console.log(depositDataRoot);
+	// console.log(salt);
+	// console.log(minipoolAddress);
 
 	// Make node deposit
 	const txReceipt = await rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
@@ -119,9 +119,9 @@ export async function deposit(web3: Web3, rp: RocketPool, minimumNodeFee: string
 
 	// Check minipool indexes
 	assert(minipoolCounts2.network.eq(minipoolCounts1.network.add(web3.utils.toBN(1))), "Incorrect updated network minipool count");
-	assert.equal(lastMinipoolAddress, minipoolAddress, "Incorrect updated network minipool index");
+	assert.equal(lastMinipoolAddress.toLowerCase(), minipoolAddress, "Incorrect updated network minipool index");
 	assert(minipoolCounts2.node.eq(minipoolCounts1.node.add(web3.utils.toBN(1))), "Incorrect updated node minipool count");
-	assert.equal(lastNodeMinipoolAddress, minipoolAddress, "Incorrect updated node minipool index");
+	assert.equal(lastNodeMinipoolAddress.toLowerCase(), minipoolAddress, "Incorrect updated node minipool index");
 
 	// Check minipool details
 	assert.isTrue(minipoolDetails.exists, "Incorrect created minipool exists status");

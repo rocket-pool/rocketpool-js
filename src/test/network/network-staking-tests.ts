@@ -418,6 +418,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
+			await increaseTime(web3, scrubPeriod + 1);
 			await stakeMinipool(web3, rp, minipool, {
 				from: registeredNode1,
 				gas: gasLimit,

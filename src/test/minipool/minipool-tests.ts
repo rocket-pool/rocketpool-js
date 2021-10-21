@@ -581,7 +581,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		//
 		it(printTitle("node operator", "can stake a minipool at prelaunch"), async () => {
 			// Stake prelaunch minipool
-			await stake(web3, rp, prelaunchMinipool, null, "", {
+			await stake(web3, rp, prelaunchMinipool, null, null, {
 				from: node,
 				gas: gasLimit,
 			});
@@ -590,7 +590,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		it(printTitle("node operator", "cannot stake a minipool which is not at prelaunch"), async () => {
 			// Attempt to stake initialized minipool
 			await shouldRevert(
-				stake(web3, rp, initializedMinipool, null, "", {
+				stake(web3, rp, initializedMinipool, null, null, {
 					from: node,
 					gas: gasLimit,
 				}),
@@ -600,23 +600,23 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		});
 
 		it(printTitle("node operator", "cannot stake a minipool with a reused validator pubkey"), async () => {
-			// Get pubkey
-			const pubkey = getValidatorPubkey();
+			// Get minipool validator pubkey
+			const validatorPubkey = await rp.minipool.getMinipoolPubkey(prelaunchMinipool.address);
 
 			// Stake prelaunch minipool
-			await stake(web3, rp, prelaunchMinipool, pubkey.toString(), "", {
+			await stake(web3, rp, prelaunchMinipool, null, null, {
 				from: node,
 				gas: gasLimit,
 			});
 
 			// Attempt to stake second prelaunch minipool with same pubkey
 			await shouldRevert(
-				stake(web3, rp, prelaunchMinipool2, pubkey.toString(), "", {
+				stake(web3, rp, prelaunchMinipool2, validatorPubkey, null, {
 					from: node,
 					gas: gasLimit,
 				}),
 				"Staked a minipool with a reused validator pubkey",
-				"Validator pubkey is already in use"
+				"Validator pubkey is not correct"
 			);
 		});
 
@@ -626,7 +626,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 			// Attempt to stake prelaunch minipool
 			await shouldRevert(
-				stake(web3, rp, prelaunchMinipool, getValidatorPubkey().toString(), invalidWithdrawalCredentials, {
+				stake(web3, rp, prelaunchMinipool, null, invalidWithdrawalCredentials, {
 					from: node,
 					gas: gasLimit,
 				}),
@@ -638,7 +638,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		it(printTitle("random address", "cannot stake a minipool"), async () => {
 			// Attempt to stake prelaunch minipool
 			await shouldRevert(
-				stake(web3, rp, prelaunchMinipool, getValidatorPubkey().toString(), "", {
+				stake(web3, rp, prelaunchMinipool, null, null, {
 					from: random,
 					gas: gasLimit,
 				}),

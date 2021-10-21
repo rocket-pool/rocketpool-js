@@ -164,10 +164,6 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await stakeMinipool(web3, rp, minipool, {
-				from: node,
-				gas: gasLimit,
-			});
 
 			// unbondedMinipool = (await createMinipool(web3, rp, {
 			// 	from: trustedNode,
@@ -183,6 +179,14 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("32", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
+
+			// Wait required scrub period
+			await increaseTime(web3, scrubPeriod + 1);
+
+			await stakeMinipool(web3, rp, minipool, {
+				from: node,
+				gas: gasLimit,
+			});
 			await stakeMinipool(web3, rp, fullDepositMinipool, {
 				from: node,
 				gas: gasLimit,
@@ -417,30 +421,30 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// ETH penalty events
-		it(printTitle("node operator withdrawal address", "can process withdrawal and finalise pool when penalised by DAO"), async () => {
-			// Penalise the minipool 50% of it's ETH
-			await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
-			//console.log(await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call());
-			// Mark minipool withdrawable
-			await submitMinipoolWithdrawable(web3, rp, minipool.address, {
-				from: trustedNode,
-				gas: gasLimit,
-			});
-			// Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-			await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
-		});
-
-		it(printTitle("node operator withdrawal address", "cannot be penalised greater than the max penalty rate set by DAO"), async () => {
-			// Try to penalise the minipool 75% of it's ETH (max is 50%)
-			await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei("0.75")).call();
-			// Mark minipool withdrawable
-			await submitMinipoolWithdrawable(web3, rp, minipool.address, {
-				from: trustedNode,
-				gas: gasLimit,
-			});
-			// Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
-			await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
-		});
+		// it(printTitle("node operator withdrawal address", "can process withdrawal and finalise pool when penalised by DAO"), async () => {
+		// 	// Penalise the minipool 50% of it's ETH
+		// 	await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call();
+		// 	//console.log(await penaltyTestContract.methods.setPenaltyRate(minipool.address, maxPenaltyRate).call());
+		// 	// Mark minipool withdrawable
+		// 	await submitMinipoolWithdrawable(web3, rp, minipool.address, {
+		// 		from: trustedNode,
+		// 		gas: gasLimit,
+		// 	});
+		// 	// Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
+		// 	await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
+		// });
+		//
+		// it(printTitle("node operator withdrawal address", "cannot be penalised greater than the max penalty rate set by DAO"), async () => {
+		// 	// Try to penalise the minipool 75% of it's ETH (max is 50%)
+		// 	await penaltyTestContract.methods.setPenaltyRate(minipool.address, web3.utils.toWei("0.75")).call();
+		// 	// Mark minipool withdrawable
+		// 	await submitMinipoolWithdrawable(web3, rp, minipool.address, {
+		// 		from: trustedNode,
+		// 		gas: gasLimit,
+		// 	});
+		// 	// Process withdraw - 36 ETH would normally give node operator 19 and user 17 but with a 50% penalty, and extra 9.5 goes to the user
+		// 	await withdrawAndCheck(minipool, "36", nodeWithdrawalAddress, true, "26.5", "9.5");
+		// });
 
 		it(printTitle("guardian", "can disable penalising all together"), async () => {
 			// Disable penalising by setting rate to 0

@@ -171,7 +171,7 @@ class MinipoolContract {
 		return this.contract.methods.getStakingEndBalance().call();
 	}
 
-	public getWithdrawalCredentials(): Promise<any> {
+	public getWithdrawalCredentials(): Promise<string> {
 		return this.contract.methods.getWithdrawalCredentials().call();
 	}
 
@@ -202,7 +202,7 @@ class MinipoolContract {
 
 	// Progress the minipool to staking
 	public stake(
-		validatorPubkey: string,
+		validatorPubkey: Buffer,
 		validatorSignature: Buffer,
 		depositDataRoot: Buffer,
 		options?: SendOptions,

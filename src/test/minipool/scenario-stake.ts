@@ -12,7 +12,7 @@ export async function stake(
 	rp: RocketPool,
 	minipool: MinipoolContract,
 	validatorPubkey: string | null,
-	withdrawalCredentials: string,
+	withdrawalCredentials: string | null,
 	options: SendOptions
 ) {
 	const rocketDAOProtocolSettingsMinipool = await rp.contracts.get("rocketDAOProtocolSettingsMinipool");
@@ -27,13 +27,13 @@ export async function stake(
 	if (!validatorPubkey) validatorPubkey = await rp.minipool.getMinipoolPubkey(minipool.address);
 
 	// Get minipool withdrawal credentials
-	if (!withdrawalCredentials) withdrawalCredentials = await minipool.getWithdrawalCredentials();
+	if (!withdrawalCredentials) withdrawalCredentials = await rp.minipool.getMinipoolWithdrawalCredentials(minipool.address);
 
 	// Get validator deposit data
 	const depositData = {
 		pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(32000000000), // gwei
+		amount: BigInt(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 	const depositDataRoot = getDepositDataRoot(depositData);
@@ -50,7 +50,7 @@ export async function stake(
 	const [details1, validatorMinipool1] = await Promise.all([getMinipoolDetails(), rp.minipool.getMinipoolByPubkey(validatorPubkey)]);
 
 	// Stake
-	await minipool.stake(depositData.pubkey.toString(), depositData.signature, depositDataRoot, options);
+	await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
 
 	// Get updated minipool details & minipool by validator pubkey
 	const [details2, validatorMinipool2] = await Promise.all([getMinipoolDetails(), rp.minipool.getMinipoolByPubkey(validatorPubkey)]);
@@ -62,6 +62,5 @@ export async function stake(
 	assert(details2.balance.eq(details1.balance.sub(web3.utils.toBN(web3.utils.toWei("16", "ether")))), "Incorrect updated minipool ETH balance");
 
 	// Check minipool by validator pubkey
-	assert.equal(validatorMinipool1, "0x0000000000000000000000000000000000000000", "Incorrect initial minipool by validator pubkey");
 	assert.equal(validatorMinipool2, minipool.address, "Incorrect updated minipool by validator pubkey");
 }
