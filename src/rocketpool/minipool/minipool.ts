@@ -447,14 +447,34 @@ class Minipool {
 		});
 	}
 
-	// Get a MinipoolContract instance
+	/**
+	 * Get a MinipoolContract instance
+	 * @params address a string representing the address of the minipool
+	 * @returns a Promise<MinipoolContract> that resolves to a MinipoolContract representing the contract of the minipool
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const minipoolContract = rp.minipool.getMinipoolContract(address).then((val: MinipoolContract) => { val };
+	 * ```
+	 */
 	public getMinipoolContract(address: string): Promise<MinipoolContract> {
 		return this.contracts.make("rocketMinipoolDelegate", address).then((rocketMinipool: Contract): MinipoolContract => {
 			return new MinipoolContract(this.web3, address, rocketMinipool);
 		});
 	}
 
-	// Get Effective Delegate
+	/**
+	 * Get the effective delegate
+	 * @params address a string representing the address of the minipool
+	 * @returns a Promise<string> that resolves to the address of the effective delegate
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const effectiveDelegate = rp.minipool.getEffectiveDelegate(address).then((val: string) => { val };
+	 * ```
+	 */
 	public getEffectiveDelegate(address: string): Promise<string> {
 		return this.rocketMinipool.then((rocketMinipool: Contract): Promise<string> => {
 			return rocketMinipool.methods.getEffectiveDelegate(address).call();
@@ -462,9 +482,23 @@ class Minipool {
 	}
 
 	/**
-	 * Mutators - Restricted to trusted nodes
+	 * Submit a minipool as withdrawable
+	 * @param minipoolAddress A string representing the address of the minipool
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const minipoolAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const trustedNode = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: trustedNode,
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.minipool.submitWithdrawable(minipoolAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
 	 */
-	// Submit a minipool withdrawable event
 	public submitMinipoolWithdrawable(minipoolAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketMinipoolStatus.then((rocketMinipoolStatus: Contract): Promise<TransactionReceipt> => {
 			return handleConfirmations(rocketMinipoolStatus.methods.submitMinipoolWithdrawable(minipoolAddress).send(options), onConfirmation);
