@@ -15,10 +15,15 @@ var _contract = require("../../utils/contract");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Rocket Pool contract manager
+ * Rocket Pool Contract Manager
  */
 var Contracts = function () {
-    // Constructor
+    /**
+     * Create a new Contract instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param RocketStorage a RocketStorage address as a string or ContractArtifact (JSON ABI file)
+     */
     function Contracts(web3, RocketStorage) {
         var _this = this;
 
@@ -49,13 +54,15 @@ var Contracts = function () {
                 return _this2.address(n);
             }));
             // Use cached address promise
-            if (this.addresses[name]) return this.addresses[name];
+            if (!this.addresses[name]) {
+                this.addresses[name] = this.rocketStorage.then(function (rocketStorage) {
+                    return rocketStorage.methods.getAddress(_this2.web3.utils.soliditySha3("contract.address", name)).call();
+                });
+                return this.addresses[name];
+            } else {
+                return this.addresses[name];
+            }
             // Load address
-            this.addresses[name] = this.rocketStorage.then(function (rocketStorage) {
-                return rocketStorage.methods.getAddress(_this2.web3.utils.soliditySha3("contract.address", name)).call();
-            });
-            // Return address promise
-            return this.addresses[name];
         }
     }, {
         key: "abi",
@@ -67,15 +74,17 @@ var Contracts = function () {
                 return _this3.abi(n);
             }));
             // Use cached ABI promise
-            if (this.abis[name]) return this.abis[name];
+            if (!this.abis[name]) {
+                this.abis[name] = this.rocketStorage.then(function (rocketStorage) {
+                    return rocketStorage.methods.getString(_this3.web3.utils.soliditySha3("contract.abi", name)).call();
+                }).then(function (abi) {
+                    return (0, _contract.decodeAbi)(abi);
+                });
+                return this.abis[name];
+            } else {
+                return this.abis[name];
+            }
             // Load and decode ABI
-            this.abis[name] = this.rocketStorage.then(function (rocketStorage) {
-                return rocketStorage.methods.getString(_this3.web3.utils.soliditySha3("contract.abi", name)).call();
-            }).then(function (abi) {
-                return (0, _contract.decodeAbi)(abi);
-            });
-            // Return ABI promise
-            return this.abis[name];
         }
     }, {
         key: "get",
@@ -87,21 +96,33 @@ var Contracts = function () {
                 return _this4.get(n);
             }));
             // Use cached contract promise
-            if (this.contracts[name]) return this.contracts[name];
-            // Load contract data and initialise
-            this.contracts[name] = this.rocketStorage.then(function (rocketStorage) {
-                return Promise.all([_this4.address(name), _this4.abi(name)]);
-            }).then(function (_ref) {
-                var _ref2 = _slicedToArray(_ref, 2),
-                    address = _ref2[0],
-                    abi = _ref2[1];
+            if (!this.contracts[name]) {
+                this.contracts[name] = this.rocketStorage.then(function (rocketStorage) {
+                    return Promise.all([_this4.address(name), _this4.abi(name)]);
+                }).then(function (_ref) {
+                    var _ref2 = _slicedToArray(_ref, 2),
+                        address = _ref2[0],
+                        abi = _ref2[1];
 
-                return new _this4.web3.eth.Contract(abi, address);
-            });
-            // Return contract promise
-            return this.contracts[name];
+                    return new _this4.web3.eth.Contract(abi, address);
+                });
+                return this.contracts[name];
+            } else {
+                return this.contracts[name];
+            }
+            // Load contract data and initialise
         }
-        // Create a new contract instance with the specified ABI name and address
+        /**
+         * Create a new contract instance with the specified ABI name and address
+         * @param name A string representing the name of the contract
+         * @param address A string representing the address of the specific instance
+         * @returns a Promise<Contract\> that resolves to a web3.eth.contract instance of the contract
+         *
+         * @example using Typescript
+         * ```ts
+         * const minipool = await rp.contracts.make("rocketMinipoolDelegate", "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294");
+         * ```
+         */
 
     }, {
         key: "make",

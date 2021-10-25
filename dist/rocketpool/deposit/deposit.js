@@ -11,32 +11,57 @@ var _transaction = require("../../utils/transaction");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Rocket Pool deposit pool manager
+ * Rocket Pool Deposit Pool Manager
  */
 var Deposit = function () {
-    // Constructor
+    /**
+     * Create a new Deposit instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function Deposit(web3, contracts) {
         _classCallCheck(this, Deposit);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDepositPool contract
+     */
 
 
     _createClass(Deposit, [{
         key: "getBalance",
 
         /**
-         * Getters
+         * Get the current deposit pool balance in Wei
+         * @returns a Promise<string\> that resolves to a string representing the current deposit pool balance in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const balanceInWei = rp.deposit.getBalance().then((val: string) => { val };
+         * // convert to Ether if needed
+         * const balanceInEth = web3.utils.fromWei(balanceInWei, 'ether')
+         * ```
          */
-        // Get the current deposit pool balance in wei
         value: function getBalance() {
             return this.rocketDepositPool.then(function (rocketDepositPool) {
                 return rocketDepositPool.methods.getBalance().call();
             });
         }
-        // Get the excess balance
+        /**
+         * Get the excess balance in Wei
+         * @returns a Promise<string\> that resolves to a string representing the current excess balance in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const balanceInWei = rp.deposit.getExcessBalance().then((val: string) => { val };
+         * // convert to Ether if needed
+         * const balanceInEth = web3.utils.fromWei(balanceInWei, 'ether')
+         * ```
+         */
 
     }, {
         key: "getExcessBalance",
@@ -45,7 +70,15 @@ var Deposit = function () {
                 return rocketDepositPool.methods.getExcessBalance().call();
             });
         }
-        // Get the users last deposit block
+        /**
+         * Get the block of the last user deposit
+         * @returns a Promise<number\> that resolves to a number representing the block of the last user deposit
+         *
+         * @example using Typescript
+         * ```ts
+         * const block = rp.deposit.getUserLastDepositBlock().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getUserLastDepositBlock",
@@ -55,9 +88,22 @@ var Deposit = function () {
             });
         }
         /**
-         * Mutators - Public
+         * Make a deposit
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *	  value: web3.utils.toWei("10", "ether"),
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.deposit.deposit(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
          */
-        // Make a deposit
 
     }, {
         key: "deposit",
@@ -66,7 +112,22 @@ var Deposit = function () {
                 return (0, _transaction.handleConfirmations)(rocketDepositPool.methods.deposit().send(options), onConfirmation);
             });
         }
-        // Assign deposits
+        /**
+         * Assign Deposits
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.deposit.assignDeposits(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
+         */
 
     }, {
         key: "assignDeposits",

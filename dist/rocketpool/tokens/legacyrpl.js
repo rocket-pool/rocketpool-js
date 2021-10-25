@@ -19,21 +19,31 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Rocket Pool Legacy RPL token manager
+ * Rocket Pool Legacy RPL Token Manager
  */
 var LegacyRPL = function (_ERC) {
     _inherits(LegacyRPL, _ERC);
 
-    // Constructor
+    /**
+     * Create a new LegacyRPL instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function LegacyRPL(web3, contracts) {
         _classCallCheck(this, LegacyRPL);
 
         return _possibleConstructorReturn(this, (LegacyRPL.__proto__ || Object.getPrototypeOf(LegacyRPL)).call(this, web3, contracts, "rocketTokenRPLFixedSupply"));
     }
     /**
-     * Getters
+     * Get the contract address
+     * @returns a Promise<string\> that resolves to a string representing the contract address of the token
+     *
+     * @example using Typescript
+     * ```ts
+     * const address = rp.tokens.legacyrpl.getAddress().then((val: string) => { val };
+     * ```
      */
-    // Get contract address
 
 
     _createClass(LegacyRPL, [{

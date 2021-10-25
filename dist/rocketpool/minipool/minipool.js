@@ -21,26 +21,39 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Rocket Pool minipool manager
+ * Rocket Pool Minipool Manager
  */
 var Minipool = function () {
-    // Constructor
+    /**
+     * Create a new Minipool instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool Contract Manager Instance
+     */
     function Minipool(web3, contracts) {
         _classCallCheck(this, Minipool);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolManager contract
+     */
 
 
     _createClass(Minipool, [{
         key: "getMinipools",
 
         /**
-         * Getters
+         * Get all minipool details
+         * @returns a Promise<MinipoolDetails[]\> that resolves to an array of MinipoolDetails (address, exists, pubkey)
+         *
+         * @example using Typescript
+         * ```ts
+         * const minipools = rp.minipool.getMinipools().then((val: MinipoolDetails[]) => { val };
+         * ```
          */
-        // Get all minipool details
         value: function getMinipools() {
             var _this = this;
 
@@ -50,7 +63,15 @@ var Minipool = function () {
                 }));
             });
         }
-        // Get all minipool addresses
+        /**
+         * Get all minipool addresses
+         * @returns a Promise<string[]\> that resolves to an array of minipool addresses as strings
+         *
+         * @example using Typescript
+         * ```ts
+         * const addresses = rp.minipool.getMinipoolAddresses().then((val: string[]) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolAddresses",
@@ -63,7 +84,17 @@ var Minipool = function () {
                 }));
             });
         }
-        // Get a node's minipool details
+        /**
+         * Get all node's minipool details
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<MinipoolDetails[]\> that resolves to an array of MinipoolDetails about a specific node
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const details = rp.minipool.getNodeMinipools(nodeAddress).then((val: MinipoolDetails[]) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeMinipools",
@@ -76,7 +107,17 @@ var Minipool = function () {
                 }));
             });
         }
-        // Get a node's minipool addresses
+        /**
+         * Get all node's minipool addresses
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<string[]\> that resolves to an array of strings containing the minipool addresses
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const minipoolAddresses = rp.minipool.getNodeMinipoolAddresses(nodeAddress).then((val: string[]) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeMinipoolAddresses",
@@ -89,7 +130,17 @@ var Minipool = function () {
                 }));
             });
         }
-        // Get a minipool's details
+        /**
+         * Get all minipool's details
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<MinipoolDetails\> that resolves to a singular MinipoolDetails with details about the minipool you want to look up
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const minipoolDetails = rp.minipool.getMinipoolDetails(nodeAddress).then((val: MinipoolDetails) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolDetails",
@@ -106,7 +157,15 @@ var Minipool = function () {
                 };
             });
         }
-        // Get the total minipool count
+        /**
+         * Get all the total minipool count
+         * @returns a Promise<number\> that resolves to a number representing the total minipool count
+         *
+         * @example using Typescript
+         * ```ts
+         * const totalMinipools = rp.minipool.getMinipoolCount().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolCount",
@@ -117,7 +176,17 @@ var Minipool = function () {
                 return parseInt(value);
             });
         }
-        // Get a minipool address by index
+        /**
+         * Get a minipool address by index
+         * @params index a number representing the index of the minipool you wish to lookup
+         * @returns a Promise<string\> that resolves to a string representing the minipool address
+         *
+         * @example using Typescript
+         * ```ts
+         * const index = 5;
+         * const address = rp.minipool.getMinipoolAt(index).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolAt",
@@ -126,7 +195,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getMinipoolAt(index).call();
             });
         }
-        // Get a node's total minipool count
+        /**
+         * Get a node's total minipool count
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<number\> that resolves to a number representing the node's total minipool count
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const nodeMinipoolCount = rp.minipool.getNodeMinipoolCount(nodeAddress).then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeMinipoolCount",
@@ -137,7 +216,15 @@ var Minipool = function () {
                 return parseInt(value);
             });
         }
-        // Get the staking minipool count
+        /**
+         * Get the staking minipool count
+         * @returns a Promise<number\> that resolves to a number representing the total staking minipool count
+         *
+         * @example using Typescript
+         * ```ts
+         * const stakingMinipoolCount = rp.minipool.getStakingMinipoolCount().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getStakingMinipoolCount",
@@ -146,7 +233,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getStakingMinipoolCount().call();
             });
         }
-        // Get the total staking minipool count
+        /**
+         * Get the node's staking minipool count
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<number\> that resolves to a number representing the node's staking minipool count
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const nodeStakingMinipoolCount = rp.minipool.getNodeStakingMinipoolCount(nodeAddress).then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeStakingMinipoolCount",
@@ -155,7 +252,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getNodeStakingMinipoolCount(nodeAddress).call();
             });
         }
-        // Get the node active minipool count
+        /**
+         * Get the node's active minipool count
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @returns a Promise<number\> that resolves to a number representing the node's active minipool count
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const nodeActiveMinipoolCount = rp.minipool.getNodeActiveMinipoolCount(nodeAddress).then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeActiveMinipoolCount",
@@ -164,7 +271,19 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getNodeActiveMinipoolCount(nodeAddress).call();
             });
         }
-        // Get a node's minipool address by index
+        /**
+         * Get the node's minipool address by index
+         * @params nodeAddress a string representing the node address you which to return details for
+         * @params index a number representing the index of
+         * @returns a Promise<string\> that resolves to a string representing the minipool address at the desired index
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const index = 2;
+         * const address = rp.minipool.getNodeMinipoolAt(nodeAddress, index).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeMinipoolAt",
@@ -173,7 +292,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getNodeMinipoolAt(nodeAddress, index).call();
             });
         }
-        // Get a minipool address by validator pubkey
+        /**
+         * Get a minipool address by validator pubkey
+         * @params validatorPubkey a string representing the validator pub key
+         * @returns a Promise<string\> that resolves to a string representing the minipool address at the desired pubkey
+         *
+         * @example using Typescript
+         * ```ts
+         * const validatorPubkey = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003";
+         * const address = rp.minipool.getMinipoolByPubkey(nodeAddress).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolByPubkey",
@@ -182,7 +311,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getMinipoolByPubkey(validatorPubkey).call();
             });
         }
-        // Check whether a minipool exists
+        /**
+         * Check whether a minipool exists
+         * @params address a string representing the minipool address you to check against
+         * @returns a Promise<boolean\> that resolves to a boolean representing if a minipool exists at the address
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const exists = rp.minipool.getMinipoolExists(nodeAddress).then((val: boolean) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolExists",
@@ -191,7 +330,17 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getMinipoolExists(address).call();
             });
         }
-        // Get a minipool's validator pubkey
+        /**
+         * Get a minipool's validator pubkey
+         * @params address a string representing the minipool address
+         * @returns a Promise<string\> that resolves to a string representing the pubkey for the provided minipool address
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const address = rp.minipool.getMinipoolPubkey(nodeAddress).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolPubkey",
@@ -200,7 +349,35 @@ var Minipool = function () {
                 return rocketMinipoolManager.methods.getMinipoolPubkey(address).call();
             });
         }
-        // Get the minipool queue length
+        /**
+         * Get a minipool's withdrawal credentials
+         * @params address a string representing the minipool address
+         * @returns a Promise<string\> that resolves to a string representing the minipool credentials
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const address = rp.minipool.getMinipoolWithdrawalCredentials(nodeAddress).then((val: string) => { val };
+         * ```
+         */
+
+    }, {
+        key: "getMinipoolWithdrawalCredentials",
+        value: function getMinipoolWithdrawalCredentials(address) {
+            return this.rocketMinipoolManager.then(function (rocketMinipoolManager) {
+                return rocketMinipoolManager.methods.getMinipoolWithdrawalCredentials(address).call();
+            });
+        }
+        /**
+         * Get the minipool queue length
+         * @params depositType a number representing the deposit type
+         * @returns a Promise<number\> that resolves to a number representing the minipool queue length
+         *
+         * @example using Typescript
+         * ```ts
+         * const length = rp.minipool.getQueueLength(1).then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getQueueLength",
@@ -209,7 +386,15 @@ var Minipool = function () {
                 return rocketMinipoolQueue.methods.getLength(depositType).call();
             });
         }
-        // Get the total minipool queue length
+        /**
+         * Get the total minipool queue length
+         * @returns a Promise<number\> that resolves to a number representing the total minipool queue length
+         *
+         * @example using Typescript
+         * ```ts
+         * const totalLength = rp.minipool.getQueueTotalLength().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getQueueTotalLength",
@@ -220,7 +405,15 @@ var Minipool = function () {
                 return parseInt(value);
             });
         }
-        // Get the total capacity of queued minipools in wei
+        /**
+         * Get the total capacity of queued minipools in Wei
+         * @returns a Promise<string\> that resolves to a number representing the total capacity of queued minipools in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const totalLength = rp.minipool.getQueueTotalCapacity().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getQueueTotalCapacity",
@@ -229,7 +422,15 @@ var Minipool = function () {
                 return rocketMinipoolQueue.methods.getTotalCapacity().call();
             });
         }
-        // Get the effective capacity of queued minipools in wei (used in node demand calculations)
+        /**
+         * Get the effective capacity of queued minipools in Wei (used in node demand calculations)
+         * @returns a Promise<string\> that resolves to a number representing the effective capacity of queued minipools in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const queueEffectiveCapacity = rp.minipool.getQueueEffectiveCapacity().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getQueueEffectiveCapacity",
@@ -238,7 +439,15 @@ var Minipool = function () {
                 return rocketMinipoolQueue.methods.getEffectiveCapacity().call();
             });
         }
-        // Get the capacity of the next available minipool in wei
+        /**
+         * Get the capacity of the next available minipool in Wei
+         * @returns a Promise<string\> that resolves to a number representing the capacity of the next available minipool in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const queueNextCapacity = rp.minipool.getQueueNextCapacity().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getQueueNextCapacity",
@@ -247,7 +456,19 @@ var Minipool = function () {
                 return rocketMinipoolQueue.methods.getNextCapacity().call();
             });
         }
-        // Get the node reward amount for a minipool by node fee, user deposit balance, and staking start & end balances
+        /**
+         * Get the node reward amount for a minipool by node fee, user deposit balance, and staking start & end balances
+         * @params nodeFee a number representing the node fee
+         * @params userBalanceString a string representing the user balance in Wei
+         * @params startBalance a string representing the start balance in Wei
+         * @params endBalance a sttring representing the end balance in Wei
+         * @returns a Promise<string\> that resolves to a string representing the minipool node rewards amount in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const rewardsAmount = rp.minipool.getMinipoolNodeRewardAmount(nodeFee, userDepositBalance, startBalance, endBalance).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolNodeRewardAmount",
@@ -258,7 +479,17 @@ var Minipool = function () {
                 return rocketMinipoolStatus.methods.getMinipoolNodeRewardAmount(_this5.web3.utils.toWei(nodeFee.toString(), "ether"), userDepositBalance, startBalance, endBalance).call();
             });
         }
-        // Get a MinipoolContract instance
+        /**
+         * Get a MinipoolContract instance
+         * @params address a string representing the address of the minipool
+         * @returns a Promise<MinipoolContract\> that resolves to a MinipoolContract representing the contract of the minipool
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const minipoolContract = rp.minipool.getMinipoolContract(address).then((val: MinipoolContract) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinipoolContract",
@@ -269,7 +500,17 @@ var Minipool = function () {
                 return new _minipoolContract2.default(_this6.web3, address, rocketMinipool);
             });
         }
-        // Get Effective Delegate
+        /**
+         * Get the effective delegate
+         * @params address a string representing the address of the minipool
+         * @returns a Promise<string\> that resolves to the address of the effective delegate
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const effectiveDelegate = rp.minipool.getEffectiveDelegate(address).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getEffectiveDelegate",
@@ -279,9 +520,23 @@ var Minipool = function () {
             });
         }
         /**
-         * Mutators - Restricted to trusted nodes
+         * Submit a minipool as withdrawable
+         * @param minipoolAddress A string representing the address of the minipool
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const minipoolAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const trustedNode = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: trustedNode,
+         *		gas: 1000000
+         * };
+         * const txReceipt = rp.minipool.submitWithdrawable(minipoolAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
          */
-        // Submit a minipool withdrawable event
 
     }, {
         key: "submitMinipoolWithdrawable",
@@ -295,16 +550,31 @@ var Minipool = function () {
         get: function get() {
             return this.contracts.get("rocketMinipoolManager");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolQueue contract
+         */
+
     }, {
         key: "rocketMinipoolQueue",
         get: function get() {
             return this.contracts.get("rocketMinipoolQueue");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolStatus contract
+         */
+
     }, {
         key: "rocketMinipoolStatus",
         get: function get() {
             return this.contracts.get("rocketMinipoolStatus");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipool contract
+         */
+
     }, {
         key: "rocketMinipool",
         get: function get() {

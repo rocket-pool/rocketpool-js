@@ -9,26 +9,39 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Rocket Pool network settings manager
+ * Rocket Pool Network Settings Manager
  */
 var NetworkSettings = function () {
-    // Constructor
+    /**
+     * Create a new Network Settings instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function NetworkSettings(web3, contracts) {
         _classCallCheck(this, NetworkSettings);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsNetwork contract
+     */
 
 
     _createClass(NetworkSettings, [{
         key: "getNodeConsensusThreshold",
 
         /**
-         * Getters
+         * Return the threshold of trusted nodes that must reach consensus on oracle data to commit it
+         * @returns a Promise<number\> that resolves to a number representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeConsensusThreshold = rp.settings.network.getNodeConsensusThreshold().then((val: number) => { val };
+         * ```
          */
-        // The threshold of trusted nodes that must reach consensus on oracle data to commit it
         value: function getNodeConsensusThreshold() {
             var _this = this;
 
@@ -38,7 +51,15 @@ var NetworkSettings = function () {
                 return parseFloat(_this.web3.utils.fromWei(value, "ether"));
             });
         }
-        // Balance submissions are currently enabled
+        /**
+         * Return if balance submissions are enabled
+         * @returns a Promise<boolean\> that resolves to a boolean representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getSubmitBalancesEnabled().then((val: boolean) => { val };
+         * ```
+         */
 
     }, {
         key: "getSubmitBalancesEnabled",
@@ -47,7 +68,15 @@ var NetworkSettings = function () {
                 return rocketDAOProtocolSettingsNetwork.methods.getSubmitBalancesEnabled().call();
             });
         }
-        // The frequency in blocks at which network balances should be submitted by trusted nodes
+        /**
+         * Return the frequency in blocks at which network balances should be submitted by trusted nodes
+         * @returns a Promise<number\> that resolves to a number representing the frequency in blocks at which network balances should be submitted by trusted nodes
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getSubmitBalancesFrequency().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getSubmitBalancesFrequency",
@@ -58,7 +87,15 @@ var NetworkSettings = function () {
                 return parseInt(value);
             });
         }
-        // Node commission rate parameters
+        /**
+         * Return the minimum node fee
+         * @returns a Promise<number\> that resolves to a number representing the minimum node fee
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getMinimumNodeFee().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getMinimumNodeFee",
@@ -71,6 +108,16 @@ var NetworkSettings = function () {
                 return parseFloat(_this2.web3.utils.fromWei(value, "ether"));
             });
         }
+        /**
+         * Return the target node fee
+         * @returns a Promise<number\> that resolves to a number representing the target node fee
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getTargetNodeFee().then((val: number) => { val };
+         * ```
+         */
+
     }, {
         key: "getTargetNodeFee",
         value: function getTargetNodeFee() {
@@ -82,6 +129,16 @@ var NetworkSettings = function () {
                 return parseFloat(_this3.web3.utils.fromWei(value, "ether"));
             });
         }
+        /**
+         * Return the maximum node fee
+         * @returns a Promise<number\> that resolves to a number representing the maximum node fee
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getMaximumNodeFee().then((val: number) => { val };
+         * ```
+         */
+
     }, {
         key: "getMaximumNodeFee",
         value: function getMaximumNodeFee() {
@@ -93,7 +150,15 @@ var NetworkSettings = function () {
                 return parseFloat(_this4.web3.utils.fromWei(value, "ether"));
             });
         }
-        // The range of node demand values in wei to base fee calculations on (from negative to positive value)
+        /**
+         * Return the range of node demand values in Wei to base fee calculations on (from negative to positive value)
+         * @returns a Promise<string\> that resolves to a string representing the range of node demand values in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getNodeFeeDemandRange().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getNodeFeeDemandRange",
@@ -102,7 +167,15 @@ var NetworkSettings = function () {
                 return rocketDAOProtocolSettingsNetwork.methods.getNodeFeeDemandRange().call();
             });
         }
-        // The target rETH collateralization rate
+        /**
+         * Return the target rETH collateralization rate
+         * @returns a Promise<number\> that resolves to a number representing the target rETH collateralization rate
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getTargetRethCollateralRate().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getTargetRethCollateralRate",
@@ -115,7 +188,15 @@ var NetworkSettings = function () {
                 return parseFloat(_this5.web3.utils.fromWei(value, "ether"));
             });
         }
-        // The rETH deposit delay setting
+        /**
+         * Return the rETH deposit delay setting
+         * @returns a Promise<number\> that resolves to a number representing the rETH deposit delay setting
+         *
+         * @example using Typescript
+         * ```ts
+         * const enabled = rp.settings.network.getRethDespositDelay().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getRethDespositDelay",

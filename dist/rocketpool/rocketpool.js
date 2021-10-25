@@ -32,10 +32,6 @@ var _settings = require("./dao/node/trusted/settings");
 
 var _settings2 = _interopRequireDefault(_settings);
 
-var _settings3 = require("./dao/protocol/settings");
-
-var _settings4 = _interopRequireDefault(_settings3);
-
 var _deposit = require("./deposit/deposit");
 
 var _deposit2 = _interopRequireDefault(_deposit);
@@ -109,10 +105,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Main Rocket Pool library class
+ * RocketPool
  */
 var RocketPool =
-// Constructor
+/**
+ * Create a new Rocket Pool instance.
+ *
+ * @param web3 A Web3 instance
+ * @param RocketStorage a RocketStorage address as a string or ContractArtifact (JSON ABI file)
+ * @returns a RocketPool API object for use in your project
+ *
+ * Example using RocketStorage contract address
+ * ```ts
+ * // Using a RocketStorage address as a string
+ * const RocketStorage = "0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3"; // Current Testnet Storage Contract
+ * const rp = new RocketPool(web3, RocketStorage);
+ * ```
+ *
+ * Example using Contract Artifact (ABI JSON file)
+ * ```ts
+ * // Using a Contract Artifact (ABI JSON file)
+ * import RocketStorage from './contracts/RocketStorage.json';
+ * const rp = new RocketPool(web3, RocketStorage);
+ * ```
+ */
 function RocketPool(web3, RocketStorage) {
     _classCallCheck(this, RocketPool);
 
@@ -129,9 +145,6 @@ function RocketPool(web3, RocketStorage) {
                 proposals: new _proposals4.default(web3, this.contracts),
                 settings: new _settings2.default(web3, this.contracts)
             }
-        },
-        protocol: {
-            settings: new _settings4.default(web3, this.contracts)
         },
         proposals: new _proposals2.default(web3, this.contracts)
     };

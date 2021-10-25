@@ -14,32 +14,64 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Rocket Pool DAO Trusted Node Actions
  */
 var DAONodeTrustedActions = function () {
-    // Constructor
+    /**
+     * Create a new DAONodeTrustedActions instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function DAONodeTrustedActions(web3, contracts) {
         _classCallCheck(this, DAONodeTrustedActions);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedActions contract
+     */
 
 
     _createClass(DAONodeTrustedActions, [{
         key: "actionJoin",
 
         /**
-         * Getters
+         * Join the DAO
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.dao.node.trusted.actions.actionJoin(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
          */
-        /**
-         * Mutators - Public
-         */
-        // Join the DAO
         value: function actionJoin(options, onConfirmation) {
             return this.rocketDAONodeTrustedActions.then(function (rocketDAONodeTrustedActions) {
                 return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionJoin().send(options), onConfirmation);
             });
         }
-        // Leave the DAO
+        /**
+         * Leave the DAO
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.dao.node.trusted.actions.actionLeave(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
+         */
 
     }, {
         key: "actionLeave",
@@ -48,7 +80,24 @@ var DAONodeTrustedActions = function () {
                 return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionLeave(refundAddress).send(options), onConfirmation);
             });
         }
-        // Challenge Make
+        /**
+         * Challenge another DAO member
+         * @param address A string representing the address of the DAO member you want challenge
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const addressToChallenge = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.dao.node.trusted.actions.actionChallengeMake(addressToChallenge, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
+         */
 
     }, {
         key: "actionChallengeMake",
@@ -57,7 +106,24 @@ var DAONodeTrustedActions = function () {
                 return (0, _transaction.handleConfirmations)(rocketDAONodeTrustedActions.methods.actionChallengeMake(address).send(options), onConfirmation);
             });
         }
-        // Challenge Decide
+        /**
+         * Decides the success of a challenge
+         * @param address A string representing the address of the DAO member you want challenge
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const addressToChallenge = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+         * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const options = {
+         *		from: nodeAddress,
+         *		gas: 1000000
+         * }
+         * const txReceipt = rp.dao.node.trusted.actions.actionChallengeMake(addressToChallenge, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
+         */
 
     }, {
         key: "actionChallengeDecide",

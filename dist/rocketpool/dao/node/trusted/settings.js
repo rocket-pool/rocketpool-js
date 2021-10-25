@@ -12,29 +12,50 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Rocket Pool DAO Trusted Node Settings
  */
 var DAONodeTrustedSettings = function () {
-    // Constructor
+    /**
+     * Create a new DAONodeTrustedSettings instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function DAONodeTrustedSettings(web3, contracts) {
         _classCallCheck(this, DAONodeTrustedSettings);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsProposals contract
+     */
 
 
     _createClass(DAONodeTrustedSettings, [{
         key: "getMaximumDepositAssignments",
 
         /**
-         * Getters
+         * Get the maximum deposit assignments
+         * @returns a Promise<string\> that resolves to a string representing the maximum deposit assignments
+         *
+         * @example using Typescript
+         * ```ts
+         * const maxDepositsAssignments = rp.dao.node.trusted.getMaximumDepositAssignments().then((val: string) => { val };
+         * ```
          */
-        // Get member id given an address
         value: function getMaximumDepositAssignments() {
             return this.rocketDAOProtocolSettingsDeposit.then(function (rocketDAOProtocolSettingsDeposit) {
                 return rocketDAOProtocolSettingsDeposit.methods.getMaximumDepositAssignments().call();
             });
         }
-        // How much it costs a non-member to challenge a members node. It's free for current members to challenge other members.
+        /**
+         * Get the cost of a challenge (How much it costs a non-member to challenge a members node. It's free for current members to challenge other members.)
+         * @returns a Promise<string\> that resolves to a string representing the inflation intervals that have passed (in time)
+         *
+         * @example using Typescript
+         * ```ts
+         * const maxDepositsAssignments = rp.dao.node.trusted.getMaximumDepositAssignments().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getChallengeCost",
@@ -48,16 +69,31 @@ var DAONodeTrustedSettings = function () {
         get: function get() {
             return this.contracts.get("rocketDAONodeTrustedSettingsProposals");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsMembers contract
+         */
+
     }, {
         key: "rocketDAONodeTrustedSettingsMembers",
         get: function get() {
             return this.contracts.get("rocketDAONodeTrustedSettingsMembers");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsDeposit contract
+         */
+
     }, {
         key: "rocketDAOProtocolSettingsDeposit",
         get: function get() {
             return this.contracts.get("rocketDAOProtocolSettingsDeposit");
         }
+        /**
+         * Private accessor use to retrieve the related contract
+         * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsMinipool contract
+         */
+
     }, {
         key: "rocketDAOProtocolSettingsMinipool",
         get: function get() {

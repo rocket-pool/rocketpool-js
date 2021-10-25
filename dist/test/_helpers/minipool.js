@@ -158,22 +158,75 @@ function getMinipoolMinimumRPLStake(web3, rp) {
     }));
 }
 // Create a minipool
+var minipoolSalt = 1;
 function createMinipool(web3, rp, options) {
     return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-        var minipoolManagerAddress, txReceipt, minipoolCreatedEvents;
+        var rocketMinipoolManager, rocketStorage, minipoolManagerAddress, rocketMinipool, contractBytecode, depositType, constructorArgs, deployCode, salt, nodeSalt, bytecodeHash, raw, minipoolAddress, withdrawalCredentials, depositData, depositDataRoot, minimumNodeFee, txReceipt, minipoolCreatedEvents;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
                 switch (_context5.prev = _context5.next) {
                     case 0:
                         _context5.next = 2;
-                        return rp.contracts.address("rocketMinipoolManager");
+                        return rp.contracts.get("rocketMinipoolManager");
 
                     case 2:
-                        minipoolManagerAddress = _context5.sent;
+                        rocketMinipoolManager = _context5.sent;
                         _context5.next = 5;
-                        return rp.node.deposit(web3.utils.toWei("0", "ether"), options);
+                        return rp.contracts.get("rocketStorage");
 
                     case 5:
+                        rocketStorage = _context5.sent;
+                        _context5.next = 8;
+                        return rp.contracts.address("rocketMinipoolManager");
+
+                    case 8:
+                        minipoolManagerAddress = _context5.sent;
+
+                        // Get artifact and bytecode
+                        rocketMinipool = require("../../contracts/RocketMinipool.json");
+                        contractBytecode = rocketMinipool.bytecode;
+                        // Get deposit type from tx amount
+                        // @ts-ignore
+
+                        _context5.next = 13;
+                        return rp.node.getDepositType(options.value.toString());
+
+                    case 13:
+                        depositType = _context5.sent;
+
+                        // Construct creation code for minipool deploy
+                        constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
+                        deployCode = contractBytecode + constructorArgs.substr(2);
+                        salt = minipoolSalt++;
+                        // Calculate keccak(nodeAddress, salt)
+
+                        nodeSalt = web3.utils.soliditySha3({ type: "address", value: options.from }, { type: "uint256", value: salt.toString() });
+                        // Calculate hash of deploy code
+
+                        bytecodeHash = web3.utils.soliditySha3({ type: "bytes", value: deployCode });
+                        // Construct deterministic minipool address
+
+                        raw = web3.utils.soliditySha3({ type: "bytes1", value: "0xff" }, { type: "address", value: rocketMinipoolManager.options.address }, { type: "bytes32", value: nodeSalt !== null ? nodeSalt : "" }, { type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : "" });
+                        // @ts-ignore
+
+                        minipoolAddress = "0x" + raw.substr(raw.length - 40);
+                        withdrawalCredentials = "0x010000000000000000000000" + minipoolAddress.substr(2);
+                        // Get validator deposit data
+
+                        depositData = {
+                            pubkey: (0, _beacon.getValidatorPubkey)(),
+                            withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
+                            amount: BigInt(16000000000),
+                            signature: (0, _beacon.getValidatorSignature)()
+                        };
+                        depositDataRoot = (0, _beacon.getDepositDataRoot)(depositData);
+                        minimumNodeFee = web3.utils.toWei("0", "ether");
+                        // Make node deposit
+
+                        _context5.next = 27;
+                        return rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
+
+                    case 27:
                         txReceipt = _context5.sent;
 
                         // Get minipool created events
@@ -181,16 +234,16 @@ function createMinipool(web3, rp, options) {
                         // Return minipool instance
 
                         if (minipoolCreatedEvents.length) {
-                            _context5.next = 9;
+                            _context5.next = 31;
                             break;
                         }
 
                         return _context5.abrupt("return", null);
 
-                    case 9:
+                    case 31:
                         return _context5.abrupt("return", rp.minipool.getMinipoolContract(minipoolCreatedEvents[0].minipool));
 
-                    case 10:
+                    case 32:
                     case "end":
                         return _context5.stop();
                 }
@@ -199,36 +252,38 @@ function createMinipool(web3, rp, options) {
     }));
 }
 // Progress a minipool to staking
-function stakeMinipool(web3, rp, minipool, validatorPubkey, options) {
+function stakeMinipool(web3, rp, minipool, options) {
     return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-        var withdrawalCredentials, depositData, depositDataRoot;
+        var validatorPubkey, withdrawalCredentials, depositData, depositDataRoot;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
                 switch (_context6.prev = _context6.next) {
                     case 0:
-                        // Create validator pubkey
-                        if (!validatorPubkey) validatorPubkey = (0, _beacon.getValidatorPubkey)();
-                        // Get withdrawal credentials
-                        _context6.next = 3;
-                        return minipool.getWithdrawalCredentials();
+                        _context6.next = 2;
+                        return rp.minipool.getMinipoolPubkey(minipool.address);
 
-                    case 3:
+                    case 2:
+                        validatorPubkey = _context6.sent;
+                        _context6.next = 5;
+                        return rp.minipool.getMinipoolWithdrawalCredentials(minipool.address);
+
+                    case 5:
                         withdrawalCredentials = _context6.sent;
 
                         // Get validator deposit data
                         depositData = {
-                            pubkey: validatorPubkey,
+                            pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
                             withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-                            amount: BigInt(32000000000),
+                            amount: BigInt(16000000000),
                             signature: (0, _beacon.getValidatorSignature)()
                         };
                         depositDataRoot = (0, _beacon.getDepositDataRoot)(depositData);
                         // Stake
 
-                        _context6.next = 8;
+                        _context6.next = 10;
                         return minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
 
-                    case 8:
+                    case 10:
                     case "end":
                         return _context6.stop();
                 }

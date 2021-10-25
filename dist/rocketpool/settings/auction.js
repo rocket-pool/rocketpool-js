@@ -9,32 +9,53 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * Rocket Pool deposit settings manager
+ * Rocket Pool Auction Settings Manager
  */
 var AuctionSettings = function () {
-    // Constructor
+    /**
+     * Create a new AuctionSettings instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function AuctionSettings(web3, contracts) {
         _classCallCheck(this, AuctionSettings);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsAuction contract
+     */
 
 
     _createClass(AuctionSettings, [{
         key: "getLotMaximumEthValue",
 
         /**
-         * Getters
+         * Return the lot maximum ETH value setting
+         * @returns a Promise<number\> that resolves to a number representing the lot maximum ETH value setting
+         *
+         * @example using Typescript
+         * ```ts
+         * const lotMaximumEthValue = rp.settings.auction.getLotMaximumEthValue().then((val: number) => { val };
+         * ```
          */
-        // Return the Lot Maximum Eth Value Setting
         value: function getLotMaximumEthValue() {
             return this.rocketDAOProtocolSettingsAuction.then(function (rocketDAOProtocolSettingsAuction) {
                 return rocketDAOProtocolSettingsAuction.methods.getLotMaximumEthValue().call();
             });
         }
-        // Return the Lot Duration Setting
+        /**
+         * Return the lot duration setting
+         * @returns a Promise<number\> that resolves to a number representing the lot duration setting
+         *
+         * @example using Typescript
+         * ```ts
+         * const lotMaximumEthValue = rp.settings.auction.getLotDuration().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getLotDuration",
@@ -43,7 +64,15 @@ var AuctionSettings = function () {
                 return rocketDAOProtocolSettingsAuction.methods.getLotDuration().call();
             });
         }
-        // Return the Starting Price Ratio Setting
+        /**
+         * Return the starting price ratio setting
+         * @returns a Promise<number\> that resolves to a number representing the starting price ratio setting
+         *
+         * @example using Typescript
+         * ```ts
+         * const startingPriceRatio = rp.settings.auction.getStartingPriceRatio().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getStartingPriceRatio",
@@ -52,7 +81,15 @@ var AuctionSettings = function () {
                 return rocketDAOProtocolSettingsAuction.methods.getStartingPriceRatio().call();
             });
         }
-        // Return the Reserve Price Ratio Setting
+        /**
+         * Return the reserve price ratio setting
+         * @returns a Promise<number\> that resolves to a number representing the reserve price ratio setting
+         *
+         * @example using Typescript
+         * ```ts
+         * const reservePriceRatio = rp.settings.auction.getReservePriceRatio().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getReservePriceRatio",

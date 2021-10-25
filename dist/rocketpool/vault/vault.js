@@ -12,29 +12,52 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Rocket Pool Vault
  */
 var Vault = function () {
-    // Constructor
+    /**
+     * Create a new Vault instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function Vault(web3, contracts) {
         _classCallCheck(this, Vault);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketVault contract
+     */
 
 
     _createClass(Vault, [{
         key: "getAddress",
 
         /**
-         * Getters
+         * Retrieve the RocketVault contract address
+         * @returns a Promise<string\> that resolves to the Rocket Vault contract address
+         *
+         * @example using Typescript
+         * ```ts
+         * const rocketVault = rp.vault.getAddress().then((val: string) => { val };
+         * ```
          */
-        // Get contract address
         value: function getAddress() {
             return this.rocketVault.then(function (rocketVault) {
                 return rocketVault.options.address;
             });
         }
-        // Get the claim intervals that have passed
+        /**
+         * Retrieve the balance of a token when providing a contract & token address
+         * @param contractAddress A string representing the contract address
+         * @param tokenAddress A string representing the token address
+         * @returns a Promise<string\> that resolves to the Rocket Vault contract address
+         *
+         * @example using Typescript
+         * ```ts
+         * const rplBalance = rp.vault.balanceOfToken("rocketClaimDAO", rocketTokenRPLAddress).then((val: string) => { val }
+         * ```
+         */
 
     }, {
         key: "balanceOfToken",

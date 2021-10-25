@@ -14,32 +14,59 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Rocket Pool Rewards
  */
 var Rewards = function () {
-    // Constructor
+    /**
+     * Create a new Rewards instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function Rewards(web3, contracts) {
         _classCallCheck(this, Rewards);
 
         this.web3 = web3;
         this.contracts = contracts;
     }
-    // Contract accessors
+    /**
+     * Private accessor use to retrieve the related contract
+     * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketClaimTrustedNode contract
+     */
 
 
     _createClass(Rewards, [{
         key: "getClaimRewardsAmount",
 
         /**
-         * Getters
+         * Get claim rewards amount
+         * @params address a string representing the node address
+         * @returns a Promise<string\> that resolves to a string representing the claim rewards amount in Wei
+         *
+         * @example using Typescript
+         * ```ts
+         * const address = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const claimPossible = rp.rewards.claimTrustedNode.getClaimRewardsAmount(address).then((val: string) => { val };
+         * ```
          */
-        // Get claim rewards amount
         value: function getClaimRewardsAmount(address) {
             return this.rocketClaimTrustedNode.then(function (rocketClaimTrustedNode) {
                 return rocketClaimTrustedNode.methods.getClaimRewardsAmount(address).call();
             });
         }
         /**
-         * Mutators - Public
+         * Claim from a trusted node
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const trustedNode = "0x421433c3f99529A704Ec2270E1A68fa66DD8bD79";
+         * const options = {
+         *		from: trustedNode,
+         *		gas: 1000000
+         * };
+         * const txReceipt = rp.rewards.claimTrustedNode(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
          */
-        // Claim from a trusted node
 
     }, {
         key: "claim",

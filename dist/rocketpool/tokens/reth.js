@@ -21,21 +21,33 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * Rocket Pool RETH token manager
+ * Rocket Pool RETH Token Manager
  */
 var RETH = function (_ERC) {
     _inherits(RETH, _ERC);
 
-    // Constructor
+    /**
+     * Create a new rETH instance.
+     *
+     * @param web3 A valid Web3 instance
+     * @param contracts A Rocket Pool contract manager instance
+     */
     function RETH(web3, contracts) {
         _classCallCheck(this, RETH);
 
         return _possibleConstructorReturn(this, (RETH.__proto__ || Object.getPrototypeOf(RETH)).call(this, web3, contracts, "rocketTokenRETH"));
     }
     /**
-     * Getters
+     * Get the amount of ETH backing an amount of rETH
+     * @params rethAmountWei a string representing the rETH amount in Wei
+     * @returns a Promise<string\> that resolves to a string representing the amount amount of rETH backing an amount of ETH
+     *
+     * @example using Typescript
+     * ```ts
+     * const rethAmountWei = web3.utils.toWei("1", "ether");
+     * const ethValue = rp.tokens.reth.getEthValue(rethAmountWei).then((val: string) => { val };
+     * ```
      */
-    // Get the amount of ETH backing an amount of rETH
 
 
     _createClass(RETH, [{
@@ -45,7 +57,17 @@ var RETH = function (_ERC) {
                 return tokenContract.methods.getEthValue(rethAmountWei).call();
             });
         }
-        // Get the amount of rETH backing an amount of ETH
+        /**
+         * Get the amount of rETH backing an amount of ETH
+         * @params ethAmountWei a string representing the ETH amount in Wei
+         * @returns a Promise<string\> that resolves to a string representing the amount amount of rETH backing an amount of ETH
+         *
+         * @example using Typescript
+         * ```ts
+         * const ethAmountWei = web3.utils.toWei("1", "ether");
+         * const rethValue = rp.tokens.reth.getRethValue(ethAmountWei).then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getRethValue",
@@ -54,8 +76,15 @@ var RETH = function (_ERC) {
                 return tokenContract.methods.getRethValue(ethAmountWei).call();
             });
         }
-        // Get the current ETH : rETH exchange rate
-        // Returns the amount of ETH backing 1 rETH
+        /**
+         * Get the current ETH to rETH exchange rate
+         * @returns a Promise<number\> that resolves to a number representing the amount of ETH backing 1 rETH
+         *
+         * @example using Typescript
+         * ```ts
+         * const exchangeRate = rp.tokens.reth.getTotalCollateral().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getExchangeRate",
@@ -64,7 +93,15 @@ var RETH = function (_ERC) {
                 return tokenContract.methods.getExchangeRate().call();
             });
         }
-        // Get the total amount of ETH collateral available
+        /**
+         * Get the total amount of ETH collateral available
+         * @returns a Promise<string\> that resolves to a string representing the portion of rETH backed by ETH in the contract as a fraction
+         *
+         * @example using Typescript
+         * ```ts
+         * const totalCollateral = rp.tokens.reth.getTotalCollateral().then((val: string) => { val };
+         * ```
+         */
 
     }, {
         key: "getTotalCollateral",
@@ -73,8 +110,15 @@ var RETH = function (_ERC) {
                 return tokenContract.methods.getTotalCollateral().call();
             });
         }
-        // Get the current ETH collateral rate
-        // Returns the portion of rETH backed by ETH in the contract as a fraction
+        /**
+         * Get the current ETH collateral rate
+         * @returns a Promise<number\> that resolves to a number representing the portion of rETH backed by ETH in the contract as a fraction
+         *
+         * @example using Typescript
+         * ```ts
+         * const rate = rp.tokens.reth.getCollateralRate().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getCollateralRate",
@@ -83,7 +127,15 @@ var RETH = function (_ERC) {
                 return tokenContract.methods.getCollateralRate().call();
             });
         }
-        // Get the total supply
+        /**
+         * Get the total supply
+         * @returns a Promise<number\> that resolves to a number representing the total supply
+         *
+         * @example using Typescript
+         * ```ts
+         * const supply = rp.tokens.reth.totalSupply().then((val: number) => { val };
+         * ```
+         */
 
     }, {
         key: "getTotalSupply",
@@ -93,9 +145,23 @@ var RETH = function (_ERC) {
             });
         }
         /**
-         * Mutators - Public
+         * Burn rETH for ETH
+         * @param amountWei A string representing the amount to burn in Wei
+         * @param options An optional object of web3.eth.Contract SendOptions
+         * @param onConfirmation An optional confirmation handler object
+         * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+         *
+         * @example using Typescript
+         * ```ts
+         * const fromAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+         * const amountWei = web3.utils.toWei("1", "ether");
+         * const options = {
+         *		from: fromAddress,
+         *		gas: 1000000
+         * };
+         * const txReceipt = rp.tokens.reth.burn(amountWei, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+         * ```
          */
-        // Burn rETH for ETH
 
     }, {
         key: "burn",
