@@ -78,7 +78,6 @@ class DAONodeTrustedSettings {
 			return rocketDAONodeTrustedSettingsMembers.methods.getChallengeCost().call();
 		});
 	}
-
 }
 
 // Exports

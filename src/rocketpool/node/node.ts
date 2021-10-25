@@ -550,12 +550,23 @@ class Node {
 	 * const txReceipt = rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
 	 */
-	public deposit(minimumNodeFee: string, validatorPubKey: Buffer, validatorSignature: Buffer, depositDataRoot: Buffer, salt: number, expectedMinipoolAddress: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+	public deposit(
+		minimumNodeFee: string,
+		validatorPubKey: Buffer,
+		validatorSignature: Buffer,
+		depositDataRoot: Buffer,
+		salt: number,
+		expectedMinipoolAddress: string,
+		options?: SendOptions,
+		onConfirmation?: ConfirmationHandler
+	): Promise<TransactionReceipt> {
 		return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<TransactionReceipt> => {
-			return handleConfirmations(rocketNodeDeposit.methods.deposit(minimumNodeFee, validatorPubKey, validatorSignature, depositDataRoot, salt, expectedMinipoolAddress).send(options), onConfirmation);
+			return handleConfirmations(
+				rocketNodeDeposit.methods.deposit(minimumNodeFee, validatorPubKey, validatorSignature, depositDataRoot, salt, expectedMinipoolAddress).send(options),
+				onConfirmation
+			);
 		});
 	}
-
 }
 
 // Exports

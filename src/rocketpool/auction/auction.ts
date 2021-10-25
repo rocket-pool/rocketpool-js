@@ -89,7 +89,6 @@ class Auction {
 		});
 	}
 
-
 	/**
 	 * Return the lot reserve price given a lot index
 	 * @param lotIndex A number representing the lot index
@@ -342,8 +341,8 @@ class Auction {
 	 * @example using Typescript
 	 * ```ts
 	 * const options = {
-   *		from: '0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294',
-   *		gas: 1000000
+	 *		from: '0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294',
+	 *		gas: 1000000
 	 * }
 	 * const txReceipt = rp.auction.createLot(options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
@@ -419,7 +418,6 @@ class Auction {
 			return handleConfirmations(rocketAuctionManager.methods.recoverUnclaimedRPL(lotIndex).send(options), onConfirmation);
 		});
 	}
-
 }
 
 // Exports

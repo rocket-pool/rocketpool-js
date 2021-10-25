@@ -25,7 +25,6 @@ class Rewards {
 	private get rocketClaimDAO(): Promise<Contract> {
 		return this.contracts.get("rocketClaimDAO");
 	}
-
 }
 
 // Exports

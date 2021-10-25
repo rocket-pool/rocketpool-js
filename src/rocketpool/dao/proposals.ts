@@ -158,7 +158,6 @@ class DAOProposal {
 			return rocketDAOProposal.methods.getExpires(proposalID).call();
 		});
 	}
-
 }
 
 // Exports

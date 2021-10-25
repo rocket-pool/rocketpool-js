@@ -7,7 +7,6 @@ import Contracts from "../contracts/contracts";
  * Rocket Pool Vault
  */
 class Vault {
-
 	/**
 	 * Create a new Vault instance.
 	 *
@@ -55,7 +54,6 @@ class Vault {
 			return rocketVault.methods.balanceOfToken(contractAddress, tokenAddress).call();
 		});
 	}
-
 }
 
 // Exports

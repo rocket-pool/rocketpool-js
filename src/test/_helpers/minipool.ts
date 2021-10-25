@@ -68,22 +68,17 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	const salt = minipoolSalt++;
 
 	// Calculate keccak(nodeAddress, salt)
-	const nodeSalt = web3.utils.soliditySha3(
-		{type: "address", value: options.from},
-		{type: "uint256", value: salt.toString()}
-	);
+	const nodeSalt = web3.utils.soliditySha3({ type: "address", value: options.from }, { type: "uint256", value: salt.toString() });
 
 	// Calculate hash of deploy code
-	const bytecodeHash = web3.utils.soliditySha3(
-		{type: "bytes", value: deployCode}
-	);
+	const bytecodeHash = web3.utils.soliditySha3({ type: "bytes", value: deployCode });
 
 	// Construct deterministic minipool address
 	const raw = web3.utils.soliditySha3(
-		{type: "bytes1", value: "0xff"},
-		{type: "address", value: rocketMinipoolManager.options.address},
-		{type: "bytes32", value: nodeSalt !== null ? nodeSalt : ""},
-		{type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : ""}
+		{ type: "bytes1", value: "0xff" },
+		{ type: "address", value: rocketMinipoolManager.options.address },
+		{ type: "bytes32", value: nodeSalt !== null ? nodeSalt : "" },
+		{ type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : "" }
 	);
 
 	// @ts-ignore
@@ -100,7 +95,6 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 
 	const depositDataRoot = getDepositDataRoot(depositData);
 	const minimumNodeFee = web3.utils.toWei("0", "ether");
-
 
 	// Make node deposit
 	const txReceipt = await rp.node.deposit(minimumNodeFee, depositData.pubkey, depositData.signature, depositDataRoot, salt, minipoolAddress, options);
@@ -119,7 +113,6 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 
 // Progress a minipool to staking
 export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions) {
-
 	// Get minipool validator pubkey
 	const validatorPubkey = await rp.minipool.getMinipoolPubkey(minipool.address);
 

@@ -73,7 +73,7 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 		const claimIntervalBlocks = 16;
 		// Interval for calculating inflation
 		const claimIntervalTime = ONE_DAY * 28;
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 
 		// Set some RPL inflation scenes
 		const rplInflationSetup = async function () {
@@ -137,7 +137,10 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 			});
 
 			// Set settings
-			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
+				from: owner,
+				gas: gasLimit,
+			});
 
 			// Register nodes
 			await registerNode(web3, rp, { from: registeredNode1, gas: gasLimit });
@@ -224,11 +227,11 @@ export default function runRewardsTests(web3: Web3, rp: RocketPool) {
 				from: registeredNode1,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, minipool2,  {
+			await stakeMinipool(web3, rp, minipool2, {
 				from: registeredNode2,
 				gas: gasLimit,
 			});
-			await stakeMinipool(web3, rp, minipool3,  {
+			await stakeMinipool(web3, rp, minipool3, {
 				from: registeredNode2,
 				gas: gasLimit,
 			});

@@ -98,22 +98,17 @@ export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptio
 	const salt = minipoolSalt++;
 
 	// Calculate keccak(nodeAddress, salt)
-	const nodeSalt = web3.utils.soliditySha3(
-		{type: "address", value: options.from},
-		{type: "uint256", value: salt.toString()}
-	);
+	const nodeSalt = web3.utils.soliditySha3({ type: "address", value: options.from }, { type: "uint256", value: salt.toString() });
 
 	// Calculate hash of deploy code
-	const bytecodeHash = web3.utils.soliditySha3(
-		{type: "bytes", value: deployCode}
-	);
+	const bytecodeHash = web3.utils.soliditySha3({ type: "bytes", value: deployCode });
 
 	// Construct deterministic minipool address
 	const raw = web3.utils.soliditySha3(
-		{type: "bytes1", value: "0xff"},
-		{type: "address", value: rocketMinipoolManager.options.address},
-		{type: "bytes32", value: nodeSalt !== null ? nodeSalt : ""},
-		{type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : ""}
+		{ type: "bytes1", value: "0xff" },
+		{ type: "address", value: rocketMinipoolManager.options.address },
+		{ type: "bytes32", value: nodeSalt !== null ? nodeSalt : "" },
+		{ type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : "" }
 	);
 
 	// @ts-ignore

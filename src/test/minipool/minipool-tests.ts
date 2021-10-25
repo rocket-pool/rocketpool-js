@@ -56,9 +56,9 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
-		const launchTimeout = (60 * 60 * 72); // 72 hours
+		const launchTimeout = 60 * 60 * 72; // 72 hours
 		const withdrawalDelay = 20;
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 		let initializedMinipool: MinipoolContract;
 		let prelaunchMinipool: MinipoolContract;
 		let prelaunchMinipool2: MinipoolContract;
@@ -155,8 +155,8 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 			await increaseTime(web3, scrubPeriod + 1);
 
 			// Progress minipools into desired statuses
-			await stakeMinipool(web3, rp, stakingMinipool, {from: node, gas: gasLimit });
-			await stakeMinipool(web3, rp, withdrawableMinipool, {from: node, gas: gasLimit });
+			await stakeMinipool(web3, rp, stakingMinipool, { from: node, gas: gasLimit });
+			await stakeMinipool(web3, rp, withdrawableMinipool, { from: node, gas: gasLimit });
 
 			// Set minipool to withdrawable
 			await rp.minipool.submitMinipoolWithdrawable(withdrawableMinipool.address, { from: trustedNode, gas: gasLimit });

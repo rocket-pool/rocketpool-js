@@ -42,7 +42,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 
 		// One day in seconds
 		const ONE_DAY = 24 * 60 * 60;
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 		const maxStakePerMinipool = "1.5";
 
 		// Accounts
@@ -135,10 +135,13 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 			] = await web3.eth.getAccounts();
 
 			// Disable RocketClaimNode claims contract
-			await setDAONetworkBootstrapRewardsClaimer(web3, rp,"rocketClaimNode", web3.utils.toWei("0", "ether"), {from: owner, gas: gasLimit});
+			await setDAONetworkBootstrapRewardsClaimer(web3, rp, "rocketClaimNode", web3.utils.toWei("0", "ether"), { from: owner, gas: gasLimit });
 
 			// Set settings
-			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
+				from: owner,
+				gas: gasLimit,
+			});
 
 			// Register node
 			await rp.node.registerNode("Australia/Brisbane", {
@@ -347,7 +350,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				from: owner,
 				to: initializedMinipool.address,
 				value: web3.utils.toWei("16", "ether"),
-				gas: gasLimit
+				gas: gasLimit,
 			});
 			await close(web3, rp, initializedMinipool, {
 				from: registeredNode2,
@@ -471,7 +474,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			});
 			await increaseTime(web3, scrubPeriod + 1);
-			await stakeMinipool(web3, rp, minipool,  {
+			await stakeMinipool(web3, rp, minipool, {
 				from: registeredNode1,
 				gas: gasLimit,
 			});
@@ -521,7 +524,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			})) as MinipoolContract;
 			await increaseTime(web3, scrubPeriod + 1);
-			await stakeMinipool(web3, rp, minipool,  {
+			await stakeMinipool(web3, rp, minipool, {
 				from: registeredNode1,
 				gas: gasLimit,
 			});

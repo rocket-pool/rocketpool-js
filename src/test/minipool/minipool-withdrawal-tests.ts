@@ -52,9 +52,9 @@ export default function runMinipoolWithdrawalTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
-		const launchTimeout = (60 * 60 * 72); // 72 hours
+		const launchTimeout = 60 * 60 * 72; // 72 hours
 		const withdrawalDelay = 20;
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 		let minipool: MinipoolContract;
 		let unbondedMinipool: MinipoolContract;
 		let fullDepositMinipool: MinipoolContract;

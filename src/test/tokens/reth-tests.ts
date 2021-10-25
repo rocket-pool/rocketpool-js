@@ -49,7 +49,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 		});
 
 		// Setup
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 		let minipool: MinipoolContract;
 		const validatorPubkey = getValidatorPubkey();
 		const withdrawalBalance = web3.utils.toWei("36", "ether");
@@ -101,7 +101,10 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 				from: owner,
 				gas: gasLimit,
 			});
-			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {from: owner, gas: gasLimit});
+			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
+				from: owner,
+				gas: gasLimit,
+			});
 
 			// Stake RPL to cover minipools
 			const rplStake = await getMinipoolMinimumRPLStake(web3, rp);
@@ -116,7 +119,7 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 			})) as MinipoolContract;
 
 			await increaseTime(web3, scrubPeriod + 1);
-			await stakeMinipool(web3, rp, minipool,{
+			await stakeMinipool(web3, rp, minipool, {
 				from: node,
 				gas: gasLimit,
 			});

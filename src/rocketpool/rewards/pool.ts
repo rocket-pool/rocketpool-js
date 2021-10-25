@@ -169,7 +169,6 @@ class Pool {
 			return rocketRewardsPool.methods.getClaimingContractUserTotalCurrent(contract).call();
 		});
 	}
-
 }
 
 // Exports

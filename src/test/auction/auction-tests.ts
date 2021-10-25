@@ -47,7 +47,7 @@ export default function runAuctionTests(web3: Web3, rp: RocketPool) {
 			await revertSnapshot(web3, testSnapshotId);
 		});
 
-		const scrubPeriod = (60 * 60 * 24); // 24 hours
+		const scrubPeriod = 60 * 60 * 24; // 24 hours
 		let minipool: MinipoolContract;
 
 		// Setup

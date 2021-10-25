@@ -8,7 +8,6 @@
 		"./src/rocketpool/dao/node/trusted/node.ts",
 		"./src/rocketpool/dao/node/trusted/proposals.ts",
 		"./src/rocketpool/dao/node/trusted/settings.ts",
-		"./src/rocketpool/dao/protocol/settings.ts",
 		"./src/rocketpool/deposit/deposit.ts",
 		"./src/rocketpool/minipool/minipool.ts",
 		"./src/rocketpool/minipool/minipool-contract.ts",

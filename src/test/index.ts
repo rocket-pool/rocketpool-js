@@ -54,38 +54,63 @@ afterEach(async () => {
 	await revertSnapshot(web3, suiteSnapshotId);
 });
 
-before(async function() {
+before(async function () {
 	const [guardian] = await web3.eth.getAccounts();
 	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsDeposit", "deposit.enabled", true, { from: guardian, gas: gasLimit });
 	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsDeposit", "deposit.assign.enabled", true, { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsDeposit", "deposit.pool.maximum", web3.utils.toWei("1000", "ether"), { from: guardian, gas: gasLimit });
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsDeposit", "deposit.pool.maximum", web3.utils.toWei("1000", "ether"), {
+		from: guardian,
+		gas: gasLimit,
+	});
 	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNode", "node.registration.enabled", true, { from: guardian, gas: gasLimit });
 	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNode", "node.deposit.enabled", true, { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.submit.withdrawable.enabled", true, { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.minimum", web3.utils.toWei("0.05", "ether"), { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.target", web3.utils.toWei("0.1", "ether"), { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.maximum", web3.utils.toWei("0.2", "ether"), { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.demand.range", web3.utils.toWei("1000", "ether"), { from: guardian, gas: gasLimit });
-	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsInflation", "rpl.inflation.interval.start", Math.floor(new Date().getTime() / 1000) + (60 * 60 * 24 * 14), { from: guardian, gas: gasLimit });
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.submit.withdrawable.enabled", true, {
+		from: guardian,
+		gas: gasLimit,
+	});
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.minimum", web3.utils.toWei("0.05", "ether"), {
+		from: guardian,
+		gas: gasLimit,
+	});
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.target", web3.utils.toWei("0.1", "ether"), {
+		from: guardian,
+		gas: gasLimit,
+	});
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.fee.maximum", web3.utils.toWei("0.2", "ether"), {
+		from: guardian,
+		gas: gasLimit,
+	});
+	await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsNetwork", "network.node.demand.range", web3.utils.toWei("1000", "ether"), {
+		from: guardian,
+		gas: gasLimit,
+	});
+	await setDAOProtocolBootstrapSetting(
+		web3,
+		rp,
+		"rocketDAOProtocolSettingsInflation",
+		"rpl.inflation.interval.start",
+		Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 * 14,
+		{ from: guardian, gas: gasLimit }
+	);
 });
 
 // Run tests
-runContractsTests(web3, rp);
-runAuctionTests(web3, rp);
-runDepositTests(web3, rp);
-runMinipoolTests(web3, rp);
-runMinipoolStatusTests(web3, rp);
-runMinipoolWithdrawalTests(web3, rp);
-runNetworkBalancesTests(web3, rp);
-runNetworkFeesTests(web3, rp);
-runNetworkPricesTests(web3, rp);
-runNetworkStakingTests(web3, rp);
-runNodeDepositTests(web3, rp);
-runNodeManagerTests(web3, rp);
-runNodeStakingTests(web3, rp);
-runRethTests(web3, rp);
-runRPLTests(web3, rp);
-runSettingsTests(web3, rp);
+// runContractsTests(web3, rp);
+// runAuctionTests(web3, rp);
+// runDepositTests(web3, rp);
+// runMinipoolTests(web3, rp);
+// runMinipoolStatusTests(web3, rp);
+// runMinipoolWithdrawalTests(web3, rp);
+// runNetworkBalancesTests(web3, rp);
+// runNetworkFeesTests(web3, rp);
+// runNetworkPricesTests(web3, rp);
+// runNetworkStakingTests(web3, rp);
+// runNodeDepositTests(web3, rp);
+// runNodeManagerTests(web3, rp);
+// runNodeStakingTests(web3, rp);
+// runRethTests(web3, rp);
+// runRPLTests(web3, rp);
+// runSettingsTests(web3, rp);
 runRewardsTests(web3, rp);
-runDOAProtocolTests(web3, rp);
-runDAONodeTrustedTests(web3, rp);
+// runDOAProtocolTests(web3, rp);
+// runDAONodeTrustedTests(web3, rp);
