@@ -11,7 +11,7 @@ export async function voteScrub(web3: Web3, rp: RocketPool, minipool: MinipoolCo
 	const nodeAddress = await minipool.getNodeAddress();
 	// Get contracts
 	const rocketVault = await rp.contracts.get("rocketVault");
-	const rocketTokenRPL = await RocketTokenRPL.deployed();
+	const rocketTokenRPL = await rp.contracts.get("rocketTokenRPL");
 	const rocketDAONodeTrustedSettingsMinipool = await rp.contracts.get("rocketDAONodeTrustedSettingsMinipool");
 
 	// Get minipool details
@@ -22,7 +22,7 @@ export async function voteScrub(web3: Web3, rp: RocketPool, minipool: MinipoolCo
 			minipool.getTotalScrubVotes().then((value: any) => web3.utils.toBN(value)),
 			rp.node.getNodeRPLStake(nodeAddress).then((value: any) => web3.utils.toBN(value)),
 			rocketVault.methods
-				.balanceOfToken("rocketAuctionManager", rocketTokenRPL.address)
+				.balanceOfToken("rocketAuctionManager", rocketTokenRPL.options.address)
 				.call()
 				.then((value: any) => web3.utils.toBN(value)),
 			rocketDAONodeTrustedSettingsMinipool.methods.getScrubPenaltyEnabled().call(),
