@@ -22,7 +22,7 @@ class RPL extends ERC20 {
 
 	/**
 	 * Get the contract address
-	 * @returns a Promise<string> that resolves to a string representing the contract address of the token
+	 * @returns a Promise<string\> that resolves to a string representing the contract address of the token
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -37,7 +37,7 @@ class RPL extends ERC20 {
 
 	/**
 	 * Get the inflation intervals that have passed
-	 * @returns a Promise<number> that resolves to a number representing the inflation intervals that have passed (in time)
+	 * @returns a Promise<number\> that resolves to a number representing the inflation intervals that have passed (in time)
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -52,7 +52,7 @@ class RPL extends ERC20 {
 
 	/**
 	 * Get the total supply
-	 * @returns a Promise<number> that resolves to a number representing the total supply
+	 * @returns a Promise<number\> that resolves to a number representing the total supply
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -70,7 +70,7 @@ class RPL extends ERC20 {
 	 * @param amountWei A string representing the amount to swap in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -93,7 +93,7 @@ class RPL extends ERC20 {
 	 * Inflation mint tokens
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

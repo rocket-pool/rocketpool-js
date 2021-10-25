@@ -20,7 +20,7 @@ class Rewards {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketClaimDAO contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketClaimDAO contract
 	 */
 	private get rocketClaimDAO(): Promise<Contract> {
 		return this.contracts.get("rocketClaimDAO");

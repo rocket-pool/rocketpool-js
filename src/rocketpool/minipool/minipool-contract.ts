@@ -44,7 +44,7 @@ class MinipoolContract {
 
 	/**
 	 * Get status details
-	 * @returns a Promise<StatusDetails> that resolves to a StatusDetails object (status, block, time)
+	 * @returns a Promise<StatusDetails\> that resolves to a StatusDetails object (status, block, time)
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -63,7 +63,7 @@ class MinipoolContract {
 
 	/**
 	 * Get status of a minipool
-	 * @returns a Promise<number> that resolves to a number representing the minipool status
+	 * @returns a Promise<number\> that resolves to a number representing the minipool status
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -76,7 +76,7 @@ class MinipoolContract {
 
 	/**
 	 * Get status block of a minipool
-	 * @returns a Promise<number> that resolves to a number representing the status block of a minipool
+	 * @returns a Promise<number\> that resolves to a number representing the status block of a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -92,7 +92,7 @@ class MinipoolContract {
 
 	/**
 	 * Get status timestamp of a minipool
-	 * @returns a Promise<Date> that resolves to a Date representing the timestamp a minipool status
+	 * @returns a Promise<Date\> that resolves to a Date representing the timestamp a minipool status
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -108,7 +108,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the deposit type
-	 * @returns a Promise<number> that resolves to a number representing the deposit type
+	 * @returns a Promise<number\> that resolves to a number representing the deposit type
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -121,7 +121,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the node details of a minipool
-	 * @returns a Promise<NodeDetails> that resolves to a NodeDetails object representing details about the minipool's nodes
+	 * @returns a Promise<NodeDetails\> that resolves to a NodeDetails object representing details about the minipool's nodes
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -148,7 +148,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the node address of a minipool
-	 * @returns a Promise<string> that resolves to a string representing the node address of the minipool
+	 * @returns a Promise<string\> that resolves to a string representing the node address of the minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -161,7 +161,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the node fee of a minipool
-	 * @returns a Promise<number> that resolves to a number representing the node fee of the minipool
+	 * @returns a Promise<number\> that resolves to a number representing the node fee of the minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -174,7 +174,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the node deposit balance of a minipool
-	 * @returns a Promise<string> that resolves to a string representing the node deposit balance of a minipool in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the node deposit balance of a minipool in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -187,7 +187,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the node refund balance of a minipool
-	 * @returns a Promise<string> that resolves to a string representing the node refund balance of a minipool in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the node refund balance of a minipool in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -200,7 +200,7 @@ class MinipoolContract {
 
 	/**
 	 * Get if a node deposit has been assigned for a minipool
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a node deposit has been assigned for a minipool
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a node deposit has been assigned for a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -213,7 +213,7 @@ class MinipoolContract {
 
 	/**
 	 * Get if a minipool has had scrub votes
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a minipool has had scrub votes
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a minipool has had scrub votes
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -226,7 +226,7 @@ class MinipoolContract {
 
 	/**
 	 * Get the total scrub votes for a minipool
-	 * @returns a Promise<number> that resolves to a number representing the total number of scrub votes a minipool has
+	 * @returns a Promise<number\> that resolves to a number representing the total number of scrub votes a minipool has
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -239,7 +239,7 @@ class MinipoolContract {
 
 	/**
 	 * Get user deposit details
-	 * @returns a Promise<UserDetails> that resolves to a UserDetails object representing the user details (depositBalance, depositAssigned, depositAssignedTime) for a minipool
+	 * @returns a Promise<UserDetails\> that resolves to a UserDetails object representing the user details (depositBalance, depositAssigned, depositAssignedTime) for a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -258,7 +258,7 @@ class MinipoolContract {
 
 	/**
 	 * Get user deposit balance
-	 * @returns a Promise<string> that resolves to a string representing the user deposit balance for a minipool in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the user deposit balance for a minipool in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -271,7 +271,7 @@ class MinipoolContract {
 
 	/**
 	 * Get user deposit assigned
-	 * @returns a Promise<boolean> that resolves to a boolean representing if the user deposit has been assigned
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if the user deposit has been assigned
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -284,7 +284,7 @@ class MinipoolContract {
 
 	/**
 	 * Get a timestamp for when the user deposit was assigned for the minipool
-	 * @returns a Promise<Date> that resolves to a Date representing the timestamp the user deposit was assigned for the minipool
+	 * @returns a Promise<Date\> that resolves to a Date representing the timestamp the user deposit was assigned for the minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -300,7 +300,7 @@ class MinipoolContract {
 
 	/**
 	 * Get a staking details for a minipool
-	 * @returns a Promise<StakingDetails> that resolves to a StakingDetails object representing staking details (start & end balance) for a minipool
+	 * @returns a Promise<StakingDetails\> that resolves to a StakingDetails object representing staking details (start & end balance) for a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -318,7 +318,7 @@ class MinipoolContract {
 
 	/**
 	 * Get a staking start balance for a minipool
-	 * @returns a Promise<string> that resolves to a string representing the staking start balance for a minipool
+	 * @returns a Promise<string\> that resolves to a string representing the staking start balance for a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -331,7 +331,7 @@ class MinipoolContract {
 
 	/**
 	 * Get a staking end balance for a minipool
-	 * @returns a Promise<string> that resolves to a string representing the staking end balance for a minipool
+	 * @returns a Promise<string\> that resolves to a string representing the staking end balance for a minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -344,7 +344,7 @@ class MinipoolContract {
 
 	/**
 	 * Get a minipool's withdrawal credentials
-	 * @returns a Promise<string> that resolves to a string representing the minipool's withdrawal credentials
+	 * @returns a Promise<string\> that resolves to a string representing the minipool's withdrawal credentials
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -357,7 +357,7 @@ class MinipoolContract {
 
 	/**
 	 * Check if a minipool's node is withdrawn
-	 * @returns a Promise<boolean> that resolves to a boolean representing if the minipool's node is withdrawn
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if the minipool's node is withdrawn
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -372,7 +372,7 @@ class MinipoolContract {
 	 * Dissolve the minipool
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -392,7 +392,7 @@ class MinipoolContract {
 	 * Slash the minipool
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -412,7 +412,7 @@ class MinipoolContract {
 	 * Refund node ETH refinanced from user deposited ETH
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -434,7 +434,7 @@ class MinipoolContract {
 	 * @param validatorPubkey A buffer
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -463,7 +463,7 @@ class MinipoolContract {
 	 * Finalise and unlock their RPL stake
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -483,7 +483,7 @@ class MinipoolContract {
 	 * Withdraw node balances & rewards from the minipool and close it
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -503,7 +503,7 @@ class MinipoolContract {
 	 * Distributes the contract's balance and finalises the pool
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -525,7 +525,7 @@ class MinipoolContract {
 	 * When called by non-owner with less than 16 ether, requires 14 days to have passed since being made withdrawable
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -545,7 +545,7 @@ class MinipoolContract {
 	 * Mark a minipool as scrub, we don't want no scrubs
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -565,7 +565,7 @@ class MinipoolContract {
 	 * Withdraw node balances from the minipool and close it
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

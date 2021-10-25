@@ -17,7 +17,7 @@ class NetworkSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsNetwork contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsNetwork contract
 	 */
 	private get rocketDAOProtocolSettingsNetwork(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsNetwork");
@@ -25,7 +25,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the threshold of trusted nodes that must reach consensus on oracle data to commit it
-	 * @returns a Promise<number> that resolves to a number representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
+	 * @returns a Promise<number\> that resolves to a number representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -42,7 +42,7 @@ class NetworkSettings {
 
 	/**
 	 * Return if balance submissions are enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
+	 * @returns a Promise<boolean\> that resolves to a boolean representing the threshold of trusted nodes that must reach consensus on oracle daa to commit it
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -57,7 +57,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the frequency in blocks at which network balances should be submitted by trusted nodes
-	 * @returns a Promise<number> that resolves to a number representing the frequency in blocks at which network balances should be submitted by trusted nodes
+	 * @returns a Promise<number\> that resolves to a number representing the frequency in blocks at which network balances should be submitted by trusted nodes
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -74,7 +74,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the minimum node fee
-	 * @returns a Promise<number> that resolves to a number representing the minimum node fee
+	 * @returns a Promise<number\> that resolves to a number representing the minimum node fee
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -91,7 +91,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the target node fee
-	 * @returns a Promise<number> that resolves to a number representing the target node fee
+	 * @returns a Promise<number\> that resolves to a number representing the target node fee
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -108,7 +108,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the maximum node fee
-	 * @returns a Promise<number> that resolves to a number representing the maximum node fee
+	 * @returns a Promise<number\> that resolves to a number representing the maximum node fee
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -125,7 +125,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the range of node demand values in Wei to base fee calculations on (from negative to positive value)
-	 * @returns a Promise<string> that resolves to a string representing the range of node demand values in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the range of node demand values in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -140,7 +140,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the target rETH collateralization rate
-	 * @returns a Promise<number> that resolves to a number representing the target rETH collateralization rate
+	 * @returns a Promise<number\> that resolves to a number representing the target rETH collateralization rate
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -157,7 +157,7 @@ class NetworkSettings {
 
 	/**
 	 * Return the rETH deposit delay setting
-	 * @returns a Promise<number> that resolves to a number representing the rETH deposit delay setting
+	 * @returns a Promise<number\> that resolves to a number representing the rETH deposit delay setting
 	 *
 	 * @example using Typescript
 	 * ```ts

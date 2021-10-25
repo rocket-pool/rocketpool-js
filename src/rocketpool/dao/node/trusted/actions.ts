@@ -19,7 +19,7 @@ class DAONodeTrustedActions {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrustedActions contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedActions contract
 	 */
 	private get rocketDAONodeTrustedActions(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrustedActions");
@@ -29,7 +29,7 @@ class DAONodeTrustedActions {
 	 * Join the DAO
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -51,7 +51,7 @@ class DAONodeTrustedActions {
 	 * Leave the DAO
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -74,7 +74,7 @@ class DAONodeTrustedActions {
 	 * @param address A string representing the address of the DAO member you want challenge
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -98,7 +98,7 @@ class DAONodeTrustedActions {
 	 * @param address A string representing the address of the DAO member you want challenge
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

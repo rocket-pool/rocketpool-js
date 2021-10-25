@@ -19,7 +19,7 @@ class Network {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNetworkBalances contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNetworkBalances contract
 	 */
 	private get rocketNetworkBalances(): Promise<Contract> {
 		return this.contracts.get("rocketNetworkBalances");
@@ -27,7 +27,7 @@ class Network {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNetworkFees contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNetworkFees contract
 	 */
 	private get rocketNetworkFees(): Promise<Contract> {
 		return this.contracts.get("rocketNetworkFees");
@@ -35,7 +35,7 @@ class Network {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNetworkPrices contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNetworkPrices contract
 	 */
 	private get rocketNetworkPrices(): Promise<Contract> {
 		return this.contracts.get("rocketNetworkPrices");
@@ -43,7 +43,7 @@ class Network {
 
 	/**
 	 * Get the block that current network balances are set for
-	 * @returns a Promise<number> that resolves to a number representing the block that the current network balances are
+	 * @returns a Promise<number\> that resolves to a number representing the block that the current network balances are
 	 * set for
 	 *
 	 * @example using Typescript
@@ -61,7 +61,7 @@ class Network {
 
 	/**
 	 * Get the current network total ETH balance in Wei
-	 * @returns a Promise<string> that resolves to a string representing the current network total ETH balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the current network total ETH balance in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -78,7 +78,7 @@ class Network {
 
 	/**
 	 * Get the current network staking ETH balance in Wei
-	 * @returns a Promise<string> that resolves to a string representing the current network staking ETH balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the current network staking ETH balance in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -95,7 +95,7 @@ class Network {
 
 	/**
 	 * Get the current network total rETH supply in Wei
-	 * @returns a Promise<string> that resolves to a string representing the rETH supply in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the rETH supply in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -112,7 +112,7 @@ class Network {
 
 	/**
 	 * Get the current network ETH utilization rate
-	 * @returns a Promise<string> that resolves to a string representing the ETH utilization rate in ETH (automatically
+	 * @returns a Promise<string\> that resolves to a string representing the ETH utilization rate in ETH (automatically
 	 * parsed from Wei)
 	 *
 	 * @example using Typescript
@@ -130,7 +130,7 @@ class Network {
 
 	/**
 	 * Get the current network node demand in Wei
-	 * @returns a Promise<string> that resolves to a string representing the current node demand in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the current node demand in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -147,7 +147,7 @@ class Network {
 
 	/**
 	 * Get the current network node demand
-	 * @returns a Promise<string> that resolves to a number representing the current node fee
+	 * @returns a Promise<string\> that resolves to a number representing the current node fee
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -163,7 +163,7 @@ class Network {
 	/**
 	 * Get the network node commission rate by demand value
 	 * @param demand A string representing the demand
-	 * @returns a Promise<number> that resolves to a number representing the network node commission rate by demand value
+	 * @returns a Promise<number\> that resolves to a number representing the network node commission rate by demand value
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -179,7 +179,7 @@ class Network {
 
 	/**
 	 * Get the network RPL Price
-	 * @returns a Promise<number> that resolves to a number representing the network RPL price
+	 * @returns a Promise<number\> that resolves to a number representing the network RPL price
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -194,7 +194,7 @@ class Network {
 
 	/**
 	 * Get the prices block
-	 * @returns a Promise<number> that resolves to a number representing the prices block
+	 * @returns a Promise<number\> that resolves to a number representing the prices block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -209,7 +209,7 @@ class Network {
 
 	/**
 	 * Get latest reportable block
-	 * @returns a Promise<string> that resolves to a string representing the latest reportable block
+	 * @returns a Promise<string\> that resolves to a string representing the latest reportable block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -224,7 +224,7 @@ class Network {
 
 	/**
 	 * Get effective RPL stake
-	 * @returns a Promise<string> that resolves to a string representing the effective RPL stake
+	 * @returns a Promise<string\> that resolves to a string representing the effective RPL stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -239,7 +239,7 @@ class Network {
 
 	/**
 	 * Get the block that the effective RPL stake was updated at
-	 * @returns a Promise<string> that resolves to a string representing the block the effective RPL stake was updated at
+	 * @returns a Promise<string\> that resolves to a string representing the block the effective RPL stake was updated at
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -260,7 +260,7 @@ class Network {
 	 * @param rethSupply A string representing the rethSupply in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -297,7 +297,7 @@ class Network {
 	 * @param effectiveRplStake A string representing the effective RPL stake
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -332,7 +332,7 @@ class Network {
 	 * @param effectiveRplStake A string representing the effective RPL stake
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -368,7 +368,7 @@ class Network {
 	 * @param rethSupply A string representing the rethSupply in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

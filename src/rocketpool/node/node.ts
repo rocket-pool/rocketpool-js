@@ -26,7 +26,7 @@ class Node {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNodeDeposit contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeDeposit contract
 	 */
 	private get rocketNodeDeposit(): Promise<Contract> {
 		return this.contracts.get("rocketNodeDeposit");
@@ -34,7 +34,7 @@ class Node {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNodeManager contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeManager contract
 	 */
 	private get rocketNodeManager(): Promise<Contract> {
 		return this.contracts.get("rocketNodeManager");
@@ -42,7 +42,7 @@ class Node {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketNodeStaking contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeStaking contract
 	 */
 	private get rocketNodeStaking(): Promise<Contract> {
 		return this.contracts.get("rocketNodeStaking");
@@ -50,7 +50,7 @@ class Node {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketStorage contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketStorage contract
 	 */
 	private get rocketStorage(): Promise<Contract> {
 		return this.contracts.get("rocketStorage");
@@ -58,7 +58,7 @@ class Node {
 
 	/**
 	 * Get an array of Node Details
-	 * @returns a Promise<NodeDetails[]> that resolves to an array of NodeDetails
+	 * @returns a Promise<NodeDetails[]\> that resolves to an array of NodeDetails
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -77,7 +77,7 @@ class Node {
 
 	/**
 	 * Get an array of node addresses
-	 * @returns a Promise<string[]> that resolves to an array of node addresses
+	 * @returns a Promise<string[]\> that resolves to an array of node addresses
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -97,7 +97,7 @@ class Node {
 	/**
 	 * Get a node's details
 	 * @param address A string representing a node address
-	 * @returns a Promise<NodeDetails> that resolves to a NodeDetails object
+	 * @returns a Promise<NodeDetails\> that resolves to a NodeDetails object
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -116,7 +116,7 @@ class Node {
 
 	/**
 	 * Get the total node count
-	 * @returns a Promise<number> that resolves to a number representing the quantity of total nodes
+	 * @returns a Promise<number\> that resolves to a number representing the quantity of total nodes
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -134,7 +134,7 @@ class Node {
 	/**
 	 * Get a node address by index
 	 * @param index A number representing the index of the node
-	 * @returns a Promise<string> that resolves to a string representing a node address
+	 * @returns a Promise<string\> that resolves to a string representing a node address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -150,7 +150,7 @@ class Node {
 	/**
 	 * Check whether a node exists
 	 * @param address A string representing a node address
-	 * @returns a Promise<boolean> that resolves to a boolean representing whether the node exists or not
+	 * @returns a Promise<boolean\> that resolves to a boolean representing whether the node exists or not
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -166,7 +166,7 @@ class Node {
 	/**
 	 * Get a node's timezone location
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's timezone
+	 * @returns a Promise<string\> that resolves to a string representing the node's timezone
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -182,7 +182,7 @@ class Node {
 	/**
 	 * Get a node's withdrawal address
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's withdrawal address
+	 * @returns a Promise<string\> that resolves to a string representing the node's withdrawal address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -198,7 +198,7 @@ class Node {
 	/**
 	 * Get a node's RPL stake
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's RPL stake
+	 * @returns a Promise<string\> that resolves to a string representing the node's RPL stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -214,7 +214,7 @@ class Node {
 	/**
 	 * Get a node's effective RPL stake
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's effective RPL stake
+	 * @returns a Promise<string\> that resolves to a string representing the node's effective RPL stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -230,7 +230,7 @@ class Node {
 	/**
 	 * Get the node minipool limit
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node minipool limit
+	 * @returns a Promise<string\> that resolves to a string representing the node minipool limit
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -246,7 +246,7 @@ class Node {
 	/**
 	 * Get a node's total effective RPL stake
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's RPL stake
+	 * @returns a Promise<string\> that resolves to a string representing the node's RPL stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -262,7 +262,7 @@ class Node {
 	/**
 	 * Get a node's minimum RPL stake
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's minimum RPL stake
+	 * @returns a Promise<string\> that resolves to a string representing the node's minimum RPL stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -278,7 +278,7 @@ class Node {
 	/**
 	 * Get a node's pending withdrawal address
 	 * @param address A string representing a node address
-	 * @returns a Promise<string> that resolves to a string representing the node's pending withdrawal address
+	 * @returns a Promise<string\> that resolves to a string representing the node's pending withdrawal address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -293,7 +293,7 @@ class Node {
 
 	/**
 	 * Get the total effective RPL stake
-	 * @returns a Promise<string> that resolves to a string representing the total effective rpl stake
+	 * @returns a Promise<string\> that resolves to a string representing the total effective rpl stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -308,7 +308,7 @@ class Node {
 
 	/**
 	 * Get the total RPL stake
-	 * @returns a Promise<string> that resolves to a string representing the total rpl stake
+	 * @returns a Promise<string\> that resolves to a string representing the total rpl stake
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -326,7 +326,7 @@ class Node {
 	 * @params offset a number representing the offset
 	 * @params limit a number representing the limit
 	 * @params rplPrice a string representing the rplPrice
-	 * @returns a Promise<string> that resolves to a string representing the calculated RPL stake given inputs
+	 * @returns a Promise<string\> that resolves to a string representing the calculated RPL stake given inputs
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -343,7 +343,7 @@ class Node {
 	 * Get a breakdown of the number of nodes per timezone
 	 * @params offset a number representing the offset
 	 * @params limit a number representing the limit
-	 * @returns a Promise<object> that resolves to an object node counts per timezone
+	 * @returns a Promise<object\> that resolves to an object node counts per timezone
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -359,7 +359,7 @@ class Node {
 	/**
 	 * Get the deposit type
 	 * @params amount a number representing the deposit amount
-	 * @returns a Promise<number> that resolves to a number representing the minipool deposit enum value type
+	 * @returns a Promise<number\> that resolves to a number representing the minipool deposit enum value type
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -377,7 +377,7 @@ class Node {
 	 * @param timezoneLocation A string representing the timezone location
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -405,7 +405,7 @@ class Node {
 	 * require an additional transaction (see confirmWithdrawalAddress) signed by the withdrawalAddress to prove ownership.
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -436,7 +436,7 @@ class Node {
 	 * @param amount A string representing the amount in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -460,7 +460,7 @@ class Node {
 	 * @param nodeAddress A string representing the node's address
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -484,7 +484,7 @@ class Node {
 	 * @param amount A string representing the amount in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -508,7 +508,7 @@ class Node {
 	 * @param timezoneLocation A string representing the timezone location
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -537,7 +537,7 @@ class Node {
 	 * @param expectedMinipoolAddress A string representing the expected minipool address
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

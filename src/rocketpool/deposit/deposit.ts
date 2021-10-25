@@ -19,7 +19,7 @@ class Deposit {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDepositPool contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDepositPool contract
 	 */
 	private get rocketDepositPool(): Promise<Contract> {
 		return this.contracts.get("rocketDepositPool");
@@ -27,7 +27,7 @@ class Deposit {
 
 	/**
 	 * Get the current deposit pool balance in Wei
-	 * @returns a Promise<string> that resolves to a string representing the current deposit pool balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the current deposit pool balance in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -44,7 +44,7 @@ class Deposit {
 
 	/**
 	 * Get the excess balance in Wei
-	 * @returns a Promise<string> that resolves to a string representing the current excess balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the current excess balance in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -61,7 +61,7 @@ class Deposit {
 
 	/**
 	 * Get the block of the last user deposit
-	 * @returns a Promise<number> that resolves to a number representing the block of the last user deposit
+	 * @returns a Promise<number\> that resolves to a number representing the block of the last user deposit
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -78,7 +78,7 @@ class Deposit {
 	 * Make a deposit
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -101,7 +101,7 @@ class Deposit {
 	 * Assign Deposits
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

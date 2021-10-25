@@ -19,7 +19,7 @@ class DAONodeTrustedProposals {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrustedProposals contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedProposals contract
 	 */
 	private get rocketDAONodeTrustedProposals(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrustedProposals");
@@ -31,7 +31,7 @@ class DAONodeTrustedProposals {
 	 * @param payload A string representing the calldata payload
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -70,7 +70,7 @@ class DAONodeTrustedProposals {
 	 * @param vote A boolean representing the vote
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -96,7 +96,7 @@ class DAONodeTrustedProposals {
 	 * @param proposalID A number representing the proposalID
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -121,7 +121,7 @@ class DAONodeTrustedProposals {
 	 * @param proposalID A number representing the proposalID
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

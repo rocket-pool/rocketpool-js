@@ -20,7 +20,7 @@ abstract class ERC20 {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the contract passed into the constructor
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the contract passed into the constructor
 	 */
 	protected get tokenContract(): Promise<Contract> {
 		return this.contracts.get(this.tokenContractName);
@@ -29,7 +29,7 @@ abstract class ERC20 {
 	/**
 	 * Return the token balance of an account
 	 * @param account A string representing the address you wish to lookup the balance for
-	 * @returns a Promise<string> that resolves to a string representing the token balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the token balance in Wei
 	 *
 	 * @example using Typescript
 	 * const account = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
@@ -47,7 +47,7 @@ abstract class ERC20 {
 	 * Return the token allowance for an account
 	 * @param account A string representing the address you wish to lookup the balance for
 	 * @param spender A string representing the spender address (usually a token contract)
-	 * @returns a Promise<string> that resolves to a string representing the token balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the token balance in Wei
 	 *
 	 * @example using Typescript
 	 * const account = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
@@ -68,7 +68,7 @@ abstract class ERC20 {
 	 * @param amountWei A string representing the amount to send in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -94,7 +94,7 @@ abstract class ERC20 {
 	 * @param amountWei A string representing the amount to send in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -121,7 +121,7 @@ abstract class ERC20 {
 	 * @param amountWei A string representing the amount to send in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

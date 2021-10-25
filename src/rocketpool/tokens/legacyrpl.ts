@@ -22,7 +22,7 @@ class LegacyRPL extends ERC20 {
 
 	/**
 	 * Get the contract address
-	 * @returns a Promise<string> that resolves to a string representing the contract address of the token
+	 * @returns a Promise<string\> that resolves to a string representing the contract address of the token
 	 *
 	 * @example using Typescript
 	 * ```ts

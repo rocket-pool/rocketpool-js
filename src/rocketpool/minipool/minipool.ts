@@ -28,7 +28,7 @@ class Minipool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketMinipoolManager contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolManager contract
 	 */
 	private get rocketMinipoolManager(): Promise<Contract> {
 		return this.contracts.get("rocketMinipoolManager");
@@ -36,7 +36,7 @@ class Minipool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketMinipoolQueue contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolQueue contract
 	 */
 	private get rocketMinipoolQueue(): Promise<Contract> {
 		return this.contracts.get("rocketMinipoolQueue");
@@ -44,7 +44,7 @@ class Minipool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketMinipoolStatus contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolStatus contract
 	 */
 	private get rocketMinipoolStatus(): Promise<Contract> {
 		return this.contracts.get("rocketMinipoolStatus");
@@ -52,7 +52,7 @@ class Minipool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketMinipool contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipool contract
 	 */
 	private get rocketMinipool(): Promise<Contract> {
 		return this.contracts.get("rocketMinipool");
@@ -60,7 +60,7 @@ class Minipool {
 
 	/**
 	 * Get all minipool details
-	 * @returns a Promise<MinipoolDetails[]> that resolves to an array of MinipoolDetails (address, exists, pubkey)
+	 * @returns a Promise<MinipoolDetails[]\> that resolves to an array of MinipoolDetails (address, exists, pubkey)
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -79,7 +79,7 @@ class Minipool {
 
 	/**
 	 * Get all minipool addresses
-	 * @returns a Promise<string[]> that resolves to an array of minipool addresses as strings
+	 * @returns a Promise<string[]\> that resolves to an array of minipool addresses as strings
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -99,7 +99,7 @@ class Minipool {
 	/**
 	 * Get all node's minipool details
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<MinipoolDetails[]> that resolves to an array of MinipoolDetails about a specific node
+	 * @returns a Promise<MinipoolDetails[]\> that resolves to an array of MinipoolDetails about a specific node
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -120,7 +120,7 @@ class Minipool {
 	/**
 	 * Get all node's minipool addresses
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<string[]> that resolves to an array of strings containing the minipool addresses
+	 * @returns a Promise<string[]\> that resolves to an array of strings containing the minipool addresses
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -141,7 +141,7 @@ class Minipool {
 	/**
 	 * Get all minipool's details
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<MinipoolDetails> that resolves to a singular MinipoolDetails with details about the minipool you want to look up
+	 * @returns a Promise<MinipoolDetails\> that resolves to a singular MinipoolDetails with details about the minipool you want to look up
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -161,7 +161,7 @@ class Minipool {
 
 	/**
 	 * Get all the total minipool count
-	 * @returns a Promise<number> that resolves to a number representing the total minipool count
+	 * @returns a Promise<number\> that resolves to a number representing the total minipool count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -179,7 +179,7 @@ class Minipool {
 	/**
 	 * Get a minipool address by index
 	 * @params index a number representing the index of the minipool you wish to lookup
-	 * @returns a Promise<string> that resolves to a string representing the minipool address
+	 * @returns a Promise<string\> that resolves to a string representing the minipool address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -196,7 +196,7 @@ class Minipool {
 	/**
 	 * Get a node's total minipool count
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<number> that resolves to a number representing the node's total minipool count
+	 * @returns a Promise<number\> that resolves to a number representing the node's total minipool count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -214,7 +214,7 @@ class Minipool {
 
 	/**
 	 * Get the staking minipool count
-	 * @returns a Promise<number> that resolves to a number representing the total staking minipool count
+	 * @returns a Promise<number\> that resolves to a number representing the total staking minipool count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -230,7 +230,7 @@ class Minipool {
 	/**
 	 * Get the node's staking minipool count
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<number> that resolves to a number representing the node's staking minipool count
+	 * @returns a Promise<number\> that resolves to a number representing the node's staking minipool count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -247,7 +247,7 @@ class Minipool {
 	/**
 	 * Get the node's active minipool count
 	 * @params nodeAddress a string representing the node address you which to return details for
-	 * @returns a Promise<number> that resolves to a number representing the node's active minipool count
+	 * @returns a Promise<number\> that resolves to a number representing the node's active minipool count
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -265,7 +265,7 @@ class Minipool {
 	 * Get the node's minipool address by index
 	 * @params nodeAddress a string representing the node address you which to return details for
 	 * @params index a number representing the index of
-	 * @returns a Promise<string> that resolves to a string representing the minipool address at the desired index
+	 * @returns a Promise<string\> that resolves to a string representing the minipool address at the desired index
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -283,7 +283,7 @@ class Minipool {
 	/**
 	 * Get a minipool address by validator pubkey
 	 * @params validatorPubkey a string representing the validator pub key
-	 * @returns a Promise<string> that resolves to a string representing the minipool address at the desired pubkey
+	 * @returns a Promise<string\> that resolves to a string representing the minipool address at the desired pubkey
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -300,7 +300,7 @@ class Minipool {
 	/**
 	 * Check whether a minipool exists
 	 * @params address a string representing the minipool address you to check against
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a minipool exists at the address
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a minipool exists at the address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -317,7 +317,7 @@ class Minipool {
 	/**
 	 * Get a minipool's validator pubkey
 	 * @params address a string representing the minipool address
-	 * @returns a Promise<string> that resolves to a string representing the pubkey for the provided minipool address
+	 * @returns a Promise<string\> that resolves to a string representing the pubkey for the provided minipool address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -334,7 +334,7 @@ class Minipool {
 	/**
 	 * Get a minipool's withdrawal credentials
 	 * @params address a string representing the minipool address
-	 * @returns a Promise<string> that resolves to a string representing the minipool credentials
+	 * @returns a Promise<string\> that resolves to a string representing the minipool credentials
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -351,7 +351,7 @@ class Minipool {
 	/**
 	 * Get the minipool queue length
 	 * @params depositType a number representing the deposit type
-	 * @returns a Promise<number> that resolves to a number representing the minipool queue length
+	 * @returns a Promise<number\> that resolves to a number representing the minipool queue length
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -366,7 +366,7 @@ class Minipool {
 
 	/**
 	 * Get the total minipool queue length
-	 * @returns a Promise<number> that resolves to a number representing the total minipool queue length
+	 * @returns a Promise<number\> that resolves to a number representing the total minipool queue length
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -383,7 +383,7 @@ class Minipool {
 
 	/**
 	 * Get the total capacity of queued minipools in Wei
-	 * @returns a Promise<string> that resolves to a number representing the total capacity of queued minipools in Wei
+	 * @returns a Promise<string\> that resolves to a number representing the total capacity of queued minipools in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -398,7 +398,7 @@ class Minipool {
 
 	/**
 	 * Get the effective capacity of queued minipools in Wei (used in node demand calculations)
-	 * @returns a Promise<string> that resolves to a number representing the effective capacity of queued minipools in Wei
+	 * @returns a Promise<string\> that resolves to a number representing the effective capacity of queued minipools in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -413,7 +413,7 @@ class Minipool {
 
 	/**
 	 * Get the capacity of the next available minipool in Wei
-	 * @returns a Promise<string> that resolves to a number representing the capacity of the next available minipool in Wei
+	 * @returns a Promise<string\> that resolves to a number representing the capacity of the next available minipool in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -432,7 +432,7 @@ class Minipool {
 	 * @params userBalanceString a string representing the user balance in Wei
 	 * @params startBalance a string representing the start balance in Wei
 	 * @params endBalance a sttring representing the end balance in Wei
-	 * @returns a Promise<string> that resolves to a string representing the minipool node rewards amount in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the minipool node rewards amount in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -450,7 +450,7 @@ class Minipool {
 	/**
 	 * Get a MinipoolContract instance
 	 * @params address a string representing the address of the minipool
-	 * @returns a Promise<MinipoolContract> that resolves to a MinipoolContract representing the contract of the minipool
+	 * @returns a Promise<MinipoolContract\> that resolves to a MinipoolContract representing the contract of the minipool
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -467,7 +467,7 @@ class Minipool {
 	/**
 	 * Get the effective delegate
 	 * @params address a string representing the address of the minipool
-	 * @returns a Promise<string> that resolves to the address of the effective delegate
+	 * @returns a Promise<string\> that resolves to the address of the effective delegate
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -486,7 +486,7 @@ class Minipool {
 	 * @param minipoolAddress A string representing the address of the minipool
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

@@ -20,7 +20,7 @@ class Rewards {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketClaimTrustedNode contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketClaimTrustedNode contract
 	 */
 	private get rocketClaimTrustedNode(): Promise<Contract> {
 		return this.contracts.get("rocketClaimTrustedNode");
@@ -29,7 +29,7 @@ class Rewards {
 	/**
 	 * Get claim rewards amount
 	 * @params address a string representing the node address
-	 * @returns a Promise<string> that resolves to a string representing the claim rewards amount in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the claim rewards amount in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -47,7 +47,7 @@ class Rewards {
 	 * Claim from a trusted node
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

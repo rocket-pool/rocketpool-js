@@ -17,7 +17,7 @@ class DepositSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsDeposit contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsDeposit contract
 	 */
 	private get rocketDAOProtocolSettingsDeposit(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsDeposit");
@@ -25,7 +25,7 @@ class DepositSettings {
 
 	/**
 	 * Check to see if deposits are enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing if deposits are enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if deposits are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class DepositSettings {
 
 	/**
 	 * Check to see if deposit assignments are enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing if deposit assignments are enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if deposit assignments are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -55,7 +55,7 @@ class DepositSettings {
 
 	/**
 	 * Return the minimum deposit amount setting in wei
-	 * @returns a Promise<string> that resolves to a string representing the minimum deposit amount setting
+	 * @returns a Promise<string\> that resolves to a string representing the minimum deposit amount setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -70,7 +70,7 @@ class DepositSettings {
 
 	/**
 	 * Return the maximum deposit pool size setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the maximum deposit pool size setting
+	 * @returns a Promise<string\> that resolves to a string representing the maximum deposit pool size setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -85,7 +85,7 @@ class DepositSettings {
 
 	/**
 	 * Return the maximum number of deposit assignments to perform at once
-	 * @returns a Promise<number> that resolves to a number representing the maximum number of deposit assignments to perform at once
+	 * @returns a Promise<number\> that resolves to a number representing the maximum number of deposit assignments to perform at once
 	 *
 	 * @example using Typescript
 	 * ```ts

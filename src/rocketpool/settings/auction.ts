@@ -17,7 +17,7 @@ class AuctionSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsAuction contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsAuction contract
 	 */
 	private get rocketDAOProtocolSettingsAuction(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsAuction");
@@ -25,7 +25,7 @@ class AuctionSettings {
 
 	/**
 	 * Return the lot maximum ETH value setting
-	 * @returns a Promise<number> that resolves to a number representing the lot maximum ETH value setting
+	 * @returns a Promise<number\> that resolves to a number representing the lot maximum ETH value setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class AuctionSettings {
 
 	/**
 	 * Return the lot duration setting
-	 * @returns a Promise<number> that resolves to a number representing the lot duration setting
+	 * @returns a Promise<number\> that resolves to a number representing the lot duration setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -55,7 +55,7 @@ class AuctionSettings {
 
 	/**
 	 * Return the starting price ratio setting
-	 * @returns a Promise<number> that resolves to a number representing the starting price ratio setting
+	 * @returns a Promise<number\> that resolves to a number representing the starting price ratio setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -70,7 +70,7 @@ class AuctionSettings {
 
 	/**
 	 * Return the reserve price ratio setting
-	 * @returns a Promise<number> that resolves to a number representing the reserve price ratio setting
+	 * @returns a Promise<number\> that resolves to a number representing the reserve price ratio setting
 	 *
 	 * @example using Typescript
 	 * ```ts

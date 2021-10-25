@@ -23,7 +23,7 @@ class RETH extends ERC20 {
 	/**
 	 * Get the amount of ETH backing an amount of rETH
 	 * @params rethAmountWei a string representing the rETH amount in Wei
-	 * @returns a Promise<string> that resolves to a string representing the amount amount of rETH backing an amount of ETH
+	 * @returns a Promise<string\> that resolves to a string representing the amount amount of rETH backing an amount of ETH
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class RETH extends ERC20 {
 	/**
 	 * Get the amount of rETH backing an amount of ETH
 	 * @params ethAmountWei a string representing the ETH amount in Wei
-	 * @returns a Promise<string> that resolves to a string representing the amount amount of rETH backing an amount of ETH
+	 * @returns a Promise<string\> that resolves to a string representing the amount amount of rETH backing an amount of ETH
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -56,7 +56,7 @@ class RETH extends ERC20 {
 
 	/**
 	 * Get the current ETH to rETH exchange rate
-	 * @returns a Promise<number> that resolves to a number representing the amount of ETH backing 1 rETH
+	 * @returns a Promise<number\> that resolves to a number representing the amount of ETH backing 1 rETH
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -71,7 +71,7 @@ class RETH extends ERC20 {
 
 	/**
 	 * Get the total amount of ETH collateral available
-	 * @returns a Promise<string> that resolves to a string representing the portion of rETH backed by ETH in the contract as a fraction
+	 * @returns a Promise<string\> that resolves to a string representing the portion of rETH backed by ETH in the contract as a fraction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -86,7 +86,7 @@ class RETH extends ERC20 {
 
 	/**
 	 * Get the current ETH collateral rate
-	 * @returns a Promise<number> that resolves to a number representing the portion of rETH backed by ETH in the contract as a fraction
+	 * @returns a Promise<number\> that resolves to a number representing the portion of rETH backed by ETH in the contract as a fraction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -101,7 +101,7 @@ class RETH extends ERC20 {
 
 	/**
 	 * Get the total supply
-	 * @returns a Promise<number> that resolves to a number representing the total supply
+	 * @returns a Promise<number\> that resolves to a number representing the total supply
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -119,7 +119,7 @@ class RETH extends ERC20 {
 	 * @param amountWei A string representing the amount to burn in Wei
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

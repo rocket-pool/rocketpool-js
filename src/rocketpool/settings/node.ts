@@ -17,7 +17,7 @@ class NodeSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsNode contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsNode contract
 	 */
 	private get rocketDAOProtocolSettingsNode(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsNode");
@@ -25,7 +25,7 @@ class NodeSettings {
 
 	/**
 	 * Return if node registrations are currently enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing if node registrations are enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if node registrations are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class NodeSettings {
 
 	/**
 	 * Return if node deposits are currently enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing if node deposits are enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if node deposits are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts

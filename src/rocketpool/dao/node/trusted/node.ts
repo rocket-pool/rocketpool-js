@@ -19,7 +19,7 @@ class DAONodeTrusted {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrusted contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrusted contract
 	 */
 	private get rocketDAONodeTrusted(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrusted");
@@ -28,7 +28,7 @@ class DAONodeTrusted {
 	/**
 	 * Return the member id given an address
 	 * @param account A string representing the address you wish to lookup the member id for
-	 * @returns a Promise<string> that resolves to a string representing the member id
+	 * @returns a Promise<string\> that resolves to a string representing the member id
 	 *
 	 * @example using Typescript
 	 * const account = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
@@ -44,7 +44,7 @@ class DAONodeTrusted {
 
 	/**
 	 * Get the number of DAO Members
-	 * @returns a Promise<number> that resolves to a number representing the number of DAO members
+	 * @returns a Promise<number\> that resolves to a number representing the number of DAO members
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -59,7 +59,7 @@ class DAONodeTrusted {
 
 	/**
 	 * Check if Bootstrap Mode is enabled
-	 * @returns a Promise<boolean> that resolves to a boolean representing if bootstrap mode is enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if bootstrap mode is enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -74,7 +74,7 @@ class DAONodeTrusted {
 
 	/**
 	 * Get the number of votes needed for a proposal to pass
-	 * @returns a Promise<number> that resolves to a number representing the number of votes needed for a proposal to pass
+	 * @returns a Promise<number\> that resolves to a number representing the number of votes needed for a proposal to pass
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -90,7 +90,7 @@ class DAONodeTrusted {
 	/**
 	 * Check if a member is valid
 	 * @param address A string representing the address you wish to check if a member is valid
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a member is valid
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a member is valid
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -107,7 +107,7 @@ class DAONodeTrusted {
 	/**
 	 * Get a member's RPL bond amount
 	 * @param address A string representing the address you wish to lookup
-	 * @returns a Promise<string> that resolves to a string representing if a member is valid
+	 * @returns a Promise<string\> that resolves to a string representing if a member is valid
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -124,7 +124,7 @@ class DAONodeTrusted {
 	/**
 	 * Check if a member has been challenged
 	 * @param address A string representing the address you wish to lookup
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a member is valid
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a member is valid
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -145,7 +145,7 @@ class DAONodeTrusted {
 	 * @param nodeAddress A string representing the address of the member you are adding
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -179,7 +179,7 @@ class DAONodeTrusted {
 	 * @param value A boolean representing the value of the setting you wish to set
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -213,7 +213,7 @@ class DAONodeTrusted {
 	 * @param value A string, number or object representing the value of the setting you wish to set
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -246,7 +246,7 @@ class DAONodeTrusted {
 	 * @param value A boolean representing if you are turning bootstrap mode on or off
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -272,7 +272,7 @@ class DAONodeTrusted {
 	 * @param url A string representing the url for the member
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

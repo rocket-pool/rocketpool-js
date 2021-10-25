@@ -17,7 +17,7 @@ class MinipoolSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsMinipool contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsMinipool contract
 	 */
 	private get rocketDAOProtocolSettingsMinipool(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsMinipool");
@@ -25,7 +25,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the balance required to launch a minipool setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the balance required to launch a minipool setting
+	 * @returns a Promise<string\> that resolves to a string representing the balance required to launch a minipool setting
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the full node deposit amounts setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the full node deposit amounts setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the full node deposit amounts setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -55,7 +55,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the half node deposit amounts setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the half node deposit amounts setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the half node deposit amounts setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -70,7 +70,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the empty node deposit amounts setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the empty node deposit amounts setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the empty node deposit amounts setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -85,7 +85,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the full user deposit amount setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the full user deposit amount setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the full user deposit amount setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -100,7 +100,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the half user deposit amount setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the half user deposit amount setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the half user deposit amount setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -115,7 +115,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the empty user deposit amount setting in Wei
-	 * @returns a Promise<string> that resolves to a string representing the empty user deposit amount setting in wei
+	 * @returns a Promise<string\> that resolves to a string representing the empty user deposit amount setting in wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -130,7 +130,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the minipool withdrawable event submissions setting
-	 * @returns a Promise<boolean> that resolves to a boolean representing if minipool withdrawable events submissions are enabled
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if minipool withdrawable events submissions are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -145,7 +145,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the period in blocks for prelaunch minipools to launch
-	 * @returns a Promise<number> that resolves to a number representing the period in blocks for prelaunch minipools to launch
+	 * @returns a Promise<number\> that resolves to a number representing the period in blocks for prelaunch minipools to launch
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -162,7 +162,7 @@ class MinipoolSettings {
 
 	/**
 	 * Return the withdrawal delay setting in blocks
-	 * @returns a Promise<number> that resolves to a number representing the withdrawal delay setting in blocks
+	 * @returns a Promise<number\> that resolves to a number representing the withdrawal delay setting in blocks
 	 *
 	 * @example using Typescript
 	 * ```ts

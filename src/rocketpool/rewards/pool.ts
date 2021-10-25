@@ -17,7 +17,7 @@ class Pool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketRewardsPool contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketRewardsPool contract
 	 */
 	private get rocketRewardsPool(): Promise<Contract> {
 		return this.contracts.get("rocketRewardsPool");
@@ -25,7 +25,7 @@ class Pool {
 
 	/**
 	 * Get claim intervals passed
-	 * @returns a Promise<number> that resolves to a number representing the claim intervals passed
+	 * @returns a Promise<number\> that resolves to a number representing the claim intervals passed
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -40,7 +40,7 @@ class Pool {
 
 	/**
 	 * Get the claim intervals start time
-	 * @returns a Promise<number> that resolves to a number representing the claim intervals start time
+	 * @returns a Promise<number\> that resolves to a number representing the claim intervals start time
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -55,7 +55,7 @@ class Pool {
 
 	/**
 	 * Get the rpl balance
-	 * @returns a Promise<string> that resolves to a string representing the claim RPL balance in Wei
+	 * @returns a Promise<string\> that resolves to a string representing the claim RPL balance in Wei
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -71,7 +71,7 @@ class Pool {
 	/**
 	 * Get the claiming contract percentage
 	 * @params contract a string representing the contract address
-	 * @returns a Promise<string> that resolves to a string representing the claiming contract percentage
+	 * @returns a Promise<string\> that resolves to a string representing the claiming contract percentage
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -88,7 +88,7 @@ class Pool {
 	/**
 	 * Get the claiming contract allowance
 	 * @params contract a string representing the contract address
-	 * @returns a Promise<string> that resolves to a string representing the claiming contract allowance
+	 * @returns a Promise<string\> that resolves to a string representing the claiming contract allowance
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -105,7 +105,7 @@ class Pool {
 	/**
 	 * Get the claiming contract total claimed
 	 * @params contract a string representing the contract address
-	 * @returns a Promise<string> that resolves to a string representing the claiming contract total claimed
+	 * @returns a Promise<string\> that resolves to a string representing the claiming contract total claimed
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -121,7 +121,7 @@ class Pool {
 
 	/**
 	 * Get the claim interval rewards total
-	 * @returns a Promise<string> that resolves to a string representing the claiming interval rewards total
+	 * @returns a Promise<string\> that resolves to a string representing the claiming interval rewards total
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -138,7 +138,7 @@ class Pool {
 	 * Get the claim contract registered time
 	 * @params contractAddress a string representing the contract address
 	 * @params trustedNodeAddress a string representing a trusted node address
-	 * @returns a Promise<string> that resolves to a string representing the claim contract registered block
+	 * @returns a Promise<string\> that resolves to a string representing the claim contract registered block
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -156,7 +156,7 @@ class Pool {
 	/**
 	 * Get the number of claimers for the current interval per claiming contract
 	 * @params contract a string representing the contract address
-	 * @returns a Promise<string> that resolves to a string representing the claim contract registered block
+	 * @returns a Promise<string\> that resolves to a string representing the claim contract registered block
 	 *
 	 * @example using Typescript
 	 * ```ts

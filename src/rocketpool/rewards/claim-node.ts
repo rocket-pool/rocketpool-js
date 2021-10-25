@@ -20,7 +20,7 @@ class Rewards {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketClaimNode contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketClaimNode contract
 	 */
 	private get rocketClaimNode(): Promise<Contract> {
 		return this.contracts.get("rocketClaimNode");
@@ -29,7 +29,7 @@ class Rewards {
 	/**
 	 * Determine if the claim is possible
 	 * @params address a string representing the node address
-	 * @returns a Promise<boolean> that resolves to a boolean representing if a claim is possible
+	 * @returns a Promise<boolean\> that resolves to a boolean representing if a claim is possible
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -47,7 +47,7 @@ class Rewards {
 	 * Make a node claim
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
-	 * @returns a Promise<TransactionReceipt> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts

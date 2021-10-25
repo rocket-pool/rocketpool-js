@@ -95,7 +95,7 @@ class Contracts {
 	 * Create a new contract instance with the specified ABI name and address
 	 * @param name A string representing the name of the contract
 	 * @param address A string representing the address of the specific instance
-	 * @returns a Promise<Contract> that resolves to a web3.eth.contract instance of the contract
+	 * @returns a Promise<Contract\> that resolves to a web3.eth.contract instance of the contract
 	 *
 	 * @example using Typescript
 	 * ```ts

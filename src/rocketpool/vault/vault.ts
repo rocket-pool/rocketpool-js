@@ -17,7 +17,7 @@ class Vault {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketVault contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketVault contract
 	 */
 	private get rocketVault(): Promise<Contract> {
 		return this.contracts.get("rocketVault");
@@ -25,7 +25,7 @@ class Vault {
 
 	/**
 	 * Retrieve the RocketVault contract address
-	 * @returns a Promise<string> that resolves to the Rocket Vault contract address
+	 * @returns a Promise<string\> that resolves to the Rocket Vault contract address
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -42,7 +42,7 @@ class Vault {
 	 * Retrieve the balance of a token when providing a contract & token address
 	 * @param contractAddress A string representing the contract address
 	 * @param tokenAddress A string representing the token address
-	 * @returns a Promise<string> that resolves to the Rocket Vault contract address
+	 * @returns a Promise<string\> that resolves to the Rocket Vault contract address
 	 *
 	 * @example using Typescript
 	 * ```ts

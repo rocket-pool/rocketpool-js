@@ -19,7 +19,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsProposals contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsProposals contract
 	 */
 	private get rocketDAONodeTrustedSettingsProposals(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrustedSettingsProposals");
@@ -27,7 +27,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsMembers contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAONodeTrustedSettingsMembers contract
 	 */
 	private get rocketDAONodeTrustedSettingsMembers(): Promise<Contract> {
 		return this.contracts.get("rocketDAONodeTrustedSettingsMembers");
@@ -35,7 +35,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsDeposit contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsDeposit contract
 	 */
 	private get rocketDAOProtocolSettingsDeposit(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsDeposit");
@@ -43,7 +43,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProtocolSettingsMinipool contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProtocolSettingsMinipool contract
 	 */
 	private get rocketDAOProtocolSettingsMinipool(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProtocolSettingsMinipool");
@@ -51,7 +51,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Get the maximum deposit assignments
-	 * @returns a Promise<string> that resolves to a string representing the maximum deposit assignments
+	 * @returns a Promise<string\> that resolves to a string representing the maximum deposit assignments
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -66,7 +66,7 @@ class DAONodeTrustedSettings {
 
 	/**
 	 * Get the cost of a challenge (How much it costs a non-member to challenge a members node. It's free for current members to challenge other members.)
-	 * @returns a Promise<string> that resolves to a string representing the inflation intervals that have passed (in time)
+	 * @returns a Promise<string\> that resolves to a string representing the inflation intervals that have passed (in time)
 	 *
 	 * @example using Typescript
 	 * ```ts

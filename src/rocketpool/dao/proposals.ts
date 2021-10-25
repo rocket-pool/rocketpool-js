@@ -19,7 +19,7 @@ class DAOProposal {
 
 	/**
 	 * Private accessor use to retrieve the related contract
-	 * @returns a Promise<Contract> with a web3.eth.contract instance of the rocketDAOProposal contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketDAOProposal contract
 	 */
 	private get rocketDAOProposal(): Promise<Contract> {
 		return this.contracts.get("rocketDAOProposal");
@@ -27,7 +27,7 @@ class DAOProposal {
 
 	/**
 	 * Return the total of DAO Proposals
-	 * @returns a Promise<number> that resolves to a number representing if node registrations are enabled
+	 * @returns a Promise<number\> that resolves to a number representing if node registrations are enabled
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -43,7 +43,7 @@ class DAOProposal {
 	/**
 	 * Return the state of a DAO proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the state of a DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the state of a DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -60,7 +60,7 @@ class DAOProposal {
 	/**
 	 * Return the number of votes for a specific DAO proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the votes for a specific DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the votes for a specific DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -77,7 +77,7 @@ class DAOProposal {
 	/**
 	 * Return the number of votes required for a specific DAO proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the votes required for a specific DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the votes required for a specific DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -94,7 +94,7 @@ class DAOProposal {
 	/**
 	 * Return the start block of this proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the start block for the specific DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the start block for the specific DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -111,7 +111,7 @@ class DAOProposal {
 	/**
 	 * Return the end block of this proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the end block for the specific DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the end block for the specific DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -128,7 +128,7 @@ class DAOProposal {
 	/**
 	 * Return the number of votes against a specific DAO proposal
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the votes against a specific DAO proposal
+	 * @returns a Promise<number\> that resolves to a number representing the votes against a specific DAO proposal
 	 *
 	 * @example using Typescript
 	 * ```ts
@@ -145,7 +145,7 @@ class DAOProposal {
 	/**
 	 * Return the block a specific DAO proposal expires
 	 * @param proposalID A number representing proposalID
-	 * @returns a Promise<number> that resolves to a number representing the block that a specific DAO proposal expires
+	 * @returns a Promise<number\> that resolves to a number representing the block that a specific DAO proposal expires
 	 *
 	 * @example using Typescript
 	 * ```ts
