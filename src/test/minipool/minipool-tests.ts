@@ -4,7 +4,14 @@ import Web3 from "web3";
 import RocketPool from "../../rocketpool/rocketpool";
 import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
 import { takeSnapshot, revertSnapshot, mineBlocks, increaseTime } from "../_utils/evm";
-import { createMinipool, getMinipoolMinimumRPLStake, getNodeActiveMinipoolCount, stakeMinipool, submitMinipoolWithdrawable } from "../_helpers/minipool";
+import {
+	createMinipool,
+	dissolveMinipool,
+	getMinipoolMinimumRPLStake,
+	getNodeActiveMinipoolCount,
+	stakeMinipool,
+	submitMinipoolWithdrawable
+} from "../_helpers/minipool";
 import { close } from "./scenario-close";
 import { dissolve } from "./scenario-dissolve";
 import { refund } from "./scenario-refund";
@@ -105,19 +112,20 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 				gas: gasLimit,
 			});
 
-			// Make user deposit to refund first prelaunch minipool
-			const refundAmount = web3.utils.toWei("16", "ether");
-			await userDeposit(web3, rp, {
-				from: random,
-				value: refundAmount,
-				gas: gasLimit,
-			});
-
 			// Stake RPL to cover minipools
 			const minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
 			const rplStake = minipoolRplStake.mul(web3.utils.toBN(7));
 			await mintRPL(web3, rp, owner, node, rplStake);
 			await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
+
+			// Create a dissolved minipool
+			dissolvedMinipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit})) as MinipoolContract;
+			await increaseTime(web3, launchTimeout + 1);
+			await dissolveMinipool(dissolvedMinipool, {from: node, gas: gasLimit});
+
+			// Make user deposit to refund first prelaunch minipool
+			const refundAmount = web3.utils.toWei("16", "ether");
+			await userDeposit(web3, rp,{from: random, value: refundAmount, gas: gasLimit});
 
 			// Create minipools
 			prelaunchMinipool = (await createMinipool(web3, rp, {
@@ -145,11 +153,6 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			dissolvedMinipool = (await createMinipool(web3, rp, {
-				from: node,
-				value: web3.utils.toWei("16", "ether"),
-				gas: gasLimit,
-			})) as MinipoolContract;
 
 			// Wait required scrub period
 			await increaseTime(web3, scrubPeriod + 1);
@@ -160,9 +163,6 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 
 			// Set minipool to withdrawable
 			await rp.minipool.submitMinipoolWithdrawable(withdrawableMinipool.address, { from: trustedNode, gas: gasLimit });
-
-			// Dissolve minipool
-			await dissolvedMinipool.dissolve({ from: node, gas: gasLimit });
 
 			// Check minipool statuses
 			const initializedStatus = await initializedMinipool.contract.methods
@@ -515,18 +515,6 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 		//
 		// Dissolve
 		//
-		it(printTitle("node operator", "can dissolve their own minipools"), async () => {
-			// Dissolve minipools
-			await dissolve(web3, rp, initializedMinipool, {
-				from: node,
-				gas: gasLimit,
-			});
-			await dissolve(web3, rp, prelaunchMinipool, {
-				from: node,
-				gas: gasLimit,
-			});
-		});
-
 		it(printTitle("node operator", "cannot dissolve their own staking minipools"), async () => {
 			// Attempt to dissolve staking minipool
 			await shouldRevert(
@@ -561,7 +549,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 					gas: gasLimit,
 				}),
 				"Random address dissolved a minipool which was not at prelaunch",
-				"The minipool can only be dissolved by its owner unless it has timed out"
+				"The minipool can only be dissolved once it has timed out"
 			);
 		});
 
@@ -572,7 +560,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 					from: random,
 				}),
 				"Random address dissolved a minipool which has not timed out",
-				"The minipool can only be dissolved by its owner unless it has timed out"
+				"The minipool can only be dissolved once it has timed out"
 			);
 		});
 

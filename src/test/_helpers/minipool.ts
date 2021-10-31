@@ -46,7 +46,7 @@ export async function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool) {
 
 // Create a minipool
 let minipoolSalt = 1;
-export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions): Promise<MinipoolContract | null> {
+export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions, salt: number | null = null): Promise<MinipoolContract | null> {
 	// Get contracts
 	const rocketMinipoolManager = await rp.contracts.get("rocketMinipoolManager");
 	const rocketStorage = await rp.contracts.get("rocketStorage");
@@ -65,7 +65,9 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	// Construct creation code for minipool deploy
 	const constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
 	const deployCode = contractBytecode + constructorArgs.substr(2);
-	const salt = minipoolSalt++;
+	if(salt === null) {
+		salt = minipoolSalt++;
+	}
 
 	// Calculate keccak(nodeAddress, salt)
 	const nodeSalt = web3.utils.soliditySha3({ type: "address", value: options.from }, { type: "uint256", value: salt.toString() });
@@ -129,7 +131,7 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 	const depositDataRoot = getDepositDataRoot(depositData);
 
 	// Stake
-	await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
+	await minipool.stake(depositData.signature, depositDataRoot, options);
 }
 
 // Submit a minipool withdrawable event

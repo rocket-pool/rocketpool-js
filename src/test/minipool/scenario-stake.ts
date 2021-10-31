@@ -56,7 +56,7 @@ export async function stake(
 	// console.log(depositDataRoot);
 	// console.log(options);
 	// console.log("=====================");
-	await minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
+	await minipool.stake(depositData.signature, depositDataRoot, options);
 
 	// Get updated minipool details & minipool by validator pubkey
 	const [details2, validatorMinipool2] = await Promise.all([getMinipoolDetails(), rp.minipool.getMinipoolByPubkey(validatorPubkey)]);

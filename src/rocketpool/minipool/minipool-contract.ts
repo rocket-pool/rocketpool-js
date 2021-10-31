@@ -431,14 +431,14 @@ class MinipoolContract {
 	/**
 	 * Progress the minipool to staking, sending its ETH deposit to the VRC
 	 * Only accepts calls from the minipool owner (node) while in prelaunch and once scrub period has ended
-	 * @param validatorPubkey A buffer
+	 * @param validatorSignature A buffer containing the validator signature
+	 * @param depositDataRoot A buffer containing the deposit data
 	 * @param options An optional object of web3.eth.Contract SendOptions
 	 * @param onConfirmation An optional confirmation handler object
 	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript
 	 * ```ts
-	 * const validatorPubkey = <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03>;
 	 * const validatorSignature = <Buffer 01 23 45 67 89 ab cd ef 01 23 45 67 89 ab cd ef 01 23 45 67 89 ab cd ef 01 23 45 67 89 ab cd ef 01 23 45 67 89 ab cd ef 01 23 45 67 89 ab cd ef 01 23>;
 	 * const depositDataRoot = <Buffer 48 ad 0b 82 2c d6 81 f9 c9 8b 06 a1 8b 93 4b df 7f 40 76 80 fb 7a 3b 5c cd 2c 92 a6 4a 58 e9 05>;
 	 * const owner = "0x8B0EF9f1932A2e44c3D27bE4C70C3BC07A6A27B3"; // must be the owner of the minipool
@@ -446,17 +446,16 @@ class MinipoolContract {
 	 *		from: owner,
 	 *		gas: 1000000
 	 * };
-	 * const txReceipt = minipool.stake(validatorPubkey, validatorSignature, depositDataRoot, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * const txReceipt = minipool.stake(validatorSignature, depositDataRoot, options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
 	 */
 	public stake(
-		validatorPubkey: Buffer,
 		validatorSignature: Buffer,
 		depositDataRoot: Buffer,
 		options?: SendOptions,
 		onConfirmation?: ConfirmationHandler
 	): Promise<TransactionReceipt> {
-		return handleConfirmations(this.contract.methods.stake(validatorPubkey, validatorSignature, depositDataRoot).send(options), onConfirmation);
+		return handleConfirmations(this.contract.methods.stake(validatorSignature, depositDataRoot).send(options), onConfirmation);
 	}
 
 	/**

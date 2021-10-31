@@ -13,6 +13,7 @@ export async function voteScrub(web3: Web3, rp: RocketPool, minipool: MinipoolCo
 	const rocketVault = await rp.contracts.get("rocketVault");
 	const rocketTokenRPL = await rp.contracts.get("rocketTokenRPL");
 	const rocketDAONodeTrustedSettingsMinipool = await rp.contracts.get("rocketDAONodeTrustedSettingsMinipool");
+	const rocketDAOProtocolSettingsNode = await rp.contracts.get("rocketDAOProtocolSettingsNode");
 
 	// Get minipool details
 	function getMinipoolDetails() {
@@ -54,9 +55,20 @@ export async function voteScrub(web3: Web3, rp: RocketPool, minipool: MinipoolCo
 	if (details1.votes.add(web3.utils.toBN(1)).gt(quorum)) {
 		assert(details2.status.eq(dissolved), "Incorrect updated minipool status");
 		assert(details2.userDepositBalance.eq(web3.utils.toBN(0)), "Incorrect updated minipool user deposit balance");
+		// Check slashing if penalties are enabled
 		if (details1.penaltyEnabled) {
-			assert(details2.nodeRPLStake.lt(details1.nodeRPLStake), "RPL was not slashed");
+			// Calculate amount slashed
 			const slashAmount = details1.nodeRPLStake.sub(details2.nodeRPLStake);
+			// Get current RPL price
+
+			const rplPrice = await rp.network.getRPLPrice().then((value: any) => web3.utils.toBN(value));
+			// Calculate amount slashed in ETH
+			const slashAmountEth = slashAmount.mul(rplPrice).div(web3.utils.toBN(web3.utils.toWei("1", "ether")));
+			// Calculate expected slash amount
+			const minimumStake = await rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value));
+			const expectedSlash = web3.utils.toBN(web3.utils.toWei("16", "ether")).mul(minimumStake).div(web3.utils.toBN(web3.utils.toWei("1", "ether")));
+			// Perform checks
+			assert(slashAmountEth.eq(expectedSlash), "Amount of RPL slashed is incorrect");
 			assert(details2.auctionBalance.sub(details1.auctionBalance).eq(slashAmount), "RPL was not sent to auction manager");
 		}
 	} else {

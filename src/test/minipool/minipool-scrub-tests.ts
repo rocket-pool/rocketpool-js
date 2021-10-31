@@ -49,6 +49,7 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 		const launchTimeout = 60 * 60 * 72; // 72 hours
 		const withdrawalDelay = 20;
 		const scrubPeriod = 60 * 60 * 24; // 24 hours
+		const minipoolSalt = 1;
 
 		// Setup
 		let prelaunchMinipool: MinipoolContract;
