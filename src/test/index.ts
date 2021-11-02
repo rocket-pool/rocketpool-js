@@ -1,4 +1,6 @@
 // Dependencies
+import runMinipoolScrubTests from "./minipool/minipool-scrub-tests";
+
 const fs = require("fs");
 import Web3 from "web3";
 import RocketPool from "../rocketpool/rocketpool";
@@ -95,22 +97,23 @@ before(async function () {
 });
 
 // Run tests
-// runContractsTests(web3, rp);
-// runAuctionTests(web3, rp);
-// runDepositTests(web3, rp);
-runMinipoolTests(web3, rp);
-// runMinipoolStatusTests(web3, rp);
-// runMinipoolWithdrawalTests(web3, rp);
-// runNetworkBalancesTests(web3, rp);
-// runNetworkFeesTests(web3, rp);
-// runNetworkPricesTests(web3, rp);
-runNetworkStakingTests(web3, rp);
+runContractsTests(web3, rp);
+runAuctionTests(web3, rp);
+runDepositTests(web3, rp);
+runMinipoolScrubTests(web3, rp);
+runMinipoolTests(web3, rp); // To do
+runMinipoolStatusTests(web3, rp);
+runMinipoolWithdrawalTests(web3, rp);
+runNetworkBalancesTests(web3, rp);
+runNetworkFeesTests(web3, rp);
+runNetworkPricesTests(web3, rp);
+runNetworkStakingTests(web3, rp); // To do
 runNodeDepositTests(web3, rp);
 runNodeManagerTests(web3, rp);
 runNodeStakingTests(web3, rp);
-// runRethTests(web3, rp);
-// runRPLTests(web3, rp);
-// runSettingsTests(web3, rp);
-// runRewardsTests(web3, rp);
-// runDOAProtocolTests(web3, rp);
-// runDAONodeTrustedTests(web3, rp);
+runRethTests(web3, rp);
+runRPLTests(web3, rp);
+runSettingsTests(web3, rp);
+runRewardsTests(web3, rp);
+runDOAProtocolTests(web3, rp);
+runDAONodeTrustedTests(web3, rp);

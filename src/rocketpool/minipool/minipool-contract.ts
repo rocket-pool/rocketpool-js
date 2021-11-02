@@ -553,7 +553,7 @@ class MinipoolContract {
 	 *		from: daoMember,
 	 *		gas: 1000000
 	 * };
-	 * const txReceipt = minipool.finalise(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * const txReceipt = minipool.voteScrub(options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
 	 */
 	public voteScrub(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {

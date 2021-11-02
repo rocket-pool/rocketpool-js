@@ -86,11 +86,11 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 			await setNodeTrusted(web3, rp, trustedNode3, "saas_3", "node@home.com", owner);
 
 			// Set a small proposal cooldown
-			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.launch.timeout", launchTimeout, {
+			await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.launch.timeout", launchTimeout, {
 				from: owner,
 				gas: gasLimit,
 			});
-			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.withdrawal.delay", withdrawalDelay, {
+			await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.withdrawal.delay", withdrawalDelay, {
 				from: owner,
 				gas: gasLimit,
 			});
@@ -116,7 +116,7 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 			await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
 
 			// Create minipool
-			prelaunchMinipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether") })) as MinipoolContract;
+			prelaunchMinipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }, minipoolSalt)) as MinipoolContract;
 		});
 
 		//
