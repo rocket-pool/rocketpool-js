@@ -160,8 +160,10 @@ function getMinipoolMinimumRPLStake(web3, rp) {
 // Create a minipool
 var minipoolSalt = 1;
 function createMinipool(web3, rp, options) {
+    var salt = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
     return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-        var rocketMinipoolManager, rocketStorage, minipoolManagerAddress, rocketMinipool, contractBytecode, depositType, constructorArgs, deployCode, salt, nodeSalt, bytecodeHash, raw, minipoolAddress, withdrawalCredentials, depositData, depositDataRoot, minimumNodeFee, txReceipt, minipoolCreatedEvents;
+        var rocketMinipoolManager, rocketStorage, minipoolManagerAddress, rocketMinipool, contractBytecode, depositType, constructorArgs, deployCode, nodeSalt, bytecodeHash, raw, minipoolAddress, withdrawalCredentials, depositData, depositDataRoot, minimumNodeFee, txReceipt, minipoolCreatedEvents;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
                 switch (_context5.prev = _context5.next) {
@@ -197,9 +199,11 @@ function createMinipool(web3, rp, options) {
                         // Construct creation code for minipool deploy
                         constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
                         deployCode = contractBytecode + constructorArgs.substr(2);
-                        salt = minipoolSalt++;
-                        // Calculate keccak(nodeAddress, salt)
 
+                        if (salt === null) {
+                            salt = minipoolSalt++;
+                        }
+                        // Calculate keccak(nodeAddress, salt)
                         nodeSalt = web3.utils.soliditySha3({ type: "address", value: options.from }, { type: "uint256", value: salt.toString() });
                         // Calculate hash of deploy code
 
@@ -281,7 +285,7 @@ function stakeMinipool(web3, rp, minipool, options) {
                         // Stake
 
                         _context6.next = 10;
-                        return minipool.stake(depositData.pubkey, depositData.signature, depositDataRoot, options);
+                        return minipool.stake(depositData.signature, depositDataRoot, options);
 
                     case 10:
                     case "end":
