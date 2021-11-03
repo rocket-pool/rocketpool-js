@@ -1,0 +1,15 @@
+import Web3 from "web3";
+import { SendOptions } from "web3-eth-contract";
+import RocketPool from "../../rocketpool/rocketpool";
+import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
+export declare function getNodeMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string): Promise<number>;
+export declare function getNodeStakingMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string): Promise<number>;
+export declare function getNodeActiveMinipoolCount(web3: Web3, rp: RocketPool, nodeAddress: string): Promise<string>;
+export declare function getMinipoolMinimumRPLStake(web3: Web3, rp: RocketPool): Promise<any>;
+export declare function createMinipool(web3: Web3, rp: RocketPool, options: SendOptions, salt?: number | null): Promise<MinipoolContract | null>;
+export declare function stakeMinipool(web3: Web3, rp: RocketPool, minipool: MinipoolContract, options: SendOptions): Promise<void>;
+export declare function submitMinipoolWithdrawable(web3: Web3, rp: RocketPool, minipoolAddress: string, options: SendOptions): Promise<void>;
+export declare function payoutMinipool(minipool: MinipoolContract, confirm: boolean | undefined, options: SendOptions): Promise<void>;
+export declare function withdrawMinipool(minipool: MinipoolContract, options: SendOptions): Promise<void>;
+export declare function dissolveMinipool(minipool: MinipoolContract, options: SendOptions): Promise<void>;
+export declare function closeMinipool(minipool: MinipoolContract, options: SendOptions): Promise<void>;
