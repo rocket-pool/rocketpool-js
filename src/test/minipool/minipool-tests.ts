@@ -604,7 +604,7 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 					gas: gasLimit,
 				}),
 				"Staked a minipool with a reused validator pubkey",
-				"Validator pubkey is not correct"
+				"Transaction reverted silently"
 			);
 		});
 
@@ -919,5 +919,6 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 				"Only the node operator can access this method"
 			);
 		});
+
 	});
 }

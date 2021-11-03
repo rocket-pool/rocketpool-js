@@ -321,6 +321,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
+			await increaseTime(web3, scrubPeriod + 1);
 			await testEffectiveStakeValues();
 
 			// Increase the price of RPL and create some more minipools
@@ -341,6 +342,8 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 
 			// Decrease the price of RPL and destroy some minipools
 			await setPrice(web3.utils.toWei("0.75", "ether"));
+			await increaseTime(web3, scrubPeriod + 1);
+			await mineBlocks(web3, 10);
 			await dissolve(web3, rp, initializedMinipool, {
 				from: registeredNode2,
 				gas: gasLimit,

@@ -1,4 +1,5 @@
 // Imports
+import { assert } from "chai";
 import Web3 from "web3";
 import RocketPool from "../../rocketpool/rocketpool";
 import { mintRPL } from "../tokens/scenario-rpl-mint";
@@ -69,7 +70,10 @@ export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, o
 	options.gas = 1000000;
 
 	await rp.tokens.rpl.approve(rocketNodeStaking.options.address, amount, options);
+	const before = await rp.node.getNodeRPLStake(options.from).then((value: any) => web3.utils.toBN(value));
 	await rp.node.stakeRPL(amount, options);
+	const after = await rp.node.getNodeRPLStake(options.from).then((value: any) => web3.utils.toBN(value));
+	assert(after.sub(before).eq(web3.utils.toBN(amount)), "Staking balance did not increase by amount staked");
 }
 
 // Withdraw a node RPL stake

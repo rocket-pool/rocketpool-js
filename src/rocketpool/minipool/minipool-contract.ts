@@ -234,7 +234,7 @@ class MinipoolContract {
 	 * ```
 	 */
 	public getTotalScrubVotes(): Promise<number> {
-		return this.contract.methods.getNodeFee().call();
+		return this.contract.methods.getTotalScrubVotes().call();
 	}
 
 	/**
