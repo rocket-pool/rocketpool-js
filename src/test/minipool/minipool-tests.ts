@@ -10,7 +10,7 @@ import {
 	getMinipoolMinimumRPLStake,
 	getNodeActiveMinipoolCount,
 	stakeMinipool,
-	submitMinipoolWithdrawable
+	submitMinipoolWithdrawable,
 } from "../_helpers/minipool";
 import { close } from "./scenario-close";
 import { dissolve } from "./scenario-dissolve";
@@ -119,13 +119,13 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 			await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
 
 			// Create a dissolved minipool
-			dissolvedMinipool = (await createMinipool(web3, rp, {from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit})) as MinipoolContract;
+			dissolvedMinipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit })) as MinipoolContract;
 			await increaseTime(web3, launchTimeout + 1);
-			await dissolveMinipool(dissolvedMinipool, {from: node, gas: gasLimit});
+			await dissolveMinipool(dissolvedMinipool, { from: node, gas: gasLimit });
 
 			// Make user deposit to refund first prelaunch minipool
 			const refundAmount = web3.utils.toWei("16", "ether");
-			await userDeposit(web3, rp,{from: random, value: refundAmount, gas: gasLimit});
+			await userDeposit(web3, rp, { from: random, value: refundAmount, gas: gasLimit });
 
 			// Create minipools
 			prelaunchMinipool = (await createMinipool(web3, rp, {
@@ -919,6 +919,5 @@ export default function runMinipoolTests(web3: Web3, rp: RocketPool) {
 				"Only the node operator can access this method"
 			);
 		});
-
 	});
 }

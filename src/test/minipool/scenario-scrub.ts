@@ -65,8 +65,14 @@ export async function voteScrub(web3: Web3, rp: RocketPool, minipool: MinipoolCo
 			// Calculate amount slashed in ETH
 			const slashAmountEth = slashAmount.mul(rplPrice).div(web3.utils.toBN(web3.utils.toWei("1", "ether")));
 			// Calculate expected slash amount
-			const minimumStake = await rocketDAOProtocolSettingsNode.methods.getMinimumPerMinipoolStake().call().then((value: any) => web3.utils.toBN(value));
-			const expectedSlash = web3.utils.toBN(web3.utils.toWei("16", "ether")).mul(minimumStake).div(web3.utils.toBN(web3.utils.toWei("1", "ether")));
+			const minimumStake = await rocketDAOProtocolSettingsNode.methods
+				.getMinimumPerMinipoolStake()
+				.call()
+				.then((value: any) => web3.utils.toBN(value));
+			const expectedSlash = web3.utils
+				.toBN(web3.utils.toWei("16", "ether"))
+				.mul(minimumStake)
+				.div(web3.utils.toBN(web3.utils.toWei("1", "ether")));
 			// Perform checks
 			assert(slashAmountEth.eq(expectedSlash), "Amount of RPL slashed is incorrect");
 			assert(details2.auctionBalance.sub(details1.auctionBalance).eq(slashAmount), "RPL was not sent to auction manager");

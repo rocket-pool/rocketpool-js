@@ -116,7 +116,12 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 			await nodeStakeRPL(web3, rp, rplStake, { from: node, gas: gasLimit });
 
 			// Create minipool
-			prelaunchMinipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }, minipoolSalt)) as MinipoolContract;
+			prelaunchMinipool = (await createMinipool(
+				web3,
+				rp,
+				{ from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit },
+				minipoolSalt
+			)) as MinipoolContract;
 		});
 
 		//
@@ -163,8 +168,8 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 		});
 
 		it(printTitle("node", "can not create a minipool at the same address after closing"), async () => {
-			await voteScrub(web3, rp, prelaunchMinipool, {from: trustedNode1, gas: gasLimit});
-			await voteScrub(web3, rp, prelaunchMinipool, {from: trustedNode2, gas: gasLimit});
+			await voteScrub(web3, rp, prelaunchMinipool, { from: trustedNode1, gas: gasLimit });
+			await voteScrub(web3, rp, prelaunchMinipool, { from: trustedNode2, gas: gasLimit });
 
 			// Send 16 ETH to minipool
 			await web3.eth.sendTransaction({
@@ -176,9 +181,13 @@ export default function runMinipoolScrubTests(web3: Web3, rp: RocketPool) {
 			await close(web3, rp, prelaunchMinipool, { from: node, gas: gasLimit });
 
 			// Try to create the pool again
-			await shouldRevert(createMinipool(web3, rp,{from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit}, minipoolSalt), "Was able to recreate minipool at same address", "Minipool already exists or was previously destroyed");
+			await shouldRevert(
+				createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }, minipoolSalt),
+				"Was able to recreate minipool at same address",
+				"Minipool already exists or was previously destroyed"
+			);
 		});
-		
+
 		//
 		// ODAO
 		//

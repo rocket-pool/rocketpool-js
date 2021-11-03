@@ -66,7 +66,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	const constructorArgs = web3.eth.abi.encodeParameters(["address", "address", "uint8"], [rocketStorage.options.address, options.from, depositType]);
 	const deployCode = contractBytecode + constructorArgs.substr(2);
 
-	if(salt === null) {
+	if (salt === null) {
 		salt = minipoolSalt++;
 	}
 

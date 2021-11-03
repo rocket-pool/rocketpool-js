@@ -43,6 +43,7 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 		// One day in seconds
 		const ONE_DAY = 24 * 60 * 60;
 		const scrubPeriod = 60 * 60 * 24; // 24 hours
+		const launchTimeout = 60 * 60 * 72; // 72 hours
 		const maxStakePerMinipool = "1.5";
 
 		// Accounts
@@ -138,6 +139,10 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 			await setDAONetworkBootstrapRewardsClaimer(web3, rp, "rocketClaimNode", web3.utils.toWei("0", "ether"), { from: owner, gas: gasLimit });
 
 			// Set settings
+			await setDAOProtocolBootstrapSetting(web3, rp, "rocketDAOProtocolSettingsMinipool", "minipool.launch.timeout", launchTimeout, {
+				from: owner,
+				gas: gasLimit,
+			});
 			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
 				from: owner,
 				gas: gasLimit,
@@ -316,12 +321,11 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			});
-			const initializedMinipool = (await createMinipool(web3, rp, {
+			const minipool = (await createMinipool(web3, rp, {
 				from: registeredNode2,
-				value: web3.utils.toWei("16", "ether"),
+				value: web3.utils.toWei("32", "ether"),
 				gas: gasLimit,
 			})) as MinipoolContract;
-			await increaseTime(web3, scrubPeriod + 1);
 			await testEffectiveStakeValues();
 
 			// Increase the price of RPL and create some more minipools
@@ -342,20 +346,19 @@ export default function runNetworkStakingTests(web3: Web3, rp: RocketPool) {
 
 			// Decrease the price of RPL and destroy some minipools
 			await setPrice(web3.utils.toWei("0.75", "ether"));
-			await increaseTime(web3, scrubPeriod + 1);
-			await mineBlocks(web3, 10);
-			await dissolve(web3, rp, initializedMinipool, {
+			await increaseTime(web3, launchTimeout);
+			await dissolve(web3, rp, minipool, {
 				from: registeredNode2,
 				gas: gasLimit,
 			});
 			// Send 16 ETH to minipool
 			await web3.eth.sendTransaction({
 				from: owner,
-				to: initializedMinipool.address,
+				to: minipool.address,
 				value: web3.utils.toWei("16", "ether"),
 				gas: gasLimit,
 			});
-			await close(web3, rp, initializedMinipool, {
+			await close(web3, rp, minipool, {
 				from: registeredNode2,
 				gas: gasLimit,
 			});

@@ -449,12 +449,7 @@ class MinipoolContract {
 	 * const txReceipt = minipool.stake(validatorSignature, depositDataRoot, options).then((txReceipt: TransactionReceipt) => { txReceipt };
 	 * ```
 	 */
-	public stake(
-		validatorSignature: Buffer,
-		depositDataRoot: Buffer,
-		options?: SendOptions,
-		onConfirmation?: ConfirmationHandler
-	): Promise<TransactionReceipt> {
+	public stake(validatorSignature: Buffer, depositDataRoot: Buffer, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return handleConfirmations(this.contract.methods.stake(validatorSignature, depositDataRoot).send(options), onConfirmation);
 	}
 
