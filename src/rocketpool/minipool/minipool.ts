@@ -315,6 +315,24 @@ class Minipool {
 	}
 
 	/**
+	 * Get the number of minipools in each status.
+	 * Returns the counts for Initialised, Prelaunch, Staking, Withdrawable, and Dissolved in that order.
+	 * @params offset a number representing the offset
+	 * @params limit a number representing the minipool address you to check against
+	 * @returns a Promise<number[]\> that resolves to an array of number objects representing the counts of each minipool status in the following order: Initialised, Prelaunch, Staking, Withdrawable, and Dissolved
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const minipoolCountPerStatus = rp.minipool.getMinipoolCountPerStatus(offset, limit).then((val: object) => { val };
+	 * ```
+	 */
+	public getMinipoolCountPerStatus(offset: number, limit: number): Promise<number[]> {
+		return this.rocketMinipoolManager.then((rocketMinipoolManager: Contract): Promise<number[]> => {
+			return rocketMinipoolManager.methods.getMinipoolCountPerStatus(offset, limit).call();
+		});
+	}
+
+	/**
 	 * Get a minipool's validator pubkey
 	 * @params address a string representing the minipool address
 	 * @returns a Promise<string\> that resolves to a string representing the pubkey for the provided minipool address
