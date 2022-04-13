@@ -33,7 +33,7 @@ export async function stake(
 	const depositData = {
 		pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(16000000000), // gwei
+		amount: Number(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 	const depositDataRoot = getDepositDataRoot(depositData);

@@ -92,7 +92,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	const depositData = {
 		pubkey: getValidatorPubkey(),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(16000000000), // gwei
+		amount: Number(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 
@@ -126,7 +126,7 @@ export async function stakeMinipool(web3: Web3, rp: RocketPool, minipool: Minipo
 	const depositData = {
 		pubkey: Buffer.from(validatorPubkey.substr(2), "hex"),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(16000000000), // gwei
+		amount: Number(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 	const depositDataRoot = getDepositDataRoot(depositData);

@@ -123,7 +123,7 @@ export async function nodeDeposit(web3: Web3, rp: RocketPool, options: SendOptio
 	const depositData = {
 		pubkey: getValidatorPubkey(),
 		withdrawalCredentials: Buffer.from(withdrawalCredentials.substr(2), "hex"),
-		amount: BigInt(16000000000), // gwei
+		amount: Number(16000000000), // gwei
 		signature: getValidatorSignature(),
 	};
 

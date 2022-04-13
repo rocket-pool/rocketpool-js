@@ -1,7 +1,7 @@
 // Imports
 const ssz = require("@chainsafe/ssz");
-const types = require("@chainsafe/lodestar-types/lib/ssz/presets/mainnet").types;
-import { DepositData } from "@chainsafe/lodestar-types/lib/types";
+const types = require("@chainsafe/lodestar-types/lib/phase0/types").types;
+import { DepositData } from "@chainsafe/lodestar-types/lib/phase0/types";
 
 // Current pubkey index
 let pubkeyIndex = 0;
