@@ -40,13 +40,34 @@ const rp: RocketPool = new RocketPool(web3, RocketStorage);
 const gasLimit = 8000000;
 
 // Header
-console.log("\n");
-console.log("______           _        _    ______           _ ");
-console.log("| ___ \\         | |      | |   | ___ \\         | |");
-console.log("| |_/ /___   ___| | _____| |_  | |_/ /__   ___ | |");
-console.log("|    // _ \\ / __| |/ / _ \\ __| |  __/ _ \\ / _ \\| |");
-console.log("| |\\ \\ (_) | (__|   <  __/ |_  | | | (_) | (_) | |");
-console.log("\\_| \\_\\___/ \\___|_|\\_\\___|\\__| \\_|  \\___/ \\___/|_|");
+const header = `
+  /**
+   *       .
+   *      / \\
+   *     |.'.|
+   *     |'.'|
+   *   ,'|   |'.
+   *  |,-'-|-'-.|
+   *   __|_| |         _        _      _____           _
+   *  | ___ \\|        | |      | |    | ___ \\         | |
+   *  | |_/ /|__   ___| | _____| |_   | |_/ /__   ___ | |
+   *  |    // _ \\ / __| |/ / _ \\ __|  |  __/ _ \\ / _ \\| |
+   *  | |\\ \\ (_) | (__|   <  __/ |_   | | | (_) | (_) | |
+   *  \\_| \\_\\___/ \\___|_|\\_\\___|\\__|  \\_|  \\___/ \\___/|_|
+   * +---------------------------------------------------+
+   * |    DECENTRALISED STAKING PROTOCOL FOR ETHEREUM    |
+   * +---------------------------------------------------+
+   *
+   *  Rocket Pool is a first-of-its-kind Ethereum staking pool protocol, designed to
+   *  be community-owned, decentralised, and trustless.
+   *
+   *  For more information about Rocket Pool, visit https://rocketpool.net
+   *
+   *  Authors: David Rugendyke, Jake Pospischil, Kane Wallmann, Darren Langley, Joe Clapis, Nick Doherty
+   *
+   */
+ `;
+console.log(header);
 
 let suiteSnapshotId: string;
 beforeEach(async () => {
