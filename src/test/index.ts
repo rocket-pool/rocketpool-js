@@ -118,23 +118,25 @@ before(async function () {
 });
 
 // Run tests
-runContractsTests(web3, rp);
-runAuctionTests(web3, rp);
-runDepositTests(web3, rp);
-runMinipoolScrubTests(web3, rp);
-runMinipoolTests(web3, rp);
-runMinipoolStatusTests(web3, rp);
-runMinipoolWithdrawalTests(web3, rp);
-runNetworkBalancesTests(web3, rp);
-runNetworkFeesTests(web3, rp);
-runNetworkPricesTests(web3, rp);
-runNetworkStakingTests(web3, rp); // To do
-runNodeDepositTests(web3, rp);
-runNodeManagerTests(web3, rp);
-runNodeStakingTests(web3, rp);
-runRethTests(web3, rp);
-runRPLTests(web3, rp);
-runSettingsTests(web3, rp);
-runRewardsTests(web3, rp);
-runDOAProtocolTests(web3, rp);
-runDAONodeTrustedTests(web3, rp);
+// runContractsTests(web3, rp);
+// runAuctionTests(web3, rp); // matching
+// runDepositTests(web3, rp); // matching
+// runMinipoolScrubTests(web3, rp); // matching
+// runMinipoolTests(web3, rp); // matching
+// runMinipoolStatusTests(web3, rp); // matching
+// runMinipoolWithdrawalTests(web3, rp); // matching
+// runNetworkBalancesTests(web3, rp); // matching
+// runNetworkFeesTests(web3, rp); // matching
+// runNetworkPenalties(web3, rp); // new
+// runNetworkPricesTests(web3, rp); // matching
+// runNetworkStakingTests(web3, rp); // matching
+// runNodeDepositTests(web3, rp); // matching
+// runNodeManagerTests(web3, rp); // doesn't match
+// runNodeStakingTests(web3, rp); // matching
+// runNodeDistributorTests(); // new
+// runRethTests(web3, rp); // 1 missing
+// runRPLTests(web3, rp); // 1 missing
+// runSettingsTests(web3, rp);
+// runRewardsTests(web3, rp); // 17 in repo, 23 here, rename rewardPool
+// runDOAProtocolTests(web3, rp); //matching
+// runDAONodeTrustedTests(web3, rp); matching
