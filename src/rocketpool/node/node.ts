@@ -57,6 +57,30 @@ class Node {
 	}
 
 	/**
+	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeDistributor contract
+	 */
+	private get rocketNodeDistributor(): Promise<Contract> {
+		return this.contracts.get("rocketNodeDistributor");
+	}
+
+	/**
+	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeDistributorDelegate contract
+	 */
+	private get rocketNodeDistributorDelegate(): Promise<Contract> {
+		return this.contracts.get("rocketNodeDistributorDelegate");
+	}
+
+	/**
+	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketNodeDistributorFactory contract
+	 */
+	private get rocketNodeDistributorFactory(): Promise<Contract> {
+		return this.contracts.get("rocketNodeDistributorFactory");
+	}
+
+	/**
 	 * Get an array of Node Details
 	 * @returns a Promise<NodeDetails[]\> that resolves to an array of NodeDetails
 	 *
@@ -322,6 +346,21 @@ class Node {
 	}
 
 	/**
+	 * Check if the node has their fee distributor initialised
+	 * @returns a Promise<bool\> that resolves to a boolean representing if the node has its fee distributor initialised
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const feeDistributorInitialised = rp.node.getFeeDistributorInitialised().then((val: string) => { val };
+	 * ```
+	 */
+	public getFeeDistributorInitialised(): Promise<boolean> {
+		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<boolean> => {
+			return rocketNodeManager.methods.getFeeDistributorInitialised().call();
+		});
+	}
+
+	/**
 	 * Calculate the total effective RPL stake provided inputs
 	 * @params offset a number representing the offset
 	 * @params limit a number representing the limit
@@ -369,6 +408,27 @@ class Node {
 	public getDepositType(amount: string): Promise<number> {
 		return this.rocketNodeDeposit.then((rocketNodeDeposit: Contract): Promise<number> => {
 			return rocketNodeDeposit.methods.getDepositType(amount).call();
+		});
+	}
+
+
+	/**
+	 * Initilaise fee distributor
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeAddress = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 * 		from: nodeAddress,
+	 * 		gas: 1000000
+	 * }
+	 * const txReceipt = rp.node.initaliseFeeDistributor(options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
+	public initialiseFeeDistributor(options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketNodeManager.methods.initialiseFeeDistributor().send(options), onConfirmation);
 		});
 	}
 

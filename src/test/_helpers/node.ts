@@ -5,7 +5,7 @@ import RocketPool from "../../rocketpool/rocketpool";
 import { mintRPL } from "../tokens/scenario-rpl-mint";
 import { setDAONodeTrustedBootstrapMember } from "../dao/scenario-dao-node-trusted-bootstrap";
 import { daoNodeTrustedMemberJoin } from "../dao/scenario-dao-node-trusted";
-import { SendOptions } from "web3-eth-contract";
+import { Contract, SendOptions } from "web3-eth-contract";
 import { getDepositDataRoot, getValidatorPubkey, getValidatorSignature } from "../_utils/beacon";
 
 // Get a node's RPL stake
@@ -63,8 +63,14 @@ export async function setNodeWithdrawalAddress(web3: Web3, rp: RocketPool, nodeA
 }
 
 // Submit a node RPL stake
-export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions) {
-	const rocketNodeStaking = await rp.contracts.get("rocketNodeStaking");
+export async function nodeStakeRPL(web3: Web3, rp: RocketPool, amount: string, options: SendOptions, preUpdate = false) {
+	let rocketNodeStaking: Contract;
+
+	if (preUpdate) {
+		rocketNodeStaking = await rp.contracts.get("rocketNodeStakingOld");
+	} else {
+		rocketNodeStaking = await rp.contracts.get("rocketNodeStaking");
+	}
 
 	options.gasPrice = web3.utils.toBN(web3.utils.toWei("20", "gwei")).toString();
 	options.gas = 1000000;

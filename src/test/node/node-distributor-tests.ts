@@ -3,7 +3,7 @@ import Web3 from "web3";
 import RocketPool from "../../rocketpool/rocketpool";
 import { takeSnapshot, revertSnapshot, increaseTime } from "../_utils/evm";
 import { SendOptions } from "web3-eth-contract";
-import { nodeDeposit, nodeStakeRPL, setNodeTrusted } from "../_helpers/node";
+import { nodeDeposit, nodeStakeRPL, registerNode, setNodeTrusted } from "../_helpers/node";
 import { approveRPL, mintRPL } from "../_helpers/tokens";
 import { printTitle } from "../_utils/formatting";
 import { shouldRevert } from "../_utils/testing";
@@ -13,7 +13,7 @@ import { stakeRpl } from "./scenario-stake-rpl";
 import { withdrawRpl } from "./scenario-withdraw-rpl";
 import { setDAONodeTrustedBootstrapSetting } from "../dao/scenario-dao-node-trusted-bootstrap";
 import { userDeposit } from "../_helpers/deposit";
-import { createMinipool, stakeMinipool } from "../_helpers/minipool";
+import { createMinipool, getMinipoolMinimumRPLStake, getMinipoolMinimumRPLStake, stakeMinipool } from "../_helpers/minipool";
 import { submitWithdrawable } from "../minipool/scenario-submit-withdrawable";
 import { withdrawValidatorBalance } from "../minipool/scenario-withdraw-validator-balance";
 import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
@@ -60,7 +60,7 @@ export default function runNodeDistributorTests(web3: Web3, rp: RocketPool) {
 			// Get accounts
 			[owner, node1, node2, random, trustedNode] = await web3.eth.getAccounts();
 
-			// const rocketNodeDistributorFactory = await RocketNodeDistributorFactory.deployed();
+			const rocketNodeDistributorFactory = await rp.contracts.get("rocketNodeDistributorFactory");
 
 			// Set settings
 			await setDAONodeTrustedBootstrapSetting(web3, rp, "rocketDAONodeTrustedSettingsMinipool", "minipool.scrub.period", scrubPeriod, {
@@ -69,11 +69,14 @@ export default function runNodeDistributorTests(web3: Web3, rp: RocketPool) {
 			});
 
 			// Register node
-			await rp.node.registerNode("Australia/Brisbane", {
-				from: node,
+			await registerNodeOld({
+				from: node1,
 				gas: gasLimit,
 			});
-			await rp.node.registerNode("Australia/Brisbane", {
+			distributorAddress = await rocketNodeDistributorFactory.methods.getProxyAddress(node1);
+
+			// Register trusted node
+			await registerNodeOld( {
 				from: trustedNode,
 				gas: gasLimit,
 			});
@@ -81,11 +84,21 @@ export default function runNodeDistributorTests(web3: Web3, rp: RocketPool) {
 			await setNodeTrusted(web3, rp, trustedNode, "rocketpool_1", "node@home.com", owner);
 
 			// Mint RPL to accounts
-			const rplAmount = web3.utils.toWei("10000", "ether");
-			await mintRPL(web3, rp, owner, node1, rplAmount);
-			await mintRPL(web3, rp, owner, node2, rplAmount);
-			await mintRPL(web3, rp, owner, random, rplAmount);
+			const minipoolRplStake = await getMinipoolMinimumRPLStake(web3, rp);
+			rplStake = minipoolRplStake.mul(web3.utils.toBN(7));
+			await mintRPL(web3, rp, owner, node1, rplStake);
+			await nodeStakeRPL(web3, rp, rplStake, { from: node1}, true);
+			await mintRPL(web3, rp, owner, node2, rplStake);
+		});
 
+		it(printTitle("node operator", "can not initialise fee distributor if registered after upgrade"), async () => {
+			// Upgrade distributor
+			await upgradeOneDotOne(owner);
+			// Register node
+			await registerNode(web3, rp, {from: node2});
+			await nodeStakeRPL(web3, rp, rplStake, {from: node2});
+			// Attempt to initialise
+			await shouldRevert(rp.node.initialiseFeeDistributor({from: node2}), "Was able to initialise again", "Already initialised");
 		});
     
 	});
