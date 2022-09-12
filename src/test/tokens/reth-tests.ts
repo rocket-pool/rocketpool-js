@@ -175,25 +175,6 @@ export default function runRethTests(web3: Web3, rp: RocketPool) {
 			);
 		});
 
-		it(printTitle("rETH holder", "cannot transfer rETH before enough time has passed"), async () => {
-			// Make user deposit
-			const depositAmount = web3.utils.toBN(web3.utils.toWei("20", "ether"));
-			await userDeposit(web3, rp, {
-				from: staker2,
-				value: depositAmount,
-				gas: gasLimit,
-			});
-
-			// Transfer rETH
-			await shouldRevert(
-				transferReth(web3, rp, random, rethBalance, {
-					from: staker1,
-					gas: gasLimit,
-				}),
-				"Transfer should have failed before enough time has passed",
-				"Not enough time has passed since deposit"
-			);
-		});
 
 		it(printTitle("rETH holder", "can transfer rETH after enough time has passed"), async () => {
 			// Make user deposit

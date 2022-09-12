@@ -156,6 +156,21 @@ class Node {
 	}
 
 	/**
+	 * Calculate a nodes average node fee
+	 * @returns a Promise<number\> that resolves to a number representing nodes average node fee
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const nodeAverageFee = rp.node.getAverageFee().then((val: number) => { val };
+	 * ```
+	 */
+	public getAverageNodeFee(address: string): Promise<string> {
+		return this.rocketNodeManager.then((rocketNodeManager: Contract): Promise<string> => {
+			return rocketNodeManager.methods.getAverageNodeFee(address).call();
+		});
+	}
+
+	/**
 	 * Get a node address by index
 	 * @param index A number representing the index of the node
 	 * @returns a Promise<string\> that resolves to a string representing a node address
@@ -361,6 +376,21 @@ class Node {
 	}
 
 	/**
+	 * Get the proxy address for the node distributor
+	 * @returns a Promise<string\> that resolves to a boolean representing if the node has its fee distributor initialised
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const feeDistributorInitialised = rp.node.getFeeDistributorInitialised().then((val: string) => { val };
+	 * ```
+	 */
+	public getNodeDistributorProxyAddress(address: string): Promise<string> {
+		return this.rocketNodeDistributorFactory.then((rocketNodeDistributorFactory: Contract): Promise<string> => {
+			return rocketNodeDistributorFactory.methods.getProxyAddress(address).call();
+		});
+	}
+
+	/**
 	 * Calculate the total effective RPL stake provided inputs
 	 * @params offset a number representing the offset
 	 * @params limit a number representing the limit
@@ -411,9 +441,8 @@ class Node {
 		});
 	}
 
-
 	/**
-	 * Initilaise fee distributor
+	 * Initialise fee distributor
 	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
 	 *
 	 * @example using Typescript

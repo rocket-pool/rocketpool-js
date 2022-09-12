@@ -172,7 +172,7 @@ export default function runRPLTests(web3: Web3, rp: RocketPool) {
 			});
 		});
 
-		it(printTitle("guardian", "fails to set start time for inflation less than current block"), async () => {
+		it(printTitle("guardian", "fails to set start time for inflation less than current time"), async () => {
 			// Current time
 			const currentTime = await getCurrentTime(web3);
 			// Set the start block for inflation

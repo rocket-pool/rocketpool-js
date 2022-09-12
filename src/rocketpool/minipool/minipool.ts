@@ -52,6 +52,14 @@ class Minipool {
 
 	/**
 	 * Private accessor use to retrieve the related contract
+	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipoolPenalty contract
+	 */
+	private get rocketMinipoolPenalty(): Promise<Contract> {
+		return this.contracts.get("rocketMinipoolPenalty");
+	}
+
+	/**
+	 * Private accessor use to retrieve the related contract
 	 * @returns a Promise<Contract\> with a web3.eth.contract instance of the rocketMinipool contract
 	 */
 	private get rocketMinipool(): Promise<Contract> {
@@ -496,6 +504,30 @@ class Minipool {
 	public getEffectiveDelegate(address: string): Promise<string> {
 		return this.rocketMinipool.then((rocketMinipool: Contract): Promise<string> => {
 			return rocketMinipool.methods.getEffectiveDelegate(address).call();
+		});
+	}
+
+	/**
+	 * Sets the max penalty rate
+	 * @param rate A string representing the rate you wish to set
+	 * @param options An optional object of web3.eth.Contract SendOptions
+	 * @param onConfirmation An optional confirmation handler object
+	 * @returns a Promise<TransactionReceipt\> that resolves to a TransactionReceipt object representing the receipt of the transaction
+	 *
+	 * @example using Typescript
+	 * ```ts
+	 * const rate = web3.utils.toWei("1", "ether");
+	 * const owner = "0x24fBeD7Ecd625D3f0FD19a6c9113DEd436172294";
+	 * const options = {
+	 *		from: owner,
+	 *		gas: 1000000
+	 * };
+	 * const txReceipt = rp.minipool.setMaxPenaltyRate(minipoolAddress, options).then((txReceipt: TransactionReceipt) => { txReceipt };
+	 * ```
+	 */
+	public setMaxPenaltyRate(rate: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
+		return this.rocketMinipoolPenalty.then((rocketMinipoolPenalty: Contract): Promise<TransactionReceipt> => {
+			return handleConfirmations(rocketMinipoolPenalty.methods.setmaxPenaltyRate(rate).send(options), onConfirmation);
 		});
 	}
 

@@ -5,18 +5,15 @@ import { SendOptions } from "web3-eth-contract";
 import RocketPool from "../../rocketpool/rocketpool";
 
 // Stake RPL against the node
-export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress: string, options: SendOptions) {
+export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress: string, options: SendOptions | null) {
 	// Get Contracts
 	const rocketStorage = await rp.contracts.get("rocketStorage");
-	const rocketNodeDistributorFactory = await rp.contracts.get("rocketNodeDistributorFactory");
-	const distributorAddress = await rocketNodeDistributorFactory.methods.getProxyAddress(nodeAddress);
-	const distributorABI = await rp.contracts.abi("rocketNodeDistributorDelegate");
-	const distributor = new web3.eth.Contract(distributorABI, distributorAddress);
+	const distributorAddress = await rp.node.getNodeDistributorProxyAddress(nodeAddress);
+	const distributor = await rp.contracts.make("rocketNodeDistributorDelegate", distributorAddress);
 	const rocketTokenRETH = await rp.contracts.get("rocketTokenRETH");
-	const rocketNodeManager = await rp.contracts.get("rocketNodeManager");
+	const rocketTokenRETHAddress = rocketTokenRETH.options.address;
 	// Get node withdrawal address
-	const withdrawalAddress = await rocketStorage.methods.getNodeWithdrawalAddress(nodeAddress);
-	// Get distributor contract balance
+	const withdrawalAddress = await rocketStorage.methods.getNodeWithdrawalAddress(nodeAddress).call();
 	const distributorBalance = web3.utils.toBN(await web3.eth.getBalance(distributorAddress));
 	// Get nodes average fee
 	const minipoolCount = web3.utils.toBN(await rp.minipool.getNodeMinipoolCount(nodeAddress)).toNumber();
@@ -29,20 +26,21 @@ export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress:
 		return Promise.all([
 			minipool.methods.getStatus().then((value: any) => web3.utils.toBN(value)),
 			minipool.methods.getNodeFee().then((value: any) => web3.utils.toBN(value)),
-		]).then(([status, fee,]) => ({
+		]).then(([status, fee]) => ({
 			status,
 			fee,
 		}));
 	}
 
 	// Get status and node fee of each minipool
-	const minipoolDetails = await Promise.all([...Array(minipoolCount).keys()].map(i => getMinipoolDetails(i)));
+	const minipoolDetails = await Promise.all([...Array(minipoolCount).keys()].map((i) => getMinipoolDetails(i)));
 
 	let numerator = web3.utils.toBN(0);
 	let denominator = web3.utils.toBN(0);
 
 	for (const minipoolDetail of minipoolDetails) {
-		if (minipoolDetail.status.toNumber() === 2 ) { // Staking
+		if (minipoolDetail.status.toNumber() === 2) {
+			// Staking
 			numerator = numerator.add(minipoolDetail.fee);
 			denominator = denominator.add(web3.utils.toBN(1));
 		}
@@ -50,12 +48,12 @@ export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress:
 
 	let expectedAverageFee = web3.utils.toBN(0);
 
-	if (!numerator.eq(expectedAverageFee)){
+	if (!numerator.eq(expectedAverageFee)) {
 		expectedAverageFee = numerator.div(denominator);
 	}
 
 	// Query average fee from contracts
-	const averageFee = web3.utils.toBN(await rocketNodeManager.methods.getAverageNodeFee(nodeAddress));
+	const averageFee = web3.utils.toBN(await rp.node.getAverageNodeFee(nodeAddress));
 	assert.strictEqual(averageFee.toString(), expectedAverageFee.toString(), "Incorrect average node fee");
 
 	// Calculate expected node and user amounts from average fee
@@ -66,22 +64,20 @@ export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress:
 	async function getBalances() {
 		return Promise.all([
 			web3.eth.getBalance(withdrawalAddress).then((value: any) => web3.utils.toBN(value)),
-			web3.eth.getBalance(rocketTokenRETH.methods.address).then((value: any) => web3.utils.toBN(value)),
-		]).then(
-			([nodeEth, userEth]) =>
-				({
-					nodeEth,
-					userEth
-				})
-		);
+			web3.eth.getBalance(rocketTokenRETHAddress).then((value: any) => web3.utils.toBN(value)),
+		]).then(([nodeEth, userEth]) => ({
+			nodeEth,
+			userEth,
+		}));
 	}
 
 	// Get balance before distribute
 	const balances1 = await getBalances();
 	// Call distributor
-	await distributor.methods.distribute();
+	await distributor.methods.distribute().call();
 	// Get balance after distribute
 	const balances2 = await getBalances();
+
 	// Check results
 	const nodeEthChange = balances2.nodeEth.sub(balances1.nodeEth);
 	const userEthChange = balances2.userEth.sub(balances1.userEth);

@@ -21,6 +21,7 @@ import runNetworkBalancesTests from "./network/network-balances-tests";
 import runNetworkFeesTests from "./network/network-fees-test";
 import runNetworkPricesTests from "./network/network-prices-tests";
 import runNetworkStakingTests from "./network/network-staking-tests";
+import runNodeDistributorTests from "./node/node-distributor-tests";
 import runNodeDepositTests from "./node/node-deposit-tests";
 import runNodeManagerTests from "./node/node-manager-tests";
 import runNodeStakingTests from "./node/node-staking-tests";
@@ -127,15 +128,15 @@ before(async function () {
 // runMinipoolWithdrawalTests(web3, rp); // matching
 // runNetworkBalancesTests(web3, rp); // matching
 // runNetworkFeesTests(web3, rp); // matching
-// runNetworkPenalties(web3, rp); // new
+runNetworkPenalties(web3, rp); // new
 // runNetworkPricesTests(web3, rp); // matching
 // runNetworkStakingTests(web3, rp); // matching
 // runNodeDepositTests(web3, rp); // matching
 // runNodeManagerTests(web3, rp); // doesn't match
 // runNodeStakingTests(web3, rp); // matching
-// runNodeDistributorTests(); // new
-// runRethTests(web3, rp); // 1 missing
-// runRPLTests(web3, rp); // 1 missing
+// runNodeDistributorTests(web3, rp); // new
+// runRethTests(web3, rp);
+// runRPLTests(web3, rp);
 // runSettingsTests(web3, rp);
 // runRewardsTests(web3, rp); // 17 in repo, 23 here, rename rewardPool
 // runDOAProtocolTests(web3, rp); //matching
