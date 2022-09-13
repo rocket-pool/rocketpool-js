@@ -527,7 +527,7 @@ class Minipool {
 	 */
 	public setMaxPenaltyRate(rate: string, options?: SendOptions, onConfirmation?: ConfirmationHandler): Promise<TransactionReceipt> {
 		return this.rocketMinipoolPenalty.then((rocketMinipoolPenalty: Contract): Promise<TransactionReceipt> => {
-			return handleConfirmations(rocketMinipoolPenalty.methods.setmaxPenaltyRate(rate).send(options), onConfirmation);
+			return handleConfirmations(rocketMinipoolPenalty.methods.setMaxPenaltyRate(rate).send(options), onConfirmation);
 		});
 	}
 

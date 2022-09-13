@@ -22,6 +22,7 @@ import runNetworkFeesTests from "./network/network-fees-test";
 import runNetworkPricesTests from "./network/network-prices-tests";
 import runNetworkStakingTests from "./network/network-staking-tests";
 import runNodeDistributorTests from "./node/node-distributor-tests";
+import runNetworkPenaltiesTests from "./network/network-penalties-tests";
 import runNodeDepositTests from "./node/node-deposit-tests";
 import runNodeManagerTests from "./node/node-manager-tests";
 import runNodeStakingTests from "./node/node-staking-tests";
@@ -29,6 +30,7 @@ import runRethTests from "./tokens/reth-tests";
 import runRPLTests from "./tokens/rpl-tests";
 import runSettingsTests from "./settings/settings-tests";
 import runRewardsTests from "./rewards/rewards-tests";
+
 
 // Initialise web3
 const web3: Web3 = new Web3("http://localhost:8545");
@@ -128,7 +130,7 @@ before(async function () {
 // runMinipoolWithdrawalTests(web3, rp); // matching
 // runNetworkBalancesTests(web3, rp); // matching
 // runNetworkFeesTests(web3, rp); // matching
-runNetworkPenalties(web3, rp); // new
+// runNetworkPenaltiesTests(web3, rp); // new
 // runNetworkPricesTests(web3, rp); // matching
 // runNetworkStakingTests(web3, rp); // matching
 // runNodeDepositTests(web3, rp); // matching
@@ -138,6 +140,6 @@ runNetworkPenalties(web3, rp); // new
 // runRethTests(web3, rp);
 // runRPLTests(web3, rp);
 // runSettingsTests(web3, rp);
-// runRewardsTests(web3, rp); // 17 in repo, 23 here, rename rewardPool
+runRewardsTests(web3, rp); // 17 in repo, 23 here, rename rewardPool
 // runDOAProtocolTests(web3, rp); //matching
 // runDAONodeTrustedTests(web3, rp); matching

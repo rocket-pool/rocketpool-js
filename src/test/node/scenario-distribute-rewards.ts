@@ -24,8 +24,8 @@ export async function distributeRewards(web3: Web3, rp: RocketPool, nodeAddress:
 		const minipoolABI = await rp.contracts.abi("rocketMinipool");
 		const minipool = new web3.eth.Contract(minipoolABI, minipoolAddress);
 		return Promise.all([
-			minipool.methods.getStatus().then((value: any) => web3.utils.toBN(value)),
-			minipool.methods.getNodeFee().then((value: any) => web3.utils.toBN(value)),
+			minipool.methods.getStatus().call().then((value: any) => web3.utils.toBN(value)),
+			minipool.methods.getNodeFee().call().then((value: any) => web3.utils.toBN(value)),
 		]).then(([status, fee]) => ({
 			status,
 			fee,

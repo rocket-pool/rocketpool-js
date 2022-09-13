@@ -6,14 +6,16 @@ import { takeSnapshot, revertSnapshot } from "../_utils/evm";
 import { nodeStakeRPL, setNodeTrusted } from "../_helpers/node";
 import { setDAOProtocolBootstrapSetting } from "../dao/scenario-dao-protocol-bootstrap";
 import { setDAONodeTrustedBootstrapSetting } from "../dao/scenario-dao-node-trusted-bootstrap";
-import { getMinipoolMinimumRPLStake } from "../_helpers/minipool";
+import { createMinipool, getMinipoolMinimumRPLStake } from "../_helpers/minipool";
 import { mintRPL } from "../_helpers/tokens";
 import { printTitle } from "../_utils/formatting";
 import MinipoolContract from "../../rocketpool/minipool/minipool-contract";
+import { shouldRevert } from "../_utils/testing";
+import { submitPenalty } from "./scenario-submit-penalties";
 
 // Tests
 export default function runNetworkPenaltiesTests(web3: Web3, rp: RocketPool) {
-	describe("Network Fees", () => {
+	describe("Network Penalties Tests", () => {
 		// settings
 		const gasLimit = 8000000;
 
@@ -100,6 +102,8 @@ export default function runNetworkPenaltiesTests(web3: Web3, rp: RocketPool) {
 			await mintRPL(web3, rp, owner, node, rplStake);
 			await nodeStakeRPL(web3, rp, rplStake, { from: node });
 
+			// Create a minipool
+			minipool = (await createMinipool(web3, rp, { from: node, value: web3.utils.toWei("32", "ether"), gas: gasLimit }, 0)) as MinipoolContract;
 		});
 
 		it(printTitle("trusted nodes", "can submit penalties"), async () => {
@@ -108,14 +112,17 @@ export default function runNetworkPenaltiesTests(web3: Web3, rp: RocketPool) {
 			const minipoolAddress = minipool.address;
 
 			for (let block = 1; block < 5; block++) {
-				await submitPenalty(minipoolAddress, block, {
+				await submitPenalty(web3, rp, minipoolAddress, block, {
 					from: trustedNode1,
+					gas: gasLimit,
 				});
-				await submitPenalty(minipoolAddress, block, {
+				await submitPenalty(web3, rp, minipoolAddress, block, {
 					from: trustedNode2,
+					gas: gasLimit,
 				});
-				await submitPenalty(minipoolAddress, block, {
+				await submitPenalty(web3, rp, minipoolAddress, block, {
 					from: trustedNode3,
+					gas: gasLimit,
 				});
 			}
 
@@ -129,8 +136,9 @@ export default function runNetworkPenaltiesTests(web3: Web3, rp: RocketPool) {
 			const minipoolAddress = minipool.address;
 
 			// Submit different balances
-			await shouldRevert(submitPenalty(minipoolAddress, block, {
+			await shouldRevert(submitPenalty(web3, rp, minipoolAddress, block, {
 				from: node,
+				gas: gasLimit,
 			}), "Was able to submit penalty", "Invalid trusted node");
 
 		});

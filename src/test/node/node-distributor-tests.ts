@@ -105,7 +105,7 @@ export default function runNodeDistributorTests(web3: Web3, rp: RocketPool) {
 		it(printTitle("node operator", "can distribute rewards with no minipools"), async () => {
 			// Send ETH and distribute
 			await web3.eth.sendTransaction({ to: distributorAddress, from: owner, value: web3.utils.toWei("1", "ether") });
-			await distributeRewards(web3, rp, node1, null);
+			await distributeRewards(web3, rp, node2, null);
 		});
 
 		it(printTitle("node operator", "can distribute rewards with 1 minipool"), async () => {

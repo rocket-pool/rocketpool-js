@@ -50,6 +50,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	// Get contracts
 	const rocketMinipoolManager = await rp.contracts.get("rocketMinipoolManager");
 	const rocketStorage = await rp.contracts.get("rocketStorage");
+	const rocketMinipoolFactory = await rp.contracts.get("rocketMinipoolFactory");
 
 	// Get contract addresses
 	const minipoolManagerAddress = await rp.contracts.address("rocketMinipoolManager");
@@ -79,7 +80,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 	// Construct deterministic minipool address
 	const raw = web3.utils.soliditySha3(
 		{ type: "bytes1", value: "0xff" },
-		{ type: "address", value: rocketMinipoolManager.options.address },
+		{ type: "address", value: rocketMinipoolFactory.options.address },
 		{ type: "bytes32", value: nodeSalt !== null ? nodeSalt : "" },
 		{ type: "bytes32", value: bytecodeHash !== null ? bytecodeHash : "" }
 	);
@@ -111,7 +112,7 @@ export async function createMinipool(web3: Web3, rp: RocketPool, options: SendOp
 
 	// Return minipool instance
 	if (!minipoolCreatedEvents.length) return null;
-	return rp.minipool.getMinipoolContract(minipoolCreatedEvents[0].minipool);
+	return rp.minipool.getMinipoolContract(minipoolAddress);
 }
 
 // Progress a minipool to staking
