@@ -32,7 +32,7 @@
 	"readme": false,
 	"githubPages": false,
 	"hideGenerator": true,
-	"hideLegend": true,
+//	"hideLegend": true,
 	"categorizeByGroup": true,
 	"name": "Rocket Pool Javascript API",
 	"hideInPageTOC": true,
